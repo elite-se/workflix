@@ -14,16 +14,16 @@
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
-    // [::1] is the IPv6 localhost address.
-    window.location.hostname === '[::1]' ||
-    // 127.0.0.1/8 is considered localhost for IPv4.
-    window.location.hostname.match(
-      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-    )
+  // [::1] is the IPv6 localhost address.
+  window.location.hostname === '[::1]' ||
+  // 127.0.0.1/8 is considered localhost for IPv4.
+  window.location.hostname.match(
+    /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+  )
 )
 
-export function register (config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+export function register (config: any) {
+  if (process.env.NODE_ENV === 'production' && navigator.serviceWorker) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href)
     if (publicUrl.origin !== window.location.origin) {
@@ -45,7 +45,7 @@ export function register (config) {
         navigator.serviceWorker.ready.then(() => {
           console.log(
             'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit https://bit.ly/CRA-PWA'
+            'worker. To learn more, visit https://bit.ly/CRA-PWA'
           )
         })
       } else {
@@ -56,7 +56,10 @@ export function register (config) {
   }
 }
 
-function registerValidSW (swUrl, config) {
+function registerValidSW (swUrl: any, config: any) {
+  if (!navigator.serviceWorker) {
+    return
+  }
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
@@ -66,14 +69,14 @@ function registerValidSW (swUrl, config) {
           return
         }
         installingWorker.onstatechange = () => {
-          if (installingWorker.state === 'installed') {
+          if (installingWorker.state === 'installed' && navigator.serviceWorker) {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
               console.log(
                 'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
+                'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
               )
 
               // Execute callback
@@ -100,22 +103,26 @@ function registerValidSW (swUrl, config) {
     })
 }
 
-function checkValidServiceWorker (swUrl, config) {
+const notFoundStatus = 404
+
+function checkValidServiceWorker (swUrl: any, config: any) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
     .then(response => {
       // Ensure service worker exists, and that we really are getting a JS file.
       const contentType = response.headers.get('content-type')
       if (
-        response.status === 404 ||
+        response.status === notFoundStatus ||
         (contentType != null && contentType.indexOf('javascript') === -1)
       ) {
         // No service worker found. Probably a different app. Reload the page.
-        navigator.serviceWorker.ready.then(registration => {
-          registration.unregister().then(() => {
-            window.location.reload()
+        if (navigator.serviceWorker) {
+          navigator.serviceWorker.ready.then(registration => {
+            registration.unregister().then(() => {
+              window.location.reload()
+            })
           })
-        })
+        }
       } else {
         // Service worker found. Proceed as normal.
         registerValidSW(swUrl, config)
@@ -129,7 +136,7 @@ function checkValidServiceWorker (swUrl, config) {
 }
 
 export function unregister () {
-  if ('serviceWorker' in navigator) {
+  if (navigator.serviceWorker) {
     navigator.serviceWorker.ready.then(registration => {
       registration.unregister()
     })
