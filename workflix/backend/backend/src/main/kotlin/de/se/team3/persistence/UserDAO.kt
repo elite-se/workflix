@@ -11,7 +11,7 @@ object UserDAO {
 
         for (row in Users.select()) {
             val user = JSONObject()
-            user.put("id", row[Users.id])
+            user.put("id", row[Users.ID])
             user.put("name", row[Users.name])
             user.put("displayname", row[Users.displayname])
             user.put("email", row[Users.email])

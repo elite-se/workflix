@@ -4,6 +4,7 @@ import de.se.team3.persistence.ConnectionManager
 import de.se.team3.persistence.UserDAO
 import de.se.team3.persistence.Users
 import io.javalin.Javalin
+import io.javalin.apibuilder.ApiBuilder.*
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.select
 import org.json.JSONArray
