@@ -2,12 +2,7 @@ package de.se.team3.webservice
 
 import de.se.team3.persistence.ConnectionManager
 import de.se.team3.persistence.UserDAO
-import de.se.team3.persistence.Users
 import io.javalin.Javalin
-import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.dsl.select
-import org.json.JSONArray
-import org.json.JSONObject
 import java.lang.NumberFormatException
 
 const val ENV_PORT = "PORT"

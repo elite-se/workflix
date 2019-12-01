@@ -1,7 +1,6 @@
 package de.se.team3.persistence
 
 import me.liuwj.ktorm.schema.Table
-import me.liuwj.ktorm.schema.int
 import me.liuwj.ktorm.schema.varchar
 
 object Users : Table<Nothing>("users") {
