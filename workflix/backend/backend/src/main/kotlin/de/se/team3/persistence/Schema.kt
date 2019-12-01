@@ -1,4 +1,4 @@
-package KtormTest
+package de.se.team3.persistence
 
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.int
