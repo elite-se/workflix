@@ -6,16 +6,25 @@ import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.select
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.NumberFormatException
+
+const val ENV_PORT = "PORT"
+const val DEFAULT_PORT = 7000
 
 fun main(args: Array<String>) {
-    val app = Javalin.create{ config -> config.enableCorsForAllOrigins() }.start(7000)
+    val port = try {
+        System.getenv(ENV_PORT)?.toInt()
+    } catch (e: NumberFormatException) {
+        null
+    } ?: DEFAULT_PORT
+    val app = Javalin.create { config -> config.enableCorsForAllOrigins() }.start(port)
 
     val server = "***REMOVED***"
     val database = "***REMOVED***"
     val user = "***REMOVED***"
     val password = "***REMOVED***"
     Database.connect("jdbc:postgresql://" + server + "/" + database + "?user=" + user + "&password=" + password,
-        driver = "org.postgresql.Driver")
+            driver = "org.postgresql.Driver")
 
     val users = JSONArray()
 
@@ -28,6 +37,8 @@ fun main(args: Array<String>) {
         users.put(user)
     }
 
-    app.get("/users") { ctx -> ctx.contentType("application/json")
-        .result(users.toString())}
+    app.get("/users") { ctx ->
+        ctx.contentType("application/json")
+                .result(users.toString())
+    }
 }
