@@ -24,11 +24,9 @@ jobs:
         - cd workflix/backend/backend
       script:
         - mvn test
-        - mvn package
     - stage: build
       language: java
       before_script:
         - cd workflix/backend/backend
       script:
-        - mvn test
         - mvn -DskipTests=true package
