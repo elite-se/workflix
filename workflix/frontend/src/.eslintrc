@@ -5,6 +5,11 @@
     "@integreat-app/eslint-config-react",
     "@integreat-app/eslint-config-babel"
   ],
+  "rules": {
+    "react/jsx-closing-tag-location":  "off",
+    "react/jsx-closing-bracket-location": "off",
+    "react/jsx-first-prop-new-line": "off"
+  },
   "globals": {
     "__DEV__": false,
     "__VERSION__": false,
