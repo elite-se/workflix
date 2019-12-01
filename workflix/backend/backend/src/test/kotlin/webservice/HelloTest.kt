@@ -1,0 +1,5 @@
+package webservice
+
+class HelloTest {
+
+}
