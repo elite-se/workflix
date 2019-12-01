@@ -13,3 +13,4 @@ script:
   - yarn install
   - yarn lint
   - yarn flow
+  - yarn test
