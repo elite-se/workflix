@@ -20,5 +20,4 @@ object UserDAO {
 
         return users.toString()
     }
-
 }

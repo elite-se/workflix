@@ -12,5 +12,4 @@ object ConnectionManager {
         Database.connect("jdbc:postgresql://" + server + "/" + database + "?user=" + user + "&password=" + password,
             driver = "org.postgresql.Driver")
     }
-
 }
