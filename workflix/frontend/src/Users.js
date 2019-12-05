@@ -36,7 +36,7 @@ class Users extends React.Component<{}, { users: ?Array<UserType> }> {
       return <div style={{
         margin: '20px',
         display: 'flex',
-        width: '300px',
+        maxWidth: '300px',
         flex: '1',
         justifyContent: 'flex-start',
         alignItems: 'stretch',
