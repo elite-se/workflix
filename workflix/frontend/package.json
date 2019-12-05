@@ -9,6 +9,7 @@
     "@integreat-app/eslint-config-jest": "^0.2.1",
     "@integreat-app/eslint-config-node": "^0.3.4",
     "@integreat-app/eslint-config-react": "^0.3.3",
+    "@reach/router": "^1.2.1",
     "babel-eslint": "^10.0.3",
     "babel-preset-jest": "^24.9.0",
     "eslint": "^6.7.2",
