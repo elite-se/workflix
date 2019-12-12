@@ -1,4 +1,4 @@
-package de.se.team3.persistence
+package de.se.team3.persistence.meta
 
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.int
@@ -15,7 +15,7 @@ object ProcessTemplates : Table<Nothing>("process_templates") {
     val ID by int("id").primaryKey()
     val ownerID by varchar("owner_id")
     val title by varchar("title")
-    val durationLimit by varchar("duration_limit")
+    val durationLimit by int("duration_limit")
 }
 
 object TaskTemplates : Table<Nothing>("task_templates") {

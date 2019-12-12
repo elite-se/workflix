@@ -17,6 +17,7 @@
         <junit.version>4.12</junit.version>
         <main.class>de.se.team3.webservice.EntryPointKt</main.class>
         <ktlint.disabled>--disabled_rules=filename</ktlint.disabled>
+        <ktorm.version>2.6</ktorm.version>
     </properties>
 
     <dependencies>
@@ -40,7 +41,12 @@
         <dependency>
             <groupId>me.liuwj.ktorm</groupId>
             <artifactId>ktorm-core</artifactId>
-            <version>2.6</version>
+            <version>${ktorm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>me.liuwj.ktorm</groupId>
+            <artifactId>ktorm-support-postgresql</artifactId>
+            <version>${ktorm.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -61,6 +67,11 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20190722</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.0</version>
         </dependency>
     </dependencies>
 

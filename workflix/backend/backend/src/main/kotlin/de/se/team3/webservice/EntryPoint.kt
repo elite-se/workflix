@@ -1,7 +1,9 @@
 package de.se.team3.webservice
 
-import de.se.team3.persistence.ConnectionManager
-import de.se.team3.persistence.UserDAO
+import de.se.team3.persistence.daos.ProcessTemplateDAO
+import de.se.team3.persistence.meta.ConnectionManager
+import de.se.team3.webservice.handlers.ProcessTemplateHandler
+import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 
@@ -18,8 +20,7 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    app.get("/users") { ctx ->
-        ctx.contentType("application/json")
-                .result(UserDAO.getUsers())
-    }
+    app.get("/users/:page") { ctx -> UserHandler.getAll(ctx) }
+    app.get("processTemplates/:page") { ctx -> ProcessTemplateHandler.getAll(ctx) }
+
 }
