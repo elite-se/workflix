@@ -1,0 +1,41 @@
+// @flow
+
+import React from 'react'
+import { H2, Icon, Spinner, Text } from '@blueprintjs/core'
+import styled from 'styled-components'
+
+const CenterScreen = styled<{}, {}, 'div'>('div')`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+const withPromiseResolver = <P1, P2> (promiseCreator: $Diff<P1, P2> => Promise<P2>) => (WrappedComponent: React$ComponentType<P1>) => {
+  return class extends React.Component<$Diff<P1, P2>, { error?: string, props?: P2 }> {
+    state = {}
+
+    componentDidMount () {
+      promiseCreator(this.props)
+        .then(props => this.setState({ props }))
+        .catch(error => this.setState({ error: error.message }))
+    }
+
+    render () {
+      if (this.state.error !== undefined) {
+        return <CenterScreen>
+          <Icon icon='error' iconSize={36} style={{ padding: '20px' }} />
+          <H2>Ein Fehler ist aufgetreten.</H2>
+          <Text>{this.state.error}</Text>
+        </CenterScreen>
+      } else if (this.state.props) {
+        return <WrappedComponent {...this.props} {...this.state.props} />
+      } else {
+        return <CenterScreen><Spinner /></CenterScreen>
+      }
+    }
+  }
+}
+
+export default withPromiseResolver
