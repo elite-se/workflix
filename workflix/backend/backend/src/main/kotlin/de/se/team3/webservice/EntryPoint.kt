@@ -21,6 +21,6 @@ fun main(args: Array<String>) {
     ConnectionManager.connect()
 
     app.get("/users/:page") { ctx -> UserHandler.getAll(ctx) }
-    app.get("processTemplates/:page") { ctx -> ProcessTemplateHandler.getAll(ctx) }
+    app.get("processTemplates/:templateId") { ctx -> ProcessTemplateHandler.getOne(ctx, ctx.pathParam("templateId").toInt()) }
 
 }

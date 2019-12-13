@@ -1,17 +1,22 @@
 package de.se.team3.logic.domain
 
-class TaskTemplate(id: Int?, name: String, estimatedDuration: Int, durationLimit: Int, successors: Set<TaskTemplate>, predeccessors: Set<TaskTemplate>) {
+import com.fasterxml.jackson.annotation.JsonIgnore
+
+class TaskTemplate(id: Int?, name: String, estimatedDuration: Int, durationLimit: Int, successors: MutableSet<TaskTemplate>?, predeccessors: MutableSet<TaskTemplate>?) {
 
     val id = id
     val name = name
     val estimatedDuration = estimatedDuration
     val durationLimit = durationLimit
-    val successors = successors
-    val predeccessors = predeccessors
+    @JsonIgnore
+    var successors = successors
+    @JsonIgnore
+    var predeccessors = predeccessors
 
-    constructor(name: String, estimatedDuration: Int, durationLimit: Int, successors: Set<TaskTemplate>, predeccessors: Set<TaskTemplate>)
-            : this(null, name, estimatedDuration, durationLimit, successors, predeccessors) {
+    constructor(name: String, estimatedDuration: Int, durationLimit: Int, successors: MutableSet<TaskTemplate>, predeccessors: MutableSet<TaskTemplate>)
+            : this(null, name, estimatedDuration, durationLimit, successors, predeccessors)
 
-    }
+    constructor(id: Int?, name: String, estimatedDuration: Int, durationLimit: Int)
+            : this(id, name, estimatedDuration, durationLimit, null, null)
 
 }

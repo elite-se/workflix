@@ -8,7 +8,7 @@ object ProcessTemplateContainer: ProcessTemplateContainerInterface {
 
     const val PAGESIZE = 20
 
-    override fun getProcessTemplates(page: Int): Pair<List<ProcessTemplate>, Int> {
+    override fun getAllProcessTemplates(page: Int): Pair<List<ProcessTemplate>, Int> {
         if (page < 1)
             throw IllegalArgumentException()
 
@@ -21,6 +21,8 @@ object ProcessTemplateContainer: ProcessTemplateContainerInterface {
         return Pair(result.first, lastPage)
     }
 
-
+    override fun getProcessTemplate(templateId: Int): ProcessTemplate {
+        return ProcessTemplateDAO.getProcessTemplate(templateId)
+    }
 
 }
