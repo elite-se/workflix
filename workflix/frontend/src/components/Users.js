@@ -34,15 +34,7 @@ class Users extends React.Component<{}, { users: ?Array<UserType> }> {
         <Spinner />
       </CenterScreen>
     } else {
-      return <div style={{
-        margin: '20px',
-        display: 'flex',
-        maxWidth: '300px',
-        flex: '1',
-        justifyContent: 'flex-start',
-        alignItems: 'stretch',
-        flexDirection: 'column'
-      }}>
+      return <div>
         <H2 style={{ textAlign: 'center' }}>All Users</H2>
         {
           this.state.users.map(user => (
