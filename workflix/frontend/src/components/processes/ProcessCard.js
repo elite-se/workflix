@@ -2,26 +2,31 @@
 
 import React from 'react'
 import styled from 'styled-components'
-import { Card, H3 } from '@blueprintjs/core'
+import { Card, H3, ProgressBar } from '@blueprintjs/core'
 import type ProcessType from '../../datatypes/ProcessType'
 import TaskSummaryCard from './TaskSummaryCard'
 
-const CardWrapper = styled<{}, {}, 'div'>('div')`
-  & > * {
-    margin: 5px;
-  }
+const CardWithMargin = styled(Card)`
+  margin: 5px;
 `
+
 const TaskList = styled<{}, {}, 'div'>('div')`
   display: flex;
   flex: 1;
   justify-content: center;
   flex-direction: column;
 `
+const ProcessProgress = styled(ProgressBar)`
+  margin-top: 7px;
+`
 
 class ProcessCard extends React.Component<{ process: ProcessType }, {}> {
   render () {
     const process = this.props.process
-    return <CardWrapper><Card interactive>
+    const tasksFinished = process.tasks.filter(task => task.finished).length
+    const tasksTotal = process.tasks.length
+    const taskProgress = tasksFinished / tasksTotal
+    return <CardWithMargin interactive>
       <H3>{process.masterData.title}</H3>
       <TaskList>
         {
@@ -30,7 +35,8 @@ class ProcessCard extends React.Component<{ process: ProcessType }, {}> {
           ))
         }
       </TaskList>
-    </Card></CardWrapper>
+      <ProcessProgress animate={false} intent='success' value={taskProgress} />
+    </CardWithMargin>
   }
 }
 

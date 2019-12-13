@@ -33,7 +33,8 @@ class ProcessOverview extends React.Component<{}, { processes: ?Array<ProcessTyp
         },
         {
           id: 3,
-          name: 'Task 3'
+          name: 'Task 3',
+          finished: true
         },
         {
           id: 4,
