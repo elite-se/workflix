@@ -1,8 +1,7 @@
 // @flow
 
-type TaskType = {
-  id: string,
+export type TaskType = {
+  id: number,
   name: string,
   finished: boolean
 }
-export default TaskType

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import type ProcessType from '../../datatypes/ProcessType'
+import type { ProcessType } from '../../datatypes/ProcessType'
 import styled from 'styled-components'
 import ProcessCard from './ProcessCard'
 

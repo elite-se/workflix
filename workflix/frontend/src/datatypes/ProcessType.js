@@ -1,10 +1,9 @@
 // @flow
 
-import type TaskType from './TaskType'
-import type ProcessMasterDataType from './ProcessMasterDataType'
+import type { TaskType } from './TaskType'
+import type { ProcessMasterDataType } from './ProcessMasterDataType'
 
-type ProcessType = {
+export type ProcessType = {
   masterData: ProcessMasterDataType,
   tasks: Array<TaskType>
 }
-export default ProcessType

@@ -3,7 +3,7 @@
 import React from 'react'
 import { H2, Spinner } from '@blueprintjs/core'
 import styled from 'styled-components'
-import type ProcessType from '../../datatypes/ProcessType'
+import type { ProcessType } from '../../datatypes/ProcessType'
 import ProcessList from './ProcessList'
 
 const CenterScreen = styled<{}, {}, 'div'>('div')`
@@ -38,7 +38,8 @@ class ProcessOverview extends React.Component<{}, { processes: ?Array<ProcessTyp
         },
         {
           id: 4,
-          name: 'Task 4'
+          name: 'Task 4',
+          finished: false
         }
       ]
     }, {
@@ -54,7 +55,8 @@ class ProcessOverview extends React.Component<{}, { processes: ?Array<ProcessTyp
         },
         {
           id: 6,
-          name: 'Task 6'
+          name: 'Task 6',
+          finished: false
         }
       ]
     }]

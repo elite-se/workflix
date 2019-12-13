@@ -3,10 +3,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, H3, ProgressBar } from '@blueprintjs/core'
-import type ProcessType from '../../datatypes/ProcessType'
+import type { ProcessType } from '../../datatypes/ProcessType'
 import TaskSummaryCard from './TaskSummaryCard'
+import type { StyledComponent } from 'styled-components'
 
-const CardWithMargin = styled(Card)`
+const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
   margin: 5px;
 `
 
