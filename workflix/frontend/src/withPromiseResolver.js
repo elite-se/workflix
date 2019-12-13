@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { H2, Icon, Spinner, Text } from '@blueprintjs/core'
+import { Button, H2, Icon, Spinner, Text } from '@blueprintjs/core'
 import styled from 'styled-components'
 
 const CenterScreen = styled<{}, {}, 'div'>('div')`
@@ -17,22 +17,32 @@ const withPromiseResolver = <P1, P2> (promiseCreator: $Diff<P1, P2> => Promise<P
     state = {}
 
     componentDidMount () {
+      this.startPromise()
+    }
+
+    handleClickRefresh = () => {
+      this.startPromise()
+    }
+
+    startPromise () {
+      this.setState({ error: undefined })
       promiseCreator(this.props)
         .then(props => this.setState({ props }))
         .catch(error => this.setState({ error: error.message }))
     }
 
     render () {
-      if (this.state.error !== undefined) {
+      if (this.state.error) {
         return <CenterScreen>
           <Icon icon='error' iconSize={36} style={{ padding: '20px' }} />
           <H2>Ein Fehler ist aufgetreten.</H2>
           <Text>{this.state.error}</Text>
+          <Button icon='refresh' style={{ margin: '20px' }} text='Erneut versuchen' onClick={this.handleClickRefresh} />
         </CenterScreen>
       } else if (this.state.props) {
         return <WrappedComponent {...this.props} {...this.state.props} />
       } else {
-        return <CenterScreen><Spinner /></CenterScreen>
+        return <CenterScreen><Spinner/></CenterScreen>
       }
     }
   }
