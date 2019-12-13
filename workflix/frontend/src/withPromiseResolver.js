@@ -42,7 +42,7 @@ const withPromiseResolver = <P1, P2> (promiseCreator: $Diff<P1, P2> => Promise<P
       } else if (this.state.props) {
         return <WrappedComponent {...this.props} {...this.state.props} />
       } else {
-        return <CenterScreen><Spinner/></CenterScreen>
+        return <CenterScreen><Spinner /></CenterScreen>
       }
     }
   }
