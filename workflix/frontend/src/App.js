@@ -1,11 +1,24 @@
 // @flow
 
 import React from 'react'
-import Router from './MainRouter'
+import Header from './Header'
+import styled from 'styled-components'
+import MainRouter from './MainRouter'
+
+const RouterWrapper = styled<{}, {}, 'div'>('div')`
+  &, & > * {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+  }
+`
 
 class App extends React.Component<{}> {
   render () {
-    return <Router />
+    return <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <Header />
+      <RouterWrapper><MainRouter /></RouterWrapper>
+    </div>
   }
 }
 
