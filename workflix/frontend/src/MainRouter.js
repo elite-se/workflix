@@ -4,8 +4,6 @@ import React from 'react'
 import { Router } from '@reach/router'
 import Users from './Users'
 import ProcessTemplates from './ProcessTemplates'
-import CreateProcessTemplate from './CreateProcessTemplate'
-import EditProcessTemplate from './EditProcessTemplate'
 
 const Home = () => <div>hi</div>
 
