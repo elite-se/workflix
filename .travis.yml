@@ -14,8 +14,8 @@ jobs:
         - sudo apt-get install -y -qq yarn
       before_script:
         - cd workflix/frontend
-        - yarn install
       script:
+        - yarn install --frozen-lockfile
         - yarn lint
         - yarn flow
         - yarn test
