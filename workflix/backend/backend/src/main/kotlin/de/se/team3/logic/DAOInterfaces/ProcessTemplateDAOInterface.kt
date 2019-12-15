@@ -6,6 +6,10 @@ interface ProcessTemplateDAOInterface {
 
     fun getAllProcessTemplates(offset: Int, limit: Int): Pair<List<ProcessTemplate>, Int>
 
-    fun getProcessTemplate(templateId: Int): ProcessTemplate
+    fun getProcessTemplate(processTemplateId: Int): ProcessTemplate
+
+    fun createProcessTemplate(processTemplate: ProcessTemplate)
+
+    fun deleteProcessTemplate(processTemplateId: Int)
 
 }

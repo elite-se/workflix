@@ -1,4 +1,4 @@
-package de.se.team3.webservice
+package de.se.team3.webservice.util
 
 import org.json.JSONObject
 

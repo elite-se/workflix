@@ -8,7 +8,7 @@ object UserContainer: UserContainerInterface {
 
     const val PAGESIZE = 20
 
-    override fun getUsers(page: Int): Pair<List<User>, Int> {
+    override fun getAllUsers(page: Int): Pair<List<User>, Int> {
         if (page < 1)
             throw IllegalArgumentException()
 
@@ -19,6 +19,10 @@ object UserContainer: UserContainerInterface {
 
         val lastPage = result.second / PAGESIZE + 1
         return Pair(result.first, lastPage)
+    }
+
+    override  fun getUser(userId: String): User {
+        return UserDAO.getUser(userId)
     }
 
 }

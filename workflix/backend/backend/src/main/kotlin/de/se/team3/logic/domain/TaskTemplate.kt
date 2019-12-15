@@ -2,21 +2,20 @@ package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 
-class TaskTemplate(id: Int?, name: String, estimatedDuration: Int, durationLimit: Int, successors: MutableSet<TaskTemplate>?, predeccessors: MutableSet<TaskTemplate>?) {
+/**
+ *
+ * The attribute id is not null even if the task template is constructed while creation. This is because
+ * in this situation there are dummy ids needed for the interconnection with other task templates.
+ */
+class TaskTemplate(id: Int, name: String, estimatedDuration: Int?, durationLimit: Int?) {
 
     val id = id
     val name = name
     val estimatedDuration = estimatedDuration
     val durationLimit = durationLimit
     @JsonIgnore
-    var successors = successors
+    val successors = HashSet<TaskTemplate>()
     @JsonIgnore
-    var predeccessors = predeccessors
-
-    constructor(name: String, estimatedDuration: Int, durationLimit: Int, successors: MutableSet<TaskTemplate>, predeccessors: MutableSet<TaskTemplate>)
-            : this(null, name, estimatedDuration, durationLimit, successors, predeccessors)
-
-    constructor(id: Int?, name: String, estimatedDuration: Int, durationLimit: Int)
-            : this(id, name, estimatedDuration, durationLimit, null, null)
+    val predecessors = HashSet<TaskTemplate>()
 
 }

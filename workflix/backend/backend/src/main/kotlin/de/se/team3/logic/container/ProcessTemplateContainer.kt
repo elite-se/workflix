@@ -25,4 +25,12 @@ object ProcessTemplateContainer: ProcessTemplateContainerInterface {
         return ProcessTemplateDAO.getProcessTemplate(templateId)
     }
 
+    override fun createProcessTemplate(processTemplate: ProcessTemplate) {
+        return ProcessTemplateDAO.createProcessTemplate(processTemplate)
+    }
+
+    override fun deleteProcessTemplate(processTemplateId: Int) {
+        return ProcessTemplateDAO.deleteProcessTemplate(processTemplateId)
+    }
+
 }

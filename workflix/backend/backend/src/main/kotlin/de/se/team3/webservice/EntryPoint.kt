@@ -21,6 +21,19 @@ fun main(args: Array<String>) {
     ConnectionManager.connect()
 
     app.get("/users/:page") { ctx -> UserHandler.getAll(ctx) }
-    app.get("processTemplates/:templateId") { ctx -> ProcessTemplateHandler.getOne(ctx, ctx.pathParam("templateId").toInt()) }
-
+    app.get("processTemplates/:processTemplateId") { ctx ->
+        try {
+            ProcessTemplateHandler.getOne(ctx, ctx.pathParam("processTemplateId").toInt())
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid id")
+        }
+    }
+    app.post("processTemplates") { ctx -> ProcessTemplateHandler.create(ctx) }
+    app.delete("processTemplates/:processTemplateId") { ctx ->
+        try {
+            ProcessTemplateHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid id")
+        }
+    }
 }
