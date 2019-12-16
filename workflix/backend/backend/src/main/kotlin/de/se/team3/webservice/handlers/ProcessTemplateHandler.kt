@@ -12,23 +12,26 @@ import io.javalin.http.Context
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.IllegalArgumentException
+
 import java.util.NoSuchElementException
 
 object ProcessTemplateHandler {
 
     val mapper = ObjectMapper().registerModule(KotlinModule())
 
-    fun getAll(ctx: Context) {
-        val page = ctx.pathParam("page").toInt()
-        val templatePage = ProcessTemplateContainer.getAllProcessTemplates(page)
+    fun getAll(ctx: Context, page: Int) {
+        try {
+            val templatePage = ProcessTemplateContainer.getAllProcessTemplates(page)
 
-        val pagingContainer = PagingHelper.getPagingContainer(page, templatePage.second)
-        val userArray = JSONArray(templatePage.first)
-        pagingContainer.put("templates", userArray)
+            val pagingContainer = PagingHelper.getPagingContainer(page, templatePage.second)
+            val userArray = JSONArray(templatePage.first)
+            pagingContainer.put("templates", userArray)
 
-        ctx.result(pagingContainer.toString())
-            .contentType("application/json")
+            ctx.result(pagingContainer.toString())
+                .contentType("application/json")
+        } catch (e: IllegalArgumentException) {
+            ctx.status(404).result("page not found")
+        }
     }
 
     fun getOne(ctx: Context, processTemplateId: Int) {
@@ -100,10 +103,11 @@ object ProcessTemplateHandler {
 
             try {
                 val processTemplate = ProcessTemplate(title, durationLimit, owner, taskTemplates)
-                ProcessTemplateContainer.createProcessTemplate(processTemplate)
+                val newId = ProcessTemplateContainer.createProcessTemplate(processTemplate)
+                val newIdObject = JSONObject()
+                newIdObject.put("newId", newId)
 
-
-                ctx.result("")
+                ctx.result(newIdObject.toString())
             } catch (e: IllegalArgumentException) {
                 ctx.status(400).result(e.toString())
             }

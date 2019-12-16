@@ -3,6 +3,7 @@ package de.se.team3.logic.container
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
+import java.lang.IllegalArgumentException
 
 object UserContainer: UserContainerInterface {
 
@@ -18,6 +19,9 @@ object UserContainer: UserContainerInterface {
         val result = UserDAO.getAllUsers(offset, limit)
 
         val lastPage = result.second / PAGESIZE + 1
+        if (page > lastPage)
+            throw IllegalArgumentException()
+
         return Pair(result.first, lastPage)
     }
 

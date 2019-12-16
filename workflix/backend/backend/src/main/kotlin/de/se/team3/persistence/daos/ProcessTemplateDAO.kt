@@ -9,6 +9,8 @@ import de.se.team3.persistence.meta.TaskTemplateRelationshipsTable
 import de.se.team3.persistence.meta.TaskTemplatesTable
 import de.se.team3.persistence.meta.UsersTable
 import me.liuwj.ktorm.database.Database
+import me.liuwj.ktorm.database.TransactionIsolation
+import me.liuwj.ktorm.database.useTransaction
 import me.liuwj.ktorm.dsl.*
 import java.util.NoSuchElementException
 
@@ -30,7 +32,7 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
             processTemplates.add(template)
         }
 
-        return Pair(processTemplates.toList(), 0)
+        return Pair(processTemplates.toList(), result.totalRecords)
     }
 
     /**
@@ -105,9 +107,13 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
     /**
      * Adds the given process template.
      */
-    override fun createProcessTemplate(processTemplate: ProcessTemplate) {
-        Database.global.useTransaction {
-            // adds the process template to db
+    override fun createProcessTemplate(processTemplate: ProcessTemplate): Int {
+        var newProcessTemplateId: Int
+
+        val transactionManager = Database.global.transactionManager
+        val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
+
+        try {// adds the process template to db
             val generatedProcessTemplateId = ProcessTemplatesTable.insertAndGenerateKey {
                 it.title to processTemplate.title
                 it.durationLimit to processTemplate.durationLimit
@@ -135,6 +141,11 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
                     }
                 }
             }
+
+            transaction.commit()
+            return generatedProcessTemplateId as Int
+        } catch (e: Throwable) {
+            throw StorageException("Storage Exception: " + e.message)
         }
     }
 

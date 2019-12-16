@@ -8,7 +8,7 @@ interface ProcessTemplateContainerInterface {
 
     fun getProcessTemplate(templateId: Int): ProcessTemplate
 
-    fun createProcessTemplate(processTemplate: ProcessTemplate)
+    fun createProcessTemplate(processTemplate: ProcessTemplate): Int
 
     fun deleteProcessTemplate(processTemplateId: Int)
 
