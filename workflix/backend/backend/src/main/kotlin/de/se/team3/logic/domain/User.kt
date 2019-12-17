@@ -17,6 +17,7 @@ class User(id: String, name: String, displayname: String, email: String) {
         //queries the ***REMOVED*** API for ***REMOVED*** Users registered under the given e-mail address
         //throws exceptions if either the given e-mail address is not of a valid format, or no ***REMOVED*** User
         //with this address can be found
+        //TODO: check whether user already exists
         fun query***REMOVED***andCreateUser(email: String): User {
             //checks whether email is a (syntactically) valid e-mail address
             if (!email.matches(Regex("""^\w+@\w+..{2,3}(.{2,3})?$""")))
@@ -26,6 +27,8 @@ class User(id: String, name: String, displayname: String, email: String) {
                 throw java.lang.IllegalArgumentException("No user with this e-mail address exists.")
             return user
         }
+
+        //TODO: create user without ***REMOVED*** querying, generating a new unique ID
     }
 
 }
