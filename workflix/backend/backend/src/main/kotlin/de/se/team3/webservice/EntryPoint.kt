@@ -4,7 +4,10 @@ import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.ProcessTemplateHandler
 import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.delete
+import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.apibuilder.ApiBuilder.path
+import io.javalin.apibuilder.ApiBuilder.post
 import java.lang.NumberFormatException
 
 const val ENV_PORT = "PORT"
@@ -22,14 +25,14 @@ fun main(args: Array<String>) {
 
     app.routes {
         path("users") {
-            get()  { ctx ->
-                UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0}).get())
+            get() { ctx ->
+                UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
             }
         }
 
         path("processTemplates") {
-            get() {ctx ->
-                ProcessTemplateHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0}).get())
+            get() { ctx ->
+                ProcessTemplateHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
             }
             get(":processTemplateId") { ctx ->
                 try {
@@ -42,7 +45,7 @@ fun main(args: Array<String>) {
             delete(":processTemplateId") { ctx ->
                 try {
                     ProcessTemplateHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
-                } catch(e: NumberFormatException) {
+                } catch (e: NumberFormatException) {
                     ctx.status(400).result("invalid id")
                 }
             }

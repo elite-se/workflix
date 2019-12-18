@@ -3,9 +3,13 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.UsersTable
-import me.liuwj.ktorm.dsl.*
+import me.liuwj.ktorm.dsl.eq
+import me.liuwj.ktorm.dsl.iterator
+import me.liuwj.ktorm.dsl.limit
+import me.liuwj.ktorm.dsl.select
+import me.liuwj.ktorm.dsl.where
 
-object UserDAO: UserDAOInterface {
+object UserDAO : UserDAOInterface {
 
     /**
      * {@inheritDoc}
@@ -28,15 +32,11 @@ object UserDAO: UserDAOInterface {
     }
 
     override fun createUser(user: User) {
-
     }
 
-    override  fun updateUser(user: User) {
-
+    override fun updateUser(user: User) {
     }
 
     override fun deleteUser(user: User) {
-
     }
-
 }

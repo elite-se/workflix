@@ -8,13 +8,27 @@ import de.se.team3.persistence.meta.ProcessTemplatesTable
 import de.se.team3.persistence.meta.TaskTemplateRelationshipsTable
 import de.se.team3.persistence.meta.TaskTemplatesTable
 import de.se.team3.persistence.meta.UsersTable
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.forEach
+import kotlin.collections.iterator
+import kotlin.collections.map
+import kotlin.collections.toList
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
-import me.liuwj.ktorm.database.useTransaction
-import me.liuwj.ktorm.dsl.*
-import java.util.NoSuchElementException
+import me.liuwj.ktorm.dsl.eq
+import me.liuwj.ktorm.dsl.innerJoin
+import me.liuwj.ktorm.dsl.insert
+import me.liuwj.ktorm.dsl.insertAndGenerateKey
+import me.liuwj.ktorm.dsl.iterator
+import me.liuwj.ktorm.dsl.limit
+import me.liuwj.ktorm.dsl.select
+import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.where
 
-object ProcessTemplateDAO: ProcessTemplateDAOInterface {
+object ProcessTemplateDAO : ProcessTemplateDAOInterface {
 
     /**
      * Returns a sub list of all process templates and the total amount of such templates.
@@ -27,8 +41,18 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
             .limit(offset, limit)
 
         for (row in result) {
-            val owner = User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!)
-            val template = ProcessTemplate(row[ProcessTemplatesTable.ID]!!, row[ProcessTemplatesTable.title]!!, row[ProcessTemplatesTable.durationLimit], owner)
+            val owner = User(
+                row[UsersTable.ID]!!,
+                row[UsersTable.name]!!,
+                row[UsersTable.displayname]!!,
+                row[UsersTable.email]!!
+            )
+            val template = ProcessTemplate(
+                row[ProcessTemplatesTable.ID]!!,
+                row[ProcessTemplatesTable.title]!!,
+                row[ProcessTemplatesTable.durationLimit],
+                owner
+            )
             processTemplates.add(template)
         }
 
@@ -40,7 +64,7 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
      */
     private fun getSuccessorList(taskId: Int): List<Int> {
         val successorsResult = TaskTemplateRelationshipsTable
-            .select().where { TaskTemplateRelationshipsTable.predecessor eq  taskId }
+            .select().where { TaskTemplateRelationshipsTable.predecessor eq taskId }
 
         val successors = ArrayList<Int>()
         for (row in successorsResult)
@@ -52,7 +76,7 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
     /**
      * Returns the task templates for a given process template as a set.
      */
-    private  fun getTaskTemplates(processTemplateId: Int): Map<Int, TaskTemplate> {
+    private fun getTaskTemplates(processTemplateId: Int): Map<Int, TaskTemplate> {
         val taskTemplatesResult = TaskTemplatesTable
             .select().where { TaskTemplatesTable.templateID eq processTemplateId }
 
@@ -64,8 +88,15 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
         for (row in taskTemplatesResult) {
             val taskId = row[TaskTemplatesTable.ID]!!
 
-            taskTemplatesMap.put(taskId,
-                TaskTemplate(taskId, row[TaskTemplatesTable.name]!!, row[TaskTemplatesTable.estimatedDuration], row[TaskTemplatesTable.durationLimit]))
+            taskTemplatesMap.put(
+                taskId,
+                TaskTemplate(
+                    taskId,
+                    row[TaskTemplatesTable.name]!!,
+                    row[TaskTemplatesTable.estimatedDuration],
+                    row[TaskTemplatesTable.durationLimit]
+                )
+            )
 
             successorsPerTask.put(taskId, getSuccessorList(taskId))
         }
@@ -94,12 +125,15 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
 
         val row = processTemplateResult.rowSet.iterator().next()
 
-        val owner = User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!)
+        val owner =
+            User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!)
         val processId = row[ProcessTemplatesTable.ID]!!
         val taskTemplates = getTaskTemplates(processId)
 
-        val processTemplate = ProcessTemplate(processId, row[ProcessTemplatesTable.title]!!,
-            row[ProcessTemplatesTable.durationLimit], owner, taskTemplates)
+        val processTemplate = ProcessTemplate(
+            processId, row[ProcessTemplatesTable.title]!!,
+            row[ProcessTemplatesTable.durationLimit], owner, taskTemplates
+        )
 
         return processTemplate
     }
@@ -113,7 +147,7 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
         val transactionManager = Database.global.transactionManager
         val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
 
-        try {// adds the process template to db
+        try { // adds the process template to db
             val generatedProcessTemplateId = ProcessTemplatesTable.insertAndGenerateKey {
                 it.title to processTemplate.title
                 it.durationLimit to processTemplate.durationLimit
@@ -160,5 +194,4 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
         if (affectedRows == 0)
             throw NoSuchElementException()
     }
-
 }

@@ -11,5 +11,4 @@ interface ProcessTemplateDAOInterface {
     fun createProcessTemplate(processTemplate: ProcessTemplate): Int
 
     fun deleteProcessTemplate(processTemplateId: Int)
-
 }

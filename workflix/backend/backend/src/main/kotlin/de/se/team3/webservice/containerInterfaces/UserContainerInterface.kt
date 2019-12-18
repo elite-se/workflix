@@ -10,5 +10,4 @@ interface UserContainerInterface {
     fun getAllUsers(page: Int): Pair<List<User>, Int>
 
     fun getUser(userId: String): User
-
 }

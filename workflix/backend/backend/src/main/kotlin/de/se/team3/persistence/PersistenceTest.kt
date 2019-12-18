@@ -1,8 +1,6 @@
 package de.se.team3.persistence
 
-import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.persistence.meta.ConnectionManager
-import io.javalin.plugin.json.JavalinJson
 
 fun main() {
     ConnectionManager.connect()

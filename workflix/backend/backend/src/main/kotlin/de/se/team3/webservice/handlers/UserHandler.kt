@@ -3,9 +3,8 @@ package de.se.team3.webservice.handlers
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
-import org.json.JSONArray
 import java.lang.IllegalArgumentException
-
+import org.json.JSONArray
 
 object UserHandler {
 
@@ -23,5 +22,4 @@ object UserHandler {
             ctx.status(404).result("page not found")
         }
     }
-
 }

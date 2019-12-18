@@ -47,5 +47,4 @@ object ProcessTemplateCycleDetection {
         statusMap.put(taskTemplate.id, ProcessingStatus.Finished)
         return false
     }
-
 }
