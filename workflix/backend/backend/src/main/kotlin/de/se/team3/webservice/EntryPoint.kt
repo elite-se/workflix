@@ -1,6 +1,5 @@
 package de.se.team3.webservice
 
-import de.se.team3.persistence.daos.ProcessTemplateDAO
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.ProcessTemplateHandler
 import de.se.team3.webservice.handlers.UserHandler
@@ -22,5 +21,4 @@ fun main(args: Array<String>) {
 
     app.get("/users/:page") { ctx -> UserHandler.getAll(ctx) }
     app.get("processTemplates/:page") { ctx -> ProcessTemplateHandler.getAll(ctx) }
-
 }

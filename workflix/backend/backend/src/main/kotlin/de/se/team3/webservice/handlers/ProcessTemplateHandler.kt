@@ -18,5 +18,4 @@ object ProcessTemplateHandler {
         ctx.result(pagingContainer.toString())
             .contentType("application/json")
     }
-
 }

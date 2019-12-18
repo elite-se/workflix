@@ -3,11 +3,10 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.Users
-import io.javalin.apibuilder.CrudHandler
 import me.liuwj.ktorm.dsl.limit
 import me.liuwj.ktorm.dsl.select
 
-object UserDAO: UserDAOInterface {
+object UserDAO : UserDAOInterface {
 
     /**
      * {@inheritDoc}
@@ -22,15 +21,11 @@ object UserDAO: UserDAOInterface {
     }
 
     override fun createUser(user: User) {
-
     }
 
-    override  fun updateUser(user: User) {
-
+    override fun updateUser(user: User) {
     }
 
     override fun deleteUser(user: User) {
-
     }
-
 }

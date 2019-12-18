@@ -5,7 +5,6 @@ import de.se.team3.webservice.PagingHelper
 import io.javalin.http.Context
 import org.json.JSONArray
 
-
 object UserHandler {
 
     fun getAll(ctx: Context) {
@@ -19,5 +18,4 @@ object UserHandler {
         ctx.result(pagingContainer.toString())
             .contentType("application/json")
     }
-
 }

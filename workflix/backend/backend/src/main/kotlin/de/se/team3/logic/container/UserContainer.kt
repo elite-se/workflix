@@ -4,7 +4,7 @@ import de.se.team3.logic.domain.User
 import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 
-object UserContainer: UserContainerInterface {
+object UserContainer : UserContainerInterface {
 
     const val PAGESIZE = 20
 
@@ -20,5 +20,4 @@ object UserContainer: UserContainerInterface {
         val lastPage = result.second / PAGESIZE + 1
         return Pair(result.first, lastPage)
     }
-
 }

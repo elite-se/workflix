@@ -10,7 +10,7 @@ import me.liuwj.ktorm.dsl.innerJoin
 import me.liuwj.ktorm.dsl.limit
 import me.liuwj.ktorm.dsl.select
 
-object ProcessTemplateDAO: ProcessTemplateDAOInterface {
+object ProcessTemplateDAO : ProcessTemplateDAOInterface {
 
     override fun getAllProcessTemplates(offset: Int, limit: Int): Pair<List<ProcessTemplate>, Int> {
         val processTemplates = ArrayList<ProcessTemplate>()
@@ -27,6 +27,4 @@ object ProcessTemplateDAO: ProcessTemplateDAOInterface {
 
         return Pair(processTemplates.toList(), 0)
     }
-
-
 }

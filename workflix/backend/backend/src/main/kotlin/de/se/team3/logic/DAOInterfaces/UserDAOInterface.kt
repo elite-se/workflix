@@ -14,5 +14,4 @@ interface UserDAOInterface {
     fun updateUser(user: User)
 
     fun deleteUser(user: User)
-
 }

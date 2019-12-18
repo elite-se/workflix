@@ -5,5 +5,4 @@ import de.se.team3.logic.domain.ProcessTemplate
 interface ProcessTemplateDAOInterface {
 
     fun getAllProcessTemplates(offset: Int, limit: Int): Pair<List<ProcessTemplate>, Int>
-
 }

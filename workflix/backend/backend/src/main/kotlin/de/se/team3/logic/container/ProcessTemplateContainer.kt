@@ -4,7 +4,7 @@ import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.persistence.daos.ProcessTemplateDAO
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
 
-object ProcessTemplateContainer: ProcessTemplateContainerInterface {
+object ProcessTemplateContainer : ProcessTemplateContainerInterface {
 
     const val PAGESIZE = 20
 
@@ -20,7 +20,4 @@ object ProcessTemplateContainer: ProcessTemplateContainerInterface {
         val lastPage = result.second / ProcessTemplateContainer.PAGESIZE + 1
         return Pair(result.first, lastPage)
     }
-
-
-
 }

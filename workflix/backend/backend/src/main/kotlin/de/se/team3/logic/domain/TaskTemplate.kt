@@ -9,9 +9,7 @@ class TaskTemplate(id: Int?, name: String, estimatedDuration: Int, durationLimit
     val successors = successors
     val predeccessors = predeccessors
 
-    constructor(name: String, estimatedDuration: Int, durationLimit: Int, successors: Set<TaskTemplate>, predeccessors: Set<TaskTemplate>)
-            : this(null, name, estimatedDuration, durationLimit, successors, predeccessors) {
-
+    constructor(name: String, estimatedDuration: Int, durationLimit: Int, successors: Set<TaskTemplate>, predeccessors: Set<TaskTemplate>) :
+            this(null, name, estimatedDuration, durationLimit, successors, predeccessors) {
     }
-
 }
