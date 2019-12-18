@@ -34,7 +34,7 @@ object ProcessDAO : ProcessDAOInterface {
             it.startedAt to process.startedAt
         }
 
-        for ((taskTemplateId, taskTemplate) in processTemplate.taskTemplates!!)
+        // for ((taskTemplateId, taskTemplate) in processTemplate.taskTemplates!!)
 
         return 0
     }
