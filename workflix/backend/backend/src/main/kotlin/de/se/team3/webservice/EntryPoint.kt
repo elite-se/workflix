@@ -1,12 +1,12 @@
 package de.se.team3.webservice
 
 import de.se.team3.persistence.meta.ConnectionManager
+import de.se.team3.webservice.handlers.ProcessHandler
 import de.se.team3.webservice.handlers.ProcessTemplateHandler
 import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.delete
 import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.path
 import io.javalin.apibuilder.ApiBuilder.post
 import java.lang.NumberFormatException
 
@@ -23,32 +23,38 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    app.routes {
-        path("users") {
-            get() { ctx ->
-                UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
-            }
-        }
+    app.get("users") { ctx ->
+        UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
+    }
 
-        path("processTemplates") {
-            get() { ctx ->
-                ProcessTemplateHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
-            }
-            get(":processTemplateId") { ctx ->
-                try {
-                    ProcessTemplateHandler.getOne(ctx, ctx.pathParam("processTemplateId").toInt())
-                } catch (e: NumberFormatException) {
-                    ctx.status(400).result("invalid id")
-                }
-            }
-            post() { ctx -> ProcessTemplateHandler.create(ctx) }
-            delete(":processTemplateId") { ctx ->
-                try {
-                    ProcessTemplateHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
-                } catch (e: NumberFormatException) {
-                    ctx.status(400).result("invalid id")
-                }
-            }
+    app.get("processTemplates") { ctx ->
+        ProcessTemplateHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
+    }
+    app.get("processTemplates/:processTemplateId") { ctx ->
+        try {
+            ProcessTemplateHandler.getOne(ctx, ctx.pathParam("processTemplateId").toInt())
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid id")
         }
+    }
+    app.post("processTemplates") { ctx -> ProcessTemplateHandler.create(ctx) }
+    app.delete("processTemplates/:processTemplateId") { ctx ->
+        try {
+            ProcessTemplateHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid id")
+        }
+    }
+    app.get("processes") { ctx ->
+        ProcessHandler.getAll(ctx, ctx.queryParam<Int>("processTemplateId").check({ it > 0 }).get())
+    }
+    app.get("processes/:processId") { ctx ->
+        try {
+            ProcessHandler.getOne(ctx, ctx.pathParam("processId").toInt())
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid id")
+        }
+    }
+    app.get("processes/running/:ownerId") { ctx ->
     }
 }

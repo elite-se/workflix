@@ -1,33 +1,33 @@
 package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.se.team3.logic.container.UserContainer
 import java.lang.IllegalArgumentException
 
 /**
  * Represents a process template.
  */
-class ProcessTemplate(id: Int?, title: String, durationLimit: Int?, owner: User, taskTemplates: Map<Int, TaskTemplate>?) {
-
-    val id = id
-    val title = title
-    val durationLimit = durationLimit
-    val owner = owner
-    @JsonIgnore
-    val taskTemplates = taskTemplates
+class ProcessTemplate(
+    val id: Int?,
+    val title: String,
+    val durationLimit: Int?,
+    val owner: User,
+    @JsonIgnore val taskTemplates: Map<Int, TaskTemplate>?
+) {
 
     /**
      * Create-Constructor
      */
-    constructor(title: String, durationLimit: Int?, owner: User, taskTemplates: Map<Int, TaskTemplate>) :
-            this(null, title, durationLimit, owner, taskTemplates) {
+    constructor(title: String, durationLimit: Int?, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
+            this(null, title, durationLimit, UserContainer.getUser(ownerId), taskTemplates) {
 
-        if (title.length == 0)
+        if (title.isEmpty())
             throw IllegalArgumentException("title must not be empty")
         if (durationLimit != null && durationLimit <= 0)
-            throw IllegalArgumentException("duration limit must be positive ")
+            throw IllegalArgumentException("duration limit must be positive")
         if (taskTemplates == null)
             throw NullPointerException()
-        if (taskTemplates.size == 0)
+        if (taskTemplates.isEmpty())
             throw IllegalArgumentException("must contain at least one task template")
         if (!ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
             throw IllegalArgumentException("connection between task templates must be acyclic")

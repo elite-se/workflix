@@ -179,6 +179,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             transaction.commit()
             return generatedProcessTemplateId as Int
         } catch (e: Throwable) {
+            transaction.rollback()
             throw StorageException("Storage Exception: " + e.message)
         }
     }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.se.team3.logic.container.ProcessTemplateContainer
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.webservice.util.PagingHelper
@@ -23,8 +22,8 @@ object ProcessTemplateHandler {
             val templatePage = ProcessTemplateContainer.getAllProcessTemplates(page)
 
             val pagingContainer = PagingHelper.getPagingContainer(page, templatePage.second)
-            val userArray = JSONArray(templatePage.first)
-            pagingContainer.put("templates", userArray)
+            val templateJsonArray = JSONArray(templatePage.first)
+            pagingContainer.put("templates", templateJsonArray)
 
             ctx.result(pagingContainer.toString())
                 .contentType("application/json")
@@ -97,11 +96,10 @@ object ProcessTemplateHandler {
             val durationLimit = processTemplateJsonObject.getInt("durationLimit")
             val ownerId = processTemplateJsonObject.getString("ownerId")
 
-            val owner = UserContainer.getUser(ownerId)
             val taskTemplates = parseTaskTemplates(processTemplateJsonObject.getJSONArray("taskTemplates")!!)
 
             try {
-                val processTemplate = ProcessTemplate(title, durationLimit, owner, taskTemplates)
+                val processTemplate = ProcessTemplate(title, durationLimit, ownerId, taskTemplates)
                 val newId = ProcessTemplateContainer.createProcessTemplate(processTemplate)
                 val newIdObject = JSONObject()
                 newIdObject.put("newId", newId)
