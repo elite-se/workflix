@@ -18,9 +18,10 @@ class ProcessTemplate(
     /**
      * Create-Constructor
      */
-    constructor(title: String, durationLimit: Int?, owner: User, taskTemplates: Map<Int, TaskTemplate>) :
-            this(null, title, durationLimit, owner, taskTemplates) {
-        if (title.length == 0)
+    constructor(title: String, durationLimit: Int?, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
+            this(null, title, durationLimit, UserContainer.getUser(ownerId), taskTemplates) {
+
+        if (title.isEmpty())
             throw IllegalArgumentException("title must not be empty")
         if (durationLimit != null && durationLimit <= 0)
             throw IllegalArgumentException("duration limit must be positive")
