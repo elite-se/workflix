@@ -51,4 +51,6 @@ fun main(args: Array<String>) {
             }
         }
     }
+    app.get("/users/:page") { ctx -> UserHandler.getAll(ctx) }
+    app.get("processTemplates/:page") { ctx -> ProcessTemplateHandler.getAll(ctx) }
 }

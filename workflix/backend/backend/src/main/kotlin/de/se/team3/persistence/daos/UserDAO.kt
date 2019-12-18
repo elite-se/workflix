@@ -5,6 +5,7 @@ import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.UsersTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.iterator
+import de.se.team3.persistence.meta.Users
 import me.liuwj.ktorm.dsl.limit
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.where

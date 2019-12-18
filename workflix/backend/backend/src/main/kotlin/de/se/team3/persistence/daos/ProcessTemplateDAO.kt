@@ -56,7 +56,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             processTemplates.add(template)
         }
 
-        return Pair(processTemplates.toList(), result.totalRecords)
+        return Pair(processTemplates.toList(), 0)
     }
 
     /**
@@ -165,6 +165,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 }
                 idMapping.put(taskTemplate.id!!, generatedTaskTemplateId as Int)
             }
+}
 
             // adds the relationships between task templates to db
             processTemplate.taskTemplates?.map { it.value }?.forEach { taskTemplate ->

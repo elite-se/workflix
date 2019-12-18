@@ -18,3 +18,10 @@ class TaskTemplate(id: Int, name: String, estimatedDuration: Int?, durationLimit
     @JsonIgnore
     val predecessors = HashSet<TaskTemplate>()
 }
+    val successors = successors
+    val predeccessors = predeccessors
+
+    constructor(name: String, estimatedDuration: Int, durationLimit: Int, successors: Set<TaskTemplate>, predeccessors: Set<TaskTemplate>) :
+            this(null, name, estimatedDuration, durationLimit, successors, predeccessors) {
+    }
+}
