@@ -9,11 +9,10 @@ import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
+import java.util.NoSuchElementException
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
-import java.util.NoSuchElementException
 
 object ProcessTemplateHandler {
 
@@ -122,5 +121,4 @@ object ProcessTemplateHandler {
             ctx.status(404).result("process template not found")
         }
     }
-
 }

@@ -5,7 +5,10 @@ import de.se.team3.webservice.handlers.ProcessHandler
 import de.se.team3.webservice.handlers.ProcessTemplateHandler
 import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.delete
+import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.apibuilder.ApiBuilder.path
+import io.javalin.apibuilder.ApiBuilder.post
 import java.lang.NumberFormatException
 
 const val ENV_PORT = "PORT"
@@ -43,7 +46,6 @@ fun main(args: Array<String>) {
             ctx.status(400).result("invalid id")
         }
     }
-
     app.get("processes") { ctx ->
         ProcessHandler.getAll(ctx, ctx.queryParam<Int>("processTemplateId").check({ it > 0 }).get())
     }

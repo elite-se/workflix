@@ -13,5 +13,4 @@ class TaskTemplate(val id: Int, val name: String, val estimatedDuration: Int?, v
     val successors = HashSet<TaskTemplate>()
     @JsonIgnore
     val predecessors = HashSet<TaskTemplate>()
-
 }

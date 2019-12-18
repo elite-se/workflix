@@ -31,7 +31,6 @@ class ProcessTemplate(val id: Int?, val title: String, val durationLimit: Int?,
     /**
      * Simple-Constructor that does not consider all details.
      */
-    constructor(id: Int, title: String, durationLimit: Int?, owner: User)
-            : this(id, title, durationLimit, owner, null)
-
+    constructor(id: Int, title: String, durationLimit: Int?, owner: User) :
+            this(id, title, durationLimit, owner, null)
 }

@@ -5,7 +5,7 @@ import de.se.team3.persistence.daos.ProcessTemplateDAO
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
 import java.lang.IllegalArgumentException
 
-object ProcessTemplateContainer: ProcessTemplateContainerInterface {
+object ProcessTemplateContainer : ProcessTemplateContainerInterface {
 
     const val PAGESIZE = 20
 
@@ -36,5 +36,4 @@ object ProcessTemplateContainer: ProcessTemplateContainerInterface {
     override fun deleteProcessTemplate(processTemplateId: Int) {
         return ProcessTemplateDAO.deleteProcessTemplate(processTemplateId)
     }
-
 }

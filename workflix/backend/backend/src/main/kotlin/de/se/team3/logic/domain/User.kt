@@ -5,7 +5,7 @@ class User(id: String, name: String, displayname: String, email: String) {
     val name = name
     val displayname = displayname
     val email = email
-
+  
     /**
      * Create-Constructor
      */
@@ -13,5 +13,4 @@ class User(id: String, name: String, displayname: String, email: String) {
         if (name.length == 0 || displayname.length == 0 || email.length == 0)
             throw IllegalArgumentException("all arugments must not be empty")
     }
-
 }
