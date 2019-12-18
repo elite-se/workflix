@@ -1,6 +1,8 @@
 package de.se.team3.logic.DAOInterfaces
 
+import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.ProcessTemplate
+import de.se.team3.logic.domain.User
 
 interface ProcessTemplateDAOInterface {
 
