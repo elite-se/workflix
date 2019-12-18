@@ -8,14 +8,21 @@ import java.time.Instant
 /**
  * Represents a process.
  */
-class Process(val id: Int?, val title: String, val processTemplate: ProcessTemplate?,
-              val starter: User, val status: ProcessStatus, val startedAt: Instant, val tasks: MutableList<Task>) {
+class Process(
+    val id: Int?,
+    val title: String,
+    val processTemplate: ProcessTemplate?,
+    val starter: User,
+    val status: ProcessStatus,
+    val startedAt: Instant,
+    val tasks: MutableList<Task>
+) {
 
     /**
      * Create-Constructor
      */
-    constructor(title: String, processTemplateId: Int, starterId: String, simpleClosing: Map<Int, Boolean>, personsResponsibleIds: Map<Int, Set<String>>)
-            : this(null, title, ProcessTemplateContainer.getProcessTemplate(processTemplateId),
+    constructor(title: String, processTemplateId: Int, starterId: String, simpleClosing: Map<Int, Boolean>, personsResponsibleIds: Map<Int, Set<String>>) :
+            this(null, title, ProcessTemplateContainer.getProcessTemplate(processTemplateId),
                     UserContainer.getUser(starterId), ProcessStatus.RUNNING, Instant.now(), ArrayList<Task>()) {
 
         if (title.isEmpty())
@@ -30,8 +37,7 @@ class Process(val id: Int?, val title: String, val processTemplate: ProcessTempl
 
             if (!personsResponsibleIds.containsKey(taskTemplate.id)) {
                 throw IllegalArgumentException("persons responsible property must exist for each task")
-            }
-            else {
+            } else {
                 val responsiblesForCurrentTask = personsResponsibleIds.get(id)
                 if (responsiblesForCurrentTask == null || responsiblesForCurrentTask.isEmpty())
                     throw IllegalArgumentException("there must be at least on resposible person for each task")
@@ -45,7 +51,6 @@ class Process(val id: Int?, val title: String, val processTemplate: ProcessTempl
     /**
      * Simple-Constructor that does not consider all details.
      */
-    constructor(id: Int, title: String, starter: User, status: ProcessStatus, startedAt: Instant, tasks: MutableList<Task>)
-            : this(id, title, null, starter, status, startedAt, tasks)
-
+    constructor(id: Int, title: String, starter: User, status: ProcessStatus, startedAt: Instant, tasks: MutableList<Task>) :
+            this(id, title, null, starter, status, startedAt, tasks)
 }

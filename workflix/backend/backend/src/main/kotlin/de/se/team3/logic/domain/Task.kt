@@ -20,10 +20,7 @@ class Task(val id: Int?, val taskTemplate: TaskTemplate, val simpleClosing: Bool
     /**
      * Create-Constructor
      */
-    constructor(taskTemplate: TaskTemplate, simpleClosing: Boolean, startedAt: Instant?, personsResposibleIds: Set<String>)
-            : this(null, taskTemplate, simpleClosing, startedAt, getPersonsResponsible(personsResposibleIds)) {
-
+    constructor(taskTemplate: TaskTemplate, simpleClosing: Boolean, startedAt: Instant?, personsResposibleIds: Set<String>) :
+            this(null, taskTemplate, simpleClosing, startedAt, getPersonsResponsible(personsResposibleIds)) {
     }
-
-
 }

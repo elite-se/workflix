@@ -1,8 +1,8 @@
 package de.se.team3.logic.DAOInterfaces
 
+import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.User
-import de.se.team3.logic.domain.Process
 
 interface ProcessDAOInterface {
 
@@ -13,5 +13,4 @@ interface ProcessDAOInterface {
     fun createProcess(process: Process): Int
 
     fun abortProcess(process: Process)
-
 }

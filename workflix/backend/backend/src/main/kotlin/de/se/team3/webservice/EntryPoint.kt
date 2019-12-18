@@ -7,7 +7,6 @@ import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.delete
 import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.path
 import io.javalin.apibuilder.ApiBuilder.post
 import java.lang.NumberFormatException
 
@@ -25,11 +24,11 @@ fun main(args: Array<String>) {
     ConnectionManager.connect()
 
     app.get("users") { ctx ->
-        UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0}).get())
+        UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
     }
 
-    app.get("processTemplates") {ctx ->
-        ProcessTemplateHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0}).get())
+    app.get("processTemplates") { ctx ->
+        ProcessTemplateHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
     }
     app.get("processTemplates/:processTemplateId") { ctx ->
         try {
@@ -42,7 +41,7 @@ fun main(args: Array<String>) {
     app.delete("processTemplates/:processTemplateId") { ctx ->
         try {
             ProcessTemplateHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
-        } catch(e: NumberFormatException) {
+        } catch (e: NumberFormatException) {
             ctx.status(400).result("invalid id")
         }
     }
@@ -57,6 +56,5 @@ fun main(args: Array<String>) {
         }
     }
     app.get("processes/running/:ownerId") { ctx ->
-
     }
 }

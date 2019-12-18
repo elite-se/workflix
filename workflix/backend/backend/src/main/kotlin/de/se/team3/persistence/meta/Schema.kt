@@ -1,7 +1,5 @@
 package de.se.team3.persistence.meta
 
-import me.liuwj.ktorm.schema.*
-
 object UsersTable : Table<Nothing>("users") {
     val ID by varchar("id").primaryKey()
     val name by varchar("name")
@@ -31,7 +29,7 @@ object TaskTemplateRelationshipsTable : Table<Nothing>("task_template_relationsh
     val successor by int("successor")
 }
 
-object Processes: Table<Nothing>("processes") {
+object Processes : Table<Nothing>("processes") {
     val ID by int("id").primaryKey()
     val templateID by int("template_id")
     val starterID by int("starter_id")
@@ -41,7 +39,7 @@ object Processes: Table<Nothing>("processes") {
     val startedAt by timestamp("started_at")
 }
 
-object Tasks: Table<Nothing>("tasks") {
+object Tasks : Table<Nothing>("tasks") {
     val ID by int("id").primaryKey()
     val processID by int("process_id")
     val templateID by int("template_id")
@@ -49,7 +47,7 @@ object Tasks: Table<Nothing>("tasks") {
     val startedAt by timestamp("started_at")
 }
 
-object PersonsResponsible: Table<Nothing>("persons_responsible") {
+object PersonsResponsible : Table<Nothing>("persons_responsible") {
     val ID by int("id").primaryKey()
     val taskID by int("task_id")
     val responsibleUserID by int("responsible_user_id")

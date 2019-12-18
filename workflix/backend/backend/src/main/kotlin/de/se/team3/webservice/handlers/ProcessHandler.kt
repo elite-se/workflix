@@ -23,7 +23,5 @@ object ProcessHandler {
     }
 
     fun getOne(ctx: Context, processId: Int) {
-
     }
-
 }

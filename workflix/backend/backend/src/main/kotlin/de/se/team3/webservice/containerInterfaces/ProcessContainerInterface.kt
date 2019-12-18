@@ -11,5 +11,4 @@ interface ProcessContainerInterface {
     fun createProcess(process: Process): Int
 
     fun abortProcess(process: Process)
-
 }

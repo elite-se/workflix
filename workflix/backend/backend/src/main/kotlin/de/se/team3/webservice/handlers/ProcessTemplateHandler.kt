@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.se.team3.logic.container.ProcessTemplateContainer
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.webservice.util.PagingHelper

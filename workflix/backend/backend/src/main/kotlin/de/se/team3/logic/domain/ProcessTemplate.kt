@@ -7,14 +7,19 @@ import java.lang.IllegalArgumentException
 /**
  * Represents a process template.
  */
-class ProcessTemplate(val id: Int?, val title: String, val durationLimit: Int?,
-                      val owner: User, @JsonIgnore val taskTemplates: Map<Int, TaskTemplate>?) {
+class ProcessTemplate(
+    val id: Int?,
+    val title: String,
+    val durationLimit: Int?,
+    val owner: User,
+    @JsonIgnore val taskTemplates: Map<Int, TaskTemplate>?
+) {
 
     /**
      * Create-Constructor
      */
-    constructor(title: String, durationLimit: Int?, ownerId: String, taskTemplates: Map<Int, TaskTemplate>)
-            : this(null, title, durationLimit, UserContainer.getUser(ownerId), taskTemplates) {
+    constructor(title: String, durationLimit: Int?, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
+            this(null, title, durationLimit, UserContainer.getUser(ownerId), taskTemplates) {
 
         if (title.isEmpty())
             throw IllegalArgumentException("title must not be empty")
