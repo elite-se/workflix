@@ -142,12 +142,11 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
      * Adds the given process template.
      */
     override fun createProcessTemplate(processTemplate: ProcessTemplate): Int {
-        var newProcessTemplateId: Int
-
         val transactionManager = Database.global.transactionManager
         val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
 
-        try { // adds the process template to db
+        try {
+            // adds the process template to db
             val generatedProcessTemplateId = ProcessTemplatesTable.insertAndGenerateKey {
                 it.title to processTemplate.title
                 it.durationLimit to processTemplate.durationLimit

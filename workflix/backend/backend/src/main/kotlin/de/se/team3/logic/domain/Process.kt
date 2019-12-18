@@ -11,19 +11,23 @@ import java.time.Instant
 class Process(
     val id: Int?,
     val title: String,
+    val description: String,
     val processTemplate: ProcessTemplate?,
     val starter: User,
     val status: ProcessStatus,
     val startedAt: Instant,
-    val tasks: MutableList<Task>
+    val finishedAt: Instant?,
+    val aborted: Boolean,
+    // the tasks lies under the id of the corresponding task template
+    val tasks: MutableMap<Int, Task>
 ) {
 
     /**
      * Create-Constructor
      */
-    constructor(title: String, processTemplateId: Int, starterId: String, simpleClosing: Map<Int, Boolean>, personsResponsibleIds: Map<Int, Set<String>>) :
-            this(null, title, ProcessTemplateContainer.getProcessTemplate(processTemplateId),
-                    UserContainer.getUser(starterId), ProcessStatus.RUNNING, Instant.now(), ArrayList<Task>()) {
+    constructor(title: String, description: String, processTemplateId: Int, starterId: String, simpleClosing: Map<Int, Boolean>, personsResponsibleIds: Map<Int, Set<String>>) :
+            this(null, title, description, ProcessTemplateContainer.getProcessTemplate(processTemplateId),
+                    UserContainer.getUser(starterId), ProcessStatus.RUNNING, Instant.now(), null, false, HashMap<Int, Task>()) {
 
         if (title.isEmpty())
             throw IllegalArgumentException("title must not be empty")
@@ -44,13 +48,13 @@ class Process(
             }
 
             val startedAt = if (taskTemplate.predecessors.size == 0) Instant.now() else null
-            tasks.add(Task(taskTemplate, simpleClosing.get(taskTemplate.id)!!, startedAt, personsResponsibleIds.get(taskTemplate.id)!!))
+            tasks.put(id, Task(taskTemplate, simpleClosing.get(taskTemplate.id)!!, startedAt, personsResponsibleIds.get(taskTemplate.id)!!))
         }
     }
 
     /**
      * Simple-Constructor that does not consider all details.
      */
-    constructor(id: Int, title: String, starter: User, status: ProcessStatus, startedAt: Instant, tasks: MutableList<Task>) :
-            this(id, title, null, starter, status, startedAt, tasks)
+    constructor(id: Int, title: String, description: String, starter: User, status: ProcessStatus, startedAt: Instant, finishedAt: Instant?, aborted: Boolean, tasks: MutableMap<Int, Task>) :
+            this(id, title, description, null, starter, status, startedAt, finishedAt, aborted, tasks)
 }
