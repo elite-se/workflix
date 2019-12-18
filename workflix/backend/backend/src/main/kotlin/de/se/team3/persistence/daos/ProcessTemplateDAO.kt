@@ -56,7 +56,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             processTemplates.add(template)
         }
 
-        return Pair(processTemplates.toList(), 0)
+        return Pair(processTemplates.toList(), result.totalRecords)
     }
 
     /**
@@ -165,7 +165,6 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 }
                 idMapping.put(taskTemplate.id!!, generatedTaskTemplateId as Int)
             }
-}
 
             // adds the relationships between task templates to db
             processTemplate.taskTemplates?.map { it.value }?.forEach { taskTemplate ->
@@ -180,6 +179,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             transaction.commit()
             return generatedProcessTemplateId as Int
         } catch (e: Throwable) {
+            transaction.rollback()
             throw StorageException("Storage Exception: " + e.message)
         }
     }

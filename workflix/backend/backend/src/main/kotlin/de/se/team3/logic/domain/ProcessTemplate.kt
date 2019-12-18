@@ -20,8 +20,6 @@ class ProcessTemplate(id: Int?, title: String, durationLimit: Int?, owner: User,
      */
     constructor(title: String, durationLimit: Int?, owner: User, taskTemplates: Map<Int, TaskTemplate>) :
             this(null, title, durationLimit, owner, taskTemplates) {
-
-    constructor(title: String, durationLimit: Int?, owner: User) : this(null, title, durationLimit, owner) {
         if (title.length == 0)
             throw IllegalArgumentException("title must not be empty")
         if (durationLimit != null && durationLimit <= 0)
@@ -39,6 +37,4 @@ class ProcessTemplate(id: Int?, title: String, durationLimit: Int?, owner: User,
      */
     constructor(id: Int, title: String, durationLimit: Int?, owner: User) :
             this(id, title, durationLimit, owner, null)
-}
-
 }
