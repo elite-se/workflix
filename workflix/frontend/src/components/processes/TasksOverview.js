@@ -13,7 +13,7 @@ const CenterScreen = styled<{}, {}, 'div'>('div')`
   align-items: center;
 `
 
-class ProcessOverview extends React.Component<{}, { processes: ?Array<ProcessType> }> {
+class TasksOverview extends React.Component<{}, { processes: ?Array<ProcessType> }> {
   state = {
     processes: [{
       masterData: {
@@ -76,4 +76,4 @@ class ProcessOverview extends React.Component<{}, { processes: ?Array<ProcessTyp
   }
 }
 
-export default ProcessOverview
+export default TasksOverview
