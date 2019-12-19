@@ -56,8 +56,27 @@ object UserDAO : UserDAOInterface {
         }
     }
 
-    // TODO(unclear specs): Do we even update users?
+    /**
+     * Updates the user data on basis of the given user's id.
+     */
     override fun updateUser(user: User) {
+        val transactionManager = Database.global.transactionManager
+        val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
+
+        try { // adds the process template to db
+            val generatedProcessTemplateId = UsersTable.update {
+                it.name to user.name
+                it.displayname to user.displayname
+                it.email to user.email
+                it.deleted to false
+
+                where { it.ID like user.id }
+            }
+
+            transaction.commit()
+        } catch (e: Throwable) {
+            throw StorageException("Storage Exception: " + e.message)
+        }
     }
 
     override fun deleteUser(user: User) {
