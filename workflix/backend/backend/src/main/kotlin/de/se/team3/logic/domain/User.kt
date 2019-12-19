@@ -56,8 +56,8 @@ class User(id: String, name: String, displayname: String, email: String) {
                 generatedID = (1..24)
                     .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
                     .map(charPool::get)
-                    .joinToString("");
-            } while ( !idAlreadyUsed(generatedID) )
+                    .joinToString("")
+            } while (!idAlreadyUsed(generatedID))
             return User(generatedID, name, displayname, email)
         }
 
@@ -76,8 +76,4 @@ class User(id: String, name: String, displayname: String, email: String) {
             return false
         }
     }
-}
-
-fun main() {
-    println(User.query***REMOVED***andCreateUser("***REMOVED***").displayname)
 }
