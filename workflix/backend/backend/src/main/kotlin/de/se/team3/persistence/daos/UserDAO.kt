@@ -29,6 +29,18 @@ object UserDAO : UserDAOInterface {
         return Pair(users.toList(), result.totalRecords)
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    override fun getAllUsers(): List<User> {
+        val users = ArrayList<User>()
+        val result = UsersTable.select()
+        for (row in result)
+            users.add(User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!))
+
+        return users.toList()
+    }
+
     override fun getUser(userId: String): User {
         val result = UsersTable
             .select().where { UsersTable.ID eq userId }

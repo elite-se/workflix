@@ -57,7 +57,7 @@ class User(id: String, name: String, displayname: String, email: String) {
                     .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
                     .map(charPool::get)
                     .joinToString("")
-            } while (!idAlreadyUsed(generatedID))
+            } while (!userIdAlreadyUsed(generatedID))
             return User(generatedID, name, displayname, email)
         }
 
@@ -65,7 +65,7 @@ class User(id: String, name: String, displayname: String, email: String) {
          * checks whether a String is already in use as an user id
          * TODO(improvement) apply a faster searching algorithm; this may however require sorting the data first
          */
-        fun idAlreadyUsed(id: String): Boolean {
+        fun userIdAlreadyUsed(id: String): Boolean {
             var i = 0
             var userList = UserDAO.getAllUsers(i, i + 20).first
             while (userList.isNotEmpty()) {
