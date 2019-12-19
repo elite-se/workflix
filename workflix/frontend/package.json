@@ -35,8 +35,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test-ci": "CI=true react-scripts test --watch=all",
     "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "flow": "flow"
   },
   "browserslist": {
     "production": [
