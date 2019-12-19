@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { Card, H2, H3, Text } from '@blueprintjs/core'
-import type { UserType } from './models'
 import withPromiseResolver from './withPromiseResolver'
+import type { UserType } from '../datatypes/models'
 
 type PropsType = {| users: Array<UserType>, path: string |}
 
