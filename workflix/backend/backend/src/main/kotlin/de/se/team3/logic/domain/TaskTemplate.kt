@@ -1,17 +1,16 @@
 package de.se.team3.logic.domain
 
-class TaskTemplate(id: Int?, name: String, estimatedDuration: Int, durationLimit: Int, successors: Set<TaskTemplate>, predeccessors: Set<TaskTemplate>) {
+import com.fasterxml.jackson.annotation.JsonIgnore
 
-    val id = id
-    val name = name
-    val estimatedDuration = estimatedDuration
-    val durationLimit = durationLimit
-    val successors = successors
-    val predeccessors = predeccessors
+/**
+ *
+ * The attribute id is not null even if the task template is constructed while creation. This is because
+ * in this situation there are dummy ids needed for the interconnection with other task templates.
+ */
+class TaskTemplate(val id: Int, val name: String, val estimatedDuration: Int?, val durationLimit: Int?) {
 
-    constructor(name: String, estimatedDuration: Int, durationLimit: Int, successors: Set<TaskTemplate>, predeccessors: Set<TaskTemplate>)
-            : this(null, name, estimatedDuration, durationLimit, successors, predeccessors) {
-
-    }
-
+    @JsonIgnore
+    val successors = HashSet<TaskTemplate>()
+    @JsonIgnore
+    val predecessors = HashSet<TaskTemplate>()
 }
