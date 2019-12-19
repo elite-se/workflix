@@ -12,11 +12,21 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   flex-direction: row;
 `
 
-class ProcessList extends React.Component<{ processes: Array<ProcessType> }, {}> {
+class ProcessList extends React.Component<{ processes: Array<ProcessType> }, { selectedTaskId: ?number }> {
+  state = { selectedTaskId: null }
+
+  onTaskSelected = (selectedTaskId: number) => {
+    this.setState({ selectedTaskId: selectedTaskId })
+  }
+
   render () {
     return <ProcessListWrapper>{
       this.props.processes.map(process => (
-        <ProcessCard key={process.id} process={process} />)
+        <ProcessCard
+          key={process.id}
+          process={process}
+          selectedTaskId={this.state.selectedTaskId}
+          onTaskSelected={this.onTaskSelected} />)
       )
     }</ProcessListWrapper>
   }
