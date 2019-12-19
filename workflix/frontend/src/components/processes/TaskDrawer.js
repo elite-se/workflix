@@ -3,6 +3,7 @@
 import React from 'react'
 import { Drawer } from '@blueprintjs/core'
 import type { TaskType } from '../../datatypes/TaskType'
+import TaskDrawerContent from './TaskDrawerContent'
 
 type PropsType = {|
   selectedTask: ?TaskType,
@@ -29,7 +30,7 @@ class TaskDrawer extends React.Component<PropsType> {
       title={selectedTask != null ? selectedTask.templateName : ''}
       onClose={this.props.onClose}
       onOpening={this.onDrawerOpening}>
-      The selected task id: {selectedTask != null ? selectedTask.taskId : ''}
+      {selectedTask != null ? <TaskDrawerContent task={selectedTask} /> : ''}
     </Drawer>
   }
 }
