@@ -14,7 +14,7 @@ class User(id: String, name: String, displayname: String, email: String) {
      */
     constructor(name: String, displayname: String, email: String) : this("", name, displayname, email) {
         if (name.length == 0 || displayname.length == 0 || email.length == 0)
-            throw IllegalArgumentException("not all arguments may be empty")
+            throw IllegalArgumentException("no arguments may be empty")
     }
 
     companion object {
