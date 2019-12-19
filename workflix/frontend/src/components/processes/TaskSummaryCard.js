@@ -28,8 +28,8 @@ const FinishedTaskStyling = styled<{ taskFinished: boolean }, {}, 'div'>('div')`
 class TaskSummaryCard extends React.Component<{ task: TaskType}, {}> {
   render () {
     const task = this.props.task
-    return <CustomLink to={`/task/${task.id}`}>
-      <FinishedTaskStyling taskFinished={task.finished}><Card interactive>{task.name}</Card></FinishedTaskStyling>
+    return <CustomLink to={`/task/${task.taskId}`}>
+      <FinishedTaskStyling taskFinished={task.done}><Card interactive>{task.templateName}</Card></FinishedTaskStyling>
     </CustomLink>
   }
 }

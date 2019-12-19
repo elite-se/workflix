@@ -16,7 +16,7 @@ class ProcessList extends React.Component<{ processes: Array<ProcessType> }, {}>
   render () {
     return <ProcessListWrapper>{
       this.props.processes.map(process => (
-        <ProcessCard key={process.masterData.id} process={process} />)
+        <ProcessCard key={process.id} process={process} />)
       )
     }</ProcessListWrapper>
   }

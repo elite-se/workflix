@@ -14,9 +14,12 @@ const CenterScreen = styled<{}, {}, 'div'>('div')`
   align-items: center;
 `
 
-class TasksOverview extends React.Component<{}, { processes: ?Array<ProcessType> }> {
-  state = {
-    processes: ProcessApi().getProcesses()
+class TasksOverview extends React.Component<{}, { processes: ?ProcessType[] } > {
+  state = { processes: null }
+  componentDidMount () {
+    new ProcessApi().getProcesses().then(
+      processes => this.setState({ processes })
+    )
   }
 
   render () {

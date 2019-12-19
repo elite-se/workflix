@@ -24,15 +24,13 @@ const ProcessProgress = styled(ProgressBar)`
 class ProcessCard extends React.Component<{ process: ProcessType }, {}> {
   render () {
     const process = this.props.process
-    const tasksFinished = process.tasks.filter(task => task.finished).length
-    const tasksTotal = process.tasks.length
-    const taskProgress = tasksFinished / tasksTotal
+    const taskProgress = process.progress
     return <CardWithMargin interactive>
-      <H3>{process.masterData.title}</H3>
+      <H3>{process.title}</H3>
       <TaskList>
         {
           process.tasks.map(task => (
-            <TaskSummaryCard key={task.id} task={task} />
+            <TaskSummaryCard key={task.taskId} task={task} />
           ))
         }
       </TaskList>

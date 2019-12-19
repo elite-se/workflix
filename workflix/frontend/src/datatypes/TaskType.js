@@ -1,7 +1,14 @@
 // @flow
 
 export type TaskType = {
-  id: number,
-  name: string,
-  finished: boolean
+  taskId: number,
+  templateName: string,
+  templateDescription: string,
+  taskTemplateId: number,
+  simpleClosing: boolean,
+  personsResponsible: {
+    personResponsibleId: string,
+    done: boolean
+  }[],
+  done: boolean
 }
