@@ -27,9 +27,19 @@ const FinishedTaskStyling = styled<{ taskFinished: boolean }, {}, 'div'>('div')`
 
 class TaskSummaryCard extends React.Component<{ task: TaskType}, {}> {
   render () {
+    const userIdDisplayLength = 5
     const task = this.props.task
     return <CustomLink to={`/task/${task.taskId}`}>
-      <FinishedTaskStyling taskFinished={task.done}><Card interactive>{task.templateName}</Card></FinishedTaskStyling>
+      <FinishedTaskStyling taskFinished={task.done}>
+        <Card interactive>
+          <p><b>{task.templateName}</b></p>
+          <p>{task.personsResponsible.length === 0 ? ''
+          : `Responsible: ${
+            task.personsResponsible.map(responsible => (
+                responsible.personResponsibleId.substr(0, userIdDisplayLength)
+            )).join(', ')}`}</p>
+        </Card>
+      </FinishedTaskStyling>
     </CustomLink>
   }
 }

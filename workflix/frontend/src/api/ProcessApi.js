@@ -29,7 +29,14 @@ class ProcessApi {
           taskId: 1,
           templateName: 'Dokument scannen',
           taskTemplateId: 1,
-          done: true
+          done: true,
+          personsResponsible: [{
+            personResponsibleId: 'mm12345678',
+            done: true
+          }, {
+            personResponsibleId: 'mm98765',
+            done: true
+          }]
         },
         {
           ...taskDefault,

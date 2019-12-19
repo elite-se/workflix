@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { H2, Spinner } from '@blueprintjs/core'
+import { Spinner } from '@blueprintjs/core'
 import styled from 'styled-components'
 import type { ProcessType } from '../../datatypes/ProcessType'
 import ProcessList from './ProcessList'
@@ -29,7 +29,6 @@ class TasksOverview extends React.Component<{}, { processes: ?ProcessType[] } > 
       </CenterScreen>
     } else {
       return <div>
-        <H2 style={{ textAlign: 'center' }}>All processes</H2>
         <ProcessList processes={this.state.processes} />
       </div>
     }

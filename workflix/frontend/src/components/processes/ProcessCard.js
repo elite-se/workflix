@@ -26,7 +26,7 @@ class ProcessCard extends React.Component<{ process: ProcessType }, {}> {
     const process = this.props.process
     const taskProgress = process.progress
     return <CardWithMargin interactive>
-      <H3>{process.title}</H3>
+      <H3>{process.title} (#{process.id})</H3>
       <TaskList>
         {
           process.tasks.map(task => (
