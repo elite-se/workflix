@@ -1,38 +1,43 @@
 // @flow
 
 import React from 'react'
-import { Spinner } from '@blueprintjs/core'
-import styled from 'styled-components'
 import type { ProcessType } from '../../datatypes/ProcessType'
-import ProcessList from './ProcessList'
 import ProcessApi from '../../api/ProcessApi'
+import withPromiseResolver from '../withPromiseResolver'
+import ProcessCard from './ProcessCard'
+import styled from 'styled-components'
 
-const CenterScreen = styled<{}, {}, 'div'>('div')`
+const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
   flex: 1;
   justify-content: center;
-  align-items: center;
+  flex-direction: row;
 `
 
-class TasksOverview extends React.Component<{}, { processes: ?ProcessType[] } > {
-  state = { processes: null }
-  componentDidMount () {
-    new ProcessApi().getProcesses().then(
-      processes => this.setState({ processes })
-    )
+type PropsType = {| processes: Array<ProcessType>, path: string |}
+
+class TasksOverview extends React.Component<PropsType, { selectedTaskId: ?number }> {
+  state = { selectedTaskId: null }
+
+  onTaskSelected = (selectedTaskId: number) => {
+    this.setState({ selectedTaskId: selectedTaskId })
   }
 
   render () {
-    if (!this.state.processes) {
-      return <CenterScreen>
-        <Spinner />
-      </CenterScreen>
-    } else {
-      return <div>
-        <ProcessList processes={this.state.processes} />
-      </div>
-    }
+    return <div><ProcessListWrapper>{
+      this.props.processes.map(process => (
+        <ProcessCard
+          key={process.id}
+          process={process}
+          selectedTaskId={this.state.selectedTaskId}
+          onTaskSelected={this.onTaskSelected} />)
+      )
+    }</ProcessListWrapper></div>
   }
 }
 
-export default TasksOverview
+const promiseCreator = () => new ProcessApi().getProcesses().then(
+  processes => ({ processes })
+)
+
+export default withPromiseResolver<PropsType, {| processes: Array<ProcessType> |}>(promiseCreator)(TasksOverview)
