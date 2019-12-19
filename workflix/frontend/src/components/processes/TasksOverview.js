@@ -7,6 +7,7 @@ import withPromiseResolver from '../withPromiseResolver'
 import ProcessCard from './ProcessCard'
 import styled from 'styled-components'
 import { Drawer } from '@blueprintjs/core'
+import type { TaskType } from '../../datatypes/TaskType'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
@@ -17,15 +18,15 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
 
 type PropsType = {| processes: Array<ProcessType>, path: string |}
 
-class TasksOverview extends React.Component<PropsType, { selectedTaskId: ?number }> {
-  state = { selectedTaskId: null }
+class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType }> {
+  state = { selectedTask: null }
 
-  onTaskSelected = (selectedTaskId: number) => {
-    this.setState({ selectedTaskId: selectedTaskId })
+  onTaskSelected = (selectedTask: TaskType) => {
+    this.setState({ selectedTask: selectedTask })
   }
 
   onDrawerClosed = () => {
-    this.setState({ selectedTaskId: null })
+    this.setState({ selectedTask: null })
   }
 
   // pretty hacky: "remove" the class of the Blueprint.js overlay between portal and drawer that prevents clicks in
@@ -37,25 +38,25 @@ class TasksOverview extends React.Component<PropsType, { selectedTaskId: ?number
   }
 
   render () {
-    const selectedTaskId = this.state.selectedTaskId
+    const selectedTask = this.state.selectedTask
     return <div>
       <ProcessListWrapper>{
         this.props.processes.map(process => (
           <ProcessCard
             key={process.id}
             process={process}
-            selectedTaskId={this.state.selectedTaskId}
+            selectedTask={this.state.selectedTask}
             onTaskSelected={this.onTaskSelected} />)
         )
       }</ProcessListWrapper>
       <Drawer
         size={Drawer.SIZE_SMALL}
         hasBackdrop={false}
-        isOpen={selectedTaskId != null}
-        title={`Task ${selectedTaskId != null ? selectedTaskId : ''}`}
+        isOpen={selectedTask != null}
+        title={selectedTask != null ? selectedTask.templateName : ''}
         onClose={this.onDrawerClosed}
         onOpening={this.onDrawerOpening}>
-        The selected task id: {selectedTaskId}
+        The selected task id: {selectedTask != null ? selectedTask.taskId : ''}
       </Drawer>
     </div>
   }

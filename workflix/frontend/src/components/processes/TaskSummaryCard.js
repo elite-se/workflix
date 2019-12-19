@@ -15,8 +15,14 @@ const FinishedTaskStyling = styled<{ taskFinished: boolean }, {}, 'div'>('div')`
 ` : ''}
 `
 
-class TaskSummaryCard extends React.Component<{ task: TaskType, selected: boolean, onTaskSelected: (number) => void }> {
-  onClick = () => this.props.onTaskSelected(this.props.task.taskId)
+type PropsType = {
+  task: TaskType,
+  selected: boolean,
+  onTaskSelected: (TaskType) => void
+}
+
+class TaskSummaryCard extends React.Component<PropsType> {
+  onClick = () => this.props.onTaskSelected(this.props.task)
 
   render () {
     const userIdDisplayLength = 5

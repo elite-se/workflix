@@ -7,6 +7,7 @@ import type { ProcessType } from '../../datatypes/ProcessType'
 import TaskSummaryCard from './TaskSummaryCard'
 import type { StyledComponent } from 'styled-components'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
+import type { TaskType } from '../../datatypes/TaskType'
 
 const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
   margin: 5px;
@@ -24,15 +25,20 @@ const ProcessProgress = styled(ProgressBar)`
 
 type PropsType = {
   process: ProcessType,
-  selectedTaskId: ?number,
-  onTaskSelected: number => void
+  selectedTask: ?TaskType,
+  onTaskSelected: TaskType => void
 }
 
 class ProcessCard extends React.Component<PropsType> {
+  isSelected (task: TaskType): boolean {
+    const selectedTask = this.props.selectedTask
+    return selectedTask != null && task.taskId === selectedTask.taskId
+  }
+
   render () {
     const process = this.props.process
     const taskProgress = process.progress
-    const isSelected = !!process.tasks.find(task => task.taskId === this.props.selectedTaskId)
+    const isSelected = !!process.tasks.find(task => this.isSelected(task))
     return <CardWithMargin interactive elevation={isSelected ? Elevation.FOUR : undefined}>
       <H3>{process.title} (#{process.id})</H3>
       <TaskList>
@@ -40,7 +46,7 @@ class ProcessCard extends React.Component<PropsType> {
           process.tasks.map(task => (
             <TaskSummaryCard key={task.taskId}
               task={task}
-              selected={task.taskId === this.props.selectedTaskId}
+              selected={this.isSelected(task)}
               onTaskSelected={this.props.onTaskSelected} />
           ))
         }
