@@ -5,7 +5,9 @@ import { Card, H2, H3, Text } from '@blueprintjs/core'
 import type { UserType } from './models'
 import withPromiseResolver from './withPromiseResolver'
 
-class Users extends React.Component<{ users: Array<UserType> }> {
+type PropsType = {| users: Array<UserType>, path: string |}
+
+class Users extends React.Component<PropsType> {
   render () {
     return <div style={{
       margin: '20px',
@@ -30,8 +32,8 @@ class Users extends React.Component<{ users: Array<UserType> }> {
   }
 }
 
-export default withPromiseResolver(
-  () => fetch('https://wf-backend.herokuapp.com/users')
-    .then(response => response.json())
-    .then(users => ({ users }))
-)(Users)
+const promiseCreator = () => fetch('https://wf-backend.herokuapp.com/users')
+  .then(response => response.json())
+  .then(users => ({ users }))
+
+export default withPromiseResolver<PropsType, {| users: Array<UserType> |}>(promiseCreator)(Users)

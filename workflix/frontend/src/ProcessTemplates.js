@@ -5,8 +5,16 @@ import { Card, H2, H3, Text } from '@blueprintjs/core'
 import type { ProcessTemplateMasterDataType } from './models'
 import withPromiseResolver from './withPromiseResolver'
 import { Link } from '@reach/router'
+import type { StyledComponent } from 'styled-components'
+import styled from 'styled-components'
 
-class ProcessTemplates extends React.Component<{ templates: Array<ProcessTemplateMasterDataType> }> {
+const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
+  margin: 5px;
+`
+
+type PropsType = { templates: Array<ProcessTemplateMasterDataType> }
+
+class ProcessTemplates extends React.Component<PropsType> {
   render () {
     return <div style={{
       margin: '20px',
@@ -20,10 +28,10 @@ class ProcessTemplates extends React.Component<{ templates: Array<ProcessTemplat
       <H2 style={{ textAlign: 'center' }}>All Process Templates</H2>
       {
         this.props.templates.map(template => (
-          <Link to={`./${template.id}`} style={{ margin: '5px' }} key={template.id}><Card>
+          <CustomLink to={`./${template.id}`} key={template.id}><Card>
             <H3>{template.title}</H3>
             <Text>Erstellt von: <i>{template.owner.name} ({template.owner.displayname})</i></Text>
-          </Card></Link>)
+          </Card></CustomLink>)
         )
       }
     </div>
@@ -38,7 +46,7 @@ const mockTemplates: Array<ProcessTemplateMasterDataType> = [
     owner: {
       displayname: 'MM',
       email: 'markl@integreat-app.de',
-      id: 1,
+      id: '1',
       name: 'Michael Markl'
     }
   },
@@ -49,12 +57,12 @@ const mockTemplates: Array<ProcessTemplateMasterDataType> = [
     owner: {
       displayname: 'MM',
       email: 'markl@integreat-app.de',
-      id: 1,
+      id: '1',
       name: 'Michael Markl'
     }
   }
 ]
 
-export default withPromiseResolver(() => Promise.resolve({ templates: mockTemplates }))(
-  ProcessTemplates
-)
+export default withPromiseResolver<PropsType, {| templates: Array<ProcessTemplateMasterDataType> |}>(
+  () => Promise.resolve({ templates: mockTemplates })
+)(ProcessTemplates)
