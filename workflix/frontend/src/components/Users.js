@@ -1,56 +1,31 @@
 // @flow
 
 import React from 'react'
-import { Card, H2, H3, Spinner, Text } from '@blueprintjs/core'
-import styled from 'styled-components'
+import { Card, H2, H3, Text } from '@blueprintjs/core'
+import type { UserType } from './models'
+import withPromiseResolver from './withPromiseResolver'
 
-type UserType = {
-  displayname: string,
-  name: string,
-  id: string,
-  email: string
-}
+type PropsType = {| users: Array<UserType>, path: string |}
 
-const CenterScreen = styled<{}, {}, 'div'>('div')`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`
-
-class Users extends React.Component<{}, { users: ?Array<UserType> }> {
-  state = { users: null }
-
-  componentDidMount () {
-    fetch('https://wf-backend.herokuapp.com/users')
-      .then(response => response.json())
-      .then((users: Array<UserType>) => this.setState({ users }))
-  }
-
+class Users extends React.Component<PropsType> {
   render () {
-    if (!this.state.users) {
-      return <CenterScreen>
-        <Spinner />
-      </CenterScreen>
-    } else {
-      return <div>
-        <H2 style={{ textAlign: 'center' }}>All Users</H2>
-        {
-          this.state.users.map(user => (
-            <Card key={user.id} style={{
-              margin: '5px',
-              width: ''
-            }}>
-              <H3>{user.displayname}</H3>
-              <Text>{user.name}</Text>
-              <a href={`mailto:${user.email}`}>{user.email}</a>
-            </Card>)
-          )
-        }
-      </div>
-    }
+    return <div>
+      <H2 style={{ textAlign: 'center' }}>All Users</H2>
+      {
+        this.props.users.map(user => (
+          <Card key={user.id} style={{ margin: '5px' }}>
+            <H3>{user.displayname}</H3>
+            <Text>{user.name}</Text>
+            <a href={`mailto:${user.email}`}>{user.email}</a>
+          </Card>)
+        )
+      }
+    </div>
   }
 }
 
-export default Users
+const promiseCreator = () => fetch('https://wf-backend.herokuapp.com/users')
+  .then(response => response.json())
+  .then(users => ({ users }))
+
+export default withPromiseResolver<PropsType, {| users: Array<UserType> |}>(promiseCreator)(Users)

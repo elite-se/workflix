@@ -12,8 +12,8 @@ class Header extends React.Component<{}> {
         <Navbar.Heading>Workflix</Navbar.Heading>
         <Navbar.Divider />
         <Link to='/'><Button className='bp3-minimal' icon='layers' text='Tasks overview' /></Link>
-        <Link to='/templates'><Button className='bp3-minimal' icon='new-layers' text='Process templates' /></Link>
-        <Link to='/users'><Button className='bp3-minimal' icon='user' text='Users' /></Link>
+        <Link to='process-templates'><Button className='bp3-minimal' icon='new-layers' text='Process templates' /></Link>
+        <Link to='users'><Button className='bp3-minimal' icon='user' text='Users' /></Link>
       </Navbar.Group>
     </Navbar>
   }
