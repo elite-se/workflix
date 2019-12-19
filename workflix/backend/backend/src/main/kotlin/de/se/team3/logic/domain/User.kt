@@ -24,12 +24,12 @@ class User(id: String, name: String, displayname: String, email: String) {
             with this address can be found
         */
         fun query***REMOVED***andCreateUser(email: String): User {
-            //checks whether email is a (syntactically) valid e-mail address
+            // checks whether email is a (syntactically) valid e-mail address
             if (!email.matches(Regex("""^\w+@\w+..{2,3}(.{2,3})?$""")))
                 throw java.lang.IllegalArgumentException("The e-mail address given is not of a valid format.")
             val user = UserQuerying.searchFor***REMOVED***User(email)
                 ?: throw java.lang.IllegalArgumentException("No user with this e-mail address exists.")
-            var i = 0;
+            var i = 0
             var userList = UserDAO.getAllUsers(i, i + 20).first
             while (userList.isNotEmpty()) {
                 if (userList.contains(user))
@@ -40,9 +40,8 @@ class User(id: String, name: String, displayname: String, email: String) {
             return user
         }
 
-        //TODO: create user without ***REMOVED*** querying, generating a new unique ID
+        // TODO: create user without ***REMOVED*** querying, generating a new unique ID
     }
-
 }
 
 fun main() {
