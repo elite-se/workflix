@@ -58,7 +58,7 @@ class User(id: String, name: String, displayname: String, email: String) {
                     .map(charPool::get)
                     .joinToString("")
             } while (!userIdAlreadyUsed(generatedID))
-            return User(generatedID, name, displayname, email)
+            return User("$generatedID-gen", name, displayname, email)
         }
 
         /**

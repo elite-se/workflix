@@ -4,8 +4,6 @@ import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessTemplatesTable
 import de.se.team3.persistence.meta.UsersTable
-import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.database.TransactionIsolation
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insert
 import me.liuwj.ktorm.dsl.iterator
@@ -50,21 +48,12 @@ object UserDAO : UserDAOInterface {
     }
 
     override fun createUser(user: User) {
-        val transactionManager = Database.global.transactionManager
-        val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
-
-        try { // adds the process template to db
-            val generatedProcessTemplateId = UsersTable.insert {
-                it.ID to user.id
-                it.name to user.name
-                it.displayname to user.displayname
-                it.email to user.email
-                it.deleted to false
-            }
-
-            transaction.commit()
-        } catch (e: Throwable) {
-            throw StorageException("Storage Exception: " + e.message)
+        UsersTable.insert {
+            it.ID to user.id
+            it.name to user.name
+            it.displayname to user.displayname
+            it.email to user.email
+            it.deleted to false
         }
     }
 
@@ -72,22 +61,13 @@ object UserDAO : UserDAOInterface {
      * Updates the user data on basis of the given user's id.
      */
     override fun updateUser(user: User) {
-        val transactionManager = Database.global.transactionManager
-        val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
+        val generatedProcessTemplateId = UsersTable.update {
+            it.name to user.name
+            it.displayname to user.displayname
+            it.email to user.email
+            it.deleted to false
 
-        try { // adds the process template to db
-            val generatedProcessTemplateId = UsersTable.update {
-                it.name to user.name
-                it.displayname to user.displayname
-                it.email to user.email
-                it.deleted to false
-
-                where { it.ID like user.id }
-            }
-
-            transaction.commit()
-        } catch (e: Throwable) {
-            throw StorageException("Storage Exception: " + e.message)
+            where { it.ID like user.id }
         }
     }
 
