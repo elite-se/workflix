@@ -6,8 +6,8 @@ import ProcessApi from '../../api/ProcessApi'
 import withPromiseResolver from '../withPromiseResolver'
 import ProcessCard from './ProcessCard'
 import styled from 'styled-components'
-import { Drawer } from '@blueprintjs/core'
 import type { TaskType } from '../../datatypes/TaskType'
+import TaskDrawer from './TaskDrawer'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
@@ -29,16 +29,7 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
     this.setState({ selectedTask: null })
   }
 
-  // pretty hacky: "remove" the class of the Blueprint.js overlay between portal and drawer that prevents clicks in
-  // the rest of the page
-  onDrawerOpening = (elem: HTMLElement) => {
-    const overlayElem = elem.parentElement
-    if (overlayElem == null) { return }
-    overlayElem.classList.remove('bp3-overlay-container')
-  }
-
   render () {
-    const selectedTask = this.state.selectedTask
     return <div>
       <ProcessListWrapper>{
         this.props.processes.map(process => (
@@ -49,15 +40,9 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
             onTaskSelected={this.onTaskSelected} />)
         )
       }</ProcessListWrapper>
-      <Drawer
-        size={Drawer.SIZE_SMALL}
-        hasBackdrop={false}
-        isOpen={selectedTask != null}
-        title={selectedTask != null ? selectedTask.templateName : ''}
-        onClose={this.onDrawerClosed}
-        onOpening={this.onDrawerOpening}>
-        The selected task id: {selectedTask != null ? selectedTask.taskId : ''}
-      </Drawer>
+      <TaskDrawer
+        selectedTask={this.state.selectedTask}
+        onClose={this.onDrawerClosed} />
     </div>
   }
 }
