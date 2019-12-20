@@ -60,3 +60,10 @@ object PersonsResponsible : Table<Nothing>("persons_responsible") {
     val done by boolean("done")
     val doneAt by timestamp("done_at")
 }
+
+object ProcessGroupsTable : Table<Nothing>("process_groups") {
+    val ID by int("id").primaryKey()
+    val ownerID by varchar("owner_id")
+    val title by varchar("title")
+    val deleted by boolean("deleted")
+}
