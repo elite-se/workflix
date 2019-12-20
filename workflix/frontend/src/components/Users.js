@@ -2,22 +2,14 @@
 
 import React from 'react'
 import { Card, H2, H3, Text } from '@blueprintjs/core'
-import type { UserType } from './models'
 import withPromiseResolver from './withPromiseResolver'
+import type { UserType } from '../datatypes/models'
 
 type PropsType = {| users: Array<UserType>, path: string |}
 
 class Users extends React.Component<PropsType> {
   render () {
-    return <div style={{
-      margin: '20px',
-      display: 'flex',
-      maxWidth: '300px',
-      flex: '1',
-      justifyContent: 'flex-start',
-      alignItems: 'stretch',
-      flexDirection: 'column'
-    }}>
+    return <div>
       <H2 style={{ textAlign: 'center' }}>All Users</H2>
       {
         this.props.users.map(user => (
