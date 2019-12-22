@@ -24,7 +24,15 @@ class User(val id: String,
             throw IllegalArgumentException("not all arguments may be empty")
     }
 
+    /**
+     * Adds user to a process group.
+     * To contain integrity, the corresponding method of the respective process group is called.
+     * Endless cyclic calls are stopped by checking whether the group was already added.
+     */
     fun addProcessGroup(processGroup: ProcessGroup) {
-        processGroups.add(processGroup)
+        if (!processGroups.contains(processGroup)) {
+            processGroups.add(processGroup)
+            processGroup.addMember(this)
+        }
     }
 }

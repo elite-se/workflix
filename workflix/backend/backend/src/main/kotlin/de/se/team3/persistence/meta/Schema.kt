@@ -61,9 +61,15 @@ object PersonsResponsible : Table<Nothing>("persons_responsible") {
     val doneAt by timestamp("done_at")
 }
 
-object ProcessGroupsTable : Table<Nothing>("process_groups") {
+object ProcessGroups : Table<Nothing>("process_groups") {
     val ID by int("id").primaryKey()
     val ownerID by varchar("owner_id")
     val title by varchar("title")
     val deleted by boolean("deleted")
 }
+
+//object ProcessGroupMembers : Table<Nothing>("process_group_members") {
+//    val processGroupID by int("process_group_id").references(ProcessGroups.ID)
+//    val processID by int("process_id").references(Processes.ID)
+//    //TODO primary key
+//}

@@ -22,9 +22,14 @@ class ProcessGroup(
 
     /**
      * Adds a user as a member of the process group.
-     */
+     * To contain integrity, the corresponding method of the respective user is called.
+     * Endless cyclic calls are stopped by checking whether the user was already added.
+    */
     fun addMember(user: User) {
-        members.add(user)
+        if (!members.contains(user)) {
+            members.add(user)
+            user.addProcessGroup(this)
+        }
     }
 
     /**
