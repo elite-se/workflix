@@ -15,15 +15,16 @@ class Process(
     val starter: User,
     val status: ProcessStatus,
     val startedAt: Instant,
-    val tasks: MutableList<Task>
+    val tasks: MutableList<Task>,
+    val group: ProcessGroup
 ) {
 
     /**
      * Create-Constructor
      */
-    constructor(title: String, processTemplateId: Int, starterId: String, simpleClosing: Map<Int, Boolean>, personsResponsibleIds: Map<Int, Set<String>>) :
+    constructor(title: String, processTemplateId: Int, starterId: String, simpleClosing: Map<Int, Boolean>, personsResponsibleIds: Map<Int, Set<String>>, group: ProcessGroup) :
             this(null, title, ProcessTemplateContainer.getProcessTemplate(processTemplateId),
-                    UserContainer.getUser(starterId), ProcessStatus.RUNNING, Instant.now(), ArrayList<Task>()) {
+                    UserContainer.getUser(starterId), ProcessStatus.RUNNING, Instant.now(), ArrayList<Task>(), group) {
 
         if (title.isEmpty())
             throw IllegalArgumentException("title must not be empty")
@@ -46,11 +47,13 @@ class Process(
             val startedAt = if (taskTemplate.predecessors.size == 0) Instant.now() else null
             tasks.add(Task(taskTemplate, simpleClosing.get(taskTemplate.id)!!, startedAt, personsResponsibleIds.get(taskTemplate.id)!!))
         }
+
+        group.addProcess(this)
     }
 
     /**
      * Simple-Constructor that does not consider all details.
      */
-    constructor(id: Int, title: String, starter: User, status: ProcessStatus, startedAt: Instant, tasks: MutableList<Task>) :
-            this(id, title, null, starter, status, startedAt, tasks)
+    constructor(id: Int, title: String, starter: User, status: ProcessStatus, startedAt: Instant, tasks: MutableList<Task>, group: ProcessGroup) :
+            this(id, title, null, starter, status, startedAt, tasks, group)
 }
