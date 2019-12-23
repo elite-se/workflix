@@ -1,10 +1,6 @@
 package de.se.team3.persistence.meta
 
-import me.liuwj.ktorm.schema.Table
-import me.liuwj.ktorm.schema.boolean
-import me.liuwj.ktorm.schema.int
-import me.liuwj.ktorm.schema.timestamp
-import me.liuwj.ktorm.schema.varchar
+import me.liuwj.ktorm.schema.*
 
 object UsersTable : Table<Nothing>("users") {
     val ID by varchar("id").primaryKey()
@@ -68,8 +64,13 @@ object ProcessGroups : Table<Nothing>("process_groups") {
     val deleted by boolean("deleted")
 }
 
-//object ProcessGroupMembers : Table<Nothing>("process_group_members") {
-//    val processGroupID by int("process_group_id").references(ProcessGroups.ID)
-//    val processID by int("process_id").references(Processes.ID)
-//    //TODO primary key
-//}
+object ProcessGroupMembers : Table<Nothing>("process_group_members") {
+    val ID by int("id").primaryKey() // necessary since composite primary keys do not appear to be implemented in ktorm
+    val processGroupID by int("process_group_id") //TODO foreign key implementation
+    val processID by int("process_id") //TODO foreign key implementation
+}
+
+object ProcessToGroup : Table<Nothing>("process_to_group") {
+    val ProcessID by int("process_id").primaryKey()
+    val ProcessGroupID by int("process_group_id").references(ProcessGroups, {it.ID})
+}

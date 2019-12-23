@@ -1,10 +1,12 @@
 package de.se.team3.logic.domain
 
-class User(val id: String,
-           val name: String,
-           val displayname: String,
-           val email: String,
-           val processGroups: MutableList<ProcessGroup>) {
+class User(
+    val id: String,
+    val name: String,
+    val displayname: String,
+    val email: String,
+    val processGroups: MutableList<ProcessGroup>
+) {
 
     /**
      * Create-Constructor

@@ -3,8 +3,8 @@ package de.se.team3.logic.domain
 class ProcessGroup(
     val id: Int,
     val title: String,
-    val processes: MutableList<Process>, //TODO(persistence): implement relationship in database
-    val members: MutableList<User> //TODO(persistence): implement relationship in database
+    val processes: MutableList<Process>, // TODO(persistence): implement relationship in database
+    val members: MutableList<User> // TODO(persistence): implement relationship in database
 ) {
 
     constructor(id: Int, title: String) :
@@ -18,7 +18,6 @@ class ProcessGroup(
             for (user in members)
                 user.addProcessGroup(this)
     }
-
 
     /**
      * Adds a user as a member of the process group.
