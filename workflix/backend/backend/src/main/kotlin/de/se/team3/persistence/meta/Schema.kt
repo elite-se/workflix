@@ -1,6 +1,11 @@
 package de.se.team3.persistence.meta
 
-import me.liuwj.ktorm.schema.*
+import me.liuwj.ktorm.schema.Table
+import me.liuwj.ktorm.schema.boolean
+import me.liuwj.ktorm.schema.int
+import me.liuwj.ktorm.schema.text
+import me.liuwj.ktorm.schema.timestamp
+import me.liuwj.ktorm.schema.varchar
 
 object UsersTable : Table<Nothing>("users") {
     val ID by varchar("id").primaryKey()
@@ -57,20 +62,22 @@ object PersonsResponsible : Table<Nothing>("persons_responsible") {
     val doneAt by timestamp("done_at")
 }
 
-object ProcessGroups : Table<Nothing>("process_groups") {
+object ProcessGroupsTable : Table<Nothing>("process_groups") {
     val ID by int("id").primaryKey()
     val ownerID by varchar("owner_id")
     val title by varchar("title")
+    val description by text("description")
+    val createdAt by timestamp("created_at")
     val deleted by boolean("deleted")
 }
 
 object ProcessGroupMembers : Table<Nothing>("process_group_members") {
     val ID by int("id").primaryKey() // necessary since composite primary keys do not appear to be implemented in ktorm
-    val processGroupID by int("process_group_id") //TODO foreign key implementation
-    val processID by int("process_id") //TODO foreign key implementation
+    val processGroupID by int("process_group_id") // TODO foreign key implementation
+    val processID by int("process_id") // TODO foreign key implementation
 }
 
 object ProcessToGroup : Table<Nothing>("process_to_group") {
-    val ProcessID by int("process_id").primaryKey()
-    val ProcessGroupID by int("process_group_id").references(ProcessGroups, {it.ID})
+    val ProcessID by int("process_id").primaryKey() // TODO foreign key implementation
+    val ProcessGroupID by int("process_group_id") // TODO foreign key implementation .references(ProcessGroups) {it.ID}
 }

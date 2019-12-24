@@ -18,7 +18,7 @@ object UserDAO : UserDAOInterface {
         val users = ArrayList<User>()
         val result = UsersTable.select().limit(offset, limit)
         for (row in result)
-            users.add(User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!))
+            users.add(User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, ArrayList()))
 
         return Pair(users.toList(), result.totalRecords)
     }
@@ -28,7 +28,7 @@ object UserDAO : UserDAOInterface {
             .select().where { UsersTable.ID eq userId }
 
         val row = result.rowSet.iterator().next()
-        return User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!)
+        return User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, ArrayList())
     }
 
     override fun createUser(user: User) {

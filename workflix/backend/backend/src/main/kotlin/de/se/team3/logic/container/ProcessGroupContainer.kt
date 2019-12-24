@@ -2,6 +2,7 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.ProcessTemplate
+import de.se.team3.persistence.daos.ProcessGroupDAO
 import de.se.team3.webservice.containerInterfaces.ProcessGroupContainerInterface
 
 object ProcessGroupContainer : ProcessGroupContainerInterface {
@@ -18,6 +19,6 @@ object ProcessGroupContainer : ProcessGroupContainerInterface {
     }
 
     override fun deleteProcessGroup(processGroupId: Int) {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        return ProcessGroupDAO.deleteProcessGroup(processGroupId)
     }
 }

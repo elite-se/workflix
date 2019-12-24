@@ -1,6 +1,7 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessTemplateDAOInterface
+import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.logic.domain.User
@@ -45,7 +46,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 row[UsersTable.ID]!!,
                 row[UsersTable.name]!!,
                 row[UsersTable.displayname]!!,
-                row[UsersTable.email]!!
+                row[UsersTable.email]!!,
+                ArrayList<ProcessGroup>() // TODO eventually build in process group transfer
             )
             val template = ProcessTemplate(
                 row[ProcessTemplatesTable.ID]!!,
@@ -126,7 +128,11 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         val row = processTemplateResult.rowSet.iterator().next()
 
         val owner =
-            User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!)
+            User(row[UsersTable.ID]!!,
+                row[UsersTable.name]!!,
+                row[UsersTable.displayname]!!,
+                row[UsersTable.email]!!,
+                ArrayList())
         val processId = row[ProcessTemplatesTable.ID]!!
         val taskTemplates = getTaskTemplates(processId)
 

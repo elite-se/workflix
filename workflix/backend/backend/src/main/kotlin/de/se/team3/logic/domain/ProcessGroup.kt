@@ -1,20 +1,26 @@
 package de.se.team3.logic.domain
 
+import java.util.Date
+import kotlin.collections.ArrayList
+
 class ProcessGroup(
     val id: Int,
+    val owner: User,
     val title: String,
-    val processes: MutableList<Process>, // TODO(persistence): implement relationship in database
-    val members: MutableList<User> // TODO(persistence): implement relationship in database
+    val description: String,
+    val createdAt: Date,
+    val processes: MutableList<Process>,
+    val members: MutableList<User>
 ) {
 
-    constructor(id: Int, title: String) :
-        this(id, title, ArrayList<Process>(), ArrayList<User>())
+    constructor(id: Int, owner: User, title: String, createdAt: Date) :
+        this(id, owner, title, "", createdAt, ArrayList<Process>(), ArrayList<User>())
 
     /**
      * Creates a new process group, and adds a given list of users to it.
      */
-    constructor(id: Int, title: String, members: MutableList<User>) :
-        this(id, title, ArrayList<Process>(), members) {
+    constructor(id: Int, owner: User, title: String, createdAt: Date, members: MutableList<User>) :
+        this(id, owner, title, "", createdAt, ArrayList<Process>(), members) {
             for (user in members)
                 user.addProcessGroup(this)
     }
