@@ -3,6 +3,7 @@
 import React from 'react'
 import type { TaskType } from '../../datatypes/TaskType'
 import styled from 'styled-components'
+import TaskComments from './TaskComments'
 
 const StyledContainer = styled<{}, {}, 'div'>('div')`
   margin: 8px;
@@ -17,6 +18,9 @@ class TaskDrawerContent extends React.Component<PropsType> {
     const task = this.props.task
     return <StyledContainer>
       <p>{task.templateDescription}</p>
+
+      <h4>Comments</h4>
+      <TaskComments task={task} />
     </StyledContainer>
   }
 }

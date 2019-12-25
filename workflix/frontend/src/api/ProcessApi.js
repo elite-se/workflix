@@ -23,13 +23,20 @@ class ProcessApi {
       assignments: [],
       status: 'RUNNING'
     }
-    const commentDefault = {
+    const commentDefault1 = {
       creatorId: 'ek24021998',
       title: 'I bims 1 Comment',
       content: 'I bims 1 krasse comment description vong mockigkeit her.\n' +
         'Tun auch Emoji wie 👨‍💻 funktionieren tun?\n' +
         ' 🎄🎅  Happy christmas!',
       createdAt: '24-12-2019 20:15:00',
+      doneAt: undefined
+    }
+    const commentDefault2 = {
+      creatorId: 'hw123456',
+      title: 'I bims 1 anderer Comment',
+      content: 'Hier steht nur unwichter Test-text. Bitte ignorieren! Donaudampfschifffahrtskapitänsmützenschirm.',
+      createdAt: '24-12-2019 20:16:00',
       doneAt: undefined
     }
     const proc1: ProcessType = {
@@ -51,8 +58,11 @@ class ProcessApi {
             doneAt: undefined
           }],
           comments: [{
-            ...commentDefault,
+            ...commentDefault1,
             id: 201
+          }, {
+            ...commentDefault2,
+            id: 202
           }]
         },
         {
