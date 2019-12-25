@@ -24,7 +24,7 @@ class ProcessApi {
       status: 'RUNNING'
     }
     const commentDefault1 = {
-      creatorId: 'ek24021998',
+      creatorId: '58c120552c94decf6cf3b722',
       title: 'I bims 1 Comment',
       content: 'I bims 1 krasse comment description vong mockigkeit her.\n' +
         'Tun auch Emoji wie 👨‍💻 funktionieren tun?\n' +
@@ -33,7 +33,7 @@ class ProcessApi {
       doneAt: undefined
     }
     const commentDefault2 = {
-      creatorId: 'hw123456',
+      creatorId: '58c120552c94decf6cf3b700',
       title: 'I bims 1 anderer Comment',
       content: 'Hier steht nur unwichter Test-text. Bitte ignorieren! Donaudampfschifffahrtskapitänsmützenschirm.',
       createdAt: '24-12-2019 20:16:00',
@@ -52,7 +52,7 @@ class ProcessApi {
           taskTemplateId: 1,
           status: 'CLOSED',
           assignments: [{
-            assigneeId: 'mm12345678',
+            assigneeId: '58c120552c94decf6cf3b700',
             status: 'CLOSED',
             createdAt: '12-04-2019 13:44:12',
             doneAt: undefined

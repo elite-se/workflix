@@ -4,6 +4,7 @@ import React from 'react'
 import { Card, H2, H3, Text } from '@blueprintjs/core'
 import withPromiseResolver from './withPromiseResolver'
 import type { UserType } from '../datatypes/models'
+import UsersApi from '../api/UsersApi'
 
 type PropsType = {| users: Array<UserType>, path: string |}
 
@@ -24,8 +25,6 @@ class Users extends React.Component<PropsType> {
   }
 }
 
-const promiseCreator = () => fetch('https://wf-backend.herokuapp.com/users')
-  .then(response => response.json())
-  .then(users => ({ users }))
+const promiseCreator = () => new UsersApi().getUsers().then(users => ({ users }))
 
 export default withPromiseResolver<PropsType, {| users: Array<UserType> |}>(promiseCreator)(Users)

@@ -3,6 +3,7 @@
 import React from 'react'
 import type { TaskCommentType } from '../../datatypes/TaskType'
 import styled from 'styled-components'
+import LoadingUsername from '../LoadingUsername'
 
 const TalkBubble = styled<{ floatEnd: boolean }, {}, 'div'>('div')`
     margin: 0 10px 10px;
@@ -23,12 +24,14 @@ type PropsType = {
 }
 
 class CommentBubble extends React.Component<PropsType> {
-  isOwnComment: boolean = this.props.comment.creatorId.startsWith('ek') // TODO implement real check
+  isOwnComment: boolean = this.props.comment.creatorId === ('58c120552c94decf6cf3b722') // TODO implement real check
 
   render () {
     const comment = this.props.comment
     return <TalkBubble floatEnd={this.isOwnComment}>
-      <small style={{ wordWrap: 'break-word' }}>{comment.creatorId}</small>
+      <small style={{ wordWrap: 'break-word' }}>
+        <LoadingUsername userId={comment.creatorId} />
+      </small>
       <small style={{ float: 'right', wordWrap: 'break-word' }}>{comment.createdAt}</small>
       <p style={{ wordWrap: 'break-word', hyphens: 'auto' }}><b>{comment.title}</b> {comment.content}</p>
     </TalkBubble>
