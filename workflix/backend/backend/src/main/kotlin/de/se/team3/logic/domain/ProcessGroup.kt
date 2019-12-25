@@ -1,6 +1,6 @@
 package de.se.team3.logic.domain
 
-import java.util.Date
+import java.time.LocalDate
 import kotlin.collections.ArrayList
 
 class ProcessGroup(
@@ -8,18 +8,18 @@ class ProcessGroup(
     val owner: User,
     val title: String,
     val description: String,
-    val createdAt: Date,
+    val createdAt: LocalDate,
     val processes: MutableList<Process>,
     val members: MutableList<User>
 ) {
 
-    constructor(id: Int, owner: User, title: String, createdAt: Date) :
+    constructor(id: Int, owner: User, title: String, createdAt: LocalDate) :
         this(id, owner, title, "", createdAt, ArrayList<Process>(), ArrayList<User>())
 
     /**
      * Creates a new process group, and adds a given list of users to it.
      */
-    constructor(id: Int, owner: User, title: String, createdAt: Date, members: MutableList<User>) :
+    constructor(id: Int, owner: User, title: String, createdAt: LocalDate, members: MutableList<User>) :
         this(id, owner, title, "", createdAt, ArrayList<Process>(), members) {
             for (user in members)
                 user.addProcessGroup(this)
