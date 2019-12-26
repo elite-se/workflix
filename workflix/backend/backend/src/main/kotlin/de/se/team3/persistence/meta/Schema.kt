@@ -1,6 +1,12 @@
 package de.se.team3.persistence.meta
 
-import me.liuwj.ktorm.schema.*
+import me.liuwj.ktorm.schema.Table
+import me.liuwj.ktorm.schema.boolean
+import me.liuwj.ktorm.schema.date
+import me.liuwj.ktorm.schema.int
+import me.liuwj.ktorm.schema.text
+import me.liuwj.ktorm.schema.timestamp
+import me.liuwj.ktorm.schema.varchar
 
 object UsersTable : Table<Nothing>("users") {
     val ID by varchar("id").primaryKey()

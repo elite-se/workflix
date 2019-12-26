@@ -7,7 +7,12 @@ import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupMembers
 import de.se.team3.persistence.meta.ProcessGroupsTable
 import de.se.team3.persistence.meta.ProcessToGroup
-import me.liuwj.ktorm.dsl.*
+import me.liuwj.ktorm.dsl.eq
+import me.liuwj.ktorm.dsl.insertAndGenerateKey
+import me.liuwj.ktorm.dsl.iterator
+import me.liuwj.ktorm.dsl.select
+import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.where
 
 // TODO(test) the entire class
 
