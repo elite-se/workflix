@@ -5,10 +5,7 @@ import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.logic.domain.User
-import de.se.team3.persistence.meta.ProcessTemplatesTable
-import de.se.team3.persistence.meta.TaskTemplateRelationshipsTable
-import de.se.team3.persistence.meta.TaskTemplatesTable
-import de.se.team3.persistence.meta.UsersTable
+import de.se.team3.persistence.meta.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.List
@@ -46,8 +43,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 row[UsersTable.ID]!!,
                 row[UsersTable.name]!!,
                 row[UsersTable.displayname]!!,
-                row[UsersTable.email]!!,
-                ArrayList<ProcessGroup>() // TODO eventually build in process group transfer
+                row[UsersTable.email]!!
             )
             val template = ProcessTemplate(
                 row[ProcessTemplatesTable.ID]!!,
@@ -131,8 +127,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             User(row[UsersTable.ID]!!,
                 row[UsersTable.name]!!,
                 row[UsersTable.displayname]!!,
-                row[UsersTable.email]!!,
-                ArrayList())
+                row[UsersTable.email]!!)
         val processId = row[ProcessTemplatesTable.ID]!!
         val taskTemplates = getTaskTemplates(processId)
 

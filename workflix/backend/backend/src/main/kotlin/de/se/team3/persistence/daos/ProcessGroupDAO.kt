@@ -10,6 +10,7 @@ import de.se.team3.persistence.meta.ProcessToGroup
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.iterator
+import me.liuwj.ktorm.dsl.limit
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
@@ -18,7 +19,37 @@ import me.liuwj.ktorm.dsl.where
 
 object ProcessGroupDAO : ProcessGroupDAOInterface {
     override fun getAllProcessGroups(offset: Int, limit: Int): Pair<List<ProcessGroup>, Int> {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        val processGroupResult = ProcessGroupsTable
+            .select()
+            .limit(offset, limit)
+
+        val processGroups = ArrayList<ProcessGroup>()
+
+        for (row in processGroupResult) {
+            val members = ArrayList<User>()
+            for (memberRow in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq ProcessGroupsTable.ID }) {
+                members.add(UserDAO.getUser(memberRow[ProcessGroupMembers.userID]!!))
+            }
+
+            val processes = ArrayList<Process>()
+            for (processRow in ProcessToGroup.select().where { ProcessToGroup.ProcessGroupID eq ProcessGroupsTable.ID }) {
+                processes.add(ProcessDAO.getProcess(processRow[ProcessToGroup.ProcessID]!!))
+            }
+
+            val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerID]!!)
+
+            processGroups.add(ProcessGroup(
+                row[ProcessGroupsTable.ID]!!,
+                owner,
+                row[ProcessGroupsTable.title]!!,
+                row[ProcessGroupsTable.description]!!,
+                row[ProcessGroupsTable.createdAt]!!,
+                processes,
+                members
+            ))
+        }
+
+        return Pair(processGroups, processGroupResult.totalRecords)
     }
 
     override fun getProcessGroup(processGroupId: Int): ProcessGroup {
@@ -26,12 +57,12 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
             .select()
             .where { ProcessGroupsTable.ID eq processGroupId }
 
-        var members = ArrayList<User>()
+        val members = ArrayList<User>()
         for (row in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
             members.add(UserDAO.getUser(row[ProcessGroupMembers.userID]!!))
         }
 
-        var processes = ArrayList<Process>()
+        val processes = ArrayList<Process>()
         for (row in ProcessToGroup.select().where { ProcessToGroup.ProcessGroupID eq processGroupId }) {
             processes.add(ProcessDAO.getProcess(row[ProcessToGroup.ProcessID]!!))
         }

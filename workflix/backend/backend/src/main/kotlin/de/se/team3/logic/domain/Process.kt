@@ -48,7 +48,7 @@ class Process(
             tasks.add(Task(taskTemplate, simpleClosing.get(taskTemplate.id)!!, startedAt, personsResponsibleIds.get(taskTemplate.id)!!))
         }
 
-        group.addProcess(this)
+        group.processes.add(this)
     }
 
     /**
