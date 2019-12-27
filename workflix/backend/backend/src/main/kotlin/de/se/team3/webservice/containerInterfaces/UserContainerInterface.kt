@@ -9,5 +9,7 @@ interface UserContainerInterface {
      */
     fun getAllUsers(page: Int): Pair<List<User>, Int>
 
+    fun getAllUsers(): List<User>
+
     fun getUser(userId: String): User
 }
