@@ -1,6 +1,7 @@
 package de.se.team3.webservice
 
 import de.se.team3.persistence.meta.ConnectionManager
+import de.se.team3.webservice.handlers.ProcessGroupHandler
 import de.se.team3.webservice.handlers.ProcessHandler
 import de.se.team3.webservice.handlers.ProcessTemplateHandler
 import de.se.team3.webservice.handlers.UserHandler
@@ -56,5 +57,41 @@ fun main(args: Array<String>) {
         }
     }
     app.get("processes/running/:ownerId") { ctx ->
+    }
+
+    // process groups
+    app.get("processGroups") { ctx ->
+        ProcessGroupHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
+    }
+    app.post("processGroups") { ctx ->
+        ProcessGroupHandler.create(ctx)
+    }
+    app.patch("processGroups/:processGroupID") { ctx ->
+        try {
+            ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("process group not found")
+        }
+    }
+    app.get("processGroups/:processGroupID") { ctx ->
+        try {
+            ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("process group not found")
+        }
+    }
+    app.post("groupMembership") { ctx ->
+        try {
+            ProcessGroupHandler.addMembership(ctx)
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("user or process group not found")
+        }
+    }
+    app.delete("groupMembership/:processGroupID/:userID") { ctx ->
+        try {
+            ProcessGroupHandler.revokeMembership(ctx, ctx.pathParam("processGroupID").toInt(), ctx.pathParam("userID").toString())
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("user or process group not found")
+        }
     }
 }

@@ -15,4 +15,6 @@ class User(
             if (name.length == 0 || displayname.length == 0 || email.length == 0)
                 throw IllegalArgumentException("not all arguments may be empty")
         }
+
+    // TODO get all groups the user is a member of from the UserContainer
 }
