@@ -4,7 +4,10 @@ import de.se.team3.logic.DAOInterfaces.ProcessTemplateDAOInterface
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.logic.domain.User
-import de.se.team3.persistence.meta.*
+import de.se.team3.persistence.meta.ProcessTemplatesTable
+import de.se.team3.persistence.meta.TaskTemplateRelationshipsTable
+import de.se.team3.persistence.meta.TaskTemplatesTable
+import de.se.team3.persistence.meta.UsersTable
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.List

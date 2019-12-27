@@ -22,7 +22,7 @@ class User(
      * Returns all process groups the user is a member of.
      * Using the try-catch-block here probably is kinda hacky...
      */
-    fun getMemberships() : MutableList<ProcessGroup> {
+    fun getMemberships(): MutableList<ProcessGroup> {
         val memberGroups = ArrayList<ProcessGroup>()
         try {
             var pageNo = 1
