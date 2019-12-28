@@ -14,6 +14,7 @@ object UsersTable : Table<Nothing>("users") {
     val name by varchar("name")
     val displayname by varchar("displayname")
     val email by varchar("email")
+    val deleted by boolean("deleted")
 }
 
 object ProcessTemplatesTable : Table<Nothing>("process_templates") {

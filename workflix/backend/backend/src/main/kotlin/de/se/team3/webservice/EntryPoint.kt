@@ -25,6 +25,7 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
+    // Users
     app.get("users") { ctx ->
         UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
     }
