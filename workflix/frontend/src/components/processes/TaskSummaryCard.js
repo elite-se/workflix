@@ -31,7 +31,7 @@ class TaskSummaryCard extends React.Component<PropsType> {
       <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
             onClick={this.onClick}>
         <p><b>{task.templateName}</b></p>
-        <p>{task.assignments.length === 0 ? ''
+        <p>{task.assignments.length === 0 ? 'No Assignees'
           : <span>Assigned to: {
             task.assignments.map((assignee, index) =>
               <span key={assignee.assigneeId}>{index > 0 ? ', ' : ''}
