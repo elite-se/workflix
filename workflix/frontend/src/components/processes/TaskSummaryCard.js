@@ -34,9 +34,9 @@ class TaskSummaryCard extends React.Component<PropsType> {
         <p><b>{task.templateName}</b></p>
         <p>{task.assignments.length === 0 ? 'No Assignees'
           : <span>Assigned to: {
-            task.assignments.map((assignee, index) => {
+            task.assignments.map(assignee => {
               const user = this.props.users.get(assignee.assigneeId)
-              return <span key={assignee.assigneeId}>{index > 0 ? ', ' : ''}
+              return <span key={assignee.assigneeId} className='comma'>
                 {user ? user.name : assignee.assigneeId}
               </span>
             })
