@@ -1,8 +1,11 @@
 package de.se.team3.persistence.meta
 
+import de.se.team3.persistence.meta.ProcessTemplatesTable.primaryKey
+import de.se.team3.persistence.meta.TaskTemplatesTable.primaryKey
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.boolean
 import me.liuwj.ktorm.schema.int
+import me.liuwj.ktorm.schema.text
 import me.liuwj.ktorm.schema.timestamp
 import me.liuwj.ktorm.schema.varchar
 
@@ -15,49 +18,95 @@ object UsersTable : Table<Nothing>("users") {
 }
 
 object ProcessTemplatesTable : Table<Nothing>("process_templates") {
-    val ID by int("id").primaryKey()
-    val ownerID by varchar("owner_id")
+    val id by int("id").primaryKey()
+    val ownerId by varchar("owner_id")
     val title by varchar("title")
+    val description by text("description")
     val durationLimit by int("duration_limit")
+    val createdAt by timestamp("created_at")
+    val formerVersion by int("former_version")
     val deleted by boolean("deleted")
 }
 
 object TaskTemplatesTable : Table<Nothing>("task_templates") {
-    val ID by int("id").primaryKey()
-    val templateID by int("template_id")
+    val id by int("id").primaryKey()
+    val processTemplateId by int("process_template_id")
     val name by varchar("name")
+    val description by text("description")
     val estimatedDuration by int("estimated_duration")
     val durationLimit by int("duration_limit")
+    val necessaryClosings by int("necessary_closings")
 }
 
 object TaskTemplateRelationshipsTable : Table<Nothing>("task_template_relationships") {
-    val ID by int("id").primaryKey()
+    val id by int("id").primaryKey()
     val predecessor by int("predecessor")
     val successor by int("successor")
 }
 
-object Processes : Table<Nothing>("processes") {
-    val ID by int("id").primaryKey()
-    val templateID by int("template_id")
-    val starterID by int("starter_id")
-    val groupID by int("group_id")
+object ProcessGroupsTable : Table<Nothing>("process_groups") {
+    val id by int("id").primaryKey()
+    val ownerId by varchar("owner_id")
     val title by varchar("title")
+    val description by text("description")
+    val createdAt by timestamp("created_at")
+    val deleted by boolean("deleted")
+}
+
+object ProcessGroupsMembersTable : Table<Nothing>("process_groups_members") {
+    val id by int("id").primaryKey()
+    val processGroupId by int("process_group_id")
+    val memberId by varchar("member_id")
+}
+
+object ProcessesTable : Table<Nothing>("processes") {
+    val id by int("id").primaryKey()
+    val processTemplateId by int("process_template_id")
+    val starterId by varchar("starter_id")
+    val groupId by int("group_id")
+    val title by varchar("title")
+    val description by text("description")
     val status by varchar("status")
+    val deadline by timestamp("deadline")
     val startedAt by timestamp("started_at")
 }
 
-object Tasks : Table<Nothing>("tasks") {
-    val ID by int("id").primaryKey()
-    val processID by int("process_id")
-    val templateID by int("template_id")
-    val simpleClosing by boolean("simple_closing")
+object TasksTable : Table<Nothing>("tasks") {
+    val id by int("id").primaryKey()
+    val processId by int("process_id")
+    val taskTemplateId by int("task_template_id")
     val startedAt by timestamp("started_at")
 }
 
-object PersonsResponsible : Table<Nothing>("persons_responsible") {
-    val ID by int("id").primaryKey()
-    val taskID by int("task_id")
-    val responsibleUserID by int("responsible_user_id")
-    val done by boolean("done")
+object TaskAssignmentsTable : Table<Nothing>("task_assignments") {
+    val id by int("id").primaryKey()
+    val taskId by int("task_id")
+    val assigneeId by varchar("assignee_id")
+    val status by varchar("status")
+    val createdAt by timestamp("created_at")
     val doneAt by timestamp("done_at")
+    val deleted by boolean("deleted")
+}
+
+object TaskCommentsTable : Table<Nothing>("task_comments") {
+    val id by int("id").primaryKey()
+    val taskId by int("task_id")
+    val creatorId by varchar("creator_id")
+    val title by varchar("title")
+    val content by text("content")
+    val createdAt by timestamp("created_at")
+    val deleted by boolean("deleted")
+}
+
+object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
+    val id by int("id").primaryKey()
+    val ownerId by varchar("owner_id")
+    val title by varchar("title")
+    val description by text("description")
+    val durationLimit by int("duration_limit")
+    val createdAt by timestamp("created_at")
+    val formerVersion by int("former_version")
+    val processCount by int("process_count")
+    val runningProcesses by int("running_processes")
+    val deleted by boolean("deleted")
 }
