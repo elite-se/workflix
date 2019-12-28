@@ -1,5 +1,6 @@
 package de.se.team3.persistence.meta
 
+import de.se.team3.persistence.meta.ProcessGroupMembers.primaryKey
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.boolean
 import me.liuwj.ktorm.schema.date
@@ -79,6 +80,7 @@ object ProcessGroupMembers : Table<Nothing>("process_group_members") {
 }
 
 object ProcessToGroup : Table<Nothing>("process_to_group") {
-    val ProcessID by int("process_id").primaryKey() // TODO foreign key implementation
+    val ID by int("id").primaryKey()
+    val ProcessID by int("process_id") // TODO foreign key implementation
     val ProcessGroupID by int("process_group_id") // TODO foreign key implementation .references(ProcessGroups) {it.ID}
 }

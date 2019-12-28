@@ -2,6 +2,7 @@ package de.se.team3.webservice
 
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.ProcessGroupHandler
+import de.se.team3.webservice.handlers.ProcessGroupMembershipHandler
 import de.se.team3.webservice.handlers.ProcessHandler
 import de.se.team3.webservice.handlers.ProcessTemplateHandler
 import de.se.team3.webservice.handlers.UserHandler
@@ -61,7 +62,7 @@ fun main(args: Array<String>) {
 
     // process groups
     app.get("processGroups") { ctx ->
-        ProcessGroupHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
+        ProcessGroupHandler.getAll(ctx)
     }
     app.post("processGroups") { ctx ->
         ProcessGroupHandler.create(ctx)
@@ -69,29 +70,31 @@ fun main(args: Array<String>) {
     app.patch("processGroups/:processGroupID") { ctx ->
         try {
             ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("process group not found")
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid process group id")
         }
     }
     app.get("processGroups/:processGroupID") { ctx ->
         try {
             ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("process group not found")
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid process group id")
         }
     }
+
+    // group memberships
     app.post("groupMembership") { ctx ->
-        try {
-            ProcessGroupHandler.addMembership(ctx)
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user or process group not found")
-        }
+        ProcessGroupMembershipHandler.add(ctx)
     }
     app.delete("groupMembership/:processGroupID/:userID") { ctx ->
         try {
-            ProcessGroupHandler.revokeMembership(ctx, ctx.pathParam("processGroupID").toInt(), ctx.pathParam("userID").toString())
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user or process group not found")
+            ProcessGroupMembershipHandler.revoke(
+                ctx,
+                ctx.pathParam("processGroupID").toInt(),
+                ctx.pathParam("userID").toString()
+            )
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid process group id")
         }
     }
 }

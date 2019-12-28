@@ -1,11 +1,8 @@
 package de.se.team3.webservice.handlers
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.se.team3.logic.container.ProcessGroupContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessGroup
-import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
 import java.time.LocalDate
 import java.util.NoSuchElementException
@@ -15,17 +12,14 @@ import org.json.JSONObject
 
 object ProcessGroupHandler {
 
-    val mapper = ObjectMapper().registerModule(KotlinModule())
-
-    fun getAll(ctx: Context, page: Int) {
+    fun getAll(ctx: Context) {
         try {
-            val groupPage = ProcessGroupContainer.getAllProcessGroups(page)
+            val groups = ProcessGroupContainer.getAllProcessGroups()
 
-            val pagingContainer = PagingHelper.getPagingContainer(page, groupPage.second)
-            val groupJsonArray = JSONArray(groupPage.first)
-            pagingContainer.put("templates", groupJsonArray)
+            val groupsArray = JSONArray(groups)
+            val groupsJSON = JSONObject(groupsArray)
 
-            ctx.result(pagingContainer.toString())
+            ctx.result(groupsJSON.toString())
                 .contentType("application/json")
         } catch (e: IllegalArgumentException) {
             ctx.status(404).result("page not found")
@@ -47,6 +41,8 @@ object ProcessGroupHandler {
             group.owner = UserContainer.getUser(ownerID)
         } catch (e: JSONException) {
             ctx.status(400).result(e.toString())
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("process group not found")
         }
     }
 
@@ -79,31 +75,6 @@ object ProcessGroupHandler {
             ProcessGroupContainer.deleteProcessGroup(processGroupId)
         } catch (e: NoSuchElementException) {
             ctx.status(404).result("process group not found")
-        }
-    }
-
-    fun addMembership(ctx: Context) {
-        try {
-            val content = ctx.body()
-            val memberJSONObject = JSONObject(content)
-
-            val group = ProcessGroupContainer.getProcessGroup(memberJSONObject.getInt("groupId"))
-            val member = UserContainer.getUser(memberJSONObject.getString("userId"))
-
-            group.members.add(member)
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user or process group not found")
-        }
-    }
-
-    fun revokeMembership(ctx: Context, processGroupID: Int, userID: String) {
-        try {
-            val group = ProcessGroupContainer.getProcessGroup(processGroupID)
-            val member = UserContainer.getUser(userID)
-
-            group.members.remove(member)
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user or process group not found")
         }
     }
 }
