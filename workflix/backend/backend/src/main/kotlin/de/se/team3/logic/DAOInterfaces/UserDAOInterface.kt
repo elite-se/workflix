@@ -9,6 +9,11 @@ interface UserDAOInterface {
      */
     fun getAllUsers(offset: Int, limit: Int): Pair<List<User>, Int>
 
+    /**
+     * Returns a list of all users.
+     */
+    fun getAllUsers(): List<User>
+
     fun getUser(userId: String): User
 
     fun createUser(user: User)
