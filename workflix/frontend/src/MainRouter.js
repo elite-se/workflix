@@ -1,16 +1,18 @@
 // @flow
 
 import React from 'react'
-import { Router } from '@reach/router'
-import Users from './Users'
-
-const Home = () => <div>hi</div>
+import { Redirect, Router } from '@reach/router'
+import Users from './components/Users'
+import TasksOverview from './components/processes/TasksOverview'
+import ProcessTemplates from './components/ProcessTemplates'
 
 class MainRouter extends React.Component<{}> {
   render () {
     return <Router>
-      <Home path='/' />
+      <Redirect from='/' to='tasks' />
+      <TasksOverview path='tasks' />
       <Users path='users' />
+      <ProcessTemplates path='process-templates' />
     </Router>
   }
 }
