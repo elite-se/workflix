@@ -1,7 +1,10 @@
 package de.se.team3.logic.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessTemplateContainer
 import de.se.team3.logic.container.UserContainer
+import de.se.team3.webservice.util.InstantSerializer
 import java.lang.IllegalArgumentException
 import java.time.Instant
 
@@ -10,50 +13,87 @@ import java.time.Instant
  */
 class Process(
     val id: Int?,
+    val starterId: String,
+    val processGroupId: Int,
+    val processTemplateId: Int,
     val title: String,
-    val processTemplate: ProcessTemplate?,
-    val starter: User,
+    val description: String,
     val status: ProcessStatus,
+    @JsonSerialize(using = InstantSerializer::class)
+    val deadline: Instant?,
+    @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant,
-    val tasks: MutableList<Task>,
-    val group: ProcessGroup
+    @JsonIgnore
+    // the tasks lies under the id of the corresponding task template
+    val tasks: Map<Int, Task>?
 ) {
+
+    @get:JsonIgnore
+    val starter by lazy { UserContainer.getUser(starterId) }
+    @get:JsonIgnore
+    val processTemplate by lazy { ProcessTemplateContainer.getProcessTemplate(processTemplateId) }
+
+    /**
+     * Returns the current progress in percent.
+     *
+     * The progress is the percentage of tasks done weighted by the estimated duration. The estimated
+     * duration of a task where the task template does not contain a estimated duration is assumed
+     * to be 1.
+     */
+    val progress by lazy {
+        var estimatedDurationDone = 0
+        tasks?.forEach { id, task ->
+            if (task.isDone)
+                estimatedDurationDone += task.taskTemplate.estimatedDuration ?: 1
+        }
+        (estimatedDurationDone / processTemplate.estimatedDurationSum * 100).toInt()
+    }
 
     /**
      * Create-Constructor
      */
-    constructor(title: String, processTemplateId: Int, starterId: String, simpleClosing: Map<Int, Boolean>, personsResponsibleIds: Map<Int, Set<String>>, group: ProcessGroup) :
-            this(null, title, ProcessTemplateContainer.getProcessTemplate(processTemplateId),
-                    UserContainer.getUser(starterId), ProcessStatus.RUNNING, Instant.now(), ArrayList<Task>(), group) {
+    constructor(
+        starterId: String,
+        processGroupId: Int,
+        processTemplateId: Int,
+        title: String,
+        description: String,
+        deadline: Instant?
+    ) : this (null,
+        starterId,
+        processGroupId,
+        processTemplateId,
+        title,
+        description,
+        ProcessStatus.RUNNING,
+        deadline,
+        Instant.now(), // started at
+        createTasks(processTemplateId)) {
 
         if (title.isEmpty())
             throw IllegalArgumentException("title must not be empty")
-        if (processTemplate?.taskTemplates == null)
-            throw NullPointerException()
+        if (processTemplate.deleted)
+            throw IllegalArgumentException("must not be based on a deleted process template")
+    }
 
-        val taskTemplates = processTemplate.taskTemplates
-        for ((id, taskTemplate) in taskTemplates) {
-            if (!simpleClosing.containsKey(id))
-                throw IllegalArgumentException("simple closing property mut exist for each task")
+    companion object {
 
-            if (!personsResponsibleIds.containsKey(taskTemplate.id)) {
-                throw IllegalArgumentException("persons responsible property must exist for each task")
-            } else {
-                val responsiblesForCurrentTask = personsResponsibleIds.get(id)
-                if (responsiblesForCurrentTask == null || responsiblesForCurrentTask.isEmpty())
-                    throw IllegalArgumentException("there must be at least on resposible person for each task")
+        /**
+         * Creates the tasks of the process by looping over the underlying task templates.
+         */
+        fun createTasks(processTemplateId: Int): Map<Int, Task> {
+            val tasks = HashMap<Int, Task>()
+            val processTemplate = ProcessTemplateContainer.getProcessTemplate(processTemplateId)
+            val taskTemplates = processTemplate.taskTemplates!!
+            for ((id, taskTemplate) in taskTemplates) {
+                val startedAt = if (taskTemplate.predecessors.size == 0) Instant.now() else null
+                val task = Task(id, startedAt)
+                tasks.put(id, task)
             }
-
-            val startedAt = if (taskTemplate.predecessors.size == 0) Instant.now() else null
-            tasks.add(Task(taskTemplate, simpleClosing.get(taskTemplate.id)!!, startedAt, personsResponsibleIds.get(taskTemplate.id)!!))
+            return tasks
         }
 
         group.processes.add(this)
     }
 
-    /**
-     * Simple-Constructor that does not consider all details.
-     */
-    constructor(id: Int, title: String, starter: User, status: ProcessStatus, startedAt: Instant, tasks: MutableList<Task>, group: ProcessGroup) :
-            this(id, title, null, starter, status, startedAt, tasks, group)
 }
