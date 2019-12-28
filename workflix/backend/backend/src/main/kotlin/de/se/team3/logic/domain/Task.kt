@@ -1,6 +1,8 @@
 package de.se.team3.logic.domain
 
-import de.se.team3.logic.container.UserContainer
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import de.se.team3.logic.container.TaskTemplateContainer
+import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
 
 /**
@@ -8,25 +10,34 @@ import java.time.Instant
  */
 class Task(
     val id: Int?,
-    val taskTemplate: TaskTemplate,
-    val simpleClosing: Boolean,
+    val taskTemplateId: Int,
+    @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant?,
-    val usersResposible: Set<TaskResponsibility>
+    val comments: List<TaskComment>?,
+    val assignments: List<TaskAssignment>?
 ) {
 
-    companion object {
-        private fun getPersonsResponsible(personsResposibleIds: Set<String>): Set<TaskResponsibility> {
-            val personsResposible = HashSet<TaskResponsibility>()
-            for (personId in personsResposibleIds)
-                personsResposible.add(TaskResponsibility(UserContainer.getUser(personId)))
-            return personsResposible
+    val taskTemplate by lazy {
+        TaskTemplateContainer.getTaskTemplate(taskTemplateId)
+    }
+
+    val isDone by lazy {
+        // should only be null in case of creation
+        // then of course the task could not be already closed
+        if (assignments == null) false else {
+            var closings = 0
+            assignments.forEach { taskAssignment ->
+                if (taskAssignment.status == AssignmentStatus.CLOSED)
+                    closings++
+            }
+            closings == taskTemplate.necessaryClosings
         }
     }
 
     /**
      * Create-Constructor
      */
-    constructor(taskTemplate: TaskTemplate, simpleClosing: Boolean, startedAt: Instant?, usersResposibleIds: Set<String>) :
-            this(null, taskTemplate, simpleClosing, startedAt, getPersonsResponsible(usersResposibleIds)) {
+    constructor(taskTemplateId: Int, startedAt: Instant?) :
+            this(null, taskTemplateId, startedAt, null, null) {
     }
 }
