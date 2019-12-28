@@ -4,8 +4,7 @@ cache:
     - $HOME/.m2
 jobs:
   include:
-    - stage: test
-      language: node_js
+    - language: node_js
       node_js: 10
       before_install:
         - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
@@ -19,15 +18,8 @@ jobs:
         - yarn lint
         - yarn flow
         - yarn test
-    - stage: test
-      language: java
+    - language: java
       before_script:
         - cd workflix/backend/backend
       script:
-        - mvn test
-    - stage: build
-      language: java
-      before_script:
-        - cd workflix/backend/backend
-      script:
-        - mvn -DskipTests=true package
+        - mvn package
