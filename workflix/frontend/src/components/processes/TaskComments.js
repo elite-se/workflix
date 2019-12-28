@@ -3,9 +3,11 @@
 import React from 'react'
 import type { TaskType } from '../../datatypes/TaskType'
 import CommentBubble from './CommentBubble'
+import type { UserType } from '../../datatypes/models'
 
 type PropsType = {
-  task: TaskType
+  task: TaskType,
+  users: Map<string, UserType>
 }
 
 class TaskComments extends React.Component<PropsType> {
@@ -13,7 +15,7 @@ class TaskComments extends React.Component<PropsType> {
     const task = this.props.task
     return <div>
       {task.comments.map(comment => {
-        return <CommentBubble key={comment.id} comment={comment} />
+        return <CommentBubble key={comment.id} comment={comment} users={this.props.users} />
       })}
     </div>
   }

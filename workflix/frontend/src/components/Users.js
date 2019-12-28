@@ -6,14 +6,14 @@ import withPromiseResolver from './withPromiseResolver'
 import type { UserType } from '../datatypes/models'
 import UsersApi from '../api/UsersApi'
 
-type PropsType = {| users: Array<UserType>, path: string |}
+type PropsType = {| users: Map<string, UserType>, path: string |}
 
 class Users extends React.Component<PropsType> {
   render () {
     return <div>
       <H2 style={{ textAlign: 'center' }}>All Users</H2>
       {
-        this.props.users.map(user => (
+        this.props.users.entries.map(user => (
           <Card key={user.id} style={{ margin: '5px' }}>
             <H3>{user.displayname}</H3>
             <Text>{user.name}</Text>
@@ -27,4 +27,4 @@ class Users extends React.Component<PropsType> {
 
 const promiseCreator = () => new UsersApi().getUsers().then(users => ({ users }))
 
-export default withPromiseResolver<PropsType, {| users: Array<UserType> |}>(promiseCreator)(Users)
+export default withPromiseResolver<PropsType, {| users: Map<string, UserType> |}>(promiseCreator)(Users)

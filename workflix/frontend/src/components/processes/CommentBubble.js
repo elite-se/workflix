@@ -3,7 +3,7 @@
 import React from 'react'
 import type { TaskCommentType } from '../../datatypes/TaskType'
 import styled from 'styled-components'
-import LoadingUsername from '../LoadingUsername'
+import type { UserType } from '../../datatypes/models'
 
 const TalkBubble = styled<{ floatEnd: boolean }, {}, 'div'>('div')`
     margin: 0 10px 10px;
@@ -20,7 +20,8 @@ const TalkBubble = styled<{ floatEnd: boolean }, {}, 'div'>('div')`
 `
 
 type PropsType = {
-  comment: TaskCommentType
+  comment: TaskCommentType,
+  users: Map<string, UserType>
 }
 
 class CommentBubble extends React.Component<PropsType> {
@@ -28,9 +29,10 @@ class CommentBubble extends React.Component<PropsType> {
 
   render () {
     const comment = this.props.comment
+    const user = this.props.users.get(comment.creatorId)
     return <TalkBubble floatEnd={this.isOwnComment}>
       <small style={{ wordWrap: 'break-word' }}>
-        <LoadingUsername userId={comment.creatorId} />
+        {user ? user.name : comment.creatorId}
       </small>
       <small style={{ float: 'right', wordWrap: 'break-word' }}>{comment.createdAt}</small>
       <p style={{ wordWrap: 'break-word', hyphens: 'auto' }}><b>{comment.title}</b> {comment.content}</p>
