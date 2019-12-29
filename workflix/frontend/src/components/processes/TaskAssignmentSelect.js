@@ -11,31 +11,13 @@ const UserSelect = MultiSelect.ofType<UserType>()
 
 type PropsType = {
   task: TaskType,
-  onTaskModified: (TaskType) => void
+  onTaskModified: (TaskType) => void,
+  users: Map<string, UserType>
 }
 
-const dummyUsers: UserType[] =
-  [{
-    displayname: 'CK',
-    name: 'Christ Kindle',
-    id: 'christkindle-seine-id',
-    email: 'christkind@himmel.noncom'
-  },
-  {
-    displayname: 'WM',
-    name: 'Weihnachts Mann',
-    id: 'weihnachtsmann-seine-id',
-    email: 'weihnachtsmann@cocacola.com'
-  },
-  {
-    displayname: 'SN',
-    name: 'Sankt Nikolaus',
-    id: 'nikolaus-seine-id',
-    email: 'nikolaus@himmel.noncom'
-  }
-  ]
-
 class TaskAssignmentSelect extends React.Component<PropsType> {
+  usersArray = Array.from(this.props.users.values())
+
   renderUser (user: UserType, { handleClick, modifiers }: IItemRendererProps): ItemRenderer<UserType> {
     if (!modifiers.matchesPredicate) {
       return null
@@ -87,6 +69,8 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     }
   }
 
+  /** filter for users with names that contain the query and which are not yet assigned
+   show names that begin with the query first, then sort alphabetically **/
   itemListPredicate = (query: string, items: UserType[]) => {
     const qLower = query.toLocaleLowerCase()
     // noinspection UnnecessaryLocalVariableJS (flow will fail otherwise)
@@ -111,13 +95,13 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
 
   render () {
     const task = this.props.task
-    const assignees = dummyUsers
+    const assignees = this.usersArray
       .filter(user => task.assignments.map(assignees => assignees.assigneeId)
         .find(assId => assId === user.id))
     const clearButton =
       task.assignments.length > 0 ? <Button icon='cross' minimal onClick={this.onClear} /> : undefined
     return <UserSelect
-      items={dummyUsers}
+      items={this.usersArray}
       itemRenderer={this.renderUser}
       onItemSelect={this.onItemSelect}
       tagRenderer={this.renderUserToTag}
