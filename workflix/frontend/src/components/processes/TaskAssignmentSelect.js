@@ -87,6 +87,26 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     }
   }
 
+  itemListPredicate = (query: string, items: UserType[]) => {
+    const qLower = query.toLocaleLowerCase()
+    return items.filter(item =>
+      item.name.toLocaleLowerCase().includes(qLower) &&
+      !this.props.task.assignments.find(ass => ass.assigneeId === item.id)
+    ).sort((a, b) => {
+      const aLower = a.name.toLocaleLowerCase()
+      const bLower = b.name.toLocaleLowerCase()
+      const aStart = aLower.startsWith(qLower)
+      const bStart = bLower.startsWith(qLower)
+      if (aStart && !bStart) {
+        return -1
+      } else if (!aStart && bStart) {
+        return 1
+      } else {
+        return aLower.localeCompare(bLower)
+      }
+    })
+  }
+
   render () {
     const task = this.props.task
     const assignees = dummyUsers
@@ -107,6 +127,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
         rightElement: clearButton
       }}
       itemPredicate={this.itemPredicate}
+      itemListPredicate={this.itemListPredicate}
       resetOnSelect />
   }
 }
