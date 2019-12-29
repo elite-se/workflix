@@ -74,7 +74,7 @@ object UserDAO : UserDAOInterface {
     override fun deleteUser(user: User) {
         val affectedRows = ProcessTemplatesTable.update {
             it.deleted to true
-            where { it.ID like user.id }
+            where { it.id like user.id }
         }
         if (affectedRows == 0)
             throw NoSuchElementException()
