@@ -50,6 +50,33 @@ class Process(
     }
 
     /**
+     * Db-Constructor
+     *
+     * Special db constructor is needed to provide the linking of tasks with its process.
+     */
+    constructor(
+        id: Int?,
+        starterId: String,
+        processGroupId: Int,
+        processTemplateId: Int,
+        title: String,
+        description: String,
+        status: ProcessStatus,
+        deadline: Instant?,
+        tasks: Map<Int, Task>
+    ): this(
+        id,
+        starterId,
+        processGroupId,
+        processTemplateId,
+        title,
+        description,
+        status,
+        deadline,
+        linkTasksWithProcess(tasks, this)
+    )
+
+    /**
      * Create-Constructor
      */
     constructor(
@@ -91,6 +118,17 @@ class Process(
                 tasks.put(id, task)
             }
             return tasks
+        }
+
+        /**
+         * Links the given map of tasks with the given process.
+         */
+        fun linkTasksWithProcess(tasks: Map<Int, Task>, process: Process): Map<Int, Task> {
+            val linkedTasks = HashMap<Int, Task>()
+            tasks.forEach { i, task ->
+                linkedTasks.put(i, Task(task, process))
+            }
+            return linkedTasks.toMap()
         }
 
         // TODO: Was macht das hier?

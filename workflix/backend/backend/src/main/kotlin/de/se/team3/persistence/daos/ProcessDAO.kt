@@ -94,8 +94,9 @@ object ProcessDAO : ProcessDAOInterface {
             assignments.add(
                 TaskAssignment(
                     row[TaskAssignmentsTable.id]!!,
+                    row[TaskAssignmentsTable.taskId]!!,
                     row[TaskAssignmentsTable.assigneeId]!!,
-                    AssignmentStatus.valueOf(row[TaskAssignmentsTable.status]!!),
+                    row[TaskAssignmentsTable.closed]!!,
                     row[TaskAssignmentsTable.createdAt]!!,
                     row[TaskAssignmentsTable.doneAt]
                 ))
@@ -119,7 +120,8 @@ object ProcessDAO : ProcessDAOInterface {
                 taskTemplateId,
                 row[TasksTable.startedAt],
                 getComments(taskId),
-                getAssignments(taskId)
+                getAssignments(taskId),
+                null
             )
             tasks.put(taskTemplateId, task)
         }
