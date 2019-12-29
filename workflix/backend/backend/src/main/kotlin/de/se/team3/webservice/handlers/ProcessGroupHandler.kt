@@ -9,6 +9,7 @@ import java.util.NoSuchElementException
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.Instant
 
 object ProcessGroupHandler {
 
@@ -56,7 +57,7 @@ object ProcessGroupHandler {
             val ownerID = processGroupJsonObject.getString("ownerId")
 
             try {
-                val processGroup = ProcessGroup(title, description, ownerID, LocalDate.now())
+                val processGroup = ProcessGroup(title, description, ownerID, Instant.now())
                 val newId = ProcessGroupContainer.createProcessGroup(processGroup)
                 val newIdObject = JSONObject()
                 newIdObject.put("newId", newId)

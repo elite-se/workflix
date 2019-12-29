@@ -25,19 +25,19 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
         for (row in processGroupResult) {
             val members = ArrayList<User>()
-            for (memberRow in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq ProcessGroupsTable.ID }) {
+            for (memberRow in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq ProcessGroupsTable.id }) {
                 members.add(UserDAO.getUser(memberRow[ProcessGroupMembers.userID]!!))
             }
 
             val processes = ArrayList<Process>()
-            for (processRow in ProcessToGroup.select().where { ProcessToGroup.ProcessGroupID eq ProcessGroupsTable.ID }) {
+            for (processRow in ProcessToGroup.select().where { ProcessToGroup.ProcessGroupID eq ProcessGroupsTable.id }) {
                 processes.add(ProcessDAO.getProcess(processRow[ProcessToGroup.ProcessID]!!))
             }
 
-            val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerID]!!)
+            val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
 
             processGroups.add(ProcessGroup(
-                row[ProcessGroupsTable.ID]!!,
+                row[ProcessGroupsTable.id]!!,
                 owner,
                 row[ProcessGroupsTable.title]!!,
                 row[ProcessGroupsTable.description]!!,
@@ -53,7 +53,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
     override fun getProcessGroup(processGroupId: Int): ProcessGroup {
         val processGroupResult = ProcessGroupsTable
             .select()
-            .where { ProcessGroupsTable.ID eq processGroupId }
+            .where { ProcessGroupsTable.id eq processGroupId }
 
         val members = ArrayList<User>()
         for (row in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
@@ -67,9 +67,9 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
         val row = processGroupResult.rowSet.iterator().next()
 
-        val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerID]!!)
+        val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
 
-        return ProcessGroup(row[ProcessGroupsTable.ID]!!,
+        return ProcessGroup(row[ProcessGroupsTable.id]!!,
                             owner,
                             row[ProcessGroupsTable.title]!!,
                             row[ProcessGroupsTable.description]!!,
@@ -80,7 +80,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
     override fun createProcessGroup(processGroup: ProcessGroup): Int {
         return ProcessGroupsTable.insertAndGenerateKey {
-            it.ownerID to processGroup.owner.id
+            it.ownerId to processGroup.owner.id
             it.title to processGroup.title
             it.description to processGroup.description
             it.createdAt to processGroup.createdAt
@@ -94,7 +94,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
     override fun deleteProcessGroup(processGroupId: Int) {
             val affectedRows = ProcessGroupsTable.update {
                 it.deleted to true
-                where { it.ID eq processGroupId }
+                where { it.id eq processGroupId }
             }
             if (affectedRows == 0)
                 throw NoSuchElementException()

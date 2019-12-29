@@ -26,6 +26,7 @@ class User(
     fun getMemberships(): List<ProcessGroup> {
         val allGroups = ProcessGroupContainer.getAllProcessGroups()
         return allGroups.filter { it.members.contains(this) }
+    }
 
     companion object {
         /**

@@ -113,15 +113,6 @@ object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
     val deleted by boolean("deleted")
 }
 
-object ProcessGroupsTable : Table<Nothing>("process_groups") {
-    val ID by int("id").primaryKey()
-    val ownerID by varchar("owner_id")
-    val title by varchar("title")
-    val description by text("description")
-    val createdAt by date("created_at")
-    val deleted by boolean("deleted")
-}
-
 object ProcessGroupMembers : Table<Nothing>("process_group_members") {
     val ID by int("id").primaryKey() // necessary since composite primary keys do not appear to be implemented in ktorm
     val processGroupID by int("process_group_id") // TODO foreign key implementation

@@ -93,7 +93,8 @@ class Process(
             return tasks
         }
 
-        group.processes.add(this)
+        // TODO: Was macht das hier?
+        // group.processes.add(this)
     }
 
 }

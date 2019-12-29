@@ -63,8 +63,7 @@ fun main(args: Array<String>) {
         }
     }
 
-    app.get("processes/running/:ownerId") { ctx ->
-    }
+    app.get("processes/running/:ownerId") { ctx -> }
 
     // process groups
     app.get("processGroups") { ctx ->
@@ -101,7 +100,8 @@ fun main(args: Array<String>) {
             )
         } catch (e: NumberFormatException) {
             ctx.status(400).result("invalid process group id")
-
+        }
+    }
     app.post("processes/running") { ctx -> ProcessesRunningHandler.create(ctx) }
     app.delete("processes/running/:processId") { ctx ->
         try {
@@ -110,4 +110,5 @@ fun main(args: Array<String>) {
             ctx.status(400).result("invalid id")
         }
     }
+
 }
