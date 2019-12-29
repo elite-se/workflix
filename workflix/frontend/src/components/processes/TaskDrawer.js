@@ -7,7 +7,8 @@ import TaskDrawerContent from './TaskDrawerContent'
 
 type PropsType = {|
   selectedTask: ?TaskType,
-  onClose: () => void
+  onClose: () => void,
+  onTaskModified: (TaskType) => void
 |}
 
 class TaskDrawer extends React.Component<PropsType> {
@@ -31,7 +32,7 @@ class TaskDrawer extends React.Component<PropsType> {
       onClose={this.props.onClose}
       onOpening={this.onDrawerOpening}
       style={{ overflow: 'auto' }}>
-      {selectedTask != null ? <TaskDrawerContent task={selectedTask} /> : ''}
+      {selectedTask != null ? <TaskDrawerContent task={selectedTask} onTaskModified={this.props.onTaskModified} /> : ''}
     </Drawer>
   }
 }

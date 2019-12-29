@@ -10,7 +10,8 @@ const StyledContainer = styled<{}, {}, 'div'>('div')`
 `
 
 type PropsType = {
-  task: TaskType
+  task: TaskType,
+  onTaskModified: (TaskType) => void
 }
 
 class TaskDrawerContent extends React.Component<PropsType> {
@@ -21,7 +22,7 @@ class TaskDrawerContent extends React.Component<PropsType> {
       <p>{task.templateDescription}</p>
 
       <h4>Assignee</h4>
-      <TaskAssignmentSelect task={task} />
+      <TaskAssignmentSelect task={task} onTaskModified={this.props.onTaskModified} />
     </StyledContainer>
   }
 }

@@ -16,10 +16,13 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   flex-direction: row;
 `
 
-type PropsType = {| processes: Array<ProcessType>, path: string |}
+type PropsType = {|
+  initialProcesses: Array<ProcessType>,
+  path: string
+|}
 
-class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType }> {
-  state = { selectedTask: null }
+class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType, processes: ProcessType[] }> {
+  state = { selectedTask: null, processes: this.props.initialProcesses || [] }
 
   onTaskSelected = (selectedTask: TaskType) => {
     this.setState({ selectedTask: selectedTask })
@@ -29,10 +32,14 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
     this.setState({ selectedTask: null })
   }
 
+  onTaskModified = () => {
+    this.forceUpdate()
+  }
+
   render () {
     return <div>
       <ProcessListWrapper>{
-        this.props.processes.map(process => (
+        this.state.processes.map(process => (
           <ProcessCard
             key={process.id}
             process={process}
@@ -42,13 +49,14 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
       }</ProcessListWrapper>
       <TaskDrawer
         selectedTask={this.state.selectedTask}
-        onClose={this.onDrawerClosed} />
+        onClose={this.onDrawerClosed}
+        onTaskModified={this.onTaskModified} />
     </div>
   }
 }
 
 const promiseCreator = () => new ProcessApi().getProcesses().then(
-  processes => ({ processes })
+  processes => ({ initialProcesses: processes })
 )
 
-export default withPromiseResolver<PropsType, {| processes: Array<ProcessType> |}>(promiseCreator)(TasksOverview)
+export default withPromiseResolver<PropsType, {| initialProcesses: Array<ProcessType> |}>(promiseCreator)(TasksOverview)

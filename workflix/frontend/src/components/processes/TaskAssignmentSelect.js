@@ -3,13 +3,15 @@
 import React from 'react'
 import { IItemRendererProps, ItemRenderer, MultiSelect } from '@blueprintjs/select'
 import type { UserType } from '../../datatypes/models'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskAssignmentType, TaskType } from '../../datatypes/TaskType'
 import { Button, MenuItem } from '@blueprintjs/core'
+import ProcessApi from '../../api/ProcessApi'
 
 const UserSelect = MultiSelect.ofType<UserType>()
 
 type PropsType = {
-  task: TaskType
+  task: TaskType,
+  onTaskModified: (TaskType) => void
 }
 
 const dummyUsers: UserType[] =
@@ -53,20 +55,27 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   onItemSelect = (item: UserType) => {
     const task = this.props.task
     if (task.assignments.map(ass => ass.assigneeId).find(id => id === item.id)) { return }
-    task.assignments = task.assignments.concat({
+    this.setAssignments(task.assignments.concat({
       assigneeId: item.id,
       status: 'TODO',
       createdAt: 'not yet implemented',
       doneAt: undefined
-    })
+    }))
   }
 
-  onClear = () => { this.props.task.assignments = [] }
+  onClear = () => {
+    this.setAssignments([])
+  }
 
   onTagRemoved = (tag: string, index: number) => {
     const task = this.props.task
-    task.assignments = task.assignments.slice(0, index - 1)
-      .concat(task.assignments.slice(index, task.assignments.length))
+    this.setAssignments(task.assignments.filter((t, tidx) => tidx !== index))
+  }
+
+  setAssignments = (assignments: TaskAssignmentType[]) => {
+    this.props.task.assignments = assignments
+    new ProcessApi().patchAssignments(this.props.task)
+    this.props.onTaskModified(this.props.task)
   }
 
   render () {
@@ -74,9 +83,8 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     const assignees = dummyUsers
       .filter(user => task.assignments.map(assignees => assignees.assigneeId)
         .find(assId => assId === user.id))
-    console.debug(assignees)
     const clearButton =
-      task.assignments.length > 0 ? <Button icon='cross' minimal onClick={this.onClear()} /> : undefined
+      task.assignments.length > 0 ? <Button icon='cross' minimal onClick={this.onClear} /> : undefined
     return <UserSelect
       items={dummyUsers}
       itemRenderer={this.renderUser}
