@@ -49,7 +49,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   }
 
   renderUserToTag (user: UserType): string {
-    return user.displayname
+    return user.name
   }
 
   onItemSelect = (item: UserType) => {
@@ -78,6 +78,15 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     this.props.onTaskModified(this.props.task)
   }
 
+  itemPredicate = (query: string, item: UserType, index?: number, exactMatch?: boolean) => {
+    if (this.props.task.assignments.find(ass => ass.assigneeId === item.id)) { return false }
+    if (exactMatch) {
+      return item.name.toLowerCase() === query.toLowerCase()
+    } else {
+      return item.name.toLowerCase().includes(query.toLowerCase())
+    }
+  }
+
   render () {
     const task = this.props.task
     const assignees = dummyUsers
@@ -91,13 +100,14 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       onItemSelect={this.onItemSelect}
       tagRenderer={this.renderUserToTag}
       fill
-      noResults={<MenuItem disabled text='No results.' />}
       popoverProps={{ usePortal: false }}
       selectedItems={assignees}
       tagInputProps={{
         onRemove: this.onTagRemoved,
         rightElement: clearButton
-      }} />
+      }}
+      itemPredicate={this.itemPredicate}
+      resetOnSelect />
   }
 }
 export default TaskAssignmentSelect
