@@ -1,5 +1,6 @@
 package de.se.team3.persistence.meta
 
+import de.se.team3.persistence.meta.ProcessGroupMembers.primaryKey
 import de.se.team3.persistence.meta.ProcessTemplatesTable.primaryKey
 import de.se.team3.persistence.meta.TaskTemplatesTable.primaryKey
 import me.liuwj.ktorm.schema.Table
@@ -109,4 +110,16 @@ object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
     val processCount by int("process_count")
     val runningProcesses by int("running_processes")
     val deleted by boolean("deleted")
+}
+
+object ProcessGroupMembers : Table<Nothing>("process_group_members") {
+    val ID by int("id").primaryKey() // necessary since composite primary keys do not appear to be implemented in ktorm
+    val processGroupID by int("process_group_id") // TODO foreign key implementation
+    val userID by varchar("user_id") // TODO foreign key implementation
+}
+
+object ProcessToGroup : Table<Nothing>("process_to_group") {
+    val ID by int("id").primaryKey()
+    val ProcessID by int("process_id") // TODO foreign key implementation
+    val ProcessGroupID by int("process_group_id") // TODO foreign key implementation .references(ProcessGroups) {it.ID}
 }

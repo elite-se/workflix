@@ -1,6 +1,8 @@
 package de.se.team3.webservice
 
 import de.se.team3.persistence.meta.ConnectionManager
+import de.se.team3.webservice.handlers.ProcessGroupHandler
+import de.se.team3.webservice.handlers.ProcessGroupMembershipHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
 import de.se.team3.webservice.handlers.ProcessesHandler
 import de.se.team3.webservice.handlers.ProcessesRunningHandler
@@ -61,7 +63,44 @@ fun main(args: Array<String>) {
         }
     }
 
-    app.get("processes/running/:ownerId") { ctx ->
+    app.get("processes/running/:ownerId") { ctx -> }
+
+    // process groups
+    app.get("processGroups") { ctx ->
+        ProcessGroupHandler.getAll(ctx)
+    }
+    app.post("processGroups") { ctx ->
+        ProcessGroupHandler.create(ctx)
+    }
+    app.patch("processGroups/:processGroupID") { ctx ->
+        try {
+            ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid process group id")
+        }
+    }
+    app.get("processGroups/:processGroupID") { ctx ->
+        try {
+            ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid process group id")
+        }
+    }
+
+    // group memberships
+    app.post("groupMembership") { ctx ->
+        ProcessGroupMembershipHandler.add(ctx)
+    }
+    app.delete("groupMembership/:processGroupID/:userID") { ctx ->
+        try {
+            ProcessGroupMembershipHandler.revoke(
+                ctx,
+                ctx.pathParam("processGroupID").toInt(),
+                ctx.pathParam("userID").toString()
+            )
+        } catch (e: NumberFormatException) {
+            ctx.status(400).result("invalid process group id")
+        }
     }
     app.post("processes/running") { ctx -> ProcessesRunningHandler.create(ctx) }
     app.delete("processes/running/:processId") { ctx ->
