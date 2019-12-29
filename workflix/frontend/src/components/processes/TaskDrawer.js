@@ -4,11 +4,13 @@ import React from 'react'
 import { Drawer } from '@blueprintjs/core'
 import type { TaskType } from '../../datatypes/TaskType'
 import TaskDrawerContent from './TaskDrawerContent'
+import type { UserType } from '../../datatypes/models'
 
 type PropsType = {|
   selectedTask: ?TaskType,
   onClose: () => void,
-  onTaskModified: (TaskType) => void
+  onTaskModified: (TaskType) => void,
+  users: Map<string, UserType>
 |}
 
 class TaskDrawer extends React.Component<PropsType> {
@@ -31,8 +33,11 @@ class TaskDrawer extends React.Component<PropsType> {
       title={selectedTask != null ? selectedTask.templateName : ''}
       onClose={this.props.onClose}
       onOpening={this.onDrawerOpening}
-      style={{ overflow: 'auto' }}>
-      {selectedTask != null ? <TaskDrawerContent task={selectedTask} onTaskModified={this.props.onTaskModified} /> : ''}
+      style={{ overflow: 'auto' }}
+      users={this.props.users}>
+      {selectedTask != null
+        ? <TaskDrawerContent task={selectedTask} onTaskModified={this.props.onTaskModified} users={this.props.users} />
+        : ''}
     </Drawer>
   }
 }

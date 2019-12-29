@@ -4,6 +4,8 @@ import React from 'react'
 import type { TaskType } from '../../datatypes/TaskType'
 import styled from 'styled-components'
 import TaskAssignmentSelect from './TaskAssignmentSelect'
+import TaskComments from './TaskComments'
+import type { UserType } from '../../datatypes/models'
 
 const StyledContainer = styled<{}, {}, 'div'>('div')`
   margin: 8px;
@@ -11,7 +13,8 @@ const StyledContainer = styled<{}, {}, 'div'>('div')`
 
 type PropsType = {
   task: TaskType,
-  onTaskModified: (TaskType) => void
+  onTaskModified: (TaskType) => void,
+  users: Map<string, UserType>
 }
 
 class TaskDrawerContent extends React.Component<PropsType> {
@@ -23,6 +26,9 @@ class TaskDrawerContent extends React.Component<PropsType> {
 
       <h4>Assignee</h4>
       <TaskAssignmentSelect task={task} onTaskModified={this.props.onTaskModified} />
+
+      <h4>Comments</h4>
+      <TaskComments task={task} users={this.props.users} />
     </StyledContainer>
   }
 }

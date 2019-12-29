@@ -25,6 +25,10 @@ object UserContainer : UserContainerInterface {
         return Pair(result.first, lastPage)
     }
 
+    override fun getAllUsers(): List<User> {
+        return UserDAO.getAllUsers()
+    }
+
     override fun getUser(userId: String): User {
         return UserDAO.getUser(userId)
     }
