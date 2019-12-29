@@ -19,9 +19,25 @@ class ProcessApi {
         'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore ' +
         'et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ' +
         'Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      simpleClosing: true,
-      personsResponsible: [],
-      done: false
+      comments: [],
+      assignments: [],
+      status: 'RUNNING'
+    }
+    const commentDefault1 = {
+      creatorId: '58c120552c94decf6cf3b722',
+      title: 'I bims 1 Comment',
+      content: 'I bims 1 krasse comment description vong mockigkeit her.\n' +
+        'Tun auch Emoji wie 👨‍💻 funktionieren tun?\n' +
+        ' 🎄🎅  Happy christmas!',
+      createdAt: '24-12-2019 20:15:00',
+      doneAt: undefined
+    }
+    const commentDefault2 = {
+      creatorId: '58c120552c94decf6cf3b700',
+      title: 'I bims 1 anderer Comment',
+      content: 'Hier steht nur unwichter Test-text. Bitte ignorieren! Donaudampfschifffahrtskapitänsmützenschirm.',
+      createdAt: '24-12-2019 20:16:00',
+      doneAt: undefined
     }
     const proc1: ProcessType = {
       ...processDefault,
@@ -34,13 +50,19 @@ class ProcessApi {
           taskId: 1,
           templateName: 'Dokument scannen',
           taskTemplateId: 1,
-          done: true,
-          personsResponsible: [{
-            personResponsibleId: 'mm12345678',
-            done: true
+          status: 'CLOSED',
+          assignments: [{
+            assigneeId: '58c120552c94decf6cf3b700',
+            status: 'CLOSED',
+            createdAt: '12-04-2019 13:44:12',
+            doneAt: undefined
+          }],
+          comments: [{
+            ...commentDefault1,
+            id: 201
           }, {
-            personResponsibleId: 'mm98765',
-            done: true
+            ...commentDefault2,
+            id: 202
           }]
         },
         {
@@ -48,7 +70,7 @@ class ProcessApi {
           taskId: 2,
           templateName: 'Prüfen (Admin)',
           taskTemplateId: 2,
-          done: true
+          status: 'CLOSED'
         },
         {
           ...taskDefault,
@@ -81,7 +103,7 @@ class ProcessApi {
           taskId: 11,
           templateName: 'Ignore this task',
           taskTemplateId: 6,
-          done: true
+          status: 'CLOSED'
         },
         {
           ...taskDefault,
@@ -102,7 +124,7 @@ class ProcessApi {
           taskId: 6,
           templateName: 'Dokument scannen',
           taskTemplateId: 1,
-          done: true
+          status: 'CLOSED'
         },
         {
           ...taskDefault,
