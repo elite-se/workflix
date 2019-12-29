@@ -89,7 +89,8 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
 
   itemListPredicate = (query: string, items: UserType[]) => {
     const qLower = query.toLocaleLowerCase()
-    return items.filter(item =>
+    // noinspection UnnecessaryLocalVariableJS (flow will fail otherwise)
+    const filterdAndSorted: UserType[] = items.filter(item =>
       item.name.toLocaleLowerCase().includes(qLower) &&
       !this.props.task.assignments.find(ass => ass.assigneeId === item.id)
     ).sort((a, b) => {
@@ -105,6 +106,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
         return aLower.localeCompare(bLower)
       }
     })
+    return filterdAndSorted
   }
 
   render () {
