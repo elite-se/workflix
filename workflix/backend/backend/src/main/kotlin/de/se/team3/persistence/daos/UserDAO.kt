@@ -72,7 +72,7 @@ object UserDAO : UserDAOInterface {
     }
 
     override fun deleteUser(user: User) {
-        val affectedRows = ProcessTemplatesTable.update {
+        val affectedRows = UsersTable.update {
             it.deleted to true
             where { it.ID like user.id }
         }
