@@ -16,7 +16,7 @@ type PropsType = {
 }
 
 class TaskAssignmentSelect extends React.Component<PropsType> {
-  usersArray = Array.from(this.props.users.values())
+  usersArray: UserType[] = Array.from(this.props.users.values())
 
   renderUser (user: UserType, { handleClick, modifiers }: IItemRendererProps): ItemRenderer<UserType> {
     if (!modifiers.matchesPredicate) {
