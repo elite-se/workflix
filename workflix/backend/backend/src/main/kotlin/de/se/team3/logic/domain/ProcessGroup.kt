@@ -2,7 +2,6 @@ package de.se.team3.logic.domain
 
 import de.se.team3.logic.container.UserContainer
 import java.time.Instant
-import java.time.LocalDate
 import kotlin.collections.ArrayList
 
 class ProcessGroup(

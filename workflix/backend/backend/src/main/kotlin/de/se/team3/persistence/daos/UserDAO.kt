@@ -2,7 +2,6 @@ package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
-import de.se.team3.persistence.meta.ProcessTemplatesTable
 import de.se.team3.persistence.meta.UsersTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insert

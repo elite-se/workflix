@@ -5,7 +5,6 @@ import de.se.team3.persistence.meta.ProcessTemplatesTable.primaryKey
 import de.se.team3.persistence.meta.TaskTemplatesTable.primaryKey
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.boolean
-import me.liuwj.ktorm.schema.date
 import me.liuwj.ktorm.schema.int
 import me.liuwj.ktorm.schema.text
 import me.liuwj.ktorm.schema.timestamp

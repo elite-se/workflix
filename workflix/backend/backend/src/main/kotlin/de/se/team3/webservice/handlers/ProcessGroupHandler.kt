@@ -4,12 +4,11 @@ import de.se.team3.logic.container.ProcessGroupContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessGroup
 import io.javalin.http.Context
-import java.time.LocalDate
+import java.time.Instant
 import java.util.NoSuchElementException
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.time.Instant
 
 object ProcessGroupHandler {
 

@@ -117,7 +117,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             .select().where { ProcessTemplatesView.id eq templateId }
 
         val row = processTemplateResult.rowSet.iterator().next()
-      
+
         val owner = User(
             row[UsersTable.ID]!!,
             row[UsersTable.name]!!,

@@ -96,5 +96,4 @@ class Process(
         // TODO: Was macht das hier?
         // group.processes.add(this)
     }
-
 }

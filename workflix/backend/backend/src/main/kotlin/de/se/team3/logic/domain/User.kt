@@ -1,7 +1,7 @@
 package de.se.team3.logic.domain
+import de.se.team3.logic.container.ProcessGroupContainer
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
-import de.se.team3.logic.container.ProcessGroupContainer
 
 class User(
     val id: String,
@@ -18,7 +18,7 @@ class User(
             if (name.length == 0 || displayname.length == 0 || email.length == 0)
                 throw IllegalArgumentException("none of the arguments may be empty")
         }
-  
+
     /**
      * Returns all process groups the user is a member of.
      * Using the try-catch-block here probably is kinda hacky...
