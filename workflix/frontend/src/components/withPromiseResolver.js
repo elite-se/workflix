@@ -32,7 +32,10 @@ function withPromiseResolver<P1: {}, P2: {}> (
         this.setState({ error: undefined })
         promiseCreator(this.props)
           .then(props => this.setState({ props }))
-          .catch(error => this.setState({ error: error.message }))
+          .catch(error => {
+            this.setState({ error: error.message })
+            console.error(error)
+          })
       }
 
       render () {
