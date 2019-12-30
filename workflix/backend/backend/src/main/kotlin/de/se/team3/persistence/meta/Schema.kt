@@ -83,7 +83,6 @@ object TaskAssignmentsTable : Table<Nothing>("task_assignments") {
     val id by int("id").primaryKey()
     val taskId by int("task_id")
     val assigneeId by varchar("assignee_id")
-    val closed by boolean("closed")
     val createdAt by timestamp("created_at")
     val doneAt by timestamp("done_at")
     val deleted by boolean("deleted")

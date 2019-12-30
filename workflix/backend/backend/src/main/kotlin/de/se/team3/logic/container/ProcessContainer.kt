@@ -2,6 +2,7 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.Process
 import de.se.team3.persistence.daos.ProcessDAO
+import de.se.team3.persistence.daos.TasksDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
 
 object ProcessContainer : ProcessContainerInterface {
@@ -11,6 +12,11 @@ object ProcessContainer : ProcessContainerInterface {
     }
 
     override fun getProcess(processId: Int): Process {
+        return ProcessDAO.getProcess(processId)
+    }
+
+    fun getProcessForTask(taskId: Int): Process {
+        val processId = TasksDAO.getProcessIdForTask(taskId)
         return ProcessDAO.getProcess(processId)
     }
 

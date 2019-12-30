@@ -7,6 +7,7 @@ import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.domain.TaskComment
+import de.se.team3.persistence.meta.NotFoundException
 import de.se.team3.persistence.meta.ProcessesTable
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TaskCommentsTable
@@ -17,6 +18,7 @@ import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.batchInsert
 import me.liuwj.ktorm.dsl.eq
+import me.liuwj.ktorm.dsl.innerJoin
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.notEq
@@ -96,7 +98,6 @@ object ProcessDAO : ProcessDAOInterface {
                     row[TaskAssignmentsTable.id]!!,
                     row[TaskAssignmentsTable.taskId]!!,
                     row[TaskAssignmentsTable.assigneeId]!!,
-                    row[TaskAssignmentsTable.closed]!!,
                     row[TaskAssignmentsTable.createdAt]!!,
                     row[TaskAssignmentsTable.doneAt]
                 ))
@@ -172,6 +173,25 @@ object ProcessDAO : ProcessDAOInterface {
             transaction.rollback()
             throw StorageException("" + e.message)
         }
+    }
+
+    /**
+     * Sets the status of the given process to aborted.
+     *
+     * @throws NotFoundException Is thrown if the given process does not exist or is already aborted
+     * or already closed. The of course the process could not be closed or closed again respectively.
+     */
+    override fun closeProcess(processId: Int) {
+        val affectedRows = ProcessesTable.update {
+            it.status to ProcessStatus.CLOSED.toString()
+            where {
+                (it.id eq processId) and
+                        (it.status notEq ProcessStatus.ABORTED.toString()) and
+                        (it.status notEq ProcessStatus.CLOSED.toString())
+            }
+        }
+        if (affectedRows == 0)
+            throw NotFoundException("process not found")
     }
 
     /**

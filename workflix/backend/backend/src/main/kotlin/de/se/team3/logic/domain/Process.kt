@@ -28,6 +28,11 @@ class Process(
     val tasks: Map<Int, Task>?
 ) {
 
+    init {
+        if (tasks != null)
+            tasks.forEach { i, task -> task.process = this }
+    }
+
     @get:JsonIgnore
     val starter by lazy { UserContainer.getUser(starterId) }
     @get:JsonIgnore
@@ -43,38 +48,21 @@ class Process(
     val progress by lazy {
         var estimatedDurationDone = 0
         tasks?.forEach { id, task ->
-            if (task.isDone)
-                estimatedDurationDone += task.taskTemplate.estimatedDuration ?: 1
+            if (task.status == TaskStatus.CLOSED)
+                estimatedDurationDone += task.taskTemplate!!.estimatedDuration ?: 1
         }
         (estimatedDurationDone / processTemplate.estimatedDurationSum * 100).toInt()
     }
 
-    /**
-     * Db-Constructor
-     *
-     * Special db constructor is needed to provide the linking of tasks with its process.
-     */
-    constructor(
-        id: Int?,
-        starterId: String,
-        processGroupId: Int,
-        processTemplateId: Int,
-        title: String,
-        description: String,
-        status: ProcessStatus,
-        deadline: Instant?,
-        tasks: Map<Int, Task>
-    ): this(
-        id,
-        starterId,
-        processGroupId,
-        processTemplateId,
-        title,
-        description,
-        status,
-        deadline,
-        linkTasksWithProcess(tasks, this)
-    )
+    @get:JsonIgnore
+    val closeable by lazy {
+        var closeable = true
+        tasks!!.forEach { i, task ->
+            if (task.status != TaskStatus.CLOSED)
+                closeable = false
+        }
+        closeable
+    }
 
     /**
      * Create-Constructor
@@ -103,6 +91,10 @@ class Process(
             throw IllegalArgumentException("must not be based on a deleted process template")
     }
 
+    fun findTask(taskId: Int): Task {
+        return tasks!!.map { it.value }.find { it.id == taskId }!!
+    }
+
     companion object {
 
         /**
@@ -118,17 +110,6 @@ class Process(
                 tasks.put(id, task)
             }
             return tasks
-        }
-
-        /**
-         * Links the given map of tasks with the given process.
-         */
-        fun linkTasksWithProcess(tasks: Map<Int, Task>, process: Process): Map<Int, Task> {
-            val linkedTasks = HashMap<Int, Task>()
-            tasks.forEach { i, task ->
-                linkedTasks.put(i, Task(task, process))
-            }
-            return linkedTasks.toMap()
         }
 
         // TODO: Was macht das hier?

@@ -13,6 +13,7 @@ import de.se.team3.webservice.handlers.TasksAssignmentsHandler
 import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
 import org.json.JSONException
+import java.lang.IllegalStateException
 import java.lang.NumberFormatException
 
 const val ENV_PORT = "PORT"

@@ -12,6 +12,8 @@ import me.liuwj.ktorm.database.TransactionIsolation
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
+import me.liuwj.ktorm.dsl.isNotNull
+import me.liuwj.ktorm.dsl.isNull
 import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
@@ -42,7 +44,6 @@ object TaskAssignmentsDAO: TaskAssigmentsDAOInterface {
             val generatedProcessId = TaskAssignmentsTable.insertAndGenerateKey { row ->
                 row.taskId to taskAssignment.taskId
                 row.assigneeId to taskAssignment.asigneeId
-                row.status to taskAssignment.status.toString()
                 row.createdAt to taskAssignment.createdAt
                 row.doneAt to taskAssignment.doneAt
                 row.deleted to false
@@ -74,15 +75,16 @@ object TaskAssignmentsDAO: TaskAssigmentsDAOInterface {
                 (TaskAssignmentsTable.assigneeId eq taskAssignment.asigneeId)
             }
 
-        if ( result.rowSet.iterator().hasNext())
+        if (result.rowSet.iterator().hasNext())
             throw AlreadyExistsException("task assignment already exists")
     }
 
     /**
      * Closes the given task assignment.
      *
+     * Note that a task assignment is not assumed to exist if it is already closed.
+     *
      * @throws NotFoundException Is thrown if the given task assignment does not exist.
-     * The non existence of a task assignment is assumed if the assignment was deleted before.
      */
     override fun closeTaskAssigment(taskId: Int, assigneeId: String) {
         val affectedRows = TaskAssignmentsTable.update { row ->
@@ -90,7 +92,8 @@ object TaskAssignmentsDAO: TaskAssigmentsDAOInterface {
             where {
                 (row.taskId eq taskId) and
                 (row.assigneeId eq assigneeId) and
-                (row.deleted notEq  true)
+                (row.deleted notEq true) and // The non existence of a task assignment is assumed if the assignment was deleted before.
+                (row.doneAt.isNull())
             }
         }
         if (affectedRows == 0)
@@ -100,16 +103,18 @@ object TaskAssignmentsDAO: TaskAssigmentsDAOInterface {
     /**
      * Deletes the specified task assignment.
      *
+     * Note that a task assignment is not assumed to exist if it is already closed.
+     *
      * @throws NotFoundException Is thrown if the given task assignment does not exist.
-     * The non existence of a task assignment is assumed if the assignment was deleted before.
      */
     override fun deleteTaskAssigment(taskId: Int, assigneeId: String) {
         val affectedRows = TaskAssignmentsTable.update { row ->
             row.deleted to true
             where {
                 (row.taskId eq taskId) and
-                (row.assigneeId eq assigneeId)
-                (row.deleted notEq true)
+                (row.assigneeId eq assigneeId) and
+                (row.doneAt.isNull()) and
+                (row.deleted notEq true) //  The non existence of a task assignment is assumed if the assignment was deleted before.
             }
         }
         if (affectedRows == 0)
