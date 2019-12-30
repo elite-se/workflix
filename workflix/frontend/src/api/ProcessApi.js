@@ -1,21 +1,19 @@
 // @flow
 
 import type { ProcessType } from '../datatypes/ProcessType'
-import type { TaskType } from '../datatypes/TaskType'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
 const tasksBackend = `${backend}/tasks`
 
-const patchJson = (input: RequestInfo, body: string) => {
-  return fetch(input, {
-    method: 'PATCH',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: body
-  })
+const defaultFetchOptions = {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}
+
+type AddAssigneeResultType = {
+  newId: number
 }
 
 class ProcessApi {
@@ -31,8 +29,21 @@ class ProcessApi {
       ))
   }
 
-  patchAssignments (patchedTask: TaskType): Promise<Response> {
-    return patchJson(`${tasksBackend}/${patchedTask.id}`, JSON.stringify(patchedTask.assignments))
+  addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<AddAssigneeResultType> {
+    return fetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
+      ...defaultFetchOptions,
+      method: 'PUT',
+      body: JSON.stringify({
+        immediateClosing: immediateClosing
+      })
+    })
+      .then(response => response.json())
+  }
+
+  removeAssignee (taskId: number, assigneeId: string): Promise<Response> {
+    return fetch(
+      `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
+      { method: 'DELETE' })
   }
 }
 

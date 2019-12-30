@@ -3,7 +3,7 @@
 import React from 'react'
 import { IItemRendererProps, ItemRenderer, MultiSelect } from '@blueprintjs/select'
 import type { UserType } from '../../datatypes/models'
-import type { TaskAssignmentType, TaskType } from '../../datatypes/TaskType'
+import type { TaskType } from '../../datatypes/TaskType'
 import { Button, MenuItem } from '@blueprintjs/core'
 import ProcessApi from '../../api/ProcessApi'
 
@@ -37,32 +37,38 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   onItemSelect = (item: UserType) => {
     const task = this.props.task
     if (task.assignments.map(ass => ass.assigneeId).find(id => id === item.id)) { return }
-    this.setAssignments(task.assignments.concat({
-      id: undefined,
-      assigneeId: item.id,
-      status: 'TODO',
-      createdAt: 'not yet implemented',
-      doneAt: undefined
-    }))
+    new ProcessApi().addAssignee(task.id, item.id)
+      .then(json => {
+        task.assignments = task.assignments.concat({
+          id: json.newId,
+          assigneeId: item.id,
+          closed: false,
+          createdAt: undefined,
+          doneAt: undefined
+        })
+        this.props.onTaskModified(task)
+      })
+      .catch(err => console.error(err))
   }
 
   onClear = () => {
-    this.setAssignments([])
+    const task = this.props.task
+    const api = new ProcessApi()
+    Promise.all(task.assignments.map(ass => api.removeAssignee(task.id, ass.assigneeId)))
+      .then(() => {
+        task.assignments = []
+        this.props.onTaskModified(task)
+      })
+      .catch(err => console.error(err))
   }
 
   onTagRemoved = (tag: string, index: number) => {
     const task = this.props.task
-    this.setAssignments(task.assignments.filter((t, tidx) => tidx !== index))
-  }
-
-  setAssignments = (assignments: TaskAssignmentType[]) => {
-    new ProcessApi().patchAssignments({
-      ...(this.props.task),
-      assignments: assignments
-    })
+    const removedAssignee = task.assignments[index].assigneeId
+    new ProcessApi().removeAssignee(task.id, removedAssignee)
       .then(() => {
-        this.props.task.assignments = assignments
-        this.props.onTaskModified(this.props.task)
+        task.assignments = task.assignments.filter(ass => ass.assigneeId !== removedAssignee)
+        this.props.onTaskModified(task)
       })
       .catch(err => console.error(err))
   }

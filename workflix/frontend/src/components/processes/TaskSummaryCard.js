@@ -28,7 +28,7 @@ class TaskSummaryCard extends React.Component<PropsType> {
 
   render () {
     const task = this.props.task
-    return <FinishedTaskStyling taskFinished={task.done}>
+    return <FinishedTaskStyling taskFinished={task.status === 'CLOSED'}>
       <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
             onClick={this.onClick}>
         <p><b>{task.taskTemplate.name}</b></p>
