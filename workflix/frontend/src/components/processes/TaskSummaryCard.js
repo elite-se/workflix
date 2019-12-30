@@ -28,10 +28,10 @@ class TaskSummaryCard extends React.Component<PropsType> {
 
   render () {
     const task = this.props.task
-    return <FinishedTaskStyling taskFinished={task.status === 'CLOSED'}>
+    return <FinishedTaskStyling taskFinished={task.done}>
       <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
             onClick={this.onClick}>
-        <p><b>{task.templateName}</b></p>
+        <p><b>{task.taskTemplate.name}</b></p>
         <p>{task.assignments.length === 0 ? 'No Assignees'
           : <span>Assigned to: {
             task.assignments.map(assignee => {

@@ -30,7 +30,7 @@ class TaskDrawer extends React.Component<PropsType> {
       size={Drawer.SIZE_SMALL}
       hasBackdrop={false}
       isOpen={selectedTask != null}
-      title={selectedTask != null ? selectedTask.templateName : ''}
+      title={selectedTask != null ? selectedTask.taskTemplate.name : ''}
       onClose={this.props.onClose}
       onOpening={this.onDrawerOpening}
       style={{ overflow: 'auto' }}
