@@ -45,6 +45,12 @@ class ProcessApi {
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'DELETE' })
   }
+
+  markAsDone (taskId: number, assigneeId: string): Promise<Response> {
+    return fetch(
+      `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
+      { method: 'PATCH' })
+  }
 }
 
 export default ProcessApi
