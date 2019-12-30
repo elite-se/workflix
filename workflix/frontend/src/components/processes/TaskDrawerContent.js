@@ -19,7 +19,7 @@ class TaskDrawerContent extends React.Component<PropsType> {
   render () {
     const task = this.props.task
     return <StyledContainer>
-      <p>{task.templateDescription}</p>
+      <p>{task.taskTemplate.description}</p>
 
       <h4>Comments</h4>
       <TaskComments task={task} users={this.props.users} />
