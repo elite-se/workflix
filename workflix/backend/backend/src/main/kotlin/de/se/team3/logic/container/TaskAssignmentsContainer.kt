@@ -7,7 +7,6 @@ import de.se.team3.persistence.daos.TaskAssignmentsDAO
 import de.se.team3.persistence.meta.AlreadyExistsException
 import de.se.team3.persistence.meta.NotFoundException
 import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterface
-import java.lang.IllegalStateException
 
 object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 

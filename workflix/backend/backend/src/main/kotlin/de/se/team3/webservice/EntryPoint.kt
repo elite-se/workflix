@@ -3,7 +3,6 @@ package de.se.team3.webservice
 import de.se.team3.persistence.meta.AlreadyExistsException
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.persistence.meta.NotFoundException
-import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.webservice.handlers.ProcessGroupHandler
 import de.se.team3.webservice.handlers.ProcessGroupMembershipHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
@@ -12,9 +11,8 @@ import de.se.team3.webservice.handlers.ProcessesRunningHandler
 import de.se.team3.webservice.handlers.TasksAssignmentsHandler
 import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
-import org.json.JSONException
-import java.lang.IllegalStateException
 import java.lang.NumberFormatException
+import org.json.JSONException
 
 const val ENV_PORT = "PORT"
 const val DEFAULT_PORT = 7000
@@ -122,5 +120,4 @@ fun main(args: Array<String>) {
     app.delete("tasks/:taskId/assignments/:assigneeId") { ctx ->
         TasksAssignmentsHandler.delete(ctx, ctx.pathParam("taskId").toInt(), ctx.pathParam("assigneeId"))
     }
-
 }

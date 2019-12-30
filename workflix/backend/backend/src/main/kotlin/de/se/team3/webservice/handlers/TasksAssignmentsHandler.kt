@@ -4,7 +4,6 @@ import de.se.team3.logic.container.TaskAssignmentsContainer
 import de.se.team3.logic.domain.TaskAssignment
 import io.javalin.http.Context
 import org.json.JSONObject
-import java.lang.IllegalStateException
 
 object TasksAssignmentsHandler {
 

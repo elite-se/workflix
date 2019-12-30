@@ -7,24 +7,23 @@ import de.se.team3.persistence.meta.NotFoundException
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TasksTable
 import de.se.team3.persistence.meta.UsersTable
+import java.time.Instant
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.isNotNull
 import me.liuwj.ktorm.dsl.isNull
 import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
-import java.time.Instant
 
 /**
  * DAO for task assignments.
  */
-object TaskAssignmentsDAO: TaskAssigmentsDAOInterface {
+object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
 
     /**
      * Creates a task assignment.
@@ -120,5 +119,4 @@ object TaskAssignmentsDAO: TaskAssigmentsDAOInterface {
         if (affectedRows == 0)
             throw NotFoundException("task assignment not found")
     }
-
 }

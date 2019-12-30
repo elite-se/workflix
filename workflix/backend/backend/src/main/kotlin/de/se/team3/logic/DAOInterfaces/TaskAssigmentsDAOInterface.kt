@@ -9,5 +9,4 @@ interface TaskAssigmentsDAOInterface {
     fun closeTaskAssigment(taskId: Int, assigneeId: String)
 
     fun deleteTaskAssigment(taskId: Int, assigneeId: String)
-
 }

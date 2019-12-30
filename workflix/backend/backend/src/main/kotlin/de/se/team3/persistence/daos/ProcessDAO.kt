@@ -1,7 +1,6 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
-import de.se.team3.logic.domain.AssignmentStatus
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
@@ -18,7 +17,6 @@ import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.batchInsert
 import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.innerJoin
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.notEq

@@ -8,5 +8,4 @@ object TasksContainer {
         val process = ProcessContainer.getProcessForTask(taskId)
         return process.findTask(taskId)
     }
-
 }

@@ -62,5 +62,4 @@ class Task(
     constructor(taskTemplateId: Int, startedAt: Instant?) :
             this(null, taskTemplateId, startedAt, null, null, null) {
     }
-
 }

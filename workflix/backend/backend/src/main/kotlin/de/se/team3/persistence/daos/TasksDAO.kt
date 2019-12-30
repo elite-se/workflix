@@ -8,7 +8,7 @@ import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.where
 
-object TasksDAO: TasksDAOInterface {
+object TasksDAO : TasksDAOInterface {
 
     /**
      * Returns the id of the process the given task belongs to.
@@ -23,5 +23,4 @@ object TasksDAO: TasksDAOInterface {
         val row = iterator.next()
         return row[TasksTable.processId]!!
     }
-
 }

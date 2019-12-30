@@ -9,5 +9,4 @@ interface TaskCommentsDAOInterface {
     fun updateTaskComment(taskComment: TaskComment)
 
     fun deleteTaskComment(taskComment: TaskComment)
-
 }
