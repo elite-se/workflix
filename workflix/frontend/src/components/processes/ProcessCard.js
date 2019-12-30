@@ -34,7 +34,7 @@ type PropsType = {
 class ProcessCard extends React.Component<PropsType> {
   isSelected (task: TaskType): boolean {
     const selectedTask = this.props.selectedTask
-    return selectedTask != null && task.taskId === selectedTask.taskId
+    return selectedTask != null && task.id === selectedTask.id
   }
 
   render () {
@@ -46,7 +46,7 @@ class ProcessCard extends React.Component<PropsType> {
       <TaskList>
         {
           process.tasks.map(task => (
-            <TaskSummaryCard key={task.taskId}
+            <TaskSummaryCard key={task.id}
               task={task}
               selected={this.isSelected(task)}
               onTaskSelected={this.props.onTaskSelected}
