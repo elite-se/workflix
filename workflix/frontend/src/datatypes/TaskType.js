@@ -11,7 +11,7 @@ export type TaskCommentType = {
 export type TaskAssignmentStatusType = 'TODO' | 'RUNNING' | 'CLOSED'
 
 export type TaskAssignmentType = {
-  id: number,
+  id: ?number,
   assigneeId: string,
   status: TaskAssignmentStatusType,
   createdAt: string,

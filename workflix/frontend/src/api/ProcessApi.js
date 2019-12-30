@@ -5,6 +5,18 @@ import type { TaskType } from '../datatypes/TaskType'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
+const tasksBackend = `${backend}/tasks`
+
+const patchJson = (input: RequestInfo, body: string) => {
+  return fetch(input, {
+    method: 'PATCH',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: body
+  })
+}
 
 class ProcessApi {
   getProcesses (): Promise<ProcessType[]> {
@@ -19,16 +31,8 @@ class ProcessApi {
       ))
   }
 
-  patchAssignments (patchedTask: TaskType) {
-    this.procs = this.procs.map(proc => {
-      proc.tasks = proc.tasks.map((task: TaskType) => {
-        if (task.taskId === patchedTask.taskId) {
-          task.assignments = patchedTask.assignments
-        }
-        return { ...task, assignments: task.assignments }
-      })
-      return { ...proc, tasks: proc.tasks }
-    })
+  patchAssignments (patchedTask: TaskType): Promise<Response> {
+    return patchJson(`${tasksBackend}/${patchedTask.id}`, JSON.stringify(patchedTask.assignments))
   }
 }
 

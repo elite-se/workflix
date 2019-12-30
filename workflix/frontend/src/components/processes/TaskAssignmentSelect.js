@@ -38,6 +38,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     const task = this.props.task
     if (task.assignments.map(ass => ass.assigneeId).find(id => id === item.id)) { return }
     this.setAssignments(task.assignments.concat({
+      id: undefined,
       assigneeId: item.id,
       status: 'TODO',
       createdAt: 'not yet implemented',
@@ -55,9 +56,15 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   }
 
   setAssignments = (assignments: TaskAssignmentType[]) => {
-    this.props.task.assignments = assignments
-    new ProcessApi().patchAssignments(this.props.task)
-    this.props.onTaskModified(this.props.task)
+    new ProcessApi().patchAssignments({
+      ...(this.props.task),
+      assignments: assignments
+    })
+      .then(() => {
+        this.props.task.assignments = assignments
+        this.props.onTaskModified(this.props.task)
+      })
+      .catch(err => console.error(err))
   }
 
   itemPredicate = (query: string, item: UserType, index?: number, exactMatch?: boolean) => {
