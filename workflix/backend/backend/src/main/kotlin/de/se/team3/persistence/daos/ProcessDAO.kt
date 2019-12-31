@@ -73,8 +73,8 @@ object ProcessDAO : ProcessDAOInterface {
             comments.add(
                 TaskComment(
                     row[TaskCommentsTable.id]!!,
+                    row[TaskCommentsTable.taskId]!!,
                     row[TaskCommentsTable.creatorId]!!,
-                    row[TaskCommentsTable.title]!!,
                     row[TaskCommentsTable.content]!!,
                     row[TaskCommentsTable.createdAt]!!
                 ))
