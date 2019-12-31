@@ -117,9 +117,3 @@ object ProcessGroupMembers : Table<Nothing>("process_group_members") {
     val processGroupID by int("process_group_id") // TODO foreign key implementation
     val userID by varchar("user_id") // TODO foreign key implementation
 }
-
-object ProcessToGroup : Table<Nothing>("process_to_group") {
-    val ID by int("id").primaryKey()
-    val ProcessID by int("process_id") // TODO foreign key implementation
-    val ProcessGroupID by int("process_group_id") // TODO foreign key implementation .references(ProcessGroups) {it.ID}
-}
