@@ -1,14 +1,18 @@
 package de.se.team3.webservice
 
+import de.se.team3.persistence.meta.AlreadyExistsException
 import de.se.team3.persistence.meta.ConnectionManager
+import de.se.team3.persistence.meta.NotFoundException
 import de.se.team3.webservice.handlers.ProcessGroupHandler
 import de.se.team3.webservice.handlers.ProcessGroupMembershipHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
 import de.se.team3.webservice.handlers.ProcessesHandler
 import de.se.team3.webservice.handlers.ProcessesRunningHandler
+import de.se.team3.webservice.handlers.TasksAssignmentsHandler
 import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
+import org.json.JSONException
 
 const val ENV_PORT = "PORT"
 const val DEFAULT_PORT = 7000
@@ -23,47 +27,50 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    // Users
+    // exception handling
+    app.exception(NumberFormatException::class.java) { e, ctx ->
+        ctx.status(400).result("invalid id format")
+    }
+    app.exception(NotFoundException::class.java) { e, ctx ->
+        ctx.status(404).result(e.message)
+    }
+    app.exception(AlreadyExistsException::class.java) { e, ctx ->
+        ctx.status(409).result(e.message)
+    }
+    app.exception(JSONException::class.java) { e, ctx ->
+        ctx.status(400).result("" + e.message)
+    }
+
+    // users
     app.get("users") { ctx ->
         UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
     }
 
-    app.get("processTemplates") { ctx ->
-        ProcessTemplatesHandler.getAll(ctx)
-    }
+    // process templates
+    app.get("processTemplates") { ctx -> ProcessTemplatesHandler.getAll(ctx) }
     app.get("processTemplates/:processTemplateId") { ctx ->
-        try {
-            ProcessTemplatesHandler.getOne(ctx, ctx.pathParam("processTemplateId").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid id")
-        }
+        ProcessTemplatesHandler.getOne(ctx, ctx.pathParam("processTemplateId").toInt())
     }
     app.post("processTemplates") { ctx -> ProcessTemplatesHandler.create(ctx) }
     app.patch("processTemplates/:processTemplateId") { ctx ->
-        try {
-            ProcessTemplatesHandler.update(ctx, ctx.pathParam("processTemplateId").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid id")
-        }
+        ProcessTemplatesHandler.update(ctx, ctx.pathParam("processTemplateId").toInt())
     }
     app.delete("processTemplates/:processTemplateId") { ctx ->
-        try {
-            ProcessTemplatesHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid id")
-        }
+        ProcessTemplatesHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
     }
 
+    // processes
     app.get("processes") { ctx -> ProcessesHandler.getAll(ctx) }
     app.get("processes/:processId") { ctx ->
-        try {
-            ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid id")
-        }
+        ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
 
+    // running processes
     app.get("processes/running/:ownerId") { ctx -> }
+    app.post("processes/running") { ctx -> ProcessesRunningHandler.create(ctx) }
+    app.delete("processes/running/:processId") { ctx ->
+        ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
+    }
 
     // process groups
     app.get("processGroups") { ctx ->
@@ -102,12 +109,15 @@ fun main(args: Array<String>) {
             ctx.status(400).result("invalid process group id")
         }
     }
-    app.post("processes/running") { ctx -> ProcessesRunningHandler.create(ctx) }
-    app.delete("processes/running/:processId") { ctx ->
-        try {
-            ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid id")
-        }
+
+    // task assignments
+    app.put("tasks/:taskId/assignments/:assigneeId") { ctx ->
+        TasksAssignmentsHandler.create(ctx, ctx.pathParam("taskId").toInt(), ctx.pathParam("assigneeId"))
+    }
+    app.patch("tasks/:taskId/assignments/:assigneeId") { ctx ->
+        TasksAssignmentsHandler.update(ctx, ctx.pathParam("taskId").toInt(), ctx.pathParam("assigneeId"))
+    }
+    app.delete("tasks/:taskId/assignments/:assigneeId") { ctx ->
+        TasksAssignmentsHandler.delete(ctx, ctx.pathParam("taskId").toInt(), ctx.pathParam("assigneeId"))
     }
 }

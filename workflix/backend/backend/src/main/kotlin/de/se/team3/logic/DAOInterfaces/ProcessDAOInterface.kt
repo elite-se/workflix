@@ -10,5 +10,7 @@ interface ProcessDAOInterface {
 
     fun createProcess(process: Process): Int
 
+    fun closeProcess(processId: Int)
+
     fun abortProcess(processId: Int)
 }
