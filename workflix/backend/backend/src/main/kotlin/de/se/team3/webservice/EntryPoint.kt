@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
 
     // Users
     app.get("users") { ctx ->
-        UserHandler.getAll(ctx, ctx.queryParam<Int>("page").check({ it > 0 }).get())
+        UserHandler.getAll(ctx)
     }
 
     app.get("processTemplates") { ctx ->
@@ -96,7 +96,7 @@ fun main(args: Array<String>) {
             ProcessGroupMembershipHandler.revoke(
                 ctx,
                 ctx.pathParam("processGroupID").toInt(),
-                ctx.pathParam("userID").toString()
+                ctx.pathParam("userID")
             )
         } catch (e: NumberFormatException) {
             ctx.status(400).result("invalid process group id")

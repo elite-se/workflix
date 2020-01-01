@@ -12,7 +12,7 @@ object UserHandler {
 
     val mapper = ObjectMapper().registerModule(KotlinModule())
 
-    fun getAll(ctx: Context, page: Int) {
+    fun getAll(ctx: Context) {
         try {
             val users = UserContainer.getAllUsers()
 
