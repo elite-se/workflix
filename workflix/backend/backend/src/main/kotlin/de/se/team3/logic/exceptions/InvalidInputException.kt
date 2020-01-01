@@ -1,0 +1,4 @@
+package de.se.team3.logic.exceptions
+
+class InvalidInputException(override val message: String): Exception(message) {
+}

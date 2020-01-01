@@ -1,8 +1,8 @@
 package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
-import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.time.Instant
 
@@ -23,7 +23,7 @@ class TaskComment(
             throw NullPointerException("either id or task id and creator id must not be null")
 
         if (content.isEmpty())
-            throw IllegalArgumentException("content must not be empty")
+            throw InvalidInputException("content must not be empty")
     }
 
     /**

@@ -21,10 +21,15 @@ object ProcessContainer : ProcessContainerInterface {
     }
 
     override fun createProcess(process: Process): Int {
-        return ProcessDAO.createProcess(process)
+        val newId = ProcessDAO.createProcess(process)
+        ProcessTemplateContainer.refreshCachedProcessTemplate(process.processTemplateId)
+        return newId
     }
 
     override fun abortProcess(processId: Int) {
         ProcessDAO.abortProcess(processId)
+
+        val process = ProcessDAO.getProcess(processId)
+        ProcessTemplateContainer.refreshCachedProcessTemplate(process.processTemplateId)
     }
 }

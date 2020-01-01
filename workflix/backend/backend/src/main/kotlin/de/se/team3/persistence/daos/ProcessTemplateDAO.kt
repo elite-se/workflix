@@ -19,6 +19,7 @@ import kotlin.collections.toList
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
 import me.liuwj.ktorm.dsl.QueryRowSet
+import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.batchInsert
 import me.liuwj.ktorm.dsl.delete
 import me.liuwj.ktorm.dsl.eq
@@ -26,6 +27,7 @@ import me.liuwj.ktorm.dsl.inList
 import me.liuwj.ktorm.dsl.innerJoin
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.iterator
+import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
@@ -36,7 +38,7 @@ import me.liuwj.ktorm.dsl.where
 object ProcessTemplateDAO : ProcessTemplateDAOInterface {
 
     /**
-     * Makes a single process template from the given row.
+     * Makes a single process template from the given row, owner and task templates.
      */
     private fun makeProcessTemplate(row: QueryRowSet, owner: User, taskTemplates: Map<Int, TaskTemplate>?): ProcessTemplate {
         return ProcessTemplate(
@@ -46,6 +48,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             row[ProcessTemplatesView.durationLimit],
             owner,
             row[ProcessTemplatesView.createdAt]!!,
+            row[ProcessTemplatesView.formerVersion],
             row[ProcessTemplatesView.processCount]!!,
             row[ProcessTemplatesView.runningProcesses]!!,
             row[ProcessTemplatesView.deleted]!!,
@@ -76,9 +79,9 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
     }
 
     /**
-     * Returns the task templates for the given process template.
+     * Returns the task templates for the specified process template.
      */
-    private fun getTaskTemplates(processTemplateId: Int): Map<Int, TaskTemplate> {
+    private fun queryTaskTemplates(processTemplateId: Int): Map<Int, TaskTemplate> {
         // Collect all task templates
         val taskTemplatesResult = TaskTemplatesTable
             .select().where { TaskTemplatesTable.processTemplateId eq processTemplateId }
@@ -109,14 +112,18 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
     }
 
     /**
-     * Returns the single process template specified by the given template id.
+     * Returns the specified process template.
+     *
+     * @return Null if the specified process does not exist.
      */
-    override fun getProcessTemplate(templateId: Int): ProcessTemplate {
+    override fun getProcessTemplate(templateId: Int): ProcessTemplate? {
         val processTemplateResult = ProcessTemplatesView
             .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesView.ownerId)
             .select().where { ProcessTemplatesView.id eq templateId }
 
-        val row = processTemplateResult.rowSet.iterator().next()
+        val row = processTemplateResult.rowSet
+        if (!row.next())
+            return null
 
         val owner = User(
             row[UsersTable.ID]!!,
@@ -124,54 +131,15 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             row[UsersTable.displayname]!!,
             row[UsersTable.email]!!
         )
-        val taskTemplates = getTaskTemplates(row[ProcessTemplatesView.id]!!)
+        val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
 
         return makeProcessTemplate(row, owner, taskTemplates)
     }
 
     /**
-     * Creates the given process template.
+     * Inserts the task templates and their relationships of the given process template.
      */
-    override fun createProcessTemplate(processTemplate: ProcessTemplate): Int {
-        val transactionManager = Database.global.transactionManager
-        val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
-
-        try {
-            val generatedProcessTemplateId = createProcessTemplateDbRequest(processTemplate, null)
-
-            transaction.commit()
-            return generatedProcessTemplateId
-        } catch (e: Throwable) {
-            transaction.rollback()
-            throw StorageException("Storage Exception: " + e.message)
-        }
-    }
-
-    /**
-     * Does the actual requests to the db for creating a process template.
-     *
-     * Is also used by updateProcessTemplate.
-     */
-    private fun createProcessTemplateDbRequest(processTemplate: ProcessTemplate, formerVersion: Int?): Int {
-        // adds the process template
-        val generatedProcessTemplateId = ProcessTemplatesTable.insertAndGenerateKey { row ->
-            row.ownerId to processTemplate.owner.id
-            row.title to processTemplate.title
-            row.description to processTemplate.description
-            row.durationLimit to processTemplate.durationLimit
-            row.createdAt to processTemplate.createdAt
-            row.formerVersion to formerVersion
-        }
-
-        createTaskTemplatesDbRequest(processTemplate?.taskTemplates?.map { it.value }!!, generatedProcessTemplateId as Int)
-
-        return generatedProcessTemplateId as Int
-    }
-
-    /**
-     * Does the actual requests to the db for creating task templates and their realtionships.
-     */
-    private fun createTaskTemplatesDbRequest(taskTemplates: List<TaskTemplate>, processTemplateId: Int) {
+    private fun insertTaskTemplates(processTemplateId: Int, taskTemplates: List<TaskTemplate>) {
         // Note that the task templates of the given process templates have arbitrary ids.
         // This maps them to the db internal ids after creating the task templates in db.
         val idMapping = HashMap<Int, Int>()
@@ -186,13 +154,13 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 row.durationLimit to taskTemplate.durationLimit
                 row.necessaryClosings to taskTemplate.necessaryClosings
             }
-            idMapping.put(taskTemplate.id!!, generatedTaskTemplateId as Int)
+            idMapping.put(taskTemplate.id, generatedTaskTemplateId as Int)
         }
 
         // adds the relationships between task templates
         TaskTemplateRelationshipsTable.batchInsert {
             taskTemplates.forEach { taskTemplate ->
-                taskTemplate.successors?.forEach { successor ->
+                taskTemplate.successors!!.forEach { successor ->
                     item { row ->
                         row.predecessor to idMapping.get(taskTemplate.id)
                         row.successor to idMapping.get(successor.id)
@@ -203,76 +171,105 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
     }
 
     /**
-     * Updates the given process template.
+     * Creates the given process template.
      *
-     * The behavior in case of the alteration of an process template depends on the usage of the
-     * process template for the creation of processes. If the process template is not used yet for the
-     * creation of a process it is really altered. If the process template is already in use then
-     * the whole process template will be copied and the former version will be hided.
+     * @return The generated id of the process template.
      */
-    override fun updateProcessTemplate(processTemplate: ProcessTemplate): Int? {
+    override fun createProcessTemplate(processTemplate: ProcessTemplate): Int {
         val transactionManager = Database.global.transactionManager
         val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
 
         try {
-            val processCountResult = ProcessTemplatesView.select()
-                .where { ProcessTemplatesView.id eq processTemplate.id!! }
+            // creates the actual process template
+            val generatedProcessTemplateId = ProcessTemplatesTable.insertAndGenerateKey { row ->
+                row.ownerId to processTemplate.owner.id
+                row.title to processTemplate.title
+                row.description to processTemplate.description
+                row.durationLimit to processTemplate.durationLimit
+                row.createdAt to processTemplate.createdAt
+                row.formerVersion to processTemplate.formerVersionId
+            } as Int
 
-            val row = processCountResult.rowSet.iterator().next()
-            var newId: Int? = null
-            if (row[ProcessTemplatesView.processCount]!! == 0)
-                realUpdateProcessTemplate(processTemplate)
-            else
-                newId = createProcessTemplateDbRequest(processTemplate, processTemplate.id)
+            // creates the task templates
+            insertTaskTemplates(generatedProcessTemplateId, processTemplate.taskTemplatesList)
 
             transaction.commit()
-            return newId
-        } catch (e: NoSuchElementException) {
-            transaction.rollback()
-            throw e
+            return generatedProcessTemplateId
         } catch (e: Throwable) {
             transaction.rollback()
-            throw StorageException("Storage Exception: " + e.message)
+            throw e
         }
     }
 
     /**
-     * Makes an real update of the given process template.
+     * Deletes the task templates (including their relationships) of the specified process template.
      */
-    private fun realUpdateProcessTemplate(processTemplate: ProcessTemplate) {
-        ProcessTemplatesTable.update { row ->
-            row.ownerId to processTemplate.owner.id
-            row.title to processTemplate.title
-            row.description to processTemplate.description
-            row.durationLimit to processTemplate.durationLimit
-
-            where { row.id eq processTemplate.id!! }
-        }
-
+    private fun deleteTaskTemplatesRequests(processTemplateId: Int) {
         // delete all relationships of task templates
         TaskTemplateRelationshipsTable.delete { row ->
             row.predecessor inList TaskTemplatesTable.select(TaskTemplatesTable.id)
-                .where { TaskTemplatesTable.processTemplateId eq processTemplate.id!! }
+                .where { TaskTemplatesTable.processTemplateId eq processTemplateId }
         }
 
         // delete all task templates
         TaskTemplatesTable.delete { row ->
-            row.processTemplateId eq processTemplate.id!!
+            row.processTemplateId eq processTemplateId
         }
-
-        // create new task templates and their relationships
-        createTaskTemplatesDbRequest(processTemplate.taskTemplates?.map { it.value }!!, processTemplate.id!!)
     }
 
     /**
-     * Sets the deleted flag for the given process template.
+     * Updates the given process template.
+     *
+     * @return True if the given process template existed.
      */
-    override fun deleteProcessTemplate(processTemplateId: Int) {
+    override fun updateProcessTemplate(processTemplate: ProcessTemplate): Boolean {
+        val transactionManager = Database.global.transactionManager
+        val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
+
+        try {
+            // updates the actual process template
+            val affectedRows = ProcessTemplatesTable.update { row ->
+                row.ownerId to processTemplate.owner.id
+                row.title to processTemplate.title
+                row.description to processTemplate.description
+                row.durationLimit to processTemplate.durationLimit
+
+                where {
+                    (row.id eq processTemplate.id!!) and
+                            (row.deleted notEq true)
+                }
+            }
+            if (affectedRows == 0) {
+                transaction.rollback()
+                return false
+            }
+
+            // updates the task templates
+            deleteTaskTemplatesRequests(processTemplate.id!!)
+            insertTaskTemplates(processTemplate.id!!, processTemplate.taskTemplatesList)
+
+            transaction.commit()
+            return true
+        } catch (e: Throwable) {
+            transaction.rollback()
+            throw e
+        }
+    }
+
+    /**
+     * Sets the deleted flag for the specified process template.
+     *
+     * @return True if the specified process template existed.
+     */
+    override fun deleteProcessTemplate(processTemplateId: Int): Boolean {
         val affectedRows = ProcessTemplatesTable.update {
             it.deleted to true
-            where { it.id eq processTemplateId }
+            where {
+                (it.id eq processTemplateId) and
+                        (it.deleted notEq true)
+            }
         }
-        if (affectedRows == 0)
-            throw NoSuchElementException()
+
+        return affectedRows != 0
     }
 }

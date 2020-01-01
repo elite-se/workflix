@@ -3,17 +3,18 @@ package de.se.team3.logic.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import de.se.team3.logic.container.ProcessTemplateContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.processTemplateUtil.ProcessTemplateCycleDetection
+import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
 import de.se.team3.webservice.util.UserSerializer
-import java.lang.IllegalArgumentException
 import java.time.Instant
 
 /**
  * Represents a process template.
  */
-class ProcessTemplate(
+data class ProcessTemplate(
     val id: Int?,
     val title: String,
     val description: String,
@@ -23,6 +24,7 @@ class ProcessTemplate(
     val owner: User,
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
+    val formerVersionId: Int?,
     val processCount: Int,
     val runningProcesses: Int,
     val deleted: Boolean,
@@ -30,6 +32,10 @@ class ProcessTemplate(
     val taskTemplates: Map<Int, TaskTemplate>?
 ) {
 
+    @get:JsonIgnore
+    val taskTemplatesList by lazy { taskTemplates!!.map { it.value } }
+
+    @get:JsonIgnore
     val estimatedDurationSum by lazy {
         var sum = 0
         taskTemplates?.forEach { id, taskTemplate ->
@@ -42,7 +48,7 @@ class ProcessTemplate(
      * Create-Constructor
      */
     constructor(title: String, description: String, durationLimit: Int?, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
-            this(null, title, description, durationLimit, UserContainer.getUser(ownerId), Instant.now(), 0, 0, false, taskTemplates) {
+            this(null, title, description, durationLimit, UserContainer.getUser(ownerId), Instant.now(), null, 0, 0, false, taskTemplates) {
 
         checkProperties(title, durationLimit, taskTemplates)
     }
@@ -50,11 +56,29 @@ class ProcessTemplate(
     /**
      * Update-Constructor
      */
-    constructor(id: Int, title: String, description: String, durationLimit: Int?, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
-            this(id, title, description, durationLimit, UserContainer.getUser(ownerId), Instant.now(), 0, 0, false, taskTemplates) {
+    constructor(
+        id: Int,
+        title: String,
+        description: String,
+        durationLimit: Int?,
+        ownerId: String,
+        taskTemplates: Map<Int, TaskTemplate>
+    ) : this(
+        id,
+        title,
+        description,
+        durationLimit,
+        UserContainer.getUser(ownerId),
+        ProcessTemplateContainer.getProcessTemplate(id).createdAt,
+        ProcessTemplateContainer.getProcessTemplate(id).formerVersionId,
+        ProcessTemplateContainer.getProcessTemplate(id).processCount,
+        ProcessTemplateContainer.getProcessTemplate(id).runningProcesses,
+        ProcessTemplateContainer.getProcessTemplate(id).deleted,
+        taskTemplates
+    ) {
 
         if (id < 1)
-            throw IllegalArgumentException("id must be positive")
+            throw InvalidInputException("id must be positive")
 
         checkProperties(title, durationLimit, taskTemplates)
     }
@@ -62,15 +86,15 @@ class ProcessTemplate(
     companion object {
         fun checkProperties(title: String, durationLimit: Int?, taskTemplates: Map<Int, TaskTemplate>) {
             if (title.isEmpty())
-                throw IllegalArgumentException("title must not be empty")
+                throw InvalidInputException("title must not be empty")
             if (durationLimit != null && durationLimit <= 0)
-                throw IllegalArgumentException("duration limit must be positive")
+                throw InvalidInputException("duration limit must be positive")
             if (taskTemplates == null)
                 throw NullPointerException()
             if (taskTemplates.isEmpty())
-                throw IllegalArgumentException("must contain at least one task template")
+                throw InvalidInputException("must contain at least one task template")
             if (!ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
-                throw IllegalArgumentException("connection between task templates must be acyclic")
+                throw InvalidInputException("connection between task templates must be acyclic")
         }
     }
 }

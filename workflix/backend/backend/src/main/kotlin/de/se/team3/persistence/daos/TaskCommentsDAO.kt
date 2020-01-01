@@ -2,7 +2,7 @@ package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.TaskCommentsDAOInterface
 import de.se.team3.logic.domain.TaskComment
-import de.se.team3.persistence.meta.NotFoundException
+import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.TaskCommentsTable
 import de.se.team3.persistence.meta.TasksTable
 import de.se.team3.persistence.meta.UsersTable

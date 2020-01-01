@@ -6,7 +6,7 @@ import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.domain.TaskComment
-import de.se.team3.persistence.meta.NotFoundException
+import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.ProcessesTable
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TaskCommentsTable
@@ -169,6 +169,7 @@ object ProcessDAO : ProcessDAOInterface {
             return generatedProcessId as Int
         } catch (e: Throwable) {
             transaction.rollback()
+            throw e
             throw StorageException("" + e.message)
         }
     }
@@ -201,7 +202,11 @@ object ProcessDAO : ProcessDAOInterface {
     override fun abortProcess(processId: Int) {
         val affectedRows = ProcessesTable.update {
             it.status to ProcessStatus.ABORTED.toString()
-            where { (it.id eq processId) and (it.status notEq ProcessStatus.CLOSED.toString()) and (it.status notEq ProcessStatus.ABORTED.toString()) }
+            where {
+                (it.id eq processId) and
+                        (it.status notEq ProcessStatus.CLOSED.toString()) and
+                        (it.status notEq ProcessStatus.ABORTED.toString())
+            }
         }
         if (affectedRows == 0)
             throw NoSuchElementException()

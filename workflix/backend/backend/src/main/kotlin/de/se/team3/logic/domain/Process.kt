@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessTemplateContainer
 import de.se.team3.logic.container.UserContainer
+import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
-import java.lang.IllegalArgumentException
 import java.time.Instant
 
 /**
  * Represents a process.
  */
-class Process(
+data class Process(
     val id: Int?,
     val starterId: String,
     val processGroupId: Int,
@@ -86,9 +86,9 @@ class Process(
         createTasks(processTemplateId)) {
 
         if (title.isEmpty())
-            throw IllegalArgumentException("title must not be empty")
+            throw InvalidInputException("title must not be empty")
         if (processTemplate.deleted)
-            throw IllegalArgumentException("must not be based on a deleted process template")
+            throw InvalidInputException("must not be based on a deleted process template")
     }
 
     fun findTask(taskId: Int): Task {
