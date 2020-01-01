@@ -9,6 +9,7 @@ import de.se.team3.webservice.handlers.ProcessTemplatesHandler
 import de.se.team3.webservice.handlers.ProcessesHandler
 import de.se.team3.webservice.handlers.ProcessesRunningHandler
 import de.se.team3.webservice.handlers.TasksAssignmentsHandler
+import de.se.team3.webservice.handlers.TasksCommentsHandler
 import de.se.team3.webservice.handlers.UserHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
@@ -119,5 +120,16 @@ fun main(args: Array<String>) {
     }
     app.delete("tasks/:taskId/assignments/:assigneeId") { ctx ->
         TasksAssignmentsHandler.delete(ctx, ctx.pathParam("taskId").toInt(), ctx.pathParam("assigneeId"))
+    }
+
+    // task comments
+    app.post("tasks/:taskId/comments") { ctx ->
+        TasksCommentsHandler.create(ctx, ctx.pathParam("taskId").toInt())
+    }
+    app.patch("tasks/comments/:taskCommentId") { ctx ->
+        TasksCommentsHandler.update(ctx, ctx.pathParam("taskCommentId").toInt())
+    }
+    app.delete("tasks/comments/:taskCommentId") { ctx ->
+        TasksCommentsHandler.delete(ctx, ctx.pathParam("taskCommentId").toInt())
     }
 }

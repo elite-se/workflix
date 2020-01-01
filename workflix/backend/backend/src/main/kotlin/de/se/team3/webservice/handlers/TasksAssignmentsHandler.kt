@@ -5,8 +5,15 @@ import de.se.team3.logic.domain.TaskAssignment
 import io.javalin.http.Context
 import org.json.JSONObject
 
+/**
+ * Handles requests to resources of forms:
+ * /tasks/:taskId/assignments/:assigneeId
+ */
 object TasksAssignmentsHandler {
 
+    /**
+     * Handles requests for creating a new task assignment.
+     */
     fun create(ctx: Context, taskId: Int, assigneeId: String) {
         val content = ctx.body()
         val taskAssignmentJsonObject = JSONObject(content)
@@ -22,10 +29,16 @@ object TasksAssignmentsHandler {
             .contentType("application/json")
     }
 
+    /**
+     * Handles requests for closing a task assignment.
+     */
     fun update(ctx: Context, taskId: Int, assigneeId: String) {
         TaskAssignmentsContainer.closeTaskAssignment(taskId, assigneeId)
     }
 
+    /**
+     * Handles requests for deleting a task assignment.
+     */
     fun delete(ctx: Context, taskId: Int, assigneeId: String) {
         TaskAssignmentsContainer.deleteTaskAssignment(taskId, assigneeId)
     }

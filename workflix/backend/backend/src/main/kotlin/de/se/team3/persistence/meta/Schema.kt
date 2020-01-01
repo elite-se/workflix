@@ -92,7 +92,6 @@ object TaskCommentsTable : Table<Nothing>("task_comments") {
     val id by int("id").primaryKey()
     val taskId by int("task_id")
     val creatorId by varchar("creator_id")
-    val title by varchar("title")
     val content by text("content")
     val createdAt by timestamp("created_at")
     val deleted by boolean("deleted")
