@@ -2,10 +2,10 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.domain.TaskStatus
+import de.se.team3.logic.exceptions.AlreadyExistsException
+import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.persistence.daos.TaskAssignmentsDAO
-import de.se.team3.persistence.meta.AlreadyExistsException
-import de.se.team3.persistence.meta.NotFoundException
 import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterface
 
 object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
@@ -46,8 +46,12 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 
     private fun mayCloseProcess(taskId: Int) {
         val process = ProcessContainer.getProcessForTask(taskId)
-        if (process.closeable)
+        if (process.closeable) {
             ProcessDAO.closeProcess(process.id!!)
+
+            val processTemplate = process.processTemplate
+            processTemplate.runningProcesses -= 1
+        }
     }
 
     override fun deleteTaskAssignment(taskId: Int, assigneeId: String) {

@@ -2,8 +2,8 @@ package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.TaskAssigmentsDAOInterface
 import de.se.team3.logic.domain.TaskAssignment
-import de.se.team3.persistence.meta.AlreadyExistsException
-import de.se.team3.persistence.meta.NotFoundException
+import de.se.team3.logic.exceptions.AlreadyExistsException
+import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TasksTable
 import de.se.team3.persistence.meta.UsersTable
