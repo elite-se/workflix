@@ -6,7 +6,6 @@ import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.domain.TaskComment
-import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.ProcessesTable
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TaskCommentsTable

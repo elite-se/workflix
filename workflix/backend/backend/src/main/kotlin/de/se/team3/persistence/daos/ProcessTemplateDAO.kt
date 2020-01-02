@@ -18,7 +18,6 @@ import kotlin.collections.forEach
 import kotlin.collections.toList
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
-import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.batchInsert
 import me.liuwj.ktorm.dsl.delete

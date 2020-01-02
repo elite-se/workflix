@@ -1,7 +1,6 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.TasksDAOInterface
-import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.TasksTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.iterator
@@ -22,5 +21,4 @@ object TasksDAO : TasksDAOInterface {
 
         return row[TasksTable.processId]!!
     }
-
 }

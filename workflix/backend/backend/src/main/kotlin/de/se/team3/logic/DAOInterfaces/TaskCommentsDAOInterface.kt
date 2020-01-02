@@ -11,5 +11,4 @@ interface TaskCommentsDAOInterface {
     fun updateTaskComment(taskComment: TaskComment)
 
     fun deleteTaskComment(taskCommentId: Int)
-
 }

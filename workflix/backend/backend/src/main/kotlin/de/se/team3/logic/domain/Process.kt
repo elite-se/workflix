@@ -2,12 +2,9 @@ package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import de.se.team3.logic.container.ProcessContainer
 import de.se.team3.logic.container.ProcessTemplateContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.exceptions.NotFoundException
-import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
 
@@ -84,7 +81,6 @@ class Process(
             throw InvalidInputException("title must not be empty")
         if (processTemplate.deleted)
             throw InvalidInputException("must not be based on a deleted process template")
-
     }
 
     /**
@@ -110,7 +106,7 @@ class Process(
         }
         return closeable
     }
-    
+
     /**
      * Closes the process.
      *
