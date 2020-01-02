@@ -35,7 +35,7 @@ class CommentBubble extends React.Component<PropsType> {
         {user ? user.name : comment.creatorId}
       </small>
       <small style={{ float: 'right', wordWrap: 'break-word' }}>{comment.createdAt}</small>
-      <p style={{ wordWrap: 'break-word', hyphens: 'auto' }}><b>{comment.title}</b> {comment.content}</p>
+      <p style={{ wordWrap: 'break-word', hyphens: 'auto' }}>{comment.content}</p>
     </TalkBubble>
   }
 }

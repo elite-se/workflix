@@ -10,10 +10,11 @@ type PropsType = {| users: Map<string, UserType>, path: string |}
 
 class Users extends React.Component<PropsType> {
   render () {
+    const users = Array.from(this.props.users.values())
     return <div>
       <H2 style={{ textAlign: 'center' }}>All Users</H2>
       {
-        this.props.users.entries.map(user => (
+        users.map(user => (
           <Card key={user.id} style={{ margin: '5px' }}>
             <H3>{user.displayname}</H3>
             <Text>{user.name}</Text>
