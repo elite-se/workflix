@@ -18,6 +18,14 @@ object UsersTable : Table<Nothing>("users") {
     val deleted by boolean("deleted")
 }
 
+object UserRolesTable : Table<Nothing>("user_roles") {
+    val ID by int("id").primaryKey()
+    val name by varchar("name")
+    val description by varchar("description")
+    val createdAt by timestamp("created_at")
+    val deleted by boolean("deleted")
+}
+
 object ProcessTemplatesTable : Table<Nothing>("process_templates") {
     val id by int("id").primaryKey()
     val ownerId by varchar("owner_id")
