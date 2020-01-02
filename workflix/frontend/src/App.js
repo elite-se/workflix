@@ -7,6 +7,7 @@ import MainRouter from './MainRouter'
 
 const RouterWrapper = styled<{}, {}, 'div'>('div')`
   &, & > * {
+    margin: 20px;
     display: flex;
     flex: 1;
     justify-content: center;

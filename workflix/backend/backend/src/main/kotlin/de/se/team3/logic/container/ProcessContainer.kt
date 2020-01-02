@@ -1,23 +1,30 @@
 package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.Process
+import de.se.team3.persistence.daos.ProcessDAO
+import de.se.team3.persistence.daos.TasksDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
 
 object ProcessContainer : ProcessContainerInterface {
 
-    override fun getAllProcesses(page: Int): Pair<Process, Int> {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    override fun getAllProcesses(): List<Process> {
+        return ProcessDAO.getAllProcesses()
     }
 
     override fun getProcess(processId: Int): Process {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        return ProcessDAO.getProcess(processId)
+    }
+
+    fun getProcessForTask(taskId: Int): Process {
+        val processId = TasksDAO.getProcessIdForTask(taskId)
+        return ProcessDAO.getProcess(processId)
     }
 
     override fun createProcess(process: Process): Int {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        return ProcessDAO.createProcess(process)
     }
 
-    override fun abortProcess(process: Process) {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    override fun abortProcess(processId: Int) {
+        ProcessDAO.abortProcess(processId)
     }
 }

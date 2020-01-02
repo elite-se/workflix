@@ -1,4 +1,6 @@
-package de.se.team3.logic.domain
+package de.se.team3.logic.domain.processTemplateUtil
+
+import de.se.team3.logic.domain.TaskTemplate
 
 object ProcessTemplateCycleDetection {
 
@@ -16,11 +18,17 @@ object ProcessTemplateCycleDetection {
     fun isAcyclic(taskTemplates: Map<Int, TaskTemplate>): Boolean {
         val statusMap = HashMap<Int, ProcessingStatus>()
         for ((id, taskTemplate) in taskTemplates)
-            statusMap.put(id, ProcessingStatus.NotVisited)
+            statusMap.put(id,
+                ProcessTemplateCycleDetection.ProcessingStatus.NotVisited
+            )
 
         for ((id, taskTemplate) in taskTemplates)
-            if (statusMap.get(id) == ProcessingStatus.NotVisited) {
-                val cycleDetected = visitNode(taskTemplate, statusMap)
+            if (statusMap.get(id) == ProcessTemplateCycleDetection.ProcessingStatus.NotVisited) {
+                val cycleDetected =
+                    visitNode(
+                        taskTemplate,
+                        statusMap
+                    )
                 if (cycleDetected)
                     return false
             }
@@ -34,17 +42,25 @@ object ProcessTemplateCycleDetection {
      * @return true if there was a cycle detected
      */
     private fun visitNode(taskTemplate: TaskTemplate, statusMap: HashMap<Int, ProcessingStatus>): Boolean {
-        statusMap.put(taskTemplate.id, ProcessTemplateCycleDetection.ProcessingStatus.InVisitation)
+        statusMap.put(taskTemplate.id,
+            ProcessTemplateCycleDetection.ProcessingStatus.InVisitation
+        )
         for (successor in taskTemplate.successors) {
-            if (statusMap.get(successor.id) == ProcessingStatus.NotVisited) {
-                val cycleDetected = visitNode(successor, statusMap)
+            if (statusMap.get(successor.id) == ProcessTemplateCycleDetection.ProcessingStatus.NotVisited) {
+                val cycleDetected =
+                    visitNode(
+                        successor,
+                        statusMap
+                    )
                 if (cycleDetected)
                     return true
-            } else if (statusMap.get(successor.id) == ProcessingStatus.InVisitation) {
+            } else if (statusMap.get(successor.id) == ProcessTemplateCycleDetection.ProcessingStatus.InVisitation) {
                 return true
             }
         }
-        statusMap.put(taskTemplate.id, ProcessingStatus.Finished)
+        statusMap.put(taskTemplate.id,
+            ProcessTemplateCycleDetection.ProcessingStatus.Finished
+        )
         return false
     }
 }
