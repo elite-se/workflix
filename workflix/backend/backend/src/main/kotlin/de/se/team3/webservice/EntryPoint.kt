@@ -2,8 +2,8 @@ package de.se.team3.webservice
 
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.ProcessGroupHandler
 import de.se.team3.webservice.handlers.ProcessGroupMembershipHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler

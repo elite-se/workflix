@@ -2,10 +2,10 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.domain.TaskStatus
-import de.se.team3.persistence.daos.ProcessDAO
-import de.se.team3.persistence.daos.TaskAssignmentsDAO
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.persistence.daos.ProcessDAO
+import de.se.team3.persistence.daos.TaskAssignmentsDAO
 import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterface
 
 object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {

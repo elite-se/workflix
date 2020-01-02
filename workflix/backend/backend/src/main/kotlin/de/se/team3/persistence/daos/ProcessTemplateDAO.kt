@@ -15,7 +15,6 @@ import kotlin.collections.HashMap
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.forEach
-import kotlin.collections.map
 import kotlin.collections.toList
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation

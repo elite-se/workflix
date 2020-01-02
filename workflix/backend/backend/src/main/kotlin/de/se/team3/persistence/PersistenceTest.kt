@@ -2,9 +2,6 @@ package de.se.team3.persistence
 
 import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.persistence.meta.TasksTable
-import java.time.Instant
-import me.liuwj.ktorm.dsl.batchInsert
 
 fun main() {
     ConnectionManager.connect()
@@ -18,6 +15,4 @@ fun main() {
     }*/
 
     ProcessDAO.closeProcess(39)
-
-
 }
