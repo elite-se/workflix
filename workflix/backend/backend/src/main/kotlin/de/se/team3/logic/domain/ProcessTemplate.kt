@@ -25,8 +25,8 @@ data class ProcessTemplate(
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
     val formerVersionId: Int?,
-    val processCount: Int,
-    val runningProcesses: Int,
+    var processCount: Int,
+    var runningProcesses: Int,
     val deleted: Boolean,
     @JsonIgnore
     val taskTemplates: Map<Int, TaskTemplate>?

@@ -48,7 +48,9 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
         val process = ProcessContainer.getProcessForTask(taskId)
         if (process.closeable) {
             ProcessDAO.closeProcess(process.id!!)
-            ProcessTemplateContainer.refreshCachedProcessTemplate(process.processTemplateId)
+
+            val processTemplate = process.processTemplate
+            processTemplate.runningProcesses -= 1
         }
     }
 

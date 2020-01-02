@@ -29,6 +29,32 @@ object ProcessTemplatesTable : Table<Nothing>("process_templates") {
     val deleted by boolean("deleted")
 }
 
+object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
+    val id by int("id").primaryKey()
+    val ownerId by varchar("owner_id")
+    val title by varchar("title")
+    val description by text("description")
+    val durationLimit by int("duration_limit")
+    val createdAt by timestamp("created_at")
+    val formerVersion by int("former_version")
+    val processCount by int("process_count")
+    val runningProcesses by int("running_processes")
+    val deleted by boolean("deleted")
+}
+
+object ProcessTemplatesFilteredView : Table<Nothing>("process_templates_filtered") {
+    val id by int("id").primaryKey()
+    val ownerId by varchar("owner_id")
+    val title by varchar("title")
+    val description by text("description")
+    val durationLimit by int("duration_limit")
+    val createdAt by timestamp("created_at")
+    val formerVersion by int("former_version")
+    val processCount by int("process_count")
+    val runningProcesses by int("running_processes")
+    val deleted by boolean("deleted")
+}
+
 object TaskTemplatesTable : Table<Nothing>("task_templates") {
     val id by int("id").primaryKey()
     val processTemplateId by int("process_template_id")
@@ -94,19 +120,6 @@ object TaskCommentsTable : Table<Nothing>("task_comments") {
     val creatorId by varchar("creator_id")
     val content by text("content")
     val createdAt by timestamp("created_at")
-    val deleted by boolean("deleted")
-}
-
-object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
-    val id by int("id").primaryKey()
-    val ownerId by varchar("owner_id")
-    val title by varchar("title")
-    val description by text("description")
-    val durationLimit by int("duration_limit")
-    val createdAt by timestamp("created_at")
-    val formerVersion by int("former_version")
-    val processCount by int("process_count")
-    val runningProcesses by int("running_processes")
     val deleted by boolean("deleted")
 }
 

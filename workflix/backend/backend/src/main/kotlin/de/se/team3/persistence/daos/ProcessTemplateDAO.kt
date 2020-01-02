@@ -4,6 +4,7 @@ import de.se.team3.logic.DAOInterfaces.ProcessTemplateDAOInterface
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.logic.domain.User
+import de.se.team3.persistence.meta.ProcessTemplatesFilteredView
 import de.se.team3.persistence.meta.ProcessTemplatesTable
 import de.se.team3.persistence.meta.ProcessTemplatesView
 import de.se.team3.persistence.meta.TaskTemplateRelationshipsTable
@@ -61,8 +62,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
      */
     override fun getAllProcessTemplates(): List<ProcessTemplate> {
         val processTemplates = ArrayList<ProcessTemplate>()
-        val result = ProcessTemplatesView
-            .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesView.ownerId)
+        val result = ProcessTemplatesFilteredView
+            .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesFilteredView.ownerId)
             .select()
 
         for (row in result) {

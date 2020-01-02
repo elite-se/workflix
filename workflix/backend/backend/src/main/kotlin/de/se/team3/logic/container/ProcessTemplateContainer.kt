@@ -11,14 +11,6 @@ object ProcessTemplateContainer : ProcessTemplateContainerInterface {
     private val processTemplatesCache = HashMap<Int, ProcessTemplate>()
 
     /**
-     * Refreshes the cache entry for the specified process template.
-     */
-    fun refreshCachedProcessTemplate(processTemplateId: Int) {
-        processTemplatesCache.remove(processTemplateId)
-        processTemplatesCache.put(processTemplateId, ProcessTemplateDAO.getProcessTemplate(processTemplateId)!!)
-    }
-
-    /**
      * Returns a reduced form (without task templates) of all process templates.
      */
     override fun getAllProcessTemplates(): List<ProcessTemplate> {

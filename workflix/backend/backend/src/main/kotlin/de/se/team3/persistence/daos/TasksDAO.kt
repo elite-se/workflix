@@ -16,11 +16,10 @@ object TasksDAO : TasksDAOInterface {
     override fun getProcessIdForTask(taskId: Int): Int {
         val result = TasksTable.select().where { TasksTable.id eq taskId }
 
-        val iterator = result.rowSet.iterator()
-        if (!iterator.hasNext())
+        val row = result.rowSet
+        if (!row.next())
             throw NotFoundException("task was not found")
 
-        val row = iterator.next()
         return row[TasksTable.processId]!!
     }
 }
