@@ -11,23 +11,28 @@ import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterf
 object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 
     /**
-     * Creates a new task.
+     * Creates a new task assignment.
      *
      * @throws AlreadyExistsException Is thrown if the task is already closed.
      */
     override fun createTaskAssignment(taskAssignment: TaskAssignment): Int {
-        val task = TasksContainer.getTask(taskAssignment.taskId)
+        val task = taskAssignment.task
 
         if (task.status == TaskStatus.CLOSED)
             throw AlreadyExistsException("task is already closed")
 
         val taskAssignmentId = TaskAssignmentsDAO.createTaskAssigment(taskAssignment)
-        mayCloseProcess(task.id!!)
+
+        // refresh process
+        val processId = task.process!!.id!!
+        ProcessContainer.refreshCachedProcess(processId)
+
+        ProcessContainer.mayCloseProcess(task.process!!.id!!)
         return taskAssignmentId
     }
 
     /**
-     * Closes the assignment given by its task and assignee id.
+     * Closes the assignment specified by the given task and user id.
      *
      * @throws NotFoundException Is thrown if the predecessors of the given task are not already closed.
      * @throws AlreadyExistsException Is thrown if the given task is already closed.
@@ -41,20 +46,23 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
             throw AlreadyExistsException("task is already closed")
 
         TaskAssignmentsDAO.closeTaskAssigment(taskId, assigneeId)
-        mayCloseProcess(taskId)
+
+        // refresh process
+        val processId = task.process!!.id!!
+        ProcessContainer.refreshCachedProcess(processId)
+
+        ProcessContainer.mayCloseProcess(task.process!!.id!!)
     }
 
-    private fun mayCloseProcess(taskId: Int) {
-        val process = ProcessContainer.getProcessForTask(taskId)
-        if (process.closeable) {
-            ProcessDAO.closeProcess(process.id!!)
-
-            val processTemplate = process.processTemplate
-            processTemplate.runningProcesses -= 1
-        }
-    }
-
+    /**
+     * Deletes the task specified by the given task and user id.
+     */
     override fun deleteTaskAssignment(taskId: Int, assigneeId: String) {
         TaskAssignmentsDAO.deleteTaskAssigment(taskId, assigneeId)
+
+        // refresh process
+        val task = TasksContainer.getTask(taskId)
+        val processId = task.process!!.id!!
+        ProcessContainer.refreshCachedProcess(processId)
     }
 }

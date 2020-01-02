@@ -25,12 +25,14 @@ data class ProcessTemplate(
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
     val formerVersionId: Int?,
-    var processCount: Int,
-    var runningProcesses: Int,
+    private var processCount: Int,
+    private var runningProcesses: Int,
     val deleted: Boolean,
     @JsonIgnore
     val taskTemplates: Map<Int, TaskTemplate>?
 ) {
+
+    fun getProcessCount() = processCount
 
     @get:JsonIgnore
     val taskTemplatesList by lazy { taskTemplates!!.map { it.value } }
@@ -81,6 +83,15 @@ data class ProcessTemplate(
             throw InvalidInputException("id must be positive")
 
         checkProperties(title, durationLimit, taskTemplates)
+    }
+
+    fun increaseProcessCounters() {
+        processCount++
+        runningProcesses++
+    }
+
+    fun decreaseRunningProcesses() {
+        runningProcesses--
     }
 
     companion object {

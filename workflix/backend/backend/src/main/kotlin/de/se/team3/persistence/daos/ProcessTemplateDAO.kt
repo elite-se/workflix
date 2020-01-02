@@ -38,25 +38,6 @@ import me.liuwj.ktorm.dsl.where
 object ProcessTemplateDAO : ProcessTemplateDAOInterface {
 
     /**
-     * Makes a single process template from the given row, owner and task templates.
-     */
-    private fun makeProcessTemplate(row: QueryRowSet, owner: User, taskTemplates: Map<Int, TaskTemplate>?): ProcessTemplate {
-        return ProcessTemplate(
-            row[ProcessTemplatesView.id]!!,
-            row[ProcessTemplatesView.title]!!,
-            row[ProcessTemplatesView.description]!!,
-            row[ProcessTemplatesView.durationLimit],
-            owner,
-            row[ProcessTemplatesView.createdAt]!!,
-            row[ProcessTemplatesView.formerVersion],
-            row[ProcessTemplatesView.processCount]!!,
-            row[ProcessTemplatesView.runningProcesses]!!,
-            row[ProcessTemplatesView.deleted]!!,
-            taskTemplates
-        )
-    }
-
-    /**
      * Returns all process templates.
      */
     override fun getAllProcessTemplates(): List<ProcessTemplate> {
@@ -72,7 +53,20 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 row[UsersTable.displayname]!!,
                 row[UsersTable.email]!!
             )
-            processTemplates.add(makeProcessTemplate(row, owner, null))
+            val processTemplate = ProcessTemplate(
+                row[ProcessTemplatesFilteredView.id]!!,
+                row[ProcessTemplatesFilteredView.title]!!,
+                row[ProcessTemplatesFilteredView.description]!!,
+                row[ProcessTemplatesFilteredView.durationLimit],
+                owner,
+                row[ProcessTemplatesFilteredView.createdAt]!!,
+                row[ProcessTemplatesFilteredView.formerVersion],
+                row[ProcessTemplatesFilteredView.processCount]!!,
+                row[ProcessTemplatesFilteredView.runningProcesses]!!,
+                row[ProcessTemplatesFilteredView.deleted]!!,
+                null
+            )
+            processTemplates.add(processTemplate)
         }
 
         return processTemplates.toList()
@@ -133,7 +127,19 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         )
         val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
 
-        return makeProcessTemplate(row, owner, taskTemplates)
+        return ProcessTemplate(
+            row[ProcessTemplatesView.id]!!,
+            row[ProcessTemplatesView.title]!!,
+            row[ProcessTemplatesView.description]!!,
+            row[ProcessTemplatesView.durationLimit],
+            owner,
+            row[ProcessTemplatesView.createdAt]!!,
+            row[ProcessTemplatesView.formerVersion],
+            row[ProcessTemplatesView.processCount]!!,
+            row[ProcessTemplatesView.runningProcesses]!!,
+            row[ProcessTemplatesView.deleted]!!,
+            taskTemplates
+        )
     }
 
     /**
@@ -269,7 +275,6 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                         (it.deleted notEq true)
             }
         }
-
         return affectedRows != 0
     }
 }

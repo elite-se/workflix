@@ -13,13 +13,14 @@ object TasksDAO : TasksDAOInterface {
     /**
      * Returns the id of the process the given task belongs to.
      */
-    override fun getProcessIdForTask(taskId: Int): Int {
+    override fun getProcessIdForTask(taskId: Int): Int? {
         val result = TasksTable.select().where { TasksTable.id eq taskId }
 
         val row = result.rowSet
         if (!row.next())
-            throw NotFoundException("task was not found")
+            return null
 
         return row[TasksTable.processId]!!
     }
+
 }
