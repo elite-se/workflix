@@ -3,7 +3,6 @@
 export type TaskCommentType = {
   id: number,
   creatorId: string,
-  title: string,
   content: string,
   createdAt: string
 }
