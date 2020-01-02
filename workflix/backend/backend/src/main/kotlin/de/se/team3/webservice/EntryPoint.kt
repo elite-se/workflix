@@ -1,7 +1,13 @@
 package de.se.team3.webservice
 
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.webservice.handlers.*
+import de.se.team3.webservice.handlers.ProcessGroupHandler
+import de.se.team3.webservice.handlers.ProcessGroupMembershipHandler
+import de.se.team3.webservice.handlers.ProcessTemplatesHandler
+import de.se.team3.webservice.handlers.ProcessesHandler
+import de.se.team3.webservice.handlers.ProcessesRunningHandler
+import de.se.team3.webservice.handlers.UserHandler
+import de.se.team3.webservice.handlers.UserRoleHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 
@@ -49,12 +55,12 @@ fun main(args: Array<String>) {
         }
     }
 
-    //user roles
-    app.post("userRoles") {ctx ->
+    // user roles
+    app.post("userRoles") { ctx ->
         UserRoleHandler.create(ctx)
     }
 
-    //processes
+    // processes
     app.get("processes") { ctx -> ProcessesHandler.getAll(ctx) }
     app.get("processes/:processId") { ctx ->
         try {

@@ -7,7 +7,8 @@ data class UserRole(
     val name: String,
     val description: String,
     val createdAt: Instant,
-    val members: List<User>) {
-    constructor(name: String, description: String):
+    val members: List<User>
+) {
+    constructor(name: String, description: String) :
         this(0, name, description, Instant.now(), ArrayList<User>())
 }

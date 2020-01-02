@@ -5,7 +5,7 @@ import de.se.team3.logic.domain.UserRole
 import de.se.team3.persistence.meta.UserRolesTable
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 
-object UserRoleDAO: UserRoleDAOInterface {
+object UserRoleDAO : UserRoleDAOInterface {
     override fun createUserRole(userRole: UserRole): Int {
         return UserRolesTable.insertAndGenerateKey {
             it.name to userRole.name
