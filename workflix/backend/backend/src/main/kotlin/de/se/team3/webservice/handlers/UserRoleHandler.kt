@@ -1,12 +1,10 @@
 package de.se.team3.webservice.handlers
 
-import de.se.team3.logic.container.ProcessGroupContainer
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.domain.UserRole
 import io.javalin.http.Context
-import org.json.JSONArray
 import java.util.NoSuchElementException
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 

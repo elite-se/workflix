@@ -3,8 +3,16 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.UserRoleDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
-import de.se.team3.persistence.meta.*
-import me.liuwj.ktorm.dsl.*
+import de.se.team3.persistence.meta.UserRoleMembers
+import de.se.team3.persistence.meta.UserRolesTable
+import me.liuwj.ktorm.dsl.and
+import me.liuwj.ktorm.dsl.delete
+import me.liuwj.ktorm.dsl.eq
+import me.liuwj.ktorm.dsl.insertAndGenerateKey
+import me.liuwj.ktorm.dsl.iterator
+import me.liuwj.ktorm.dsl.select
+import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.where
 
 object UserRoleDAO : UserRoleDAOInterface {
     override fun getAllUserRoles(): List<UserRole> {

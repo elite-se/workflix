@@ -1,8 +1,8 @@
 package de.se.team3.logic.domain
 
+import java.time.Instant
 import org.json.JSONArray
 import org.json.JSONObject
-import java.time.Instant
 
 data class UserRole(
     var id: Int,
