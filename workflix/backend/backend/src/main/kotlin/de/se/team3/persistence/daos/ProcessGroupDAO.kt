@@ -44,17 +44,19 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
         return processGroups
     }
 
-    override fun getProcessGroup(processGroupId: Int): ProcessGroup {
+    override fun getProcessGroup(processGroupId: Int): ProcessGroup? {
         val processGroupResult = ProcessGroupsTable
             .select()
             .where { ProcessGroupsTable.id eq processGroupId }
 
-        val members = ArrayList<User>()
-        for (row in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
-            members.add(UserDAO.getUser(row[ProcessGroupMembers.userID]!!))
-        }
+        val row = processGroupResult.rowSet
+        if (!row.next())
+            return null
 
-        val row = processGroupResult.rowSet.iterator().next()
+        val members = ArrayList<User>()
+        for (memberRow in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
+            members.add(UserDAO.getUser(memberRow[ProcessGroupMembers.userID]!!))
+        }
 
         val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
 
@@ -78,13 +80,13 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
     /**
      * Sets the deleted flag for the given process template.
+     *
+     * @return true if the process group do be deleted existed
      */
-    override fun deleteProcessGroup(processGroupId: Int) {
-            val affectedRows = ProcessGroupsTable.update {
-                it.deleted to true
-                where { it.id eq processGroupId }
-            }
-            if (affectedRows == 0)
-                throw NoSuchElementException()
+    override fun deleteProcessGroup(processGroupId: Int): Boolean {
+        return ProcessGroupsTable.update {
+            it.deleted to true
+            where { it.id eq processGroupId }
+        } != 0
     }
 }
