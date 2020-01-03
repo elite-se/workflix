@@ -80,7 +80,6 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     if (!assignment || assignment.closed) { return undefined }
     return () => {
       new ProcessApi().markAsDone(task.id, assignee.id)
-        .then(res => console.debug(res))
         .then(() => {
           this.onAssignmentsChanged(task.assignments.map(ass => ass.id === assignment.id ? {
             ...ass,
