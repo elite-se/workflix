@@ -7,7 +7,7 @@ import { Colors } from '@blueprintjs/core'
 import type { ProcessedTaskTemplateType } from './CreateProcessTemplate'
 
 type PropsType = {
-  tasks: Array<ProcessedTaskTemplateType> /* sorted by calculated endDate */
+  tasks: Array<ProcessedTaskTemplateType> /* sorted by calculated startDate */
 }
 
 type StateType = {
@@ -45,8 +45,8 @@ class ProcessChart extends React.Component<PropsType, StateType> {
     if (tasks.length === 0) {
       return null
     }
-    const maxLevel = tasks[tasks.length - 1].endDate
-    const scale = width / maxLevel
+    const lastEndDate = Math.max(...tasks.map(task => task.endDate))
+    const scale = width / lastEndDate
 
     return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute' }}>
       <defs>
