@@ -29,11 +29,6 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
                 members.add(UserDAO.getUser(memberRow[ProcessGroupMembers.userID]!!))
             }
 
-            val processes = ArrayList<Process>()
-            for (processRow in ProcessesTable.select().where { ProcessesTable.groupId eq ProcessGroupsTable.id }) {
-                processes.add(ProcessDAO.getProcess(processRow[ProcessesTable.id]!!)!!)
-            }
-
             val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
 
             processGroups.add(ProcessGroup(
@@ -42,7 +37,6 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
                 row[ProcessGroupsTable.title]!!,
                 row[ProcessGroupsTable.description]!!,
                 row[ProcessGroupsTable.createdAt]!!,
-                processes,
                 members
             ))
         }
@@ -60,11 +54,6 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
             members.add(UserDAO.getUser(row[ProcessGroupMembers.userID]!!))
         }
 
-        val processes = ArrayList<Process>()
-        for (row in ProcessesTable.select().where { ProcessesTable.groupId eq processGroupId }) {
-            processes.add(ProcessDAO.getProcess(row[ProcessesTable.id]!!)!!)
-        }
-
         val row = processGroupResult.rowSet.iterator().next()
 
         val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
@@ -74,7 +63,6 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
                             row[ProcessGroupsTable.title]!!,
                             row[ProcessGroupsTable.description]!!,
                             row[ProcessGroupsTable.createdAt]!!,
-                            processes,
                             members)
     }
 

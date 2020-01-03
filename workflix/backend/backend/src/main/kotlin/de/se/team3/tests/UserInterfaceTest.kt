@@ -47,12 +47,4 @@ fun main(args: Array<String>) {
     val userJSON = user.toJSON()
 
     println(userJSON)
-
-    val getGroups = HttpRequest.newBuilder()
-        .uri(URI.create("https://wf-backend.herokuapp.com/processGroups"))
-        .GET()
-        .build()
-    val responseGetGroups = client.send(getGroups, HttpResponse.BodyHandlers.ofString())
-
-    println(responseGetGroups.body())
 }

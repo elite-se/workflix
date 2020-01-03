@@ -1,10 +1,10 @@
 package de.se.team3.logic.domain
 
 import de.se.team3.logic.container.UserContainer
-import org.json.JSONArray
-import org.json.JSONObject
 import java.time.Instant
 import kotlin.collections.ArrayList
+import org.json.JSONArray
+import org.json.JSONObject
 
 class ProcessGroup(
     val id: Int?,
