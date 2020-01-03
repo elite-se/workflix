@@ -22,7 +22,6 @@ export type TaskTemplateType = {
   name: string,
   description: string,
   estimatedDuration: number,
-  durationLimit: number,
   necessaryClosings: number,
   predecessors: number[]
 }
