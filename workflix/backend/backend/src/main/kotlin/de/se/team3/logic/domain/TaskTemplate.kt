@@ -13,7 +13,6 @@ class TaskTemplate(
     val name: String,
     val description: String,
     val estimatedDuration: Int?,
-    val durationLimit: Int?,
     val necessaryClosings: Int
 ) {
 
@@ -23,9 +22,6 @@ class TaskTemplate(
     val predecessors = HashSet<TaskTemplate>()
 
     init {
-        if (estimatedDuration != null && durationLimit != null)
-            if (estimatedDuration > durationLimit)
-                throw InvalidInputException("a estimated duration greater than the duration limit makes no sense")
         if (necessaryClosings < 1)
             throw InvalidInputException("there must be at least one user who closes a task explicitly")
     }

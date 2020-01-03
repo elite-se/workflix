@@ -61,7 +61,6 @@ object TaskTemplatesTable : Table<Nothing>("task_templates") {
     val name by varchar("name")
     val description by text("description")
     val estimatedDuration by int("estimated_duration")
-    val durationLimit by int("duration_limit")
     val necessaryClosings by int("necessary_closings")
 }
 

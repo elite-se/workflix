@@ -156,7 +156,6 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 row.name to taskTemplate.name
                 row.description to taskTemplate.description
                 row.estimatedDuration to taskTemplate.estimatedDuration
-                row.durationLimit to taskTemplate.durationLimit
                 row.necessaryClosings to taskTemplate.necessaryClosings
             }
             idMapping.put(taskTemplate.id, generatedTaskTemplateId as Int)
