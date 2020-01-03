@@ -17,8 +17,8 @@ const RouterWrapper = styled<{}, {}, 'div'>('div')`
 class App extends React.Component<{}> {
   render () {
     return <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-      <Header />
-      <RouterWrapper><MainRouter /></RouterWrapper>
+      <Header/>
+      <RouterWrapper><MainRouter/></RouterWrapper>
     </div>
   }
 }

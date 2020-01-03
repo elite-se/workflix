@@ -41,16 +41,16 @@ function withPromiseResolver<P1: {}, P2: {}> (
       render () {
         if (this.state.error) {
           return <CenterScreen>
-            <Icon icon='error' iconSize={36} style={{ padding: '20px' }} />
+            <Icon icon='error' iconSize={36} style={{ padding: '20px' }}/>
             <H2>Ein Fehler ist aufgetreten.</H2>
             <Text>{this.state.error}</Text>
             <Button icon='refresh' style={{ margin: '20px' }} text='Erneut versuchen'
-                    onClick={this.handleClickRefresh} />
+                    onClick={this.handleClickRefresh}/>
           </CenterScreen>
         } else if (this.state.props) {
-          return <WrappedComponent {...this.props} {...this.state.props} />
+          return <WrappedComponent {...this.props} {...this.state.props}/>
         } else {
-          return <CenterScreen><Spinner /></CenterScreen>
+          return <CenterScreen><Spinner/></CenterScreen>
         }
       }
     }

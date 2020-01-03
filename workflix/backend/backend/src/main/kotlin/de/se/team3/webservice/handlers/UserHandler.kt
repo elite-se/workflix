@@ -40,28 +40,4 @@ object UserHandler {
             ctx.status(404).result("user not found")
         }
     }
-
-    fun getAllRoles(ctx: Context, page: Int) {
-        TODO()
-    }
-
-    fun createRole(ctx: Context) {
-        TODO()
-    }
-
-    fun updateRole(ctx: Context, userRoleID: Int) {
-        TODO()
-    }
-
-    fun deleteRole(ctx: Context, userRoleID: Int) {
-        TODO()
-    }
-
-    fun addUserToRole(ctx: Context) {
-        TODO()
-    }
-
-    fun deleteUserFromRole(ctx: Context, userID: String, userRoleID: Int) {
-        TODO()
-    }
 }

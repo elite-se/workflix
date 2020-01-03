@@ -63,7 +63,7 @@ object UserDAO : UserDAOInterface {
      * Updates the user data on basis of the given user's id.
      */
     override fun updateUser(user: User) {
-        val generatedProcessTemplateId = UsersTable.update {
+        UsersTable.update {
             it.name to user.name
             it.displayname to user.displayname
             it.email to user.email
