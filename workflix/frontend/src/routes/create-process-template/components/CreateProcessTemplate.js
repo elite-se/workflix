@@ -3,7 +3,7 @@
 import React from 'react'
 import ProcessChart from './ProcessChart'
 import { times } from 'lodash'
-import { H2 } from '@blueprintjs/core'
+import { Drawer, H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
@@ -74,13 +74,20 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     })
   }
 
+  unselectTask = () => this.setState({ selectedTaskId: null })
+
   renderTaskTemplateEditor (): React$Node {
     const { tasks, selectedTaskId } = this.state
     const task = tasks.find(task => task.id === selectedTaskId)
-    if (!task) {
-      return null
-    }
-    return <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks}/>
+    return <Drawer
+      size={Drawer.SIZE_SMALL}
+      hasBackdrop={false}
+      isOpen={task != null}
+      title={task?.name || ''}
+      onClose={this.unselectTask}
+      style={{ overflow: 'auto' }}>
+      {task && <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks}/>}
+    </Drawer>
   }
 
   render () {
