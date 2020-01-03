@@ -33,9 +33,9 @@ object ProcessGroupHandler {
         val ownerID = processGroupJsonObject.getString("ownerId")
 
         try {
-            val processGroup = ProcessGroup(title, description, ownerID, Instant.now())
+            val processGroup = ProcessGroup(ownerID, title, description)
             val newId = ProcessGroupContainer.createProcessGroup(processGroup)
-            processGroup.id = newId
+
             val newIdObject = JSONObject()
             newIdObject.put("newId", newId)
 
@@ -54,10 +54,8 @@ object ProcessGroupHandler {
             val description = processGroupJsonObject.getString("description")
             val ownerID = processGroupJsonObject.getString("ownerId")
 
-            val group = ProcessGroupContainer.getProcessGroup(processGroupId)
-            group.title = title
-            group.description = description
-            group.owner = UserContainer.getUser(ownerID)
+            val processGroup = ProcessGroup(processGroupId, ownerID, title, description)
+            ProcessGroupContainer.updateProcessGroup(processGroup)
         } catch (e: JSONException) {
             ctx.status(400).result(e.toString())
         } catch (e: NoSuchElementException) {

@@ -5,15 +5,18 @@ import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupsMembersTable
 import de.se.team3.persistence.meta.ProcessGroupsTable
+import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
+import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
 
 // TODO(test) the entire class
 
-object ProcessGroupDAO : ProcessGroupDAOInterface {
+object ProcessGroupsDAO : ProcessGroupDAOInterface {
+
     override fun getAllProcessGroups(): List<ProcessGroup> {
         val processGroupResult = ProcessGroupsTable
             .select()
@@ -80,6 +83,25 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
     }
 
     /**
+     * Updates the given process template.
+     *
+     * @return True if and only if the given process group exists.
+     */
+    override fun updateProcessGroup(processGroup: ProcessGroup): Boolean {
+        val affectedRows = ProcessGroupsTable.update { row ->
+            row.title to processGroup.title
+            row.description to processGroup.description
+            row.ownerId to processGroup.owner.id
+
+            where {
+                (row.id eq processGroup.id!!) and
+                        (row.deleted notEq true)
+            }
+        }
+        return affectedRows != 0
+    }
+
+    /**
      * Sets the deleted flag for the given process template.
      *
      * @return true if the process group do be deleted existed
@@ -87,7 +109,10 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
     override fun deleteProcessGroup(processGroupId: Int): Boolean {
         return ProcessGroupsTable.update {
             it.deleted to true
-            where { it.id eq processGroupId }
+            where {
+                (it.id eq processGroupId) and
+                        (it.deleted notEq true)
+            }
         } != 0
     }
 }

@@ -9,8 +9,8 @@ import kotlin.collections.ArrayList
 import org.json.JSONArray
 import org.json.JSONObject
 
-class ProcessGroup(
-    var id: Int?,
+data class ProcessGroup(
+    val id: Int?,
     @JsonSerialize(using = UserSerializer::class)
     var owner: User,
     var title: String,
@@ -19,11 +19,17 @@ class ProcessGroup(
     val createdAt: Instant,
     val members: MutableList<User>
 ) {
-    
+
     /**
      * Create-Constructor
      */
-    constructor(title: String, description: String, ownerID: String) :
-            this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), ArrayList<User>())
+    constructor(ownerID: String, title: String, description: String)
+            : this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), ArrayList<User>())
+
+    /**
+     * Update-Constructor
+     */
+    constructor(id: Int, ownerId: String, title: String, description: String)
+            : this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), ArrayList<User>())
 
 }
