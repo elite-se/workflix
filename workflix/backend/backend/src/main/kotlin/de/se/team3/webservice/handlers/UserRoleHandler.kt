@@ -1,12 +1,11 @@
 package de.se.team3.webservice.handlers
 
-import de.se.team3.logic.container.ProcessGroupContainer
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.domain.UserRole
 import io.javalin.http.Context
+import java.util.NoSuchElementException
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.NoSuchElementException
 
 object UserRoleHandler {
     fun getAllRoles(ctx: Context, page: Int) {

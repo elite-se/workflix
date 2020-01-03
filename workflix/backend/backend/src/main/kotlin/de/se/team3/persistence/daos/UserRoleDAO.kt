@@ -3,10 +3,8 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.UserRoleDAOInterface
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.persistence.meta.UserRolesTable
-import de.se.team3.persistence.meta.UsersTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.like
 import me.liuwj.ktorm.dsl.update
 
 object UserRoleDAO : UserRoleDAOInterface {
