@@ -1,8 +1,6 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.UserRoleDAOInterface
-import de.se.team3.logic.domain.Process
-import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.persistence.meta.*
@@ -15,19 +13,16 @@ object UserRoleDAO : UserRoleDAOInterface {
 
         val userRoles = ArrayList<UserRole>()
 
-        for (row in userRoleResult) {
-            //TODO: members
+        for (roleRow in userRoleResult) {
             val members = ArrayList<User>()
-            //for (row in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
-            //    members.add(UserDAO.getUser(row[ProcessGroupMembers.userID]!!))
-            //}
+            for (memberRow in UserRoleMembers.select().where { UserRoleMembers.userRoleID eq UserRolesTable.ID }) {
+                members.add(UserDAO.getUser(memberRow[UserRoleMembers.userID]!!))
+            }
 
-            val row = userRoleResult.rowSet.iterator().next()
-
-            userRoles.add(UserRole(row[UserRolesTable.ID]!!,
-                row[UserRolesTable.name]!!,
-                row[UserRolesTable.description]!!,
-                row[UserRolesTable.createdAt]!!,
+            userRoles.add(UserRole(roleRow[UserRolesTable.ID]!!,
+                roleRow[UserRolesTable.name]!!,
+                roleRow[UserRolesTable.description]!!,
+                roleRow[UserRolesTable.createdAt]!!,
                 members))
         }
 
@@ -39,11 +34,10 @@ object UserRoleDAO : UserRoleDAOInterface {
             .select()
             .where { UserRolesTable.ID eq userRoleID }
 
-        //TODO: members
         val members = ArrayList<User>()
-        //for (row in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
-        //    members.add(UserDAO.getUser(row[ProcessGroupMembers.userID]!!))
-        //}
+        for (row in UserRoleMembers.select().where { UserRoleMembers.userRoleID eq userRoleID }) {
+            members.add(UserDAO.getUser(row[UserRoleMembers.userID]!!))
+        }
 
         val row = userRoleResult.rowSet.iterator().next()
 
