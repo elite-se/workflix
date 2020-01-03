@@ -9,7 +9,13 @@
     "react/jsx-closing-tag-location":  "off",
     "react/jsx-closing-bracket-location": "off",
     "react/jsx-first-prop-new-line": "off",
-    "react/jsx-handler-names": "off"
+    "react/jsx-handler-names": "off",
+    "react/jsx-tag-spacing": ["error", {
+      "closingSlash": "never",
+      "beforeSelfClosing": "never",
+      "afterOpening": "never",
+      "beforeClosing": "never"
+    }]
   },
   "globals": {
     "__DEV__": false,
