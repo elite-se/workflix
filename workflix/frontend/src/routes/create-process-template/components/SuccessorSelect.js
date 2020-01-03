@@ -83,8 +83,10 @@ class SuccessorSelect extends React.Component<PropsType> {
         onRemove: this.handleTagRemove,
         rightElement: clearButton
       }}
+      fill
       selectedItems={succs}
       onItemSelect={this.handleSuccTaskSelect}
+      popoverProps={{ usePortal: false }}
     />
   }
 
