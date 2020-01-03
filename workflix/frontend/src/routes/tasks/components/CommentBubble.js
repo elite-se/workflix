@@ -26,7 +26,8 @@ class CommentBubble extends React.Component<PropsType> {
       }}>{comment.createdAt}</small>
       <p style={{
         wordWrap: 'break-word',
-        hyphens: 'auto'
+        hyphens: 'auto',
+        whiteSpace: 'break-spaces'
       }}>{comment.content}</p>
     </TalkBubble>
   }
