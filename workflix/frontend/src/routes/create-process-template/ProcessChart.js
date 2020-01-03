@@ -1,7 +1,7 @@
 // @flow
 
-import React from 'react'
 import type { Node } from 'react'
+import React from 'react'
 import { flatMap } from 'lodash'
 import { Colors } from '@blueprintjs/core'
 import type { ProcessedTaskTemplateType } from './CreateProcessTemplate'
@@ -48,12 +48,12 @@ class ProcessChart extends React.Component<PropsType, StateType> {
     const maxLevel = tasks[tasks.length - 1].endDate
     const scale = width / maxLevel
 
-    return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute'}}>
+    return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute' }}>
       <defs>
         <marker id='Triangle' viewBox='0 0 10 10' refX='10' refY='5'
                 markerUnits='strokeWidth' markerWidth='5' markerHeight='5'
                 orient='auto'>
-          <path d='M 0 0 L 10 5 L 0 10 z' fill={Colors.GRAY1} />
+          <path d='M 0 0 L 10 5 L 0 10 z' fill={Colors.GRAY1}/>
         </marker>
       </defs>
       {[
@@ -80,15 +80,18 @@ class ProcessChart extends React.Component<PropsType, StateType> {
                     h ${node.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
                 strokeWidth={NODE_STROKE_WIDTH}
                 strokeLinecap='round'
-                stroke={Colors.BLUE1} />
-                ))
+                stroke={Colors.BLUE1}/>
+        ))
       ]}
     </svg>
   }
 
   render () {
     const div = this.div
-    return <div ref={this.setDivRef} style={{ flex: 1, position: 'relative' }}>
+    return <div ref={this.setDivRef} style={{
+      flex: 1,
+      position: 'relative'
+    }}>
       {div && this.renderSvg(div.getBoundingClientRect().width)}
     </div>
   }

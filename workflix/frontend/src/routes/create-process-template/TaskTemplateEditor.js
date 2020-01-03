@@ -36,10 +36,10 @@ class TaskTemplateEditor extends React.Component<PropsType> {
       <H3>Edit Task Template</H3>
       <div><H4>Name:</H4> <input type='text' className='bp3-input' placeholder='Name...'
                                   value={this.props.task.name}
-                                  onChange={this.onTitleChange} /></div>
+                                  onChange={this.onTitleChange}/></div>
       <div><H4>Duration:</H4> <input type='number' className='bp3-input' placeholder='Duration...'
                                      value={this.props.task.estimatedDuration}
-                                     onChange={this.onDurationChange} min={0.1} step={0.1} /></div>
+                                     onChange={this.onDurationChange} min={0.1} step={0.1}/></div>
     </div>
   }
 }

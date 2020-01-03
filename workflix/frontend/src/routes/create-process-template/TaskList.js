@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { ITEM_HEIGHT } from './ProcessChart'
-import { Button} from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 import type { ProcessedTaskTemplateType } from './CreateProcessTemplate'
 import styled from 'styled-components'
 
@@ -36,13 +36,13 @@ class TaskList extends React.Component<PropsType> {
       {
         this.props.taskTemplates.map(
           node => <StyledButton className='bp3-minimal'
-                          onClick={this.editTask(node.id)}
-                          key={node.id}>{node.name}</StyledButton>
+                                onClick={this.editTask(node.id)}
+                                key={node.id}>{node.name}</StyledButton>
         )
       }
       <StyledButton style={{ marginTop: '10px' }}
-              className='bp3-minimal' icon='add'
-              text='Add task' onClick={this.props.createTask} />
+                    className='bp3-minimal' icon='add'
+                    text='Add task' onClick={this.props.createTask}/>
     </ListContainer>
   }
 }

@@ -79,7 +79,7 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     if (!task) {
       return null
     }
-    return <TaskTemplateEditor task={task} onChange={this.selectedTaskChanged} />
+    return <TaskTemplateEditor task={task} onChange={this.selectedTaskChanged}/>
   }
 
   render () {
@@ -91,8 +91,8 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     }}>
       <H2 style={{ textAlign: 'center' }}>Create a new Process Template</H2>
       <div style={{ display: 'flex' }}>
-        <TaskList taskTemplates={processedNodes} createTask={this.createTask} editTask={this.editTask} />
-        <ProcessChart tasks={processedNodes} />
+        <TaskList taskTemplates={processedNodes} createTask={this.createTask} editTask={this.editTask}/>
+        <ProcessChart tasks={processedNodes}/>
       </div>
       {this.renderTaskTemplateEditor()}
     </div>

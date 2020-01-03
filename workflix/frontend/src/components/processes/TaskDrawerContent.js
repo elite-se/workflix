@@ -22,7 +22,7 @@ class TaskDrawerContent extends React.Component<PropsType> {
       <p>{task.taskTemplate.description}</p>
 
       <h4>Comments</h4>
-      <TaskComments task={task} users={this.props.users} />
+      <TaskComments task={task} users={this.props.users}/>
     </StyledContainer>
   }
 }

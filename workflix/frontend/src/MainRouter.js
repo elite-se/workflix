@@ -10,11 +10,11 @@ import CreateProcessTemplate from './routes/create-process-template/CreateProces
 class MainRouter extends React.Component<{}> {
   render () {
     return <Router>
-      <Redirect from='/' to='tasks' />
-      <TasksOverview path='tasks' />
-      <Users path='users' />
-      <ProcessTemplates path='process-templates' />
-      <CreateProcessTemplate path='process-templates/create' />
+      <Redirect from='/' to='tasks'/>
+      <TasksOverview path='tasks'/>
+      <Users path='users'/>
+      <ProcessTemplates path='process-templates'/>
+      <CreateProcessTemplate path='process-templates/create'/>
     </Router>
   }
 }

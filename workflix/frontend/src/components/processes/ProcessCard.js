@@ -50,11 +50,11 @@ class ProcessCard extends React.Component<PropsType> {
               task={task}
               selected={this.isSelected(task)}
               onTaskSelected={this.props.onTaskSelected}
-              users={this.props.users} />
+              users={this.props.users}/>
           ))
         }
       </TaskList>
-      <ProcessProgress animate={false} intent='success' value={taskProgress} />
+      <ProcessProgress animate={false} intent='success' value={taskProgress}/>
     </CardWithMargin>
   }
 }
