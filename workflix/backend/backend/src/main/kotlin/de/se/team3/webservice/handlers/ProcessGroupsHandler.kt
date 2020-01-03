@@ -1,14 +1,10 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.ProcessGroupContainer
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.webservice.util.JsonHelper
-import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
-import java.time.Instant
 import java.util.NoSuchElementException
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 

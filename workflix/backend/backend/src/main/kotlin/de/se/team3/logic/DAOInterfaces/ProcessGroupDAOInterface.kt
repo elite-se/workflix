@@ -13,5 +13,4 @@ interface ProcessGroupDAOInterface {
     fun updateProcessGroup(processGroup: ProcessGroup): Boolean
 
     fun deleteProcessGroup(processGroupId: Int): Boolean
-
 }

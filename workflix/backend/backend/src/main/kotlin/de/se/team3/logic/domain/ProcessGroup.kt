@@ -6,8 +6,6 @@ import de.se.team3.webservice.util.InstantSerializer
 import de.se.team3.webservice.util.UserSerializer
 import java.time.Instant
 import kotlin.collections.ArrayList
-import org.json.JSONArray
-import org.json.JSONObject
 
 data class ProcessGroup(
     val id: Int?,
@@ -23,13 +21,12 @@ data class ProcessGroup(
     /**
      * Create-Constructor
      */
-    constructor(ownerID: String, title: String, description: String)
-            : this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), ArrayList<User>())
+    constructor(ownerID: String, title: String, description: String) :
+            this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), ArrayList<User>())
 
     /**
      * Update-Constructor
      */
-    constructor(id: Int, ownerId: String, title: String, description: String)
-            : this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), ArrayList<User>())
-
+    constructor(id: Int, ownerId: String, title: String, description: String) :
+            this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), ArrayList<User>())
 }
