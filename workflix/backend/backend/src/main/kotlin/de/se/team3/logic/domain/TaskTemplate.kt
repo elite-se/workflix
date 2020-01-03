@@ -12,7 +12,7 @@ class TaskTemplate(
     val id: Int,
     val name: String,
     val description: String,
-    val estimatedDuration: Int?,
+    val estimatedDuration: Int,
     val necessaryClosings: Int
 ) {
 

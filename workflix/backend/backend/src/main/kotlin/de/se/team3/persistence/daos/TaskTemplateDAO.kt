@@ -19,7 +19,7 @@ object TaskTemplateDAO : TaskTemplateDAOInterface {
             row[TaskTemplatesTable.id]!!,
             row[TaskTemplatesTable.name]!!,
             row[TaskTemplatesTable.description]!!,
-            row[TaskTemplatesTable.estimatedDuration],
+            row[TaskTemplatesTable.estimatedDuration]!!,
             row[TaskTemplatesTable.necessaryClosings]!!
         )
     }
