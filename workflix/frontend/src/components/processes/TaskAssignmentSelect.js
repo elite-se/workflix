@@ -36,7 +36,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
 
   onItemSelect = (item: UserType) => {
     const task = this.props.task
-    if (task.assignments.map(ass => ass.assigneeId).find(id => id === item.id)) { return }
+    if (task.assignments.find(ass => ass.assigneeId === item.id)) { return }
     new ProcessApi().addAssignee(task.id, item.id)
       .then(json => {
         this.onAssignmentsChanged(task.assignments.concat({
