@@ -3,11 +3,10 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.ProcessGroupDAOInterface
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
-import de.se.team3.persistence.meta.ProcessGroupMembers
+import de.se.team3.persistence.meta.ProcessGroupsMembersTable
 import de.se.team3.persistence.meta.ProcessGroupsTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
@@ -22,9 +21,13 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
         val processGroups = ArrayList<ProcessGroup>()
 
         for (row in processGroupResult) {
+            val processGroupId = row[ProcessGroupsTable.id]!!
+            val groupMembersResult = ProcessGroupsMembersTable.select()
+                .where { ProcessGroupsMembersTable.processGroupId eq processGroupId }
+
             val members = ArrayList<User>()
-            for (memberRow in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq ProcessGroupsTable.id }) {
-                members.add(UserDAO.getUser(memberRow[ProcessGroupMembers.userID]!!))
+            for (memberRow in groupMembersResult) {
+                members.add(UserDAO.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
             }
 
             val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
@@ -52,8 +55,8 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
             return null
 
         val members = ArrayList<User>()
-        for (memberRow in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
-            members.add(UserDAO.getUser(memberRow[ProcessGroupMembers.userID]!!))
+        for (memberRow in ProcessGroupsMembersTable.select().where { ProcessGroupsMembersTable.processGroupId eq processGroupId }) {
+            members.add(UserDAO.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
         }
 
         val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
