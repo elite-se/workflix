@@ -69,6 +69,9 @@ fun main(args: Array<String>) {
     app.post("userRoles") { ctx ->
         UserRoleHandler.create(ctx)
     }
+    app.patch("userRoles/:userRoleId") { ctx ->
+        UserRoleHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
+    }
     app.delete("userRoles/:userRoleId") { ctx ->
         UserRoleHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
     }

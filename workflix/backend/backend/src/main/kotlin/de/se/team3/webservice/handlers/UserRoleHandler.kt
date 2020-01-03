@@ -1,5 +1,7 @@
 package de.se.team3.webservice.handlers
 
+import de.se.team3.logic.container.ProcessGroupContainer
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.domain.UserRole
 import io.javalin.http.Context
@@ -37,7 +39,21 @@ object UserRoleHandler {
     }
 
     fun update(ctx: Context, userRoleID: Int) {
-        TODO()
+        try {
+            val content = ctx.body()
+            val userRoleJsonObject = JSONObject(content)
+
+            val name = userRoleJsonObject.getString("name")
+            val description = userRoleJsonObject.getString("description")
+
+            val role = UserRoleContainer.getUserRole(userRoleID)
+            role.name = name
+            role.description = description
+        } catch (e: JSONException) {
+            ctx.status(400).result(e.toString())
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("user role not found")
+        }
     }
 
     fun delete(ctx: Context, userRoleID: Int) {

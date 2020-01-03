@@ -4,8 +4,8 @@ import java.time.Instant
 
 data class UserRole(
     var id: Int,
-    val name: String,
-    val description: String,
+    var name: String,
+    var description: String,
     val createdAt: Instant,
     val members: List<User>
 ) {

@@ -17,6 +17,15 @@ object UserRoleDAO : UserRoleDAOInterface {
         } as Int
     }
 
+    override fun updateUserRole(userRole: UserRole) {
+        UserRolesTable.update {
+            it.name to userRole.name
+            it.description to userRole.description
+
+            where { it.ID eq userRole.id }
+        }
+    }
+
     override fun deleteUserRole(userRoleID: Int) {
         val affectedRows = UserRolesTable.update {
             it.deleted to true
