@@ -18,8 +18,8 @@ import me.liuwj.ktorm.dsl.where
 object ProcessGroupsDAO : ProcessGroupDAOInterface {
 
     override fun getAllProcessGroups(): List<ProcessGroup> {
-        val processGroupResult = ProcessGroupsTable
-            .select()
+        val processGroupResult = ProcessGroupsTable.select()
+            .where { ProcessGroupsTable.deleted notEq true }
 
         val processGroups = ArrayList<ProcessGroup>()
 
