@@ -44,13 +44,13 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
             process={process}
             selectedTask={this.state.selectedTask}
             onTaskSelected={this.onTaskSelected}
-            users={this.props.users} />)
+            users={this.props.users}/>)
         )
       }</ProcessListWrapper>
       <TaskDrawer
         selectedTask={this.state.selectedTask}
         onClose={this.onDrawerClosed}
-        users={this.props.users} />
+        users={this.props.users}/>
     </div>
   }
 }

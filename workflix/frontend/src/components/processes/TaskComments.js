@@ -15,7 +15,7 @@ class TaskComments extends React.Component<PropsType> {
     const task = this.props.task
     return <div>
       {task.comments.map(comment => {
-        return <CommentBubble key={comment.id} comment={comment} users={this.props.users} />
+        return <CommentBubble key={comment.id} comment={comment} users={this.props.users}/>
       })}
     </div>
   }
