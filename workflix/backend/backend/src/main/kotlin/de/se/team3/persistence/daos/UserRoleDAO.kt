@@ -81,7 +81,6 @@ object UserRoleDAO : UserRoleDAOInterface {
             it.deleted to true
             where { it.ID eq userRoleID }
         } != 0
-
     }
 
     override fun addUserToRole(userID: String, userRoleID: Int) {
