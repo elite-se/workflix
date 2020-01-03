@@ -1,5 +1,7 @@
 package de.se.team3.logic.domain
 
+import org.json.JSONArray
+import org.json.JSONObject
 import java.time.Instant
 
 data class UserRole(
@@ -11,4 +13,14 @@ data class UserRole(
 ) {
     constructor(name: String, description: String) :
         this(0, name, description, Instant.now(), ArrayList<User>())
+
+    fun toJson(): JSONObject {
+        val json = JSONObject()
+        json.put("id", this.id)
+        json.put("name", this.name)
+        json.put("description", this.description)
+        json.put("createdAt", this.createdAt)
+        json.put("members", JSONArray(members.map { toJson() }))
+        return json
+    }
 }

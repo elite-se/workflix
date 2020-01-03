@@ -66,6 +66,9 @@ fun main(args: Array<String>) {
     }
 
     // user roles
+    app.get("userRoles") {ctx ->
+        UserRoleHandler.getAll(ctx)
+    }
     app.post("userRoles") { ctx ->
         UserRoleHandler.create(ctx)
     }

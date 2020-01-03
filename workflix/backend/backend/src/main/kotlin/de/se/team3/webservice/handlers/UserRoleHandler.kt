@@ -5,13 +5,24 @@ import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.domain.UserRole
 import io.javalin.http.Context
+import org.json.JSONArray
 import java.util.NoSuchElementException
 import org.json.JSONException
 import org.json.JSONObject
 
 object UserRoleHandler {
-    fun getAllRoles(ctx: Context, page: Int) {
-        TODO()
+    fun getAll(ctx: Context) {
+        try {
+            val roles = UserRoleContainer.getAllUserRoles()
+
+            val rolesArray = JSONArray(roles.map { it.toJson() })
+            val groupsJSON = JSONObject().put("roles", rolesArray)
+
+            ctx.result(groupsJSON.toString())
+                .contentType("application/json")
+        } catch (e: IllegalArgumentException) {
+            ctx.status(404).result("page not found")
+        }
     }
 
     fun create(ctx: Context) {

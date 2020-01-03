@@ -6,11 +6,11 @@ import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
 object UserRoleContainer : UserRoleContainerInterface {
     override fun getAllUserRoles(): List<UserRole> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return UserRoleDAO.getAllUserRoles()
     }
 
     override fun getUserRole(userRoleID: Int): UserRole {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return UserRoleDAO.getUserRole(userRoleID)
     }
 
     override fun createUserRole(userRole: UserRole): Int {
