@@ -2,7 +2,7 @@
 
 import { uniq } from 'lodash'
 import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
-import type { TaskAssignmentType, TaskTemplateType } from '../datatypes/Task'
+import type { TaskTemplateType } from '../datatypes/Task'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
