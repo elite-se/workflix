@@ -3,7 +3,7 @@
 import { uniq } from 'lodash'
 import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
-import { fetchChecking } from './FetchChecking'
+import { safeFetch } from './SafeFetch'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
@@ -22,19 +22,19 @@ type AddAssigneeResultType = {
 
 class ProcessApi {
   getProcesses (): Promise<ProcessType[]> {
-    return fetchChecking(processesBackend)
+    return safeFetch(processesBackend)
       .then(response => response.json())
       .then(result => result.processes)
       .then(processes => Promise.all(
         processes.map(proc =>
-          fetchChecking(`${processesBackend}/${proc.id}`)
+          safeFetch(`${processesBackend}/${proc.id}`)
             .then(response => response.json())
         )
       ))
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<AddAssigneeResultType> {
-    return fetchChecking(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
+    return safeFetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
       ...defaultFetchOptions,
       method: 'PUT',
       body: JSON.stringify({
@@ -45,7 +45,7 @@ class ProcessApi {
   }
 
   removeAssignee (taskId: number, assigneeId: string): Promise<Response> {
-    return fetchChecking(
+    return safeFetch(
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'DELETE' })
   }
@@ -58,7 +58,7 @@ class ProcessApi {
   getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {
     processTemplateIds = uniq(processTemplateIds)
     return Promise.all(processTemplateIds.map(procTempId =>
-      fetchChecking(`${processesTemplatesBackend}/${procTempId}`)
+      safeFetch(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
     ))
   }
