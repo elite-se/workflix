@@ -1,5 +1,6 @@
 package de.se.team3.webservice
 
+import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
@@ -41,6 +42,9 @@ fun main(args: Array<String>) {
         ctx.status(404).result(e.message)
     }
     app.exception(AlreadyExistsException::class.java) { e, ctx ->
+        ctx.status(409).result(e.message)
+    }
+    app.exception(AlreadyClosedException::class.java) { e, ctx ->
         ctx.status(409).result(e.message)
     }
     app.exception(JSONException::class.java) { e, ctx ->

@@ -3,6 +3,7 @@ package de.se.team3.logic.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
@@ -60,7 +61,7 @@ class Task(
     private fun closedAssignmentsCount(): Int {
         var closings = 0
         assignments!!.forEach { taskAssignment ->
-            if (taskAssignment.closed())
+            if (taskAssignment.isClosed())
                 closings++
         }
         return closings
@@ -143,7 +144,7 @@ class Task(
     /**
      * Deletes the specified task assignment.
      *
-     * @throws IllegalStateException Is thrown if the specified assignment is already closed.
+     * @throws AlreadyClosedException Is thrown if the specified assignment is already closed.
      * @throws NotFoundException Is thrown if a task assignment with the specified user does not
      * exist for this task.
      */
@@ -151,8 +152,8 @@ class Task(
         for (i in 0 until assignments!!.size) {
             val assignment = assignments.get(i)
             if (assignment.assigneeId == assigneeId) {
-                if (assignment.closed())
-                    throw IllegalStateException("a closed assignment could not be deleted")
+                if (assignment.isClosed())
+                    throw AlreadyClosedException("a closed assignment could not be deleted")
 
                 assignments.removeAt(i)
                 return
