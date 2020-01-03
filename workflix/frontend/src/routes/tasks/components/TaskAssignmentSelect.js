@@ -73,6 +73,23 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       .catch(err => console.error(err))
   }
 
+  onTagClick = (tag: AssigneeTagContent) => {
+    const task = this.props.task
+    const assignee = tag.props.assignee
+    const assignment = task.assignments.find(ass => ass.assigneeId === assignee.id)
+    if (!assignment || assignment.closed) { return undefined }
+    return () => {
+      new ProcessApi().markAsDone(task.id, assignee.id)
+        .then(() => {
+          this.onAssignmentsChanged(task.assignments.map(ass => ass.id === assignment.id ? {
+            ...ass,
+            closed: true
+          } : ass))
+        })
+        .catch(err => console.error(err))
+    }
+  }
+
   onAssignmentsChanged (newAssignments: TaskAssignmentType[]) {
     this.props.onTaskModified({
       ...this.props.task,
@@ -111,11 +128,15 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   tagProps = (tag: AssigneeTagContent) => {
     const assignment = this.props.task.assignments.find(ass => ass.assigneeId === tag.props.assignee.id)
     const done = assignment && assignment.closed
-    return done ? {
+    const propsDependingOnDone = done ? {
       intent: Intent.SUCCESS,
       icon: 'tick'
     } : {
       intent: Intent.PRIMARY
+    }
+    return {
+      ...propsDependingOnDone,
+      onClick: this.onTagClick(tag)
     }
   }
 

@@ -68,6 +68,12 @@ class ProcessApi {
       .then(procTemps => procTemps.flatMap(procTemp => procTemp.taskTemplates))
       .then(taskTemps => new Map<number, TaskTemplateType>(taskTemps.map(taskTemp => [taskTemp.id, taskTemp])))
   }
+
+  markAsDone (taskId: number, assigneeId: string): Promise<Response> {
+    return safeFetch(
+      `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
+      { method: 'PATCH' })
+  }
 }
 
 export default ProcessApi
