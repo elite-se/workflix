@@ -7,7 +7,7 @@ import { H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
-import type { TaskTemplateType } from '../../datatypes/TaskType'
+import type { TaskTemplateType } from '../../modules/datatypes/Task'
 
 export type ProcessedTaskTemplateType = {|
   ...TaskTemplateType,

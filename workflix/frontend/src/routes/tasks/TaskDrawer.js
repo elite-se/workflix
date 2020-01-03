@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { Drawer } from '@blueprintjs/core'
-import type { TaskTemplateType, TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../modules/datatypes/Task'
 import TaskDrawerContent from './TaskDrawerContent'
-import type { UserType } from '../../datatypes/models'
+import type { UserType } from '../../modules/datatypes/User'
 
 type PropsType = {|
   selectedTask: ?TaskType,

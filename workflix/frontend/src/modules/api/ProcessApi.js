@@ -1,8 +1,8 @@
 // @flow
 
-import type { ProcessTemplateType, ProcessType } from '../datatypes/ProcessType'
 import { uniq } from 'lodash'
-import type { TaskTemplateType } from '../datatypes/TaskType'
+import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
+import type { TaskAssignmentType, TaskTemplateType } from '../datatypes/Task'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`

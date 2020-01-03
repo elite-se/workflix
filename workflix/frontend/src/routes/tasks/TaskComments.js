@@ -1,9 +1,9 @@
 // @flow
 
 import React from 'react'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskType } from '../../modules/datatypes/Task'
 import CommentBubble from './CommentBubble'
-import type { UserType } from '../../datatypes/models'
+import type { UserType } from '../../modules/datatypes/User'
 
 type PropsType = {
   task: TaskType,
