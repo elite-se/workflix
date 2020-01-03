@@ -6,6 +6,7 @@ import type { UserType } from '../../datatypes/models'
 import type { TaskAssignmentType, TaskType } from '../../datatypes/TaskType'
 import { Button, MenuItem } from '@blueprintjs/core'
 import ProcessApi from '../../api/ProcessApi'
+import { sortBy } from 'lodash'
 
 const UserSelect = MultiSelect.ofType<UserType>()
 
@@ -91,32 +92,23 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   itemListPredicate = (query: string, items: UserType[]) => {
     const qLower = query.toLocaleLowerCase()
     // noinspection UnnecessaryLocalVariableJS (flow will fail otherwise)
-    const filterdAndSorted: UserType[] = items.filter(item =>
+    const filteredUsers: UserType[] = items.filter(item =>
       item.name.toLocaleLowerCase().includes(qLower) &&
       !this.props.task.assignments.find(ass => ass.assigneeId === item.id)
-    ).sort((a, b) => {
-      const aLower = a.name.toLocaleLowerCase()
-      const bLower = b.name.toLocaleLowerCase()
-      const aStart = aLower.startsWith(qLower)
-      const bStart = bLower.startsWith(qLower)
-      if (aStart && !bStart) {
-        return -1
-      } else if (!aStart && bStart) {
-        return 1
-      } else {
-        return aLower.localeCompare(bLower)
-      }
-    })
-    return filterdAndSorted
+    )
+    const filteredAndSorted: UserType[] = sortBy(
+      filteredUsers,
+      item => !item.name.toLocaleLowerCase().startsWith(qLower),
+      item => item.name.toLocaleLowerCase()
+    )
+    return filteredAndSorted
   }
 
   render () {
     const task = this.props.task
     const assignees = this.usersArray
-      .filter(user => task.assignments.map(assignees => assignees.assigneeId)
-        .find(assId => assId === user.id))
-    const clearButton =
-      task.assignments.length > 0 ? <Button icon='cross' minimal onClick={this.onClear} /> : undefined
+      .filter(user => task.assignments.find(ass => ass.assigneeId === user.id))
+    const clearButton = task.assignments.length > 0 && <Button icon='cross' minimal onClick={this.onClear} />
     return <UserSelect
       items={this.usersArray}
       itemRenderer={this.renderUser}
