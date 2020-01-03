@@ -74,13 +74,24 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     })
   }
 
+  onDeleteTask = () => {
+    this.setState(state => ({
+      tasks: state.tasks
+        .filter(task => task.id !== state.selectedTaskId)
+        .map(task => ({
+          ...task,
+          predecessors: task.predecessors.filter(id => id !== state.selectedTaskId)
+        }))
+    }))
+  }
+
   renderTaskTemplateEditor (): React$Node {
     const { tasks, selectedTaskId } = this.state
     const task = tasks.find(task => task.id === selectedTaskId)
     if (!task) {
       return null
     }
-    return <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks}/>
+    return <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}/>
   }
 
   render () {
