@@ -5,10 +5,7 @@ import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
-import de.se.team3.persistence.meta.ProcessGroupMembers
-import de.se.team3.persistence.meta.ProcessGroupsTable
-import de.se.team3.persistence.meta.ProcessesTable
-import de.se.team3.persistence.meta.UserRolesTable
+import de.se.team3.persistence.meta.*
 import me.liuwj.ktorm.dsl.*
 
 object UserRoleDAO : UserRoleDAOInterface {
@@ -82,5 +79,18 @@ object UserRoleDAO : UserRoleDAOInterface {
         }
         if (affectedRows == 0)
             throw NoSuchElementException()
+    }
+
+    override fun addUserToRole(userID: String, userRoleID: Int) {
+        UserRoleMembers.insertAndGenerateKey {
+            it.userID to userID
+            it.userRoleID to userRoleID
+        }
+    }
+
+    override fun deleteUserFromRole(userID: String, userRoleID: Int) {
+        UserRoleMembers.delete {
+            (it.userID eq userID) and (it.userRoleID eq userRoleID)
+        }
     }
 }

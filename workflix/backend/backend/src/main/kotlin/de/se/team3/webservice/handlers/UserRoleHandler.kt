@@ -76,10 +76,22 @@ object UserRoleHandler {
     }
 
     fun addUserToRole(ctx: Context) {
-        TODO()
+        try {
+            val content = ctx.body()
+            val relationshipJSON = JSONObject(content)
+
+            val userID = relationshipJSON.getString("userId")
+            val userRoleID = relationshipJSON.getInt("userRoleId")
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("user role or user not found")
+        }
     }
 
     fun deleteUserFromRole(ctx: Context, userID: String, userRoleID: Int) {
-        TODO()
+        try {
+            UserRoleContainer.deleteUserFromRole(userID, userRoleID)
+        } catch (e: NoSuchElementException) {
+            ctx.status(404).result("user role or user not found")
+        }
     }
 }

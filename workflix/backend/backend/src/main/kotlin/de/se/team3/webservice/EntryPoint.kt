@@ -78,6 +78,14 @@ fun main(args: Array<String>) {
     app.delete("userRoles/:userRoleId") { ctx ->
         UserRoleHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
     }
+    app.post("usersToRoles") { ctx ->
+        UserRoleHandler.addUserToRole(ctx)
+    }
+    app.delete("usersToRoles/:userId:/userRoleId") { ctx ->
+        UserRoleHandler.deleteUserFromRole(ctx,
+            ctx.pathParam("userId").toString(),
+            ctx.pathParam("userRoleId").toInt())
+    }
 
     // processes
     app.get("processes") { ctx -> ProcessesHandler.getAll(ctx) }

@@ -26,6 +26,12 @@ object UserRolesTable : Table<Nothing>("user_roles") {
     val deleted by boolean("deleted")
 }
 
+object UserRoleMembers : Table<Nothing>("user_role_members") {
+    val ID by int("id").primaryKey()
+    val userID by varchar("user_id")
+    val userRoleID by int("user_role_id")
+}
+
 object ProcessTemplatesTable : Table<Nothing>("process_templates") {
     val id by int("id").primaryKey()
     val ownerId by varchar("owner_id")

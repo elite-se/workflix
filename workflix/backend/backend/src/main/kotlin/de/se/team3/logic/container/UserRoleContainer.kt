@@ -24,4 +24,12 @@ object UserRoleContainer : UserRoleContainerInterface {
     override fun deleteUserRole(userRoleID: Int) {
         return UserRoleDAO.deleteUserRole(userRoleID)
     }
+
+    override fun addUserToRole(userID: String, userRoleID: Int) {
+        return UserRoleDAO.addUserToRole(userID, userRoleID)
+    }
+
+    override fun deleteUserFromRole(userID: String, userRoleID: Int) {
+        return UserRoleDAO.deleteUserFromRole(userID, userRoleID)
+    }
 }
