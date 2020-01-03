@@ -8,7 +8,7 @@ interface TaskCommentsDAOInterface {
 
     fun createTaskComment(taskComment: TaskComment): Int
 
-    fun updateTaskComment(taskComment: TaskComment)
+    fun updateTaskComment(taskComment: TaskComment): Boolean
 
-    fun deleteTaskComment(taskCommentId: Int)
+    fun deleteTaskComment(taskCommentId: Int): Boolean
 }

@@ -2,12 +2,7 @@ package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.TaskCommentsDAOInterface
 import de.se.team3.logic.domain.TaskComment
-import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.TaskCommentsTable
-import de.se.team3.persistence.meta.TasksTable
-import de.se.team3.persistence.meta.UsersTable
-import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.database.TransactionIsolation
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
@@ -39,68 +34,41 @@ object TaskCommentsDAO : TaskCommentsDAOInterface {
     /**
      * Creates the given task comment.
      *
-     * @throws NotFoundException Is thrown if the underlying task or creator
-     * could not be found.
+     * @return The generated id for the task assignment.
      */
     override fun createTaskComment(taskComment: TaskComment): Int {
-        val transactionManager = Database.global.transactionManager
-        val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
-
-        try {
-            checkConstraints(taskComment)
-
-            val generatedProcessId = TaskCommentsTable.insertAndGenerateKey { row ->
-                row.taskId to taskComment.taskId
-                row.creatorId to taskComment.creatorId
-                row.content to taskComment.content
-                row.createdAt to taskComment.createdAt
-                row.deleted to false
-            }
-
-            transaction.commit()
-            return generatedProcessId as Int
-        } catch (e: Throwable) {
-            transaction.rollback()
-            throw e
+        val generatedProcessId = TaskCommentsTable.insertAndGenerateKey { row ->
+            row.taskId to taskComment.taskId
+            row.creatorId to taskComment.creatorId
+            row.content to taskComment.getContent()
+            row.createdAt to taskComment.createdAt
+            row.deleted to false
         }
-    }
-
-    /**
-     * Checks some task comment constraints.
-     */
-    private fun checkConstraints(taskComment: TaskComment) {
-        val creatorResult = UsersTable.select().where { UsersTable.ID eq taskComment.creatorId!! }
-        if (!creatorResult.rowSet.iterator().hasNext())
-            throw NotFoundException("creator not found")
-
-        val taskResult = TasksTable.select().where { TasksTable.id eq taskComment.taskId!! }
-        if (!taskResult.rowSet.iterator().hasNext())
-            throw NotFoundException("task not found")
+        return generatedProcessId as Int
     }
 
     /**
      * Updates the given task comment.
      *
-     * @throws NotFoundException Is thrown if the specified task comment does not exist.
+     * @return True if and only if the given task comment exists.
      */
-    override fun updateTaskComment(taskComment: TaskComment) {
+    override fun updateTaskComment(taskComment: TaskComment): Boolean {
         val affectedRows = TaskCommentsTable.update { row ->
-            row.content to taskComment.content
+            row.content to taskComment.getContent()
             where {
                 (TaskCommentsTable.id eq taskComment.id!!) and
                         (TaskCommentsTable.deleted notEq true)
             }
         }
-        if (affectedRows == 0)
-            throw NotFoundException("task comment not found")
+        return affectedRows != 0
     }
 
     /**
-     * Deletes the specified task assignment.
+     * Deletes the specified task comment.
      *
-     * @throws NotFoundException Is thrown if the specified task comment does not exist.
+     * @return True if and only if the specified task comment existed.
      */
-    override fun deleteTaskComment(taskCommentId: Int) {
+    override fun deleteTaskComment(taskCommentId: Int): Boolean {
         val affectedRows = TaskCommentsTable.update { row ->
             row.deleted to true
             where {
@@ -108,7 +76,6 @@ object TaskCommentsDAO : TaskCommentsDAOInterface {
                         (TaskCommentsTable.deleted notEq true)
             }
         }
-        if (affectedRows == 0)
-            throw NotFoundException("task comment not found")
+        return affectedRows != 0
     }
 }

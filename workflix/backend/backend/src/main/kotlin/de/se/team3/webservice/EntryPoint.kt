@@ -12,6 +12,7 @@ import de.se.team3.webservice.handlers.ProcessesRunningHandler
 import de.se.team3.webservice.handlers.TasksAssignmentsHandler
 import de.se.team3.webservice.handlers.TasksCommentsHandler
 import de.se.team3.webservice.handlers.UserHandler
+import de.se.team3.webservice.handlers.UserRoleHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 import org.json.JSONException
@@ -62,6 +63,28 @@ fun main(args: Array<String>) {
     }
     app.delete("processTemplates/:processTemplateId") { ctx ->
         ProcessTemplatesHandler.delete(ctx, ctx.pathParam("processTemplateId").toInt())
+    }
+
+    // user roles
+    app.get("userRoles") { ctx ->
+        UserRoleHandler.getAll(ctx)
+    }
+    app.post("userRoles") { ctx ->
+        UserRoleHandler.create(ctx)
+    }
+    app.patch("userRoles/:userRoleId") { ctx ->
+        UserRoleHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
+    }
+    app.delete("userRoles/:userRoleId") { ctx ->
+        UserRoleHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
+    }
+    app.post("usersToRoles") { ctx ->
+        UserRoleHandler.addUserToRole(ctx)
+    }
+    app.delete("usersToRoles/:userId:/userRoleId") { ctx ->
+        UserRoleHandler.deleteUserFromRole(ctx,
+            ctx.pathParam("userId").toString(),
+            ctx.pathParam("userRoleId").toInt())
     }
 
     // processes

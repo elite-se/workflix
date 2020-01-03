@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { Card, H2, H3, Text } from '@blueprintjs/core'
-import withPromiseResolver from './withPromiseResolver'
-import type { UserType } from '../datatypes/models'
-import UsersApi from '../api/UsersApi'
+import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
+import type { UserType } from '../../../modules/datatypes/User'
+import UsersApi from '../../../modules/api/UsersApi'
 
 type PropsType = {| users: Map<string, UserType>, path: string |}
 

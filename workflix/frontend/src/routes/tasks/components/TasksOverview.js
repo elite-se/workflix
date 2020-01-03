@@ -1,15 +1,15 @@
 // @flow
 
 import React from 'react'
-import type { ProcessType } from '../../datatypes/ProcessType'
-import ProcessApi from '../../api/ProcessApi'
-import withPromiseResolver from '../withPromiseResolver'
+import type { ProcessType } from '../../../modules/datatypes/Process'
+import ProcessApi from '../../../modules/api/ProcessApi'
 import ProcessCard from './ProcessCard'
 import styled from 'styled-components'
-import type { TaskTemplateType, TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import TaskDrawer from './TaskDrawer'
-import UserApi from '../../api/UsersApi'
-import type { UserType } from '../../datatypes/models'
+import UserApi from '../../../modules/api/UsersApi'
+import type { UserType } from '../../../modules/datatypes/User'
+import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;

@@ -20,7 +20,6 @@ object TaskTemplateDAO : TaskTemplateDAOInterface {
             row[TaskTemplatesTable.name]!!,
             row[TaskTemplatesTable.description]!!,
             row[TaskTemplatesTable.estimatedDuration],
-            row[TaskTemplatesTable.durationLimit],
             row[TaskTemplatesTable.necessaryClosings]!!
         )
     }
