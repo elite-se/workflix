@@ -7,7 +7,6 @@ import java.time.Instant
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.isNull
 import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.update
 
@@ -35,8 +34,6 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
     /**
      * Closes the specified task assignment.
      *
-     * Note that a task assignment is assumed to not exist if it is already closed.
-     *
      * @return True if the specified assignment existed.
      */
     override fun closeTaskAssignment(taskId: Int, assigneeId: String, closingTime: Instant): Boolean {
@@ -45,7 +42,6 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
             where {
                 (row.taskId eq taskId) and
                 (row.assigneeId eq assigneeId) and
-                (row.doneAt.isNull()) and // is null if the assignment is not already closed
                 (row.deleted notEq true)
             }
         }
@@ -55,8 +51,6 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
     /**
      * Deletes the specified task assignment.
      *
-     * Note that a task assignment is assumed to not exist if it is already closed.
-     *
      * @return True if the specified task assignment existed.
      */
     override fun deleteTaskAssignment(taskId: Int, assigneeId: String): Boolean {
@@ -65,7 +59,6 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
             where {
                 (row.taskId eq taskId) and
                 (row.assigneeId eq assigneeId) and
-                (row.doneAt.isNull()) and // is null if the assignment is not already closed
                 (row.deleted notEq true)
             }
         }

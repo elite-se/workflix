@@ -8,7 +8,7 @@ graph:  1 ----- 3 - 6
         0 - 2 - 4 - 5 - 7
 */
 
-import type { TaskTemplateType } from '../../modules/datatypes/Task'
+import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 
 const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
   {

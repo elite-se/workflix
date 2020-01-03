@@ -18,7 +18,7 @@ data class ProcessTemplate(
     val id: Int?,
     val title: String,
     val description: String,
-    val durationLimit: Int?,
+    val durationLimit: Int,
     @JsonProperty("ownerId")
     @JsonSerialize(using = UserSerializer::class)
     val owner: User,
@@ -49,7 +49,7 @@ data class ProcessTemplate(
     /**
      * Create-Constructor
      */
-    constructor(title: String, description: String, durationLimit: Int?, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
+    constructor(title: String, description: String, durationLimit: Int, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
             this(null, title, description, durationLimit, UserContainer.getUser(ownerId), Instant.now(), null, 0, 0, false, taskTemplates) {
 
         checkProperties(title, durationLimit, taskTemplates)
@@ -62,7 +62,7 @@ data class ProcessTemplate(
         id: Int,
         title: String,
         description: String,
-        durationLimit: Int?,
+        durationLimit: Int,
         ownerId: String,
         taskTemplates: Map<Int, TaskTemplate>
     ) : this(

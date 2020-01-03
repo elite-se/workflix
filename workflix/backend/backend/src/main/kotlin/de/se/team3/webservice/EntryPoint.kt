@@ -1,5 +1,6 @@
 package de.se.team3.webservice
 
+import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
@@ -41,6 +42,9 @@ fun main(args: Array<String>) {
         ctx.status(404).result(e.message)
     }
     app.exception(AlreadyExistsException::class.java) { e, ctx ->
+        ctx.status(409).result(e.message)
+    }
+    app.exception(AlreadyClosedException::class.java) { e, ctx ->
         ctx.status(409).result(e.message)
     }
     app.exception(JSONException::class.java) { e, ctx ->
@@ -108,18 +112,10 @@ fun main(args: Array<String>) {
         ProcessGroupHandler.create(ctx)
     }
     app.patch("processGroups/:processGroupID") { ctx ->
-        try {
-            ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid process group id")
-        }
+        ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
     }
     app.get("processGroups/:processGroupID") { ctx ->
-        try {
-            ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid process group id")
-        }
+        ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
     }
 
     // group memberships
@@ -127,15 +123,11 @@ fun main(args: Array<String>) {
         ProcessGroupMembershipHandler.add(ctx)
     }
     app.delete("groupMembership/:processGroupID/:userID") { ctx ->
-        try {
-            ProcessGroupMembershipHandler.revoke(
-                ctx,
-                ctx.pathParam("processGroupID").toInt(),
-                ctx.pathParam("userID")
-            )
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid process group id")
-        }
+        ProcessGroupMembershipHandler.revoke(
+            ctx,
+            ctx.pathParam("processGroupID").toInt(),
+            ctx.pathParam("userID")
+        )
     }
 
     // task assignments

@@ -17,7 +17,7 @@ type StateType = {
 export const ITEM_HEIGHT = 50
 const NODE_STROKE_WIDTH = 15
 const EDGE_STROKE_WIDTH = 2
-const STROKE_RADIUS = 15
+const STROKE_RADIUS = 20
 
 class ProcessChart extends React.Component<PropsType, StateType> {
   div: HTMLDivElement | null

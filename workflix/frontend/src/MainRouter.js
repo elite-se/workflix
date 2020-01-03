@@ -3,7 +3,7 @@
 import React from 'react'
 import { Redirect, Router } from '@reach/router'
 import ProcessTemplates from './components/ProcessTemplates'
-import CreateProcessTemplate from './routes/create-process-template/CreateProcessTemplate'
+import CreateProcessTemplate from './routes/create-process-template/components/CreateProcessTemplate'
 import TasksOverview from './routes/tasks/components/TasksOverview'
 import Users from './routes/users/components/Users'
 
