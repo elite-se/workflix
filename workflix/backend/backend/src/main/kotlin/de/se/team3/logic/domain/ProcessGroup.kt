@@ -5,7 +5,7 @@ import java.time.Instant
 import kotlin.collections.ArrayList
 
 class ProcessGroup(
-    val id: Int?,
+    var id: Int?,
     var owner: User,
     var title: String,
     var description: String,
