@@ -68,12 +68,12 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         <marker id='TriangleGray' viewBox='0 0 10 10' refX='10' refY='5'
                 markerUnits='strokeWidth' markerWidth='5' markerHeight='5'
                 orient='auto'>
-          <path d='M 0 0 L 10 5 L 0 10 z' fill={Colors.GRAY1}/>
+          <path d='M 0 0 L 10 5 L 0 10' strokeWidth={2} strokeLinecap='round' stroke={Colors.GRAY1} fill='none'/>
         </marker>
         <marker id='TriangleRed' viewBox='0 0 10 10' refX='10' refY='5'
                 markerUnits='strokeWidth' markerWidth='5' markerHeight='5'
                 orient='auto'>
-          <path d='M 0 0 L 10 5 L 0 10 z' fill={Colors.RED1}/>
+          <path d='M 0 0 L 10 5 L 0 10' strokeWidth={2} strokeLinecap='round' stroke={Colors.RED1} fill='none'/>
         </marker>
       </defs>
       {[
