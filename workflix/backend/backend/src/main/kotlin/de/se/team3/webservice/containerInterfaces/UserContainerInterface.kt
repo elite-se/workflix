@@ -7,5 +7,5 @@ interface UserContainerInterface {
 
     fun getUser(userId: String): User
 
-    fun create***REMOVED***User(email: String, password: String)
+    fun create***REMOVED***User(email: String, password: String): User
 }

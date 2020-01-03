@@ -76,7 +76,7 @@ object UserDAO : UserDAOInterface {
         }
     }
 
-    override fun create***REMOVED***User(email: String, password: String) {
+    override fun create***REMOVED***User(email: String, password: String): User {
         val ***REMOVED***User = User.query***REMOVED***andCreateUser(email, password)
         UsersTable.insert {
             it.ID to ***REMOVED***User.id
@@ -86,6 +86,7 @@ object UserDAO : UserDAOInterface {
             it.password to encryptPassword(***REMOVED***User.password)
             it.deleted to false
         }
+        return ***REMOVED***User
     }
 
     /**

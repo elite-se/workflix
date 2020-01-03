@@ -27,8 +27,9 @@ object UserContainer : UserContainerInterface {
         }
     }
 
-    override fun create***REMOVED***User(email: String, password: String) {
-        UserDAO.create***REMOVED***User(email, password)
-        userCache
+    override fun create***REMOVED***User(email: String, password: String): User {
+        val user = UserDAO.create***REMOVED***User(email, password)
+        userCache[user.id] = user
+        return user
     }
 }

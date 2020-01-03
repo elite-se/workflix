@@ -42,6 +42,15 @@ object UserHandler {
     }
 
     fun createFrom***REMOVED***(ctx: Context) {
-        TODO()
+        val content = ctx.body()
+        val contentJSON = JSONObject(content)
+
+        val email = contentJSON.getString("email")
+        val password = contentJSON.getString("password")
+
+        val user = UserContainer.create***REMOVED***User(email, password)
+        val resultJSON = JSONObject().put("newId", user.id)
+
+        ctx.result(resultJSON.toString()).contentType("application/json")
     }
 }

@@ -51,6 +51,9 @@ fun main(args: Array<String>) {
     app.get("users") { ctx ->
         UserHandler.getAll(ctx)
     }
+    app.post("users") { ctx ->
+        UserHandler.createFrom***REMOVED***(ctx)
+    }
 
     // process templates
     app.get("processTemplates") { ctx -> ProcessTemplatesHandler.getAll(ctx) }
