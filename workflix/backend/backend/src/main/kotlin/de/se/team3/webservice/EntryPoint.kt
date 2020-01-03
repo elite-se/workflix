@@ -69,6 +69,9 @@ fun main(args: Array<String>) {
     app.post("userRoles") { ctx ->
         UserRoleHandler.create(ctx)
     }
+    app.delete("userRoles/:userRoleId") { ctx ->
+        UserRoleHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
+    }
 
     // processes
     app.get("processes") { ctx -> ProcessesHandler.getAll(ctx) }

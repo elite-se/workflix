@@ -8,4 +8,8 @@ object UserRoleContainer : UserRoleContainerInterface {
     override fun createUserRole(userRole: UserRole): Int {
         return UserRoleDAO.createUserRole(userRole)
     }
+
+    override fun deleteUserRole(userRoleID: Int) {
+        return UserRoleDAO.deleteUserRole(userRoleID)
+    }
 }
