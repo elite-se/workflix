@@ -7,7 +7,7 @@ import { H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
-import type { TaskTemplateType } from '../../modules/datatypes/Task'
+import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 
 export type ProcessedTaskTemplateType = {|
   ...TaskTemplateType,
@@ -36,29 +36,29 @@ const calcEndDates = (nodes: Array<TaskTemplateType>): Array<ProcessedTaskTempla
 }
 
 type StateType = {
-  nodes: Array<TaskTemplateType>,
-  selectedNode: ?number
+  tasks: Array<TaskTemplateType>,
+  selectedTaskId: ?number
 }
 
 class CreateProcessTemplate extends React.Component<{}, StateType> {
   state = {
-    nodes: MOCK_TASK_TEMPLATES,
-    selectedNode: null
+    tasks: MOCK_TASK_TEMPLATES,
+    selectedTaskId: null
   }
 
   editTask = (id: number) => {
-    this.setState({ selectedNode: id })
+    this.setState({ selectedTaskId: id })
   }
 
-  selectedTaskChanged = (task: TaskTemplateType) => {
+  taskChanged = (task: TaskTemplateType) => {
     this.setState(state => ({
-      nodes: state.nodes.map(node => node.id === state.selectedNode ? task : node)
+      tasks: state.tasks.map(_task => _task.id === task.id ? task : _task)
     }))
   }
 
   createTask = () => {
     this.setState(state => {
-      const newId = Math.max(...state.nodes.map(node => node.id), -1) + 1
+      const newId = Math.max(...state.tasks.map(node => node.id), -1) + 1
       const newTask: TaskTemplateType = {
         id: newId,
         predecessors: [],
@@ -68,22 +68,23 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
         necessaryClosings: 0
       }
       return {
-        nodes: [...state.nodes, newTask],
-        selectedNode: newId
+        tasks: [...state.tasks, newTask],
+        selectedTaskId: newId
       }
     })
   }
 
   renderTaskTemplateEditor (): React$Node {
-    const task = this.state.nodes.find(task => task.id === this.state.selectedNode)
+    const { tasks, selectedTaskId } = this.state
+    const task = tasks.find(task => task.id === selectedTaskId)
     if (!task) {
       return null
     }
-    return <TaskTemplateEditor task={task} onChange={this.selectedTaskChanged}/>
+    return <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks}/>
   }
 
   render () {
-    const processedNodes = calcEndDates(this.state.nodes)
+    const processedNodes = calcEndDates(this.state.tasks)
     return <div style={{
       flex: 1,
       display: 'flex',
