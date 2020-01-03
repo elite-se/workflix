@@ -7,9 +7,9 @@ import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupMembers
 import de.se.team3.persistence.meta.ProcessGroupsTable
+import de.se.team3.persistence.meta.ProcessesTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
