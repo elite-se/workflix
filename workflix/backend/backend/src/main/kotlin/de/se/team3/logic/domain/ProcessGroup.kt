@@ -19,20 +19,11 @@ class ProcessGroup(
     val createdAt: Instant,
     val members: MutableList<User>
 ) {
-
-    constructor(id: Int, owner: User, title: String, createdAt: Instant) :
-        this(id, owner, title, "", createdAt, ArrayList<User>())
-
+    
     /**
-     * Creates a new process group with no specified ID.
+     * Create-Constructor
      */
-    constructor(title: String, description: String, ownerID: String, createdAt: Instant) :
-            this(null, UserContainer.getUser(ownerID), title, "", createdAt, ArrayList<User>())
-
-    /**
-     * Creates a new process group, and adds a given list of users to it.
-     */
-    constructor(id: Int, owner: User, title: String, createdAt: Instant, members: MutableList<User>) :
-        this(id, owner, title, "", createdAt, members)
+    constructor(title: String, description: String, ownerID: String) :
+            this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), ArrayList<User>())
 
 }
