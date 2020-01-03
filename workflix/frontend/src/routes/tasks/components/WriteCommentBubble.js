@@ -62,13 +62,12 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
     return <TalkBubble floatEnd
                        onKeyDown={this.onKeyPress}>
       <AutoSizeTextArea
-        fill
-        growVertically
         style={{
           resize: 'none',
           border: 'none',
           outline: 'none',
-          boxShadow: 'none'
+          boxShadow: 'none',
+          width: '100%'
         }}
         placeholder='Type to add a comment …'
         rows={1}
