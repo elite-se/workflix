@@ -6,7 +6,7 @@ import ProcessApi from '../../api/ProcessApi'
 import withPromiseResolver from '../withPromiseResolver'
 import ProcessCard from './ProcessCard'
 import styled from 'styled-components'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../datatypes/TaskType'
 import TaskDrawer from './TaskDrawer'
 import UserApi from '../../api/UsersApi'
 import type { UserType } from '../../datatypes/models'
@@ -19,13 +19,21 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
 `
 
 type PropsType = {|
-  processes: Array<ProcessType>,
+  initialProcesses: Array<ProcessType>,
+  taskTemplates: Map<number, TaskTemplateType>,
   users: Map<string, UserType>,
   path: string
 |}
 
-class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType }> {
-  state = { selectedTask: null }
+const getUpdatedOrOldTask: (TaskType, TaskType) => TaskType = (oldTask, newTask) => {
+  return newTask.id === oldTask.id ? newTask : oldTask
+}
+
+class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType, processes: ProcessType[] }> {
+  state = {
+    selectedTask: null,
+    processes: this.props.initialProcesses || []
+  }
 
   onTaskSelected = (selectedTask: TaskType) => {
     this.setState({ selectedTask: selectedTask })
@@ -35,22 +43,37 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
     this.setState({ selectedTask: null })
   }
 
+  onTaskModified = (modifiedTask: TaskType) => {
+    this.setState(oldState => ({
+      selectedTask: oldState.selectedTask
+        ? getUpdatedOrOldTask(oldState.selectedTask, modifiedTask)
+        : oldState.selectedTask,
+      processes: oldState.processes.map(proc => ({
+        ...proc,
+        tasks: proc.tasks.map(oldTask => getUpdatedOrOldTask(oldTask, modifiedTask))
+      }))
+    }))
+  }
+
   render () {
     return <div>
       <ProcessListWrapper>{
-        this.props.processes.map(process => (
+        this.state.processes.map(process => (
           <ProcessCard
             key={process.id}
             process={process}
             selectedTask={this.state.selectedTask}
             onTaskSelected={this.onTaskSelected}
-            users={this.props.users}/>)
+            users={this.props.users}
+            taskTemplates={this.props.taskTemplates}/>)
         )
       }</ProcessListWrapper>
       <TaskDrawer
         selectedTask={this.state.selectedTask}
         onClose={this.onDrawerClosed}
-        users={this.props.users}/>
+        onTaskModified={this.onTaskModified}
+        users={this.props.users}
+        taskTemplates={this.props.taskTemplates}/>
     </div>
   }
 }
@@ -59,7 +82,20 @@ const promiseCreator = () => Promise.all([
   new ProcessApi().getProcesses(),
   new UserApi().getUsers()
 ]).then(
-  ([processes, users]) => ({ processes, users })
+  ([processes, users]) => Promise.all([
+    Promise.resolve(processes),
+    Promise.resolve(users),
+    new ProcessApi().getTaskTemplatesForProcessTemplates(processes.map(proc => proc.processTemplateId))
+  ])).then(
+  ([processes, users, taskTemplates]) => ({
+    initialProcesses: processes,
+    users: users,
+    taskTemplates: taskTemplates
+  })
 )
 
-export default withPromiseResolver<PropsType, {| processes: Array<ProcessType>, users: Map<string, UserType> |}>(promiseCreator)(TasksOverview)
+export default withPromiseResolver<PropsType, {|
+  initialProcesses: Array<ProcessType>,
+  users: Map<string, UserType>,
+  taskTemplates: Map<number, TaskTemplateType>
+|}>(promiseCreator)(TasksOverview)
