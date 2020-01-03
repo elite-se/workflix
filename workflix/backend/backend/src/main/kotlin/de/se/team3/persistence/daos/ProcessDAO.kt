@@ -6,7 +6,6 @@ import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.domain.TaskComment
-import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.ProcessesTable
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TaskCommentsTable
@@ -18,7 +17,6 @@ import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.batchInsert
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
@@ -28,20 +26,6 @@ import me.liuwj.ktorm.dsl.where
  * DAO for processes.
  */
 object ProcessDAO : ProcessDAOInterface {
-
-    /**
-     * Returns all processes.
-     */
-    override fun getAllProcesses(): List<Process> {
-        val processes = ArrayList<Process>()
-        val result = ProcessesTable.select()
-
-        for (row in result)
-            processes.add(
-                makeProcess(row, null))
-
-        return processes.toList()
-    }
 
     /**
      * Makes a single process object from the given row.
@@ -62,12 +46,29 @@ object ProcessDAO : ProcessDAOInterface {
     }
 
     /**
+     * Returns all processes.
+     */
+    override fun getAllProcesses(): List<Process> {
+        val processes = ArrayList<Process>()
+        val result = ProcessesTable.select()
+
+        for (row in result)
+            processes.add(
+                makeProcess(row, null))
+
+        return processes.toList()
+    }
+
+    /**
      * Returns the comments to the given task.
      */
     private fun getComments(taskId: Int): List<TaskComment> {
         val comments = ArrayList<TaskComment>()
         val commentsResult = TaskCommentsTable.select()
-            .where { TaskCommentsTable.taskId eq taskId }
+            .where {
+                (TaskCommentsTable.taskId eq taskId) and
+                        (TaskCommentsTable.deleted notEq true)
+            }
 
         for (row in commentsResult)
             comments.add(
@@ -88,7 +89,10 @@ object ProcessDAO : ProcessDAOInterface {
     private fun getAssignments(taskId: Int): List<TaskAssignment> {
         val assignments = ArrayList<TaskAssignment>()
         val assigmentsResult = TaskAssignmentsTable.select()
-            .where { TaskAssignmentsTable.taskId eq taskId }
+            .where {
+                (TaskAssignmentsTable.taskId eq taskId) and
+                        (TaskAssignmentsTable.deleted notEq true)
+            }
 
         for (row in assigmentsResult) {
             assignments.add(
@@ -105,9 +109,11 @@ object ProcessDAO : ProcessDAOInterface {
     }
 
     /**
-     * Returns the single process specified by the given process id.
+     * Returns the specified process.
+     *
+     * @return Null if the specified process does not exist.
      */
-    override fun getProcess(processId: Int): Process {
+    override fun getProcess(processId: Int): Process? {
         val tasks = HashMap<Int, Task>()
         val tasksResult = TasksTable.select().where { TasksTable.processId eq processId }
 
@@ -126,7 +132,9 @@ object ProcessDAO : ProcessDAOInterface {
         }
 
         val processResult = ProcessesTable.select().where { ProcessesTable.id eq processId }
-        val row = processResult.rowSet.iterator().next()
+        val row = processResult.rowSet
+        if (!row.next())
+            return null
 
         return makeProcess(row, tasks)
     }
@@ -148,7 +156,7 @@ object ProcessDAO : ProcessDAOInterface {
                 row.groupId to process.processGroupId
                 row.title to process.title
                 row.description to process.description
-                row.status to process.status.toString()
+                row.status to process.getStatus().toString()
                 row.deadline to process.deadline
                 row.startedAt to process.startedAt
             }
@@ -170,45 +178,38 @@ object ProcessDAO : ProcessDAOInterface {
         } catch (e: Throwable) {
             transaction.rollback()
             throw e
-            throw StorageException("" + e.message)
         }
     }
 
     /**
      * Sets the status of the given process to aborted.
      *
-     * @throws NotFoundException Is thrown if the given process does not exist or is already aborted
-     * or already closed. The of course the process could not be closed or closed again respectively.
+     * @return True if the specified process existed and was running.
      */
-    override fun closeProcess(processId: Int) {
+    override fun closeProcess(processId: Int): Boolean {
         val affectedRows = ProcessesTable.update {
             it.status to ProcessStatus.CLOSED.toString()
             where {
                 (it.id eq processId) and
-                        (it.status notEq ProcessStatus.ABORTED.toString()) and
-                        (it.status notEq ProcessStatus.CLOSED.toString())
+                        (it.status eq ProcessStatus.RUNNING.toString())
             }
         }
-        if (affectedRows == 0)
-            throw NotFoundException("process not found")
+        return affectedRows != 0
     }
 
     /**
      * Sets the status of the given process to aborted.
      *
-     * @throws NoSuchElementException Is thrown if the given process does not exist or is already closed
-     * or already aborted. Then of course the process could not be aborted or aborted again respectively.
+     * @return True if the specified process existed and was running.
      */
-    override fun abortProcess(processId: Int) {
+    override fun abortProcess(processId: Int): Boolean {
         val affectedRows = ProcessesTable.update {
             it.status to ProcessStatus.ABORTED.toString()
             where {
                 (it.id eq processId) and
-                        (it.status notEq ProcessStatus.CLOSED.toString()) and
-                        (it.status notEq ProcessStatus.ABORTED.toString())
+                        (it.status eq ProcessStatus.RUNNING.toString())
             }
         }
-        if (affectedRows == 0)
-            throw NoSuchElementException()
+        return affectedRows != 0
     }
 }

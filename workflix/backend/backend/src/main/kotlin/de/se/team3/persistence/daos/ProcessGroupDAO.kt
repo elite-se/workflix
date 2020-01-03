@@ -31,7 +31,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
             val processes = ArrayList<Process>()
             for (processRow in ProcessesTable.select().where { ProcessesTable.groupId eq ProcessGroupsTable.id }) {
-                processes.add(ProcessDAO.getProcess(processRow[ProcessesTable.id]!!))
+                processes.add(ProcessDAO.getProcess(processRow[ProcessesTable.id]!!)!!)
             }
 
             val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
@@ -62,7 +62,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
         val processes = ArrayList<Process>()
         for (row in ProcessesTable.select().where { ProcessesTable.groupId eq processGroupId }) {
-            processes.add(ProcessDAO.getProcess(row[ProcessesTable.id]!!))
+            processes.add(ProcessDAO.getProcess(row[ProcessesTable.id]!!)!!)
         }
 
         val row = processGroupResult.rowSet.iterator().next()

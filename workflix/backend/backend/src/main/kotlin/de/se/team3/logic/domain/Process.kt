@@ -11,14 +11,14 @@ import java.time.Instant
 /**
  * Represents a process.
  */
-data class Process(
+class Process(
     val id: Int?,
     val starterId: String,
     val processGroupId: Int,
     val processTemplateId: Int,
     val title: String,
     val description: String,
-    val status: ProcessStatus,
+    private var status: ProcessStatus,
     @JsonSerialize(using = InstantSerializer::class)
     val deadline: Instant?,
     @JsonSerialize(using = InstantSerializer::class)
@@ -27,6 +27,8 @@ data class Process(
     // the tasks lies under the id of the corresponding task template
     val tasks: Map<Int, Task>?
 ) {
+
+    fun getStatus() = status
 
     init {
         if (tasks != null)
@@ -52,16 +54,6 @@ data class Process(
                 estimatedDurationDone += task.taskTemplate!!.estimatedDuration ?: 1
         }
         (estimatedDurationDone / processTemplate.estimatedDurationSum * 100).toInt()
-    }
-
-    @get:JsonIgnore
-    val closeable by lazy {
-        var closeable = true
-        tasks!!.forEach { i, task ->
-            if (task.status != TaskStatus.CLOSED)
-                closeable = false
-        }
-        closeable
     }
 
     /**
@@ -91,8 +83,54 @@ data class Process(
             throw InvalidInputException("must not be based on a deleted process template")
     }
 
+    /**
+     * Returns the specified task.
+     */
     fun findTask(taskId: Int): Task {
         return tasks!!.map { it.value }.find { it.id == taskId }!!
+    }
+
+    /**
+     * Decides whether the process could be closed or not.
+     *
+     * @return True if the process could be closed.
+     */
+    fun closeable(): Boolean {
+        if (status != ProcessStatus.RUNNING)
+            return false
+
+        var closeable = true
+        tasks!!.forEach { i, task ->
+            if (task.status != TaskStatus.CLOSED)
+                closeable = false
+        }
+        return closeable
+    }
+
+    /**
+     * Closes the process.
+     *
+     * @throws IllegalStateException Is thrown if the status of the process is not running.
+     */
+    fun close() {
+        if (status != ProcessStatus.RUNNING)
+            throw IllegalStateException("only running processes could be closed")
+
+        status = ProcessStatus.CLOSED
+        processTemplate.decreaseRunningProcesses()
+    }
+
+    /**
+     * Aborts the process.
+     *
+     * @throws IllegalStateException Is thrown if the status of the process is not running.
+     */
+    fun abort() {
+        if (status != ProcessStatus.RUNNING)
+            throw IllegalStateException("only running processes could be aborted")
+
+        status = ProcessStatus.ABORTED
+        processTemplate.decreaseRunningProcesses()
     }
 
     companion object {

@@ -23,6 +23,20 @@ import me.liuwj.ktorm.dsl.where
 object TaskCommentsDAO : TaskCommentsDAOInterface {
 
     /**
+     * Returns the id of the task the given comment belongs to.
+     */
+    override fun getTaskIdByTaskCommentId(taskCommentId: Int): Int? {
+        val result = TaskCommentsTable.select()
+            .where { TaskCommentsTable.id eq taskCommentId }
+
+        val row = result.rowSet
+        if (!row.next())
+            return null
+
+        return row[TaskCommentsTable.taskId]
+    }
+
+    /**
      * Creates the given task comment.
      *
      * @throws NotFoundException Is thrown if the underlying task or creator
@@ -33,7 +47,7 @@ object TaskCommentsDAO : TaskCommentsDAOInterface {
         val transaction = transactionManager.newTransaction(isolation = TransactionIsolation.REPEATABLE_READ)
 
         try {
-            TaskCommentsDAO.checkConstraints(taskComment)
+            checkConstraints(taskComment)
 
             val generatedProcessId = TaskCommentsTable.insertAndGenerateKey { row ->
                 row.taskId to taskComment.taskId

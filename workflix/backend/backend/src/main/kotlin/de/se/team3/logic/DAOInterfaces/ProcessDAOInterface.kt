@@ -6,11 +6,11 @@ interface ProcessDAOInterface {
 
     fun getAllProcesses(): List<Process>
 
-    fun getProcess(processId: Int): Process
+    fun getProcess(processId: Int): Process?
 
     fun createProcess(process: Process): Int
 
-    fun closeProcess(processId: Int)
+    fun closeProcess(processId: Int): Boolean
 
-    fun abortProcess(processId: Int)
+    fun abortProcess(processId: Int): Boolean
 }
