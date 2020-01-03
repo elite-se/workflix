@@ -7,7 +7,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class ProcessGroup(
-    val id: Int?,
+    var id: Int?,
     var owner: User,
     var title: String,
     var description: String,
