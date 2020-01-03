@@ -3,7 +3,7 @@
 import React from 'react'
 import { IItemRendererProps, ItemRenderer, MultiSelect } from '@blueprintjs/select'
 import type { UserType } from '../../datatypes/models'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskAssignmentType, TaskType } from '../../datatypes/TaskType'
 import { Button, MenuItem } from '@blueprintjs/core'
 import ProcessApi from '../../api/ProcessApi'
 
@@ -39,14 +39,13 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     if (task.assignments.map(ass => ass.assigneeId).find(id => id === item.id)) { return }
     new ProcessApi().addAssignee(task.id, item.id)
       .then(json => {
-        task.assignments = task.assignments.concat({
+        this.onAssignmentsChanged(task.assignments.concat({
           id: json.newId,
           assigneeId: item.id,
           closed: false,
           createdAt: undefined,
           doneAt: undefined
-        })
-        this.props.onTaskModified(task)
+        }))
       })
       .catch(err => console.error(err))
   }
@@ -56,8 +55,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     const api = new ProcessApi()
     Promise.all(task.assignments.map(ass => api.removeAssignee(task.id, ass.assigneeId)))
       .then(() => {
-        task.assignments = []
-        this.props.onTaskModified(task)
+        this.onAssignmentsChanged([])
       })
       .catch(err => console.error(err))
   }
@@ -67,10 +65,16 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     const removedAssignee = task.assignments[index].assigneeId
     new ProcessApi().removeAssignee(task.id, removedAssignee)
       .then(() => {
-        task.assignments = task.assignments.filter(ass => ass.assigneeId !== removedAssignee)
-        this.props.onTaskModified(task)
+        this.onAssignmentsChanged(task.assignments.filter(ass => ass.assigneeId !== removedAssignee))
       })
       .catch(err => console.error(err))
+  }
+
+  onAssignmentsChanged (newAssignments: TaskAssignmentType[]) {
+    this.props.onTaskModified({
+      ...this.props.task,
+      assignments: newAssignments
+    })
   }
 
   itemPredicate = (query: string, item: UserType, index?: number, exactMatch?: boolean) => {

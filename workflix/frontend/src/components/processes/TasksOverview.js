@@ -25,6 +25,10 @@ type PropsType = {|
   path: string
 |}
 
+const getUpdatedOrOldTask: (TaskType, TaskType) => TaskType = (oldTask, newTask) => {
+  return newTask.id === oldTask.id ? newTask : oldTask
+}
+
 class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType, processes: ProcessType[] }> {
   state = { selectedTask: null, processes: this.props.initialProcesses || [] }
 
@@ -36,8 +40,16 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
     this.setState({ selectedTask: null })
   }
 
-  onTaskModified = () => {
-    this.forceUpdate()
+  onTaskModified = (modifiedTask: TaskType) => {
+    this.setState(oldState => ({
+      selectedTask: oldState.selectedTask
+        ? getUpdatedOrOldTask(oldState.selectedTask, modifiedTask)
+        : oldState.selectedTask,
+      processes: oldState.processes.map(proc => ({
+        ...proc,
+        tasks: proc.tasks.map(oldTask => getUpdatedOrOldTask(oldTask, modifiedTask))
+      }))
+    }))
   }
 
   render () {
