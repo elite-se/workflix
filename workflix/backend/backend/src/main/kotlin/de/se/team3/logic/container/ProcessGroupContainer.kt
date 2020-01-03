@@ -7,7 +7,7 @@ import de.se.team3.webservice.containerInterfaces.ProcessGroupContainerInterface
 
 object ProcessGroupContainer : ProcessGroupContainerInterface {
 
-    //caches process groups using their id
+    // caches process groups using their id
     private val processGroupsCache = HashMap<Int, ProcessGroup>()
 
     /**

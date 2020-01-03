@@ -1,12 +1,10 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessGroupDAOInterface
-import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupMembers
 import de.se.team3.persistence.meta.ProcessGroupsTable
-import de.se.team3.persistence.meta.ProcessesTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.iterator
