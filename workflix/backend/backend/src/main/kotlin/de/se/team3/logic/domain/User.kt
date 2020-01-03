@@ -2,6 +2,7 @@ package de.se.team3.logic.domain
 import de.se.team3.logic.container.ProcessGroupContainer
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
+import org.json.JSONObject
 
 class User(
     val id: String,
@@ -26,6 +27,16 @@ class User(
     fun getMemberships(): List<ProcessGroup> {
         val allGroups = ProcessGroupContainer.getAllProcessGroups()
         return allGroups.filter { it.members.contains(this) }
+    }
+
+    fun toJSON(): JSONObject {
+        val json = JSONObject()
+        json.put("id", this.id)
+        json.put("name", this.name)
+        json.put("displayname", this.displayname)
+        json.put("email", this.email)
+        // TODO user roles, process group ids
+        return json
     }
 
     companion object {
