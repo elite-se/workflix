@@ -34,7 +34,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 
         // TODO check user existence
 
-        if (task.hasAssignmentTo(taskAssignment.assigneeId))
+        if (task.hasAssignment(taskAssignment.assigneeId))
             throw AlreadyExistsException("task assignment already exists")
 
         val taskAssignmentId = TaskAssignmentsDAO.createTaskAssigment(taskAssignment)
@@ -81,12 +81,13 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      * @throws NotFoundException Is thrown if the specified task assignment does not exist.
      */
     override fun deleteTaskAssignment(taskId: Int, assigneeId: String) {
+        val task = TasksContainer.getTask(taskId) // TODO does not work I think
+
         val existed = TaskAssignmentsDAO.deleteTaskAssigment(taskId, assigneeId)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 
         // delete task assignment from task
-        val task = TasksContainer.getTask(taskId)
         task.deleteTaskAssignment(assigneeId)
     }
 }
