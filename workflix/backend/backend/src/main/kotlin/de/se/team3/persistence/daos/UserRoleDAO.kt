@@ -1,6 +1,7 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.UserRoleDAOInterface
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.persistence.meta.UserRoleMembers
@@ -24,7 +25,7 @@ object UserRoleDAO : UserRoleDAOInterface {
         for (roleRow in userRoleResult) {
             val members = ArrayList<User>()
             for (memberRow in UserRoleMembers.select().where { UserRoleMembers.userRoleID eq UserRolesTable.ID }) {
-                members.add(UserDAO.getUser(memberRow[UserRoleMembers.userID]!!))
+                members.add(UserContainer.getUser(memberRow[UserRoleMembers.userID]!!))
             }
 
             userRoles.add(UserRole(roleRow[UserRolesTable.ID]!!,
@@ -44,7 +45,7 @@ object UserRoleDAO : UserRoleDAOInterface {
 
         val members = ArrayList<User>()
         for (row in UserRoleMembers.select().where { UserRoleMembers.userRoleID eq userRoleID }) {
-            members.add(UserDAO.getUser(row[UserRoleMembers.userID]!!))
+            members.add(UserContainer.getUser(row[UserRoleMembers.userID]!!))
         }
 
         val row = userRoleResult.rowSet.iterator().next()

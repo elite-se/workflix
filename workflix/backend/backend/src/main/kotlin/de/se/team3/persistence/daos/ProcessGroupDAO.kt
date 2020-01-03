@@ -1,6 +1,7 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessGroupDAOInterface
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
@@ -26,7 +27,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
         for (row in processGroupResult) {
             val members = ArrayList<User>()
             for (memberRow in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq ProcessGroupsTable.id }) {
-                members.add(UserDAO.getUser(memberRow[ProcessGroupMembers.userID]!!))
+                members.add(UserContainer.getUser(memberRow[ProcessGroupMembers.userID]!!))
             }
 
             val processes = ArrayList<Process>()
@@ -34,7 +35,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
                 processes.add(ProcessDAO.getProcess(processRow[ProcessesTable.id]!!)!!)
             }
 
-            val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
+            val owner = UserContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
 
             processGroups.add(ProcessGroup(
                 row[ProcessGroupsTable.id]!!,
@@ -57,7 +58,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
         val members = ArrayList<User>()
         for (row in ProcessGroupMembers.select().where { ProcessGroupMembers.processGroupID eq processGroupId }) {
-            members.add(UserDAO.getUser(row[ProcessGroupMembers.userID]!!))
+            members.add(UserContainer.getUser(row[ProcessGroupMembers.userID]!!))
         }
 
         val processes = ArrayList<Process>()
@@ -67,7 +68,7 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
 
         val row = processGroupResult.rowSet.iterator().next()
 
-        val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
+        val owner = UserContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
 
         return ProcessGroup(row[ProcessGroupsTable.id]!!,
                             owner,
