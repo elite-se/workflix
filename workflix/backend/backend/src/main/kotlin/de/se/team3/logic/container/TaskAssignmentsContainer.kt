@@ -34,7 +34,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 
         // TODO check user existence
 
-        if (task.hasAssignmentTo(taskAssignment.assigneeId))
+        if (task.hasAssignment(taskAssignment.assigneeId))
             throw AlreadyExistsException("task assignment already exists")
 
         val taskAssignmentId = TaskAssignmentsDAO.createTaskAssignment(taskAssignment)

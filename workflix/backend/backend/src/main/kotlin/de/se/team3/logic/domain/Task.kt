@@ -86,6 +86,7 @@ class Task(
      *
      * @return True if the task is blocked, i.d. not all predecessors are closed.
      */
+    @JsonIgnore
     fun isBlocked(): Boolean {
         return status() == TaskStatus.BLOCKED
     }
@@ -95,6 +96,7 @@ class Task(
      *
      * @return True if the task is closed.
      */
+    @JsonIgnore
     fun isClosed(): Boolean {
         return status() == TaskStatus.CLOSED
     }
@@ -104,7 +106,7 @@ class Task(
      *
      * @return True if there is a assignment to the specified assignee.
      */
-    fun hasAssignmentTo(assigneeId: String): Boolean {
+    fun hasAssignment(assigneeId: String): Boolean {
         return assignments!!.find { it.assigneeId == assigneeId } != null
     }
 
@@ -118,7 +120,7 @@ class Task(
     fun addTaskAssignment(taskAssignment: TaskAssignment) {
         if (taskAssignment.taskId != id)
             throw InvalidInputException("task id specified in the given task assignment must be equal to the id of this task")
-        if (hasAssignmentTo(taskAssignment.assigneeId))
+        if (hasAssignment(taskAssignment.assigneeId))
             throw AlreadyExistsException("task assignment already exists")
 
         assignments!!.add(taskAssignment)
@@ -157,5 +159,39 @@ class Task(
             }
         }
         throw NotFoundException("task assignment does not exist")
+    }
+
+    /**
+     * Add task comment.
+     *
+     * @throws InvalidInputException Is thrown if the task id specified in the given task comment
+     * is not equal to the id of this task.
+     */
+    fun addTaskComment(taskComment: TaskComment) {
+        if (taskComment.taskId != id)
+            throw InvalidInputException("task id specified in the given task comment must be equal to the id of this task")
+
+        comments!!.add(taskComment)
+    }
+
+    /**
+     * Returns the specified task comment.
+     *
+     * @throws NotFoundException Is thrown if the specified task comment does not exist.
+     */
+    fun getTaskComment(taskCommentId: Int): TaskComment {
+        return comments!!.find { it.id == taskCommentId }
+            ?: throw NotFoundException("task comment does not exist")
+    }
+
+    /**
+     * Deletes the specified task comment.
+     *
+     * @throws NotFoundException Is thrown if the specified task comment does not exist.
+     */
+    fun deleteTaskComment(taskCommentId: Int) {
+        val existed = comments!!.removeIf { it.id == taskCommentId }
+        if (!existed)
+            throw NotFoundException("task comment does not exist")
     }
 }
