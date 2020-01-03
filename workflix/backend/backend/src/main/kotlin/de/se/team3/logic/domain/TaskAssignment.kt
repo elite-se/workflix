@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.TasksContainer
+import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
-import kotlin.IllegalStateException
 
 /**
  * Represents a task assignment.
@@ -48,16 +48,16 @@ data class TaskAssignment(
      * @return True if the task assignment is closed.
      */
     @JsonProperty("closed")
-    fun closed() = doneAt != null
+    fun isClosed() = doneAt != null
 
     /**
      * Closes the task assignment if possible.
      *
-     * @throws IllegalStateException Is thrown if the task assignment is already closed.
+     * @throws AlreadyClosedException Is thrown if the task assignment is already closed.
      */
     fun close(closingTime: Instant) {
-        if (closed())
-            throw IllegalStateException("task assignment is already closed")
+        if (isClosed())
+            throw AlreadyClosedException("task assignment is already closed")
 
         doneAt = closingTime
     }
