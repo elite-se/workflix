@@ -40,4 +40,8 @@ object UserHandler {
             ctx.status(404).result("user not found")
         }
     }
+
+    fun createFrom***REMOVED***(ctx: Context) {
+        TODO()
+    }
 }

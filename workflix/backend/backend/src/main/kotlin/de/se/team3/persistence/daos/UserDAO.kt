@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
 object UserDAO : UserDAOInterface {
 
     //TODO store key safely
-    private val key = SecretKeySpec(Arrays.copyOf("THISisAverySECUREkey".toByteArray(), 16), "AES");
+    private val key = SecretKeySpec(Arrays.copyOf("tHiSiSaVeRySeCuReKeY".toByteArray(), 16), "AES");
 
     private fun encryptPassword(password: String): String {
         val data = key.getEncoded()
@@ -103,12 +103,10 @@ object UserDAO : UserDAOInterface {
         }
     }
 
-    override fun deleteUser(user: User) {
-        val affectedRows = UsersTable.update {
+    override fun deleteUser(user: User): Boolean {
+        return UsersTable.update {
             it.deleted to true
             where { it.ID like user.id }
-        }
-        if (affectedRows == 0)
-            throw NoSuchElementException()
+        } != 0
     }
 }

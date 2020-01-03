@@ -28,6 +28,7 @@ object UserContainer : UserContainerInterface {
     }
 
     override fun create***REMOVED***User(email: String, password: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        UserDAO.create***REMOVED***User(email, password)
+        userCache
     }
 }
