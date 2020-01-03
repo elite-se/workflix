@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Button, MenuItem, Tooltip } from '@blueprintjs/core'
-import type { TaskTemplateType } from '../../../datatypes/TaskType'
+import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, MultiSelect } from '@blueprintjs/select'
 import highlightText from '../../../modules/common/highlightText'
