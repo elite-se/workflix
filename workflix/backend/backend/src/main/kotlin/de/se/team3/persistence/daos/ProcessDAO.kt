@@ -62,7 +62,7 @@ object ProcessDAO : ProcessDAOInterface {
     /**
      * Returns the comments to the given task.
      */
-    private fun getComments(taskId: Int): List<TaskComment> {
+    private fun getComments(taskId: Int): ArrayList<TaskComment> {
         val comments = ArrayList<TaskComment>()
         val commentsResult = TaskCommentsTable.select()
             .where {
@@ -80,13 +80,13 @@ object ProcessDAO : ProcessDAOInterface {
                     row[TaskCommentsTable.createdAt]!!
                 ))
 
-        return comments.toList()
+        return comments
     }
 
     /**
      * Returns the assignments to the given task.
      */
-    private fun getAssignments(taskId: Int): List<TaskAssignment> {
+    private fun getAssignments(taskId: Int): ArrayList<TaskAssignment> {
         val assignments = ArrayList<TaskAssignment>()
         val assigmentsResult = TaskAssignmentsTable.select()
             .where {
@@ -105,7 +105,7 @@ object ProcessDAO : ProcessDAOInterface {
                 ))
         }
 
-        return assignments.toList()
+        return assignments
     }
 
     /**

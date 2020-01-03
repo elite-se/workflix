@@ -1,6 +1,7 @@
 package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessTemplateContainer
 import de.se.team3.logic.container.UserContainer
@@ -41,22 +42,6 @@ class Process(
     val processTemplate by lazy { ProcessTemplateContainer.getProcessTemplate(processTemplateId) }
 
     /**
-     * Returns the current progress in percent.
-     *
-     * The progress is the percentage of tasks done weighted by the estimated duration. The estimated
-     * duration of a task where the task template does not contain a estimated duration is assumed
-     * to be 1.
-     */
-    val progress by lazy {
-        var estimatedDurationDone = 0
-        tasks?.forEach { id, task ->
-            if (task.status == TaskStatus.CLOSED)
-                estimatedDurationDone += task.taskTemplate!!.estimatedDuration ?: 1
-        }
-        (estimatedDurationDone / processTemplate.estimatedDurationSum * 100).toInt()
-    }
-
-    /**
      * Create-Constructor
      */
     constructor(
@@ -91,6 +76,27 @@ class Process(
     }
 
     /**
+     * Returns the current progress in percent.
+     *
+     * The progress is the percentage of tasks done weighted by the estimated duration. The estimated
+     * duration of a task where the task template does not contain a estimated duration is assumed
+     * to be 1.
+     *
+     * @return The progress of the process in percent from 0 to 100.
+     */
+    @JsonProperty("progress")
+    fun getProgress(): Int {
+        var estimatedDurationDone = 0
+        tasks?.forEach { id, task ->
+            if (task.isClosed())
+                estimatedDurationDone += task.taskTemplate!!.estimatedDuration ?: 1
+        }
+
+        val ratio = estimatedDurationDone / processTemplate.estimatedDurationSum
+        return (ratio * 100).toInt()
+    }
+
+    /**
      * Decides whether the process could be closed or not.
      *
      * @return True if the process could be closed.
@@ -101,7 +107,7 @@ class Process(
 
         var closeable = true
         tasks!!.forEach { i, task ->
-            if (task.status != TaskStatus.CLOSED)
+            if (!task.isClosed())
                 closeable = false
         }
         return closeable
@@ -114,7 +120,7 @@ class Process(
      */
     fun close() {
         if (status != ProcessStatus.RUNNING)
-            throw IllegalStateException("only running processes could be closed")
+            throw IllegalStateException("only a running processes could be closed")
 
         status = ProcessStatus.CLOSED
         processTemplate.decreaseRunningProcesses()
@@ -127,7 +133,7 @@ class Process(
      */
     fun abort() {
         if (status != ProcessStatus.RUNNING)
-            throw IllegalStateException("only running processes could be aborted")
+            throw IllegalStateException("only a running processes could be aborted")
 
         status = ProcessStatus.ABORTED
         processTemplate.decreaseRunningProcesses()
@@ -149,8 +155,5 @@ class Process(
             }
             return tasks
         }
-
-        // TODO: Was macht das hier?
-        // group.processes.add(this)
     }
 }

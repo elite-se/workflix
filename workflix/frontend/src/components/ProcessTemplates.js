@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { Card, H2, H3, Text } from '@blueprintjs/core'
-import type { ProcessTemplateMasterDataType } from '../datatypes/models'
-import withPromiseResolver from './withPromiseResolver'
+import type { ProcessTemplateMasterDataType } from '../modules/datatypes/Process'
+import withPromiseResolver from '../modules/app/hocs/withPromiseResolver'
 import { Link } from '@reach/router'
 import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'

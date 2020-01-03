@@ -9,14 +9,16 @@ import java.time.Instant
 /**
  * Represents a task comment.
  */
-class TaskComment(
+data class TaskComment(
     val id: Int?,
     val taskId: Int?,
     val creatorId: String?,
-    val content: String,
+    private var content: String,
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant
 ) {
+
+    fun getContent() = content
 
     init {
         if (id == null && (taskId == null || creatorId == null))
@@ -37,4 +39,16 @@ class TaskComment(
      */
     constructor(id: Int, content: String) :
             this(id, null, null, content, Instant.now())
+
+    /**
+     * Sets the given content.
+     *
+     * @throws InvalidInputException Is thrown if the given content ist empty.
+     */
+    fun setContent(content: String) {
+        if (content.isEmpty())
+            throw InvalidInputException("content must not be empty")
+
+        this.content = content
+    }
 }

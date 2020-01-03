@@ -1,9 +1,9 @@
 // @flow
 
 import React from 'react'
-import type { TaskCommentType } from '../../datatypes/TaskType'
+import type { TaskCommentType } from '../../../modules/datatypes/Task'
 import styled from 'styled-components'
-import type { UserType } from '../../datatypes/models'
+import type { UserType } from '../../../modules/datatypes/User'
 
 const TalkBubble = styled<{ floatEnd: boolean }, {}, 'div'>('div')`
     margin: 0 10px 10px;
@@ -34,8 +34,14 @@ class CommentBubble extends React.Component<PropsType> {
       <small style={{ wordWrap: 'break-word' }}>
         {user ? user.name : comment.creatorId}
       </small>
-      <small style={{ float: 'right', wordWrap: 'break-word' }}>{comment.createdAt}</small>
-      <p style={{ wordWrap: 'break-word', hyphens: 'auto' }}>{comment.content}</p>
+      <small style={{
+        float: 'right',
+        wordWrap: 'break-word'
+      }}>{comment.createdAt}</small>
+      <p style={{
+        wordWrap: 'break-word',
+        hyphens: 'auto'
+      }}>{comment.content}</p>
     </TalkBubble>
   }
 }

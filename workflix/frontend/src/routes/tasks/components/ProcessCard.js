@@ -3,12 +3,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, H3, ProgressBar } from '@blueprintjs/core'
-import type { ProcessType } from '../../datatypes/ProcessType'
+import type { ProcessType } from '../../../modules/datatypes/Process'
 import TaskSummaryCard from './TaskSummaryCard'
 import type { StyledComponent } from 'styled-components'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
-import type { TaskType } from '../../datatypes/TaskType'
-import type { UserType } from '../../datatypes/models'
+import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
+import type { UserType } from '../../../modules/datatypes/User'
 
 const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
   margin: 5px;
@@ -28,7 +28,8 @@ type PropsType = {
   process: ProcessType,
   selectedTask: ?TaskType,
   onTaskSelected: TaskType => void,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  taskTemplates: Map<number, TaskTemplateType>
 }
 
 class ProcessCard extends React.Component<PropsType> {
@@ -47,10 +48,11 @@ class ProcessCard extends React.Component<PropsType> {
         {
           process.tasks.map(task => (
             <TaskSummaryCard key={task.id}
-              task={task}
-              selected={this.isSelected(task)}
-              onTaskSelected={this.props.onTaskSelected}
-              users={this.props.users}/>
+                             task={task}
+                             selected={this.isSelected(task)}
+                             onTaskSelected={this.props.onTaskSelected}
+                             users={this.props.users}
+                             taskTemplates={this.props.taskTemplates}/>
           ))
         }
       </TaskList>

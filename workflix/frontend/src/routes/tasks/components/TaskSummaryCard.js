@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import { Card, Colors } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { Elevation as ELEVATION } from '@blueprintjs/core/lib/cjs/common/elevation'
-import type { UserType } from '../../datatypes/models'
+import type { UserType } from '../../../modules/datatypes/User'
 
 const FinishedTaskStyling = styled<{ taskFinished: boolean }, {}, 'div'>('div')`
   margin: 3px;
@@ -20,7 +20,8 @@ type PropsType = {
   task: TaskType,
   selected: boolean,
   onTaskSelected: (TaskType) => void,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  taskTemplates: Map<number, TaskTemplateType>
 }
 
 class TaskSummaryCard extends React.Component<PropsType> {
@@ -28,10 +29,11 @@ class TaskSummaryCard extends React.Component<PropsType> {
 
   render () {
     const task = this.props.task
-    return <FinishedTaskStyling taskFinished={task.done}>
+    const taskTemplate = this.props.taskTemplates.get(task.taskTemplateId)
+    return <FinishedTaskStyling taskFinished={task.status === 'CLOSED'}>
       <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
             onClick={this.onClick}>
-        <p><b>{task.taskTemplate.name}</b></p>
+        <p><b>{taskTemplate ? taskTemplate.name : ''}</b></p>
         <p>{task.assignments.length === 0 ? 'No Assignees'
           : <span>Assigned to: {
             task.assignments.map(assignee => {

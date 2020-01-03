@@ -1,6 +1,6 @@
 // @flow
 
-import type { UserType } from '../datatypes/models'
+import type { UserType } from '../datatypes/User'
 
 class UsersApi {
   getUsers (): Promise<Map<string, UserType>> {
