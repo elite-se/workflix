@@ -3,29 +3,22 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.UsersTable
+import java.util.Arrays
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import kotlin.collections.ArrayList
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insert
-import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.like
-import me.liuwj.ktorm.dsl.limit
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
-import java.security.Key
-import java.security.SecureRandom
-import java.util.*
-import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
-import kotlin.NoSuchElementException
-import kotlin.collections.ArrayList
 
 object UserDAO : UserDAOInterface {
 
-    //TODO store key safely
-    private val key = SecretKeySpec(Arrays.copyOf("tHiSiSaVeRySeCuReKeY".toByteArray(), 16), "AES");
+    // TODO store key safely
+    private val key = SecretKeySpec(Arrays.copyOf("tHiSiSaVeRySeCuReKeY".toByteArray(), 16), "AES")
 
     private fun encryptPassword(password: String): String {
         val data = key.getEncoded()

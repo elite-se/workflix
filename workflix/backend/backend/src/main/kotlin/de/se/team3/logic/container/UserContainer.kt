@@ -4,11 +4,10 @@ import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
-import java.lang.IllegalArgumentException
 
 object UserContainer : UserContainerInterface {
 
-    //caches users using UserIDs
+    // caches users using UserIDs
     private val userCache = HashMap<String, User>()
 
     override fun getAllUsers(): List<User> {
