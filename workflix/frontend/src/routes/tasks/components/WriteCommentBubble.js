@@ -2,9 +2,10 @@
 
 import React from 'react'
 import { TalkBubble } from './TalkBubble'
-import { Button, TextArea } from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 import ProcessApi from '../../../modules/api/ProcessApi'
 import type { TaskCommentType, TaskType } from '../../../modules/datatypes/Task'
+import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
 
 type PropsType = {|
   task: TaskType,
@@ -26,7 +27,7 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
   }
 
   onKeyPress = (event: KeyboardEvent) => {
-    if (this.state.text && event.key === 'Enter') {
+    if (this.state.text && event.key === 'Enter' && !event.shiftKey) {
       this.doSend()
       if (event.preventDefault()) { event.preventDefault() }
       return false
@@ -60,7 +61,7 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
   render () {
     return <TalkBubble floatEnd
                        onKeyDown={this.onKeyPress}>
-      <TextArea
+      <AutoSizeTextArea
         fill
         growVertically
         style={{
