@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Colors, H3, H4 } from '@blueprintjs/core'
+import { Colors, H3, H4, InputGroup } from '@blueprintjs/core'
 import type { TaskTemplateType } from '../../../datatypes/TaskType'
 import { difference } from 'lodash'
 import PredecessorSelect from './PredecessorSelect'
@@ -61,15 +61,15 @@ class TaskTemplateEditor extends React.Component<PropsType> {
       <H3>Edit Task Template</H3>
       <div>
         <H4>Name:</H4>
-        <input type='text' className='bp3-input' placeholder='Name...'
-               value={this.props.task.name}
-               onChange={this.onTitleChange}/>
+        <InputGroup type='text' placeholder='Name...'
+                    value={this.props.task.name}
+                    onChange={this.onTitleChange}/>
       </div>
       <div>
         <H4>Duration:</H4>
-        <input type='number' className='bp3-input' placeholder='Duration...'
-               value={this.props.task.estimatedDuration}
-               onChange={this.onDurationChange} min={0.1} step={0.1}/>
+        <InputGroup type='number' placeholder='Duration...'
+                    value={this.props.task.estimatedDuration}
+                    onChange={this.onDurationChange} min={0.1} step={0.1}/>
       </div>
       <div>
         <H4>Predecessor tasks:</H4>
