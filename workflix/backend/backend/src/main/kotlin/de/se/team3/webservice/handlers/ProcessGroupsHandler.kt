@@ -12,7 +12,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-object ProcessGroupHandler {
+object ProcessGroupsHandler {
 
     fun getAll(ctx: Context) {
         val groups = ProcessGroupContainer.getAllProcessGroups()

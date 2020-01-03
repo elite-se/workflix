@@ -68,6 +68,7 @@ object ProcessGroupContainer : ProcessGroupContainerInterface {
         val existed = ProcessGroupsDAO.deleteProcessGroup(processGroupId)
         if (!existed)
             throw NotFoundException("process group not found")
+
         processGroupsCache.remove(processGroupId)
     }
 }
