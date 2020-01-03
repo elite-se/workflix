@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { IItemRendererProps, ItemRenderer, MultiSelect } from '@blueprintjs/select'
-import type { UserType } from '../../modules/datatypes/User'
-import type { TaskAssignmentType, TaskType } from '../../modules/datatypes/Task'
+import type { UserType } from '../../../modules/datatypes/User'
+import type { TaskAssignmentType, TaskType } from '../../../modules/datatypes/Task'
 import { Button, MenuItem } from '@blueprintjs/core'
-import ProcessApi from '../../modules/api/ProcessApi'
+import ProcessApi from '../../../modules/api/ProcessApi'
 import { sortBy } from 'lodash'
 
 const UserSelect = MultiSelect.ofType<UserType>()

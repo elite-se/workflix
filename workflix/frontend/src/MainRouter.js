@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { Redirect, Router } from '@reach/router'
-import Users from './routes/users/Users'
 import ProcessTemplates from './components/ProcessTemplates'
 import CreateProcessTemplate from './routes/create-process-template/CreateProcessTemplate'
-import TasksOverview from './routes/tasks/TasksOverview'
+import TasksOverview from './routes/tasks/components/TasksOverview'
+import Users from './routes/users/components/Users'
 
 class MainRouter extends React.Component<{}> {
   render () {

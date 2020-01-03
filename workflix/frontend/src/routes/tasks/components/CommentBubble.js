@@ -1,9 +1,9 @@
 // @flow
 
 import React from 'react'
-import type { TaskCommentType } from '../../modules/datatypes/Task'
+import type { TaskCommentType } from '../../../modules/datatypes/Task'
 import styled from 'styled-components'
-import type { UserType } from '../../modules/datatypes/User'
+import type { UserType } from '../../../modules/datatypes/User'
 
 const TalkBubble = styled<{ floatEnd: boolean }, {}, 'div'>('div')`
     margin: 0 10px 10px;
