@@ -37,7 +37,7 @@ class ProcessApi {
       ...defaultFetchOptions,
       method: 'PUT',
       body: JSON.stringify({
-        immediateClosing: immediateClosing
+        immediateClosing
       })
     })
       .then(response => response.json())
