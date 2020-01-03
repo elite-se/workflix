@@ -1,63 +1,80 @@
 // @flow
 
-import type { NodeType } from './CreateProcessTemplate'
+/* eslint-disable no-magic-numbers */
 
 /*
 graph:  1 ----- 3 - 6
               /       \
         0 - 2 - 4 - 5 - 7
- */
+*/
 
-const MOCK_TASKS: Array<NodeType> = [
+import type { TaskTemplateType } from '../../datatypes/TaskType'
+
+const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
   {
     id: 0,
     predecessors: [],
-    duration: 1,
-    title: 'Do stuff 0'
+    estimatedDuration: 1,
+    name: 'Do stuff 0',
+    description: 'Empty',
+    necessaryClosings: 1
   },
   {
     id: 1,
     predecessors: [],
-    duration: 2,
-    title: 'Do stuff 1'
+    estimatedDuration: 2,
+    name: 'Do stuff 1',
+    description: 'Empty',
+    necessaryClosings: 1
   },
   {
     id: 2,
     predecessors: [0],
-    duration: 1.4,
-    title: 'Do stuff 2'
+    estimatedDuration: 1.4,
+    name: 'Do stuff 2',
+    description: 'Empty',
+    necessaryClosings: 1
   },
   {
     id: 3,
     predecessors: [1, 2],
-    duration: 1.3,
-    title: 'Do stuff 3'
+    estimatedDuration: 1.3,
+    name: 'Do stuff 3',
+    description: 'Empty',
+    necessaryClosings: 1
   },
   {
     id: 4,
     predecessors: [2],
-    duration: 2,
-    title: 'Do stuff 4'
+    estimatedDuration: 2,
+    name: 'Do stuff 4',
+    description: 'Empty',
+    necessaryClosings: 1
   },
   {
     id: 5,
     predecessors: [4],
-    duration: 2,
-    title: 'Do stuff 5'
+    estimatedDuration: 2,
+    name: 'Do stuff 5',
+    description: 'Empty',
+    necessaryClosings: 1
   },
   {
     id: 6,
     predecessors: [3],
-    duration: 1,
-    title: 'Do stuff 6'
+    estimatedDuration: 1,
+    name: 'Do stuff 6',
+    description: 'Empty',
+    necessaryClosings: 1
   },
   {
     id: 7,
     predecessors: [5, 6],
-    duration: 1,
-    title: 'Do stuff 7'
+    estimatedDuration: 1,
+    name: 'Do stuff 7',
+    description: 'Empty',
+    necessaryClosings: 1
   }
 ]
 
-
-export default MOCK_TASKS
+export default MOCK_TASK_TEMPLATES

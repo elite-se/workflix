@@ -4,10 +4,10 @@ import React from 'react'
 import type { Node } from 'react'
 import { flatMap } from 'lodash'
 import { Colors } from '@blueprintjs/core'
-import type { ProcessedNodeType } from './CreateProcessTemplate'
+import type { ProcessedTaskTemplateType } from './CreateProcessTemplate'
 
 type PropsType = {
-  nodes: Array<ProcessedNodeType> /* sorted by calculated endDate */
+  nodes: Array<ProcessedTaskTemplateType> /* sorted by calculated endDate */
 }
 
 type StateType = {
@@ -64,10 +64,10 @@ class ProcessChart extends React.Component<PropsType, StateType> {
               const pred = nodes[predIndex]
               return <path key={`${index},${predIndex}`}
                            markerEnd='url(#Triangle)'
-                           d={`M ${(pred.endDate - pred.duration / 2) * scale} ${(predIndex + 1 / 2) * ITEM_HEIGHT}
+                           d={`M ${(pred.endDate - pred.estimatedDuration / 2) * scale} ${(predIndex + 1 / 2) * ITEM_HEIGHT}
                                V ${(index + 1 / 2) * ITEM_HEIGHT - STROKE_RADIUS}
                                q 0 ${STROKE_RADIUS} ${STROKE_RADIUS} ${STROKE_RADIUS}
-                               H ${(node.endDate - node.duration) * scale}`}
+                               H ${(node.endDate - node.estimatedDuration) * scale}`}
                            fill='none'
                            stroke={Colors.GRAY1}
                            strokeWidth={EDGE_STROKE_WIDTH}
@@ -75,8 +75,8 @@ class ProcessChart extends React.Component<PropsType, StateType> {
             })
         ),
         nodes.map((node, index) => <path key={index}
-              d={`M ${(node.endDate - node.duration) * scale + NODE_STROKE_WIDTH / 2} ${(index + 1 / 2) * ITEM_HEIGHT}
-                  h ${node.duration * scale - NODE_STROKE_WIDTH}`}
+              d={`M ${(node.endDate - node.estimatedDuration) * scale + NODE_STROKE_WIDTH / 2} ${(index + 1 / 2) * ITEM_HEIGHT}
+                  h ${node.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
               strokeWidth={NODE_STROKE_WIDTH}
               strokeLinecap='round'
               stroke={Colors.BLUE1} />

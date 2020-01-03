@@ -5,22 +5,16 @@ import ProcessChart from './ProcessChart'
 import { times } from 'lodash'
 import { H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
-import MOCK_TASKS from './mockTasks'
+import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
+import type { TaskTemplateType } from '../../datatypes/TaskType'
 
-export type NodeType = {|
-  id: number,
-  predecessors: Array<number>,
-  title: string,
-  duration: number
-|}
-
-export type ProcessedNodeType = {|
-  ...NodeType,
+export type ProcessedTaskTemplateType = {|
+  ...TaskTemplateType,
   endDate: number
 |}
 
-const calcEndDates = (nodes: Array<NodeType>): Array<ProcessedNodeType> => {
+const calcEndDates = (nodes: Array<TaskTemplateType>): Array<ProcessedTaskTemplateType> => {
   const leveledNodes = nodes.map(node => ({
     ...node,
     endDate: 0
@@ -31,21 +25,22 @@ const calcEndDates = (nodes: Array<NodeType>): Array<ProcessedNodeType> => {
       node.endDate = Math.max(
         0,
         ...(node.predecessors.map(id => leveledNodes.find(x => x.id === id)?.endDate || 0))
-      ) + node.duration
+      ) + node.estimatedDuration
     }
   })
 
-  return leveledNodes.sort((node1, node2) => node1.endDate - node1.duration - node2.endDate + node2.duration)
+  return leveledNodes
+    .sort((node1, node2) => node1.endDate - node1.estimatedDuration - node2.endDate + node2.estimatedDuration)
 }
 
 type StateType = {
-  nodes: Array<NodeType>,
+  nodes: Array<TaskTemplateType>,
   selectedNode: ?number
 }
 
 class CreateProcessTemplate extends React.Component<{}, StateType> {
   state = {
-    nodes: MOCK_TASKS,
+    nodes: MOCK_TASK_TEMPLATES,
     selectedNode: null
   }
 
@@ -53,7 +48,7 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     this.setState({ selectedNode: id })
   }
 
-  selectedTaskChanged = (task: NodeType) => {
+  selectedTaskChanged = (task: TaskTemplateType) => {
     this.setState(state => ({
       nodes: state.nodes.map(node => node.id === state.selectedNode ? task : node)
     }))
@@ -62,11 +57,13 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
   createTask = () => {
     this.setState(state => {
       const newId = Math.max(...state.nodes.map(node => node.id), -1) + 1
-      const newTask: NodeType = {
+      const newTask: TaskTemplateType = {
         id: newId,
         predecessors: [],
-        title: 'New Task',
-        duration: 1
+        name: 'New Task',
+        estimatedDuration: 1,
+        description: '',
+        necessaryClosings: 0
       }
       return {
         nodes: [...state.nodes, newTask],
@@ -92,7 +89,7 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     }}>
       <H2 style={{ textAlign: 'center' }}>Create a new Process Template</H2>
       <div style={{ display: 'flex' }}>
-        <TaskList nodes={processedNodes} createTask={this.createTask} editTask={this.editTask} />
+        <TaskList taskTemplates={processedNodes} createTask={this.createTask} editTask={this.editTask} />
         <ProcessChart nodes={processedNodes} />
       </div>
       {this.renderTaskTemplateEditor()}
