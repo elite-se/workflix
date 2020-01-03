@@ -6,7 +6,7 @@ import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupMembers
 import de.se.team3.persistence.meta.ProcessGroupsTable
-import de.se.team3.persistence.meta.ProcessToGroup
+import de.se.team3.persistence.meta.ProcessesTable
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.iterator
@@ -30,8 +30,8 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
             }
 
             val processes = ArrayList<Process>()
-            for (processRow in ProcessToGroup.select().where { ProcessToGroup.ProcessGroupID eq ProcessGroupsTable.id }) {
-                processes.add(ProcessDAO.getProcess(processRow[ProcessToGroup.ProcessID]!!))
+            for (processRow in ProcessesTable.select().where { ProcessesTable.groupId eq ProcessGroupsTable.id }) {
+                processes.add(ProcessDAO.getProcess(processRow[ProcessesTable.id]!!)!!)
             }
 
             val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
@@ -61,8 +61,8 @@ object ProcessGroupDAO : ProcessGroupDAOInterface {
         }
 
         val processes = ArrayList<Process>()
-        for (row in ProcessToGroup.select().where { ProcessToGroup.ProcessGroupID eq processGroupId }) {
-            processes.add(ProcessDAO.getProcess(row[ProcessToGroup.ProcessID]!!))
+        for (row in ProcessesTable.select().where { ProcessesTable.groupId eq processGroupId }) {
+            processes.add(ProcessDAO.getProcess(row[ProcessesTable.id]!!)!!)
         }
 
         val row = processGroupResult.rowSet.iterator().next()

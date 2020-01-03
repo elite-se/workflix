@@ -56,7 +56,7 @@ class ProcessCard extends React.Component<PropsType> {
           ))
         }
       </TaskList>
-      <ProcessProgress animate={false} intent='success' value={taskProgress} />
+      <ProcessProgress animate={false} intent='success' value={taskProgress}/>
     </CardWithMargin>
   }
 }

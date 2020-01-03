@@ -1,7 +1,7 @@
 package de.se.team3.logic.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import de.se.team3.logic.container.TaskTemplateContainer
 import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
 
@@ -14,23 +14,45 @@ class Task(
     @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant?,
     val comments: List<TaskComment>?,
-    val assignments: List<TaskAssignment>?
+    val assignments: List<TaskAssignment>?,
+    @JsonIgnore
+    var process: Process?
 ) {
 
+    @get:JsonIgnore
     val taskTemplate by lazy {
-        TaskTemplateContainer.getTaskTemplate(taskTemplateId)
+        process!!.processTemplate.taskTemplates!!.get(taskTemplateId)
     }
 
-    val isDone by lazy {
-        // should only be null in case of creation
-        // then of course the task could not be already closed
-        if (assignments == null) false else {
-            var closings = 0
-            assignments.forEach { taskAssignment ->
-                if (taskAssignment.status == AssignmentStatus.CLOSED)
-                    closings++
-            }
-            closings == taskTemplate.necessaryClosings
+    @get:JsonIgnore
+    val previousClosed: Boolean by lazy {
+        var unclosedFound = false
+        taskTemplate!!.predecessors.forEach { taskTemplate ->
+            val preTask = process!!.tasks!!.get(taskTemplate.id)
+            if (preTask!!.status != TaskStatus.CLOSED)
+                unclosedFound = true
+        }
+        !unclosedFound
+    }
+
+    @get:JsonIgnore
+    val numberOfClosedAssignments by lazy {
+        var closings = 0
+        assignments!!.forEach { taskAssignment ->
+            if (taskAssignment.closed)
+                closings++
+        }
+        closings
+    }
+
+    val status by lazy {
+        if (previousClosed) {
+            if (numberOfClosedAssignments == taskTemplate!!.necessaryClosings)
+                TaskStatus.CLOSED
+            else
+                TaskStatus.RUNNING
+        } else {
+            TaskStatus.BLOCKED
         }
     }
 
@@ -38,6 +60,6 @@ class Task(
      * Create-Constructor
      */
     constructor(taskTemplateId: Int, startedAt: Instant?) :
-            this(null, taskTemplateId, startedAt, null, null) {
+            this(null, taskTemplateId, startedAt, null, null, null) {
     }
 }

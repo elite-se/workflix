@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessTemplateContainer
 import de.se.team3.logic.container.UserContainer
+import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
-import java.lang.IllegalArgumentException
 import java.time.Instant
 
 /**
@@ -18,7 +18,7 @@ class Process(
     val processTemplateId: Int,
     val title: String,
     val description: String,
-    val status: ProcessStatus,
+    private var status: ProcessStatus,
     @JsonSerialize(using = InstantSerializer::class)
     val deadline: Instant?,
     @JsonSerialize(using = InstantSerializer::class)
@@ -27,6 +27,13 @@ class Process(
     // the tasks lies under the id of the corresponding task template
     val tasks: Map<Int, Task>?
 ) {
+
+    fun getStatus() = status
+
+    init {
+        if (tasks != null)
+            tasks.forEach { i, task -> task.process = this }
+    }
 
     @get:JsonIgnore
     val starter by lazy { UserContainer.getUser(starterId) }
@@ -43,8 +50,8 @@ class Process(
     val progress by lazy {
         var estimatedDurationDone = 0
         tasks?.forEach { id, task ->
-            if (task.isDone)
-                estimatedDurationDone += task.taskTemplate.estimatedDuration ?: 1
+            if (task.status == TaskStatus.CLOSED)
+                estimatedDurationDone += task.taskTemplate!!.estimatedDuration ?: 1
         }
         (estimatedDurationDone / processTemplate.estimatedDurationSum * 100).toInt()
     }
@@ -71,9 +78,59 @@ class Process(
         createTasks(processTemplateId)) {
 
         if (title.isEmpty())
-            throw IllegalArgumentException("title must not be empty")
+            throw InvalidInputException("title must not be empty")
         if (processTemplate.deleted)
-            throw IllegalArgumentException("must not be based on a deleted process template")
+            throw InvalidInputException("must not be based on a deleted process template")
+    }
+
+    /**
+     * Returns the specified task.
+     */
+    fun findTask(taskId: Int): Task {
+        return tasks!!.map { it.value }.find { it.id == taskId }!!
+    }
+
+    /**
+     * Decides whether the process could be closed or not.
+     *
+     * @return True if the process could be closed.
+     */
+    fun closeable(): Boolean {
+        if (status != ProcessStatus.RUNNING)
+            return false
+
+        var closeable = true
+        tasks!!.forEach { i, task ->
+            if (task.status != TaskStatus.CLOSED)
+                closeable = false
+        }
+        return closeable
+    }
+
+    /**
+     * Closes the process.
+     *
+     * @throws IllegalStateException Is thrown if the status of the process is not running.
+     */
+    fun close() {
+        if (status != ProcessStatus.RUNNING)
+            throw IllegalStateException("only running processes could be closed")
+
+        status = ProcessStatus.CLOSED
+        processTemplate.decreaseRunningProcesses()
+    }
+
+    /**
+     * Aborts the process.
+     *
+     * @throws IllegalStateException Is thrown if the status of the process is not running.
+     */
+    fun abort() {
+        if (status != ProcessStatus.RUNNING)
+            throw IllegalStateException("only running processes could be aborted")
+
+        status = ProcessStatus.ABORTED
+        processTemplate.decreaseRunningProcesses()
     }
 
     companion object {
