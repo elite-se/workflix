@@ -29,4 +29,14 @@ data class ProcessGroup(
      */
     constructor(id: Int, ownerId: String, title: String, description: String) :
             this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), ArrayList<User>())
+
+    /**
+     * Checks whether the specified user is member of this process group.
+     *
+     * @return True if and only if the specified user is member of this process group.
+     */
+    fun hasMember(memberId: String): Boolean {
+        return members.find { it.id == memberId } != null
+    }
+
 }

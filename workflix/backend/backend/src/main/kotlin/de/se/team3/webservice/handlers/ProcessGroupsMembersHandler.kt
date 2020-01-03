@@ -6,8 +6,16 @@ import io.javalin.http.Context
 import java.util.NoSuchElementException
 import org.json.JSONObject
 
-object ProcessGroupMembershipHandler {
-    fun add(ctx: Context) {
+/**
+ * Handles requests to resources of form:
+ * /processGroups/:processGroupId/members/:memberId
+ */
+object ProcessGroupsMembersHandler {
+
+    fun add(ctx: Context, processGroupId: Int, memberId: String) {
+
+
+
         try {
             val content = ctx.body()
             val memberJSONObject = JSONObject(content)
@@ -31,4 +39,5 @@ object ProcessGroupMembershipHandler {
             ctx.status(404).result("user or process group not found")
         }
     }
+
 }
