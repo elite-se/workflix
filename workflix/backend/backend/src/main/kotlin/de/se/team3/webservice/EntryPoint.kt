@@ -112,18 +112,10 @@ fun main(args: Array<String>) {
         ProcessGroupHandler.create(ctx)
     }
     app.patch("processGroups/:processGroupID") { ctx ->
-        try {
-            ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid process group id")
-        }
+        ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
     }
     app.get("processGroups/:processGroupID") { ctx ->
-        try {
-            ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid process group id")
-        }
+        ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
     }
 
     // group memberships
@@ -131,15 +123,11 @@ fun main(args: Array<String>) {
         ProcessGroupMembershipHandler.add(ctx)
     }
     app.delete("groupMembership/:processGroupID/:userID") { ctx ->
-        try {
-            ProcessGroupMembershipHandler.revoke(
-                ctx,
-                ctx.pathParam("processGroupID").toInt(),
-                ctx.pathParam("userID")
-            )
-        } catch (e: NumberFormatException) {
-            ctx.status(400).result("invalid process group id")
-        }
+        ProcessGroupMembershipHandler.revoke(
+            ctx,
+            ctx.pathParam("processGroupID").toInt(),
+            ctx.pathParam("userID")
+        )
     }
 
     // task assignments
