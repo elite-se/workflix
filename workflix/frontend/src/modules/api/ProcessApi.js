@@ -3,6 +3,7 @@
 import { uniq } from 'lodash'
 import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
+import { fetchChecking } from './FetchChecking'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
@@ -21,19 +22,19 @@ type AddAssigneeResultType = {
 
 class ProcessApi {
   getProcesses (): Promise<ProcessType[]> {
-    return fetch(processesBackend)
+    return fetchChecking(processesBackend)
       .then(response => response.json())
       .then(result => result.processes)
       .then(processes => Promise.all(
         processes.map(proc =>
-          fetch(`${processesBackend}/${proc.id}`)
+          fetchChecking(`${processesBackend}/${proc.id}`)
             .then(response => response.json())
         )
       ))
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<AddAssigneeResultType> {
-    return fetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
+    return fetchChecking(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
       ...defaultFetchOptions,
       method: 'PUT',
       body: JSON.stringify({
@@ -44,7 +45,7 @@ class ProcessApi {
   }
 
   removeAssignee (taskId: number, assigneeId: string): Promise<Response> {
-    return fetch(
+    return fetchChecking(
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'DELETE' })
   }
@@ -57,7 +58,7 @@ class ProcessApi {
   getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {
     processTemplateIds = uniq(processTemplateIds)
     return Promise.all(processTemplateIds.map(procTempId =>
-      fetch(`${processesTemplatesBackend}/${procTempId}`)
+      fetchChecking(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
     ))
   }
