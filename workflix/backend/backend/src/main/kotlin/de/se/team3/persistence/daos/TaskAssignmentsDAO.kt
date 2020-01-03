@@ -5,9 +5,9 @@ import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import java.time.Instant
 import me.liuwj.ktorm.dsl.and
+import me.liuwj.ktorm.dsl.delete
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.update
 
 /**
@@ -26,7 +26,6 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
             row.assigneeId to taskAssignment.assigneeId
             row.createdAt to taskAssignment.createdAt
             row.doneAt to taskAssignment.getDoneAt()
-            row.deleted to false
         }
         return generatedProcessId as Int
     }
@@ -41,8 +40,7 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
             row.doneAt to closingTime
             where {
                 (row.taskId eq taskId) and
-                (row.assigneeId eq assigneeId) and
-                (row.deleted notEq true)
+                (row.assigneeId eq assigneeId)
             }
         }
         return affectedRows != 0
@@ -54,13 +52,9 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
      * @return True if the specified task assignment existed.
      */
     override fun deleteTaskAssignment(taskId: Int, assigneeId: String): Boolean {
-        val affectedRows = TaskAssignmentsTable.update { row ->
-            row.deleted to true
-            where {
-                (row.taskId eq taskId) and
-                (row.assigneeId eq assigneeId) and
-                (row.deleted notEq true)
-            }
+        val affectedRows = TaskAssignmentsTable.delete { row ->
+            (row.taskId eq taskId) and
+                    (row.assigneeId eq assigneeId)
         }
         return affectedRows != 0
     }
