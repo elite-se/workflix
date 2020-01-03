@@ -6,6 +6,7 @@ import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 import { difference } from 'lodash'
 import PredecessorSelect from './PredecessorSelect'
 import SuccessorSelect from './SuccessorSelect'
+import styled from 'styled-components'
 
 type PropsType = {
   task: TaskTemplateType,
@@ -17,6 +18,10 @@ type PropsType = {
 type StateType = {
   deleteAlertOpen: boolean
 }
+
+const TrashButton = styled(Button)`
+  margin-top: 40px;
+`
 
 const findAncestors = (task: TaskTemplateType, allTasks: TaskTemplateType[]) => {
   return [
@@ -94,8 +99,8 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
         <SuccessorSelect allTasks={allTasks} succs={succs} onChange={onChange} possibleSuccs={possibleSuccs}
                          task={task}/>
       </div>
-      <div>
-        <Button icon='trash' text='Delete Task Template' intent='danger' onClick={this.onOpenDeleteAlert}/>
+      <div style={{ textAlign: 'center' }}>
+        <TrashButton icon='trash' text='Delete Task Template' intent='danger' onClick={this.onOpenDeleteAlert}/>
         <Alert isOpen={deleteAlertOpen} icon='trash' intent='danger' confirmButtonText='Delete' canEscapeKeyCancel
                canOutsideClickCancel cancelButtonText='Cancel' onConfirm={this.props.onDelete}
                onCancel={this.onCloseDeleteAlert}>
