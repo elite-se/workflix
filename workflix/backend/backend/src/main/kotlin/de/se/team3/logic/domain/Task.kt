@@ -44,7 +44,7 @@ class Task(
      *
      * @return True if all predecessors are closed.
      */
-    private fun arePredecessorsClosed() : Boolean {
+    private fun arePredecessorsClosed(): Boolean {
         var unclosedFound = false
         taskTemplate!!.predecessors.forEach { taskTemplate ->
             val preTask = process!!.tasks!!.get(taskTemplate.id)
@@ -158,5 +158,4 @@ class Task(
         }
         throw NotFoundException("task assignment does not exist")
     }
-
 }

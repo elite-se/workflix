@@ -61,5 +61,4 @@ data class TaskAssignment(
 
         doneAt = closingTime
     }
-
 }
