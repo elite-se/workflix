@@ -70,7 +70,7 @@ class ProcessApi {
   }
 
   markAsDone (taskId: number, assigneeId: string): Promise<Response> {
-    return fetch(
+    return safeFetch(
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'PATCH' })
   }
