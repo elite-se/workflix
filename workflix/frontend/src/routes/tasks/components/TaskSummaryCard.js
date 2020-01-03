@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react'
-import type { TaskTemplateType, TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import { Card, Colors } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { Elevation as ELEVATION } from '@blueprintjs/core/lib/cjs/common/elevation'
-import type { UserType } from '../../datatypes/models'
+import type { UserType } from '../../../modules/datatypes/User'
 
 const FinishedTaskStyling = styled<{ taskFinished: boolean }, {}, 'div'>('div')`
   margin: 3px;

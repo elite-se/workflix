@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Colors, H3, H4 } from '@blueprintjs/core'
-import type { TaskTemplateType } from '../../datatypes/TaskType'
+import type { TaskTemplateType } from '../../modules/datatypes/Task'
 
 type PropsType = {
   task: TaskTemplateType,
