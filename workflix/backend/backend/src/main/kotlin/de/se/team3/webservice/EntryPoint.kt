@@ -5,8 +5,8 @@ import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.webservice.handlers.ProcessGroupHandler
 import de.se.team3.webservice.handlers.ProcessGroupMembershipHandler
+import de.se.team3.webservice.handlers.ProcessGroupsHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
 import de.se.team3.webservice.handlers.ProcessesHandler
 import de.se.team3.webservice.handlers.ProcessesRunningHandler
@@ -106,16 +106,16 @@ fun main(args: Array<String>) {
 
     // process groups
     app.get("processGroups") { ctx ->
-        ProcessGroupHandler.getAll(ctx)
+        ProcessGroupsHandler.getAll(ctx)
     }
     app.post("processGroups") { ctx ->
-        ProcessGroupHandler.create(ctx)
+        ProcessGroupsHandler.create(ctx)
     }
     app.patch("processGroups/:processGroupID") { ctx ->
-        ProcessGroupHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
+        ProcessGroupsHandler.update(ctx, ctx.pathParam("processGroupID").toInt())
     }
-    app.get("processGroups/:processGroupID") { ctx ->
-        ProcessGroupHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
+    app.delete("processGroups/:processGroupID") { ctx ->
+        ProcessGroupsHandler.delete(ctx, ctx.pathParam("processGroupID").toInt())
     }
 
     // group memberships
