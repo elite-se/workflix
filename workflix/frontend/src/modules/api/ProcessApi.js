@@ -16,7 +16,7 @@ const defaultFetchOptions = {
   }
 }
 
-type AddAssigneeResultType = {
+type NewIdResultType = {
   newId: number
 }
 
@@ -33,7 +33,7 @@ class ProcessApi {
       ))
   }
 
-  addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<AddAssigneeResultType> {
+  addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
     return safeFetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
       ...defaultFetchOptions,
       method: 'PUT',
@@ -73,6 +73,19 @@ class ProcessApi {
     return safeFetch(
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'PATCH' })
+  }
+
+  addComment (taskId: number, creatorId: string, content: string): Promise<NewIdResultType> {
+    return safeFetch(
+      `${tasksBackend}/${taskId}/comments`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          creatorId,
+          content
+        })
+      }
+    ).then(response => response.json())
   }
 }
 

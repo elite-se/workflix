@@ -8,7 +8,8 @@ import WriteCommentBubble from './WriteCommentBubble'
 
 type PropsType = {
   task: TaskType,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  onTaskModified: (task: TaskType) => void
 }
 
 class TaskComments extends React.Component<PropsType> {
@@ -18,7 +19,7 @@ class TaskComments extends React.Component<PropsType> {
       {task.comments.map(comment => {
         return <CommentBubble key={comment.id} comment={comment} users={this.props.users}/>
       })}
-      <WriteCommentBubble/>
+      <WriteCommentBubble task={this.props.task} onTaskModified={this.props.onTaskModified}/>
     </div>
   }
 }
