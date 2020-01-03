@@ -7,7 +7,7 @@ import type { ProcessType } from '../../datatypes/ProcessType'
 import TaskSummaryCard from './TaskSummaryCard'
 import type { StyledComponent } from 'styled-components'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../datatypes/TaskType'
 import type { UserType } from '../../datatypes/models'
 
 const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
@@ -28,7 +28,8 @@ type PropsType = {
   process: ProcessType,
   selectedTask: ?TaskType,
   onTaskSelected: TaskType => void,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  taskTemplates: Map<number, TaskTemplateType>
 }
 
 class ProcessCard extends React.Component<PropsType> {
@@ -50,7 +51,8 @@ class ProcessCard extends React.Component<PropsType> {
               task={task}
               selected={this.isSelected(task)}
               onTaskSelected={this.props.onTaskSelected}
-              users={this.props.users} />
+              users={this.props.users}
+              taskTemplates={this.props.taskTemplates} />
           ))
         }
       </TaskList>

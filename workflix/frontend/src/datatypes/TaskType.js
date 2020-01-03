@@ -33,6 +33,5 @@ export type TaskType = {
   taskTemplateId: number,
   status: TaskStateType,
   comments: TaskCommentType[],
-  assignments: TaskAssignmentType[],
-  taskTemplate: TaskTemplateType
+  assignments: TaskAssignmentType[]
 }

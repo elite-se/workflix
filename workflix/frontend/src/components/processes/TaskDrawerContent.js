@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../datatypes/TaskType'
 import styled from 'styled-components'
 import TaskAssignmentSelect from './TaskAssignmentSelect'
 import TaskComments from './TaskComments'
@@ -13,6 +13,7 @@ const StyledContainer = styled<{}, {}, 'div'>('div')`
 
 type PropsType = {
   task: TaskType,
+  taskTemplates: Map<number, TaskTemplateType>,
   onTaskModified: (TaskType) => void,
   users: Map<string, UserType>
 }
@@ -20,9 +21,10 @@ type PropsType = {
 class TaskDrawerContent extends React.Component<PropsType> {
   render () {
     const task = this.props.task
+    const taskTemplate = this.props.taskTemplates.get(task.taskTemplateId)
     return <StyledContainer>
       <h4>Description</h4>
-      <p>{task.taskTemplate.description}</p>
+      <p>{taskTemplate ? taskTemplate.description : ''}</p>
 
       <h4>Assignee</h4>
       <TaskAssignmentSelect task={task} onTaskModified={this.props.onTaskModified} users={this.props.users} />

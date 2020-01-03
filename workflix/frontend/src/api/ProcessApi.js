@@ -1,9 +1,12 @@
 // @flow
 
-import type { ProcessType } from '../datatypes/ProcessType'
+import type { ProcessTemplateType, ProcessType } from '../datatypes/ProcessType'
+import { uniq } from 'lodash'
+import type { TaskTemplateType } from '../datatypes/TaskType'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
+const processesTemplatesBackend = `${backend}/processTemplates`
 const tasksBackend = `${backend}/tasks`
 
 const defaultFetchOptions = {
@@ -44,6 +47,25 @@ class ProcessApi {
     return fetch(
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'DELETE' })
+  }
+
+  getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
+    return this.getProcessTemplates([processTemplateId])
+      .then(templates => templates[0])
+  }
+
+  getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {
+    processTemplateIds = uniq(processTemplateIds)
+    return Promise.all(processTemplateIds.map(procTempId =>
+      fetch(`${processesTemplatesBackend}/${procTempId}`)
+        .then(response => response.json())
+    ))
+  }
+
+  getTaskTemplatesForProcessTemplates (processTemplateIds: number[]): Promise<Map<number, TaskTemplateType>> {
+    return this.getProcessTemplates(processTemplateIds)
+      .then(procTemps => procTemps.flatMap(procTemp => procTemp.taskTemplates))
+      .then(taskTemps => new Map<number, TaskTemplateType>(taskTemps.map(taskTemp => [taskTemp.id, taskTemp])))
   }
 }
 

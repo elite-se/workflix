@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Drawer } from '@blueprintjs/core'
-import type { TaskType } from '../../datatypes/TaskType'
+import type { TaskTemplateType, TaskType } from '../../datatypes/TaskType'
 import TaskDrawerContent from './TaskDrawerContent'
 import type { UserType } from '../../datatypes/models'
 
@@ -10,6 +10,7 @@ type PropsType = {|
   selectedTask: ?TaskType,
   onClose: () => void,
   onTaskModified: (TaskType) => void,
+  taskTemplates: Map<number, TaskTemplateType>,
   users: Map<string, UserType>
 |}
 
@@ -26,17 +27,22 @@ class TaskDrawer extends React.Component<PropsType> {
 
   render () {
     const selectedTask = this.props.selectedTask
+    const taskTemplate = selectedTask ? this.props.taskTemplates.get(selectedTask.taskTemplateId) : undefined
     return <Drawer
       size={Drawer.SIZE_SMALL}
       hasBackdrop={false}
       isOpen={selectedTask != null}
-      title={selectedTask != null ? selectedTask.taskTemplate.name : ''}
+      title={taskTemplate ? taskTemplate.name : ''}
       onClose={this.props.onClose}
       onOpening={this.onDrawerOpening}
       style={{ overflow: 'auto' }}
       users={this.props.users}>
       {selectedTask != null
-        ? <TaskDrawerContent task={selectedTask} onTaskModified={this.props.onTaskModified} users={this.props.users} />
+        ? <TaskDrawerContent
+          task={selectedTask}
+          onTaskModified={this.props.onTaskModified}
+          users={this.props.users}
+          taskTemplates={this.props.taskTemplates} />
         : ''}
     </Drawer>
   }
