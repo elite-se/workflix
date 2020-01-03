@@ -48,11 +48,11 @@ class ProcessCard extends React.Component<PropsType> {
         {
           process.tasks.map(task => (
             <TaskSummaryCard key={task.id}
-              task={task}
-              selected={this.isSelected(task)}
-              onTaskSelected={this.props.onTaskSelected}
-              users={this.props.users}
-              taskTemplates={this.props.taskTemplates} />
+                             task={task}
+                             selected={this.isSelected(task)}
+                             onTaskSelected={this.props.onTaskSelected}
+                             users={this.props.users}
+                             taskTemplates={this.props.taskTemplates}/>
           ))
         }
       </TaskList>

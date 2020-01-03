@@ -28,7 +28,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
                      label={user.displayname}
                      onClick={handleClick}
                      text={user.name}
-                     shouldDismissPopover={false} />
+                     shouldDismissPopover={false}/>
   }
 
   renderUserToTag (user: UserType): string {
@@ -37,7 +37,9 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
 
   onItemSelect = (item: UserType) => {
     const task = this.props.task
-    if (task.assignments.find(ass => ass.assigneeId === item.id)) { return }
+    if (task.assignments.find(ass => ass.assigneeId === item.id)) {
+      return
+    }
     new ProcessApi().addAssignee(task.id, item.id)
       .then(json => {
         this.onAssignmentsChanged(task.assignments.concat({
@@ -79,7 +81,9 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   }
 
   itemPredicate = (query: string, item: UserType, index?: number, exactMatch?: boolean) => {
-    if (this.props.task.assignments.find(ass => ass.assigneeId === item.id)) { return false }
+    if (this.props.task.assignments.find(ass => ass.assigneeId === item.id)) {
+      return false
+    }
     if (exactMatch) {
       return item.name.toLowerCase() === query.toLowerCase()
     } else {
@@ -108,7 +112,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     const task = this.props.task
     const assignees = this.usersArray
       .filter(user => task.assignments.find(ass => ass.assigneeId === user.id))
-    const clearButton = task.assignments.length > 0 && <Button icon='cross' minimal onClick={this.onClear} />
+    const clearButton = task.assignments.length > 0 && <Button icon='cross' minimal onClick={this.onClear}/>
     return <UserSelect
       items={this.usersArray}
       itemRenderer={this.renderUser}
@@ -123,7 +127,8 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       }}
       itemPredicate={this.itemPredicate}
       itemListPredicate={this.itemListPredicate}
-      resetOnSelect />
+      resetOnSelect/>
   }
 }
+
 export default TaskAssignmentSelect

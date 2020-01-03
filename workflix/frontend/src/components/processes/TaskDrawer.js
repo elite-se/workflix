@@ -42,7 +42,7 @@ class TaskDrawer extends React.Component<PropsType> {
           task={selectedTask}
           onTaskModified={this.props.onTaskModified}
           users={this.props.users}
-          taskTemplates={this.props.taskTemplates} />
+          taskTemplates={this.props.taskTemplates}/>
         : ''}
     </Drawer>
   }

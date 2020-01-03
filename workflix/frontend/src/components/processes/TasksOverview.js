@@ -30,7 +30,10 @@ const getUpdatedOrOldTask: (TaskType, TaskType) => TaskType = (oldTask, newTask)
 }
 
 class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType, processes: ProcessType[] }> {
-  state = { selectedTask: null, processes: this.props.initialProcesses || [] }
+  state = {
+    selectedTask: null,
+    processes: this.props.initialProcesses || []
+  }
 
   onTaskSelected = (selectedTask: TaskType) => {
     this.setState({ selectedTask: selectedTask })
@@ -62,7 +65,7 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
             selectedTask={this.state.selectedTask}
             onTaskSelected={this.onTaskSelected}
             users={this.props.users}
-            taskTemplates={this.props.taskTemplates} />)
+            taskTemplates={this.props.taskTemplates}/>)
         )
       }</ProcessListWrapper>
       <TaskDrawer
@@ -70,7 +73,7 @@ class TasksOverview extends React.Component<PropsType, { selectedTask: ?TaskType
         onClose={this.onDrawerClosed}
         onTaskModified={this.onTaskModified}
         users={this.props.users}
-        taskTemplates={this.props.taskTemplates} />
+        taskTemplates={this.props.taskTemplates}/>
     </div>
   }
 }

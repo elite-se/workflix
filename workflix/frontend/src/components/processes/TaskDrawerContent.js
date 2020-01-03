@@ -27,7 +27,7 @@ class TaskDrawerContent extends React.Component<PropsType> {
       <p>{taskTemplate ? taskTemplate.description : ''}</p>
 
       <h4>Assignee</h4>
-      <TaskAssignmentSelect task={task} onTaskModified={this.props.onTaskModified} users={this.props.users} />
+      <TaskAssignmentSelect task={task} onTaskModified={this.props.onTaskModified} users={this.props.users}/>
 
       <h4>Comments</h4>
       <TaskComments task={task} users={this.props.users}/>
