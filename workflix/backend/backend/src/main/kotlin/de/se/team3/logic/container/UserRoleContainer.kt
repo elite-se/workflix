@@ -1,6 +1,7 @@
 package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.UserRole
+import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.UserRoleDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
@@ -17,6 +18,8 @@ object UserRoleContainer : UserRoleContainerInterface {
             userRoleCache[userRoleID]!!
         } else {
             val userRole = UserRoleDAO.getUserRole(userRoleID)
+                ?: throw NotFoundException("user role $userRoleID does not exist")
+
             userRoleCache[userRoleID] = userRole
             userRole
         }
@@ -34,7 +37,8 @@ object UserRoleContainer : UserRoleContainerInterface {
     }
 
     override fun deleteUserRole(userRoleID: Int) {
-        UserRoleDAO.deleteUserRole(userRoleID)
+        if (!UserRoleDAO.deleteUserRole(userRoleID))
+            throw NotFoundException("user role $userRoleID does not exist")
         userRoleCache.remove(userRoleID)
     }
 
