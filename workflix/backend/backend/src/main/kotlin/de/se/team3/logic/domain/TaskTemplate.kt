@@ -1,7 +1,7 @@
 package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import java.lang.IllegalArgumentException
+import de.se.team3.logic.exceptions.InvalidInputException
 
 /**
  *
@@ -13,7 +13,6 @@ class TaskTemplate(
     val name: String,
     val description: String,
     val estimatedDuration: Int?,
-    val durationLimit: Int?,
     val necessaryClosings: Int
 ) {
 
@@ -23,10 +22,7 @@ class TaskTemplate(
     val predecessors = HashSet<TaskTemplate>()
 
     init {
-        if (estimatedDuration != null && durationLimit != null)
-            if (estimatedDuration > durationLimit)
-                throw IllegalArgumentException("a estimated duration greater than the duration limit makes no sense")
         if (necessaryClosings < 1)
-            throw IllegalArgumentException("there must be at least one user who closes a task explicitly")
+            throw InvalidInputException("there must be at least one user who closes a task explicitly")
     }
 }

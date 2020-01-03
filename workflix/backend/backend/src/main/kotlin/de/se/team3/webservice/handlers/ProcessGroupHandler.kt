@@ -58,6 +58,7 @@ object ProcessGroupHandler {
             try {
                 val processGroup = ProcessGroup(title, description, ownerID, Instant.now())
                 val newId = ProcessGroupContainer.createProcessGroup(processGroup)
+                processGroup.id = newId
                 val newIdObject = JSONObject()
                 newIdObject.put("newId", newId)
 

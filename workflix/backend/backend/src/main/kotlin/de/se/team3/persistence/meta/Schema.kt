@@ -18,6 +18,20 @@ object UsersTable : Table<Nothing>("users") {
     val deleted by boolean("deleted")
 }
 
+object UserRolesTable : Table<Nothing>("user_roles") {
+    val ID by int("id").primaryKey()
+    val name by varchar("name")
+    val description by varchar("description")
+    val createdAt by timestamp("created_at")
+    val deleted by boolean("deleted")
+}
+
+object UserRoleMembers : Table<Nothing>("user_role_members") {
+    val ID by int("id").primaryKey()
+    val userID by varchar("user_id")
+    val userRoleID by int("user_role_id")
+}
+
 object ProcessTemplatesTable : Table<Nothing>("process_templates") {
     val id by int("id").primaryKey()
     val ownerId by varchar("owner_id")
@@ -29,13 +43,38 @@ object ProcessTemplatesTable : Table<Nothing>("process_templates") {
     val deleted by boolean("deleted")
 }
 
+object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
+    val id by int("id").primaryKey()
+    val ownerId by varchar("owner_id")
+    val title by varchar("title")
+    val description by text("description")
+    val durationLimit by int("duration_limit")
+    val createdAt by timestamp("created_at")
+    val formerVersion by int("former_version")
+    val processCount by int("process_count")
+    val runningProcesses by int("running_processes")
+    val deleted by boolean("deleted")
+}
+
+object ProcessTemplatesFilteredView : Table<Nothing>("process_templates_filtered") {
+    val id by int("id").primaryKey()
+    val ownerId by varchar("owner_id")
+    val title by varchar("title")
+    val description by text("description")
+    val durationLimit by int("duration_limit")
+    val createdAt by timestamp("created_at")
+    val formerVersion by int("former_version")
+    val processCount by int("process_count")
+    val runningProcesses by int("running_processes")
+    val deleted by boolean("deleted")
+}
+
 object TaskTemplatesTable : Table<Nothing>("task_templates") {
     val id by int("id").primaryKey()
     val processTemplateId by int("process_template_id")
     val name by varchar("name")
     val description by text("description")
     val estimatedDuration by int("estimated_duration")
-    val durationLimit by int("duration_limit")
     val necessaryClosings by int("necessary_closings")
 }
 
@@ -83,7 +122,6 @@ object TaskAssignmentsTable : Table<Nothing>("task_assignments") {
     val id by int("id").primaryKey()
     val taskId by int("task_id")
     val assigneeId by varchar("assignee_id")
-    val status by varchar("status")
     val createdAt by timestamp("created_at")
     val doneAt by timestamp("done_at")
     val deleted by boolean("deleted")
@@ -93,22 +131,8 @@ object TaskCommentsTable : Table<Nothing>("task_comments") {
     val id by int("id").primaryKey()
     val taskId by int("task_id")
     val creatorId by varchar("creator_id")
-    val title by varchar("title")
     val content by text("content")
     val createdAt by timestamp("created_at")
-    val deleted by boolean("deleted")
-}
-
-object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
-    val id by int("id").primaryKey()
-    val ownerId by varchar("owner_id")
-    val title by varchar("title")
-    val description by text("description")
-    val durationLimit by int("duration_limit")
-    val createdAt by timestamp("created_at")
-    val formerVersion by int("former_version")
-    val processCount by int("process_count")
-    val runningProcesses by int("running_processes")
     val deleted by boolean("deleted")
 }
 
@@ -116,10 +140,4 @@ object ProcessGroupMembers : Table<Nothing>("process_group_members") {
     val ID by int("id").primaryKey() // necessary since composite primary keys do not appear to be implemented in ktorm
     val processGroupID by int("process_group_id") // TODO foreign key implementation
     val userID by varchar("user_id") // TODO foreign key implementation
-}
-
-object ProcessToGroup : Table<Nothing>("process_to_group") {
-    val ID by int("id").primaryKey()
-    val ProcessID by int("process_id") // TODO foreign key implementation
-    val ProcessGroupID by int("process_group_id") // TODO foreign key implementation .references(ProcessGroups) {it.ID}
 }
