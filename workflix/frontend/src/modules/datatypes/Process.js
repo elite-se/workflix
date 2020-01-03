@@ -3,7 +3,7 @@
 import type { TaskTemplateType, TaskType } from './Task'
 import type { UserType } from './User'
 
-export type ProcessStatusType = 'running' | 'closed' | 'aborted'
+export type ProcessStatusType = 'RUNNING' | 'CLOSED' | 'ABORTED'
 
 export type ProcessTemplateMasterDataType = {|
   id: number,
