@@ -21,7 +21,7 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
      *
      * @return The generated id for the task assignment.
      */
-    override fun createTaskAssigment(taskAssignment: TaskAssignment): Int {
+    override fun createTaskAssignment(taskAssignment: TaskAssignment): Int {
         val generatedProcessId = TaskAssignmentsTable.insertAndGenerateKey { row ->
             row.taskId to taskAssignment.taskId
             row.assigneeId to taskAssignment.assigneeId
@@ -39,7 +39,7 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
      *
      * @return True if the specified assignment existed.
      */
-    override fun closeTaskAssigment(taskId: Int, assigneeId: String, closingTime: Instant): Boolean {
+    override fun closeTaskAssignment(taskId: Int, assigneeId: String, closingTime: Instant): Boolean {
         val affectedRows = TaskAssignmentsTable.update { row ->
             row.doneAt to closingTime
             where {
@@ -59,7 +59,7 @@ object TaskAssignmentsDAO : TaskAssigmentsDAOInterface {
      *
      * @return True if the specified task assignment existed.
      */
-    override fun deleteTaskAssigment(taskId: Int, assigneeId: String): Boolean {
+    override fun deleteTaskAssignment(taskId: Int, assigneeId: String): Boolean {
         val affectedRows = TaskAssignmentsTable.update { row ->
             row.deleted to true
             where {

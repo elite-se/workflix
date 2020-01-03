@@ -37,7 +37,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
         if (task.hasAssignment(taskAssignment.assigneeId))
             throw AlreadyExistsException("task assignment already exists")
 
-        val taskAssignmentId = TaskAssignmentsDAO.createTaskAssigment(taskAssignment)
+        val taskAssignmentId = TaskAssignmentsDAO.createTaskAssignment(taskAssignment)
 
         // add task assignment to the task
         val taskAssignmentWithId = taskAssignment.copy(id = taskAssignmentId)
@@ -65,7 +65,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 
         // close the assignment
         val closingTime = Instant.now()
-        val existed = TaskAssignmentsDAO.closeTaskAssigment(taskId, assigneeId, closingTime)
+        val existed = TaskAssignmentsDAO.closeTaskAssignment(taskId, assigneeId, closingTime)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 
@@ -81,13 +81,12 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      * @throws NotFoundException Is thrown if the specified task assignment does not exist.
      */
     override fun deleteTaskAssignment(taskId: Int, assigneeId: String) {
-        val task = TasksContainer.getTask(taskId) // TODO does not work I think
-
-        val existed = TaskAssignmentsDAO.deleteTaskAssigment(taskId, assigneeId)
+        val existed = TaskAssignmentsDAO.deleteTaskAssignment(taskId, assigneeId)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 
         // delete task assignment from task
+        val task = TasksContainer.getTask(taskId)
         task.deleteTaskAssignment(assigneeId)
     }
 }
