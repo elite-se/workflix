@@ -11,26 +11,28 @@ import type { TaskTemplateType } from '../../datatypes/TaskType'
 
 export type ProcessedTaskTemplateType = {|
   ...TaskTemplateType,
-  endDate: number
+  startDate: number, /* earliest possible start date */
+  endDate: number /* earliest possible end date */
 |}
 
 const calcEndDates = (nodes: Array<TaskTemplateType>): Array<ProcessedTaskTemplateType> => {
   const leveledNodes = nodes.map(node => ({
     ...node,
-    endDate: 0
+    startDate: 0,
+    endDate: node.estimatedDuration
   }))
 
   times(leveledNodes.length - 1, () => { // Bellman-Ford
     for (const node of leveledNodes) {
-      node.endDate = Math.max(
+      node.startDate = Math.max(
         0,
         ...(node.predecessors.map(id => leveledNodes.find(x => x.id === id)?.endDate || 0))
-      ) + node.estimatedDuration
+      )
+      node.endDate = node.startDate + node.estimatedDuration
     }
   })
 
-  return leveledNodes
-    .sort((node1, node2) => node1.endDate - node1.estimatedDuration - node2.endDate + node2.estimatedDuration)
+  return leveledNodes.sort((node1, node2) => node1.startDate - node2.startDate)
 }
 
 type StateType = {
@@ -90,7 +92,7 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
       <H2 style={{ textAlign: 'center' }}>Create a new Process Template</H2>
       <div style={{ display: 'flex' }}>
         <TaskList taskTemplates={processedNodes} createTask={this.createTask} editTask={this.editTask} />
-        <ProcessChart nodes={processedNodes} />
+        <ProcessChart tasks={processedNodes} />
       </div>
       {this.renderTaskTemplateEditor()}
     </div>

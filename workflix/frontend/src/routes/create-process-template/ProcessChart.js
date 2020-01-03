@@ -7,7 +7,7 @@ import { Colors } from '@blueprintjs/core'
 import type { ProcessedTaskTemplateType } from './CreateProcessTemplate'
 
 type PropsType = {
-  nodes: Array<ProcessedTaskTemplateType> /* sorted by calculated endDate */
+  tasks: Array<ProcessedTaskTemplateType> /* sorted by calculated endDate */
 }
 
 type StateType = {
@@ -41,14 +41,14 @@ class ProcessChart extends React.Component<PropsType, StateType> {
   }
 
   renderSvg (width: number): Node {
-    const { nodes } = this.props
-    if (nodes.length === 0) {
+    const { tasks } = this.props
+    if (tasks.length === 0) {
       return null
     }
-    const maxLevel = nodes[nodes.length - 1].endDate
+    const maxLevel = tasks[tasks.length - 1].endDate
     const scale = width / maxLevel
 
-    return <svg width={width} height={nodes.length * ITEM_HEIGHT} style={{ position: 'absolute'}}>
+    return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute'}}>
       <defs>
         <marker id='Triangle' viewBox='0 0 10 10' refX='10' refY='5'
                 markerUnits='strokeWidth' markerWidth='5' markerHeight='5'
@@ -57,30 +57,31 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         </marker>
       </defs>
       {[
-        ...flatMap(nodes, (node, index) =>
+        ...flatMap(tasks, (node, index) =>
           node.predecessors
-            .map(id => nodes.findIndex(x => x.id === id))
+            .map(id => tasks.findIndex(x => x.id === id))
             .map(predIndex => {
-              const pred = nodes[predIndex]
+              const pred = tasks[predIndex]
               return <path key={`${index},${predIndex}`}
                            markerEnd='url(#Triangle)'
-                           d={`M ${(pred.endDate - pred.estimatedDuration / 2) * scale} ${(predIndex + 1 / 2) * ITEM_HEIGHT}
+                           d={`M ${(pred.startDate + pred.endDate) / 2 * scale} ${(predIndex + 1 / 2) * ITEM_HEIGHT}
                                V ${(index + 1 / 2) * ITEM_HEIGHT - STROKE_RADIUS}
                                q 0 ${STROKE_RADIUS} ${STROKE_RADIUS} ${STROKE_RADIUS}
-                               H ${(node.endDate - node.estimatedDuration) * scale}`}
+                               H ${node.startDate * scale}`}
                            fill='none'
                            stroke={Colors.GRAY1}
                            strokeWidth={EDGE_STROKE_WIDTH}
               />
             })
         ),
-        nodes.map((node, index) => <path key={index}
-              d={`M ${(node.endDate - node.estimatedDuration) * scale + NODE_STROKE_WIDTH / 2} ${(index + 1 / 2) * ITEM_HEIGHT}
-                  h ${node.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
-              strokeWidth={NODE_STROKE_WIDTH}
-              strokeLinecap='round'
-              stroke={Colors.BLUE1} />
-        )
+        tasks.map((node, index) => (
+          <path key={index}
+                d={`M ${node.startDate * scale + NODE_STROKE_WIDTH / 2} ${(index + 1 / 2) * ITEM_HEIGHT}
+                    h ${node.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
+                strokeWidth={NODE_STROKE_WIDTH}
+                strokeLinecap='round'
+                stroke={Colors.BLUE1} />
+                ))
       ]}
     </svg>
   }
