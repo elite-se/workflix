@@ -28,7 +28,7 @@ class Process(
     val tasks: Map<Int, Task>?
 ) {
 
-    fun getStauts() = status
+    fun getStatus() = status
 
     init {
         if (tasks != null)

@@ -17,7 +17,6 @@ import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.batchInsert
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
@@ -157,7 +156,7 @@ object ProcessDAO : ProcessDAOInterface {
                 row.groupId to process.processGroupId
                 row.title to process.title
                 row.description to process.description
-                row.status to process.getStauts().toString()
+                row.status to process.getStatus().toString()
                 row.deadline to process.deadline
                 row.startedAt to process.startedAt
             }
