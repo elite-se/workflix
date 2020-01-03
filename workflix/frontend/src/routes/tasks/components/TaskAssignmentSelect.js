@@ -6,7 +6,9 @@ import type { UserType } from '../../../modules/datatypes/User'
 import type { TaskAssignmentType, TaskType } from '../../../modules/datatypes/Task'
 import { Button, MenuItem } from '@blueprintjs/core'
 import ProcessApi from '../../../modules/api/ProcessApi'
+import AssigneeTagContent from './AssigneeTagContent'
 import { sortBy } from 'lodash'
+import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 
 const UserSelect = MultiSelect.ofType<UserType>()
 
@@ -31,9 +33,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
                      shouldDismissPopover={false}/>
   }
 
-  renderUserToTag (user: UserType): string {
-    return user.name
-  }
+  renderUserToTag = (user: UserType) => <AssigneeTagContent assignee={user}/>
 
   onItemSelect = (item: UserType) => {
     const task = this.props.task
@@ -63,12 +63,12 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       .catch(err => console.error(err))
   }
 
-  onTagRemoved = (tag: string, index: number) => {
+  onTagRemoved = (tag: AssigneeTagContent) => {
     const task = this.props.task
-    const removedAssignee = task.assignments[index].assigneeId
-    new ProcessApi().removeAssignee(task.id, removedAssignee)
+    const removedAssignee = tag.props.assignee
+    new ProcessApi().removeAssignee(task.id, removedAssignee.id)
       .then(() => {
-        this.onAssignmentsChanged(task.assignments.filter(ass => ass.assigneeId !== removedAssignee))
+        this.onAssignmentsChanged(task.assignments.filter(ass => ass.assigneeId !== removedAssignee.id))
       })
       .catch(err => console.error(err))
   }
@@ -108,6 +108,17 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     return filteredAndSorted
   }
 
+  tagProps = (tag: AssigneeTagContent) => {
+    const assignment = this.props.task.assignments.find(ass => ass.assigneeId === tag.props.assignee.id)
+    const done = assignment && assignment.closed
+    return done ? {
+      intent: Intent.SUCCESS,
+      icon: 'tick'
+    } : {
+      intent: Intent.PRIMARY
+    }
+  }
+
   render () {
     const task = this.props.task
     const assignees = this.usersArray
@@ -123,7 +134,8 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       selectedItems={assignees}
       tagInputProps={{
         onRemove: this.onTagRemoved,
-        rightElement: clearButton
+        rightElement: clearButton,
+        tagProps: this.tagProps
       }}
       itemPredicate={this.itemPredicate}
       itemListPredicate={this.itemListPredicate}
