@@ -65,7 +65,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 
         // close the assignment
         val closingTime = Instant.now()
-        val existed = TaskAssignmentsDAO.closeTaskAssigment(taskId, assigneeId, closingTime)
+        val existed = TaskAssignmentsDAO.closeTaskAssignment(taskId, assigneeId, closingTime)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 
