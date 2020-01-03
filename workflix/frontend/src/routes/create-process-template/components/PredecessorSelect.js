@@ -80,8 +80,10 @@ class PredecessorSelect extends React.Component<PropsType> {
         onRemove: this.handleTagRemove,
         rightElement: clearButton
       }}
+      fill
       selectedItems={task.predecessors.map(id => allTasks.find(_task => _task.id === id))}
       onItemSelect={this.handlePredTaskSelect}
+      popoverProps={{ usePortal: false }}
     />
   }
 

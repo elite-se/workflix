@@ -16,7 +16,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [],
     estimatedDuration: 1,
     name: 'Do stuff 0',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   },
   {
@@ -24,7 +24,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [],
     estimatedDuration: 2,
     name: 'Do stuff 1',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   },
   {
@@ -32,7 +32,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [0],
     estimatedDuration: 1.4,
     name: 'Do stuff 2',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   },
   {
@@ -40,7 +40,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [1, 2],
     estimatedDuration: 1.3,
     name: 'Do stuff 3',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   },
   {
@@ -48,7 +48,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [2],
     estimatedDuration: 2,
     name: 'Do stuff 4',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   },
   {
@@ -56,7 +56,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [4],
     estimatedDuration: 2,
     name: 'Do stuff 5',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   },
   {
@@ -64,7 +64,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [3],
     estimatedDuration: 1,
     name: 'Do stuff 6',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   },
   {
@@ -72,7 +72,7 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     predecessors: [5, 6],
     estimatedDuration: 1,
     name: 'Do stuff 7',
-    description: 'Empty',
+    description: '',
     necessaryClosings: 1
   }
 ]
