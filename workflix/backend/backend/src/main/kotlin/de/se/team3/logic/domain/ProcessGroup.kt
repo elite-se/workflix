@@ -1,6 +1,9 @@
 package de.se.team3.logic.domain
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.UserContainer
+import de.se.team3.webservice.util.InstantSerializer
+import de.se.team3.webservice.util.UserSerializer
 import java.time.Instant
 import kotlin.collections.ArrayList
 import org.json.JSONArray
@@ -8,9 +11,11 @@ import org.json.JSONObject
 
 class ProcessGroup(
     var id: Int?,
+    @JsonSerialize(using = UserSerializer::class)
     var owner: User,
     var title: String,
     var description: String,
+    @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
     val members: MutableList<User>
 ) {
@@ -30,14 +35,4 @@ class ProcessGroup(
     constructor(id: Int, owner: User, title: String, createdAt: Instant, members: MutableList<User>) :
         this(id, owner, title, "", createdAt, members)
 
-    fun toJSON(): JSONObject {
-        val json = JSONObject()
-        json.put("id", this.id)
-        json.put("title", this.title)
-        json.put("description", this.description)
-        json.put("ownerId", this.owner.id)
-        json.put("createdAt", this.createdAt)
-        json.put("membersIds", JSONArray(members.map { id }))
-        return json
-    }
 }
