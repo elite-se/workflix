@@ -9,24 +9,24 @@ export type TaskCommentType = {
 
 export type TaskAssignmentStatusType = 'TODO' | 'RUNNING' | 'CLOSED'
 
-export type TaskAssignmentType = {
+export type TaskAssignmentType = {|
   id: number,
   assigneeId: string,
   status: TaskAssignmentStatusType,
   createdAt: string,
   doneAt: ?string
-}
+|}
 
-export type TaskTemplateType = {
+export type TaskTemplateType = {|
   id: number,
   name: string,
   description: string,
   estimatedDuration: number,
   necessaryClosings: number,
   predecessors: number[]
-}
+|}
 
-export type TaskType = {
+export type TaskType = {|
   id: number,
   taskTemplateId: number,
   comments: TaskCommentType[],
@@ -34,4 +34,4 @@ export type TaskType = {
   startedAt: string,
   done: boolean,
   taskTemplate: TaskTemplateType
-}
+|}
