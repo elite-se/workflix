@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Button, MenuItem } from '@blueprintjs/core'
+import { Button, MenuItem, Tooltip } from '@blueprintjs/core'
 import type { TaskTemplateType } from '../../../datatypes/TaskType'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, MultiSelect } from '@blueprintjs/select'
@@ -30,14 +30,21 @@ class PredecessorSelect extends React.Component<PropsType> {
     if (!modifiers.matchesPredicate) {
       return null
     }
-    return <MenuItem
+    const menuItem = <MenuItem
       active={false}
       disabled={modifiers.disabled}
-      icon={this.props.task.predecessors.indexOf(task.id) >= 0 ? 'tick' : 'blank'}
+      icon={
+        modifiers.disabled ? 'disable'
+          : this.props.task.predecessors.indexOf(task.id) >= 0 ? 'tick' : 'blank'
+      }
       key={task.id}
       onClick={handleClick}
       shouldDismissPopover={false}
       text={highlightText(task.name, query)}/>
+    return modifiers.disabled ? <div><Tooltip content='Adding this would create a cyclic dependency.'>
+        {menuItem}
+      </Tooltip></div>
+      : menuItem
   }
 
   handleTagRemove = (_tag: string, index: number) => {
