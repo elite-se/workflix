@@ -14,13 +14,13 @@ data class UserRole(
     constructor(name: String, description: String) :
         this(0, name, description, Instant.now(), ArrayList<User>())
 
-    fun toJson(): JSONObject {
+    fun toJSON(): JSONObject {
         val json = JSONObject()
         json.put("id", this.id)
         json.put("name", this.name)
         json.put("description", this.description)
         json.put("createdAt", this.createdAt)
-        json.put("members", JSONArray(members.map { toJson() }))
+        json.put("memberIds", JSONArray(members.map { id }))
         return json
     }
 }

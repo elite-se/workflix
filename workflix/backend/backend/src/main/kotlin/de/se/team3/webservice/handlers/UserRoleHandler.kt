@@ -13,7 +13,7 @@ object UserRoleHandler {
         try {
             val roles = UserRoleContainer.getAllUserRoles()
 
-            val rolesArray = JSONArray(roles.map { it.toJson() })
+            val rolesArray = JSONArray(roles.map { it.toJSON() })
             val groupsJSON = JSONObject().put("roles", rolesArray)
 
             ctx.result(groupsJSON.toString())
