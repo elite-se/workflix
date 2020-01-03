@@ -1,12 +1,12 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
-import de.se.team3.logic.domain.AssignmentStatus
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.domain.TaskComment
+import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.ProcessesTable
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TaskCommentsTable
@@ -73,8 +73,8 @@ object ProcessDAO : ProcessDAOInterface {
             comments.add(
                 TaskComment(
                     row[TaskCommentsTable.id]!!,
+                    row[TaskCommentsTable.taskId]!!,
                     row[TaskCommentsTable.creatorId]!!,
-                    row[TaskCommentsTable.title]!!,
                     row[TaskCommentsTable.content]!!,
                     row[TaskCommentsTable.createdAt]!!
                 ))
@@ -94,8 +94,8 @@ object ProcessDAO : ProcessDAOInterface {
             assignments.add(
                 TaskAssignment(
                     row[TaskAssignmentsTable.id]!!,
+                    row[TaskAssignmentsTable.taskId]!!,
                     row[TaskAssignmentsTable.assigneeId]!!,
-                    AssignmentStatus.valueOf(row[TaskAssignmentsTable.status]!!),
                     row[TaskAssignmentsTable.createdAt]!!,
                     row[TaskAssignmentsTable.doneAt]
                 ))
@@ -119,7 +119,8 @@ object ProcessDAO : ProcessDAOInterface {
                 taskTemplateId,
                 row[TasksTable.startedAt],
                 getComments(taskId),
-                getAssignments(taskId)
+                getAssignments(taskId),
+                null
             )
             tasks.put(taskTemplateId, task)
         }
@@ -168,8 +169,28 @@ object ProcessDAO : ProcessDAOInterface {
             return generatedProcessId as Int
         } catch (e: Throwable) {
             transaction.rollback()
+            throw e
             throw StorageException("" + e.message)
         }
+    }
+
+    /**
+     * Sets the status of the given process to aborted.
+     *
+     * @throws NotFoundException Is thrown if the given process does not exist or is already aborted
+     * or already closed. The of course the process could not be closed or closed again respectively.
+     */
+    override fun closeProcess(processId: Int) {
+        val affectedRows = ProcessesTable.update {
+            it.status to ProcessStatus.CLOSED.toString()
+            where {
+                (it.id eq processId) and
+                        (it.status notEq ProcessStatus.ABORTED.toString()) and
+                        (it.status notEq ProcessStatus.CLOSED.toString())
+            }
+        }
+        if (affectedRows == 0)
+            throw NotFoundException("process not found")
     }
 
     /**
@@ -181,7 +202,11 @@ object ProcessDAO : ProcessDAOInterface {
     override fun abortProcess(processId: Int) {
         val affectedRows = ProcessesTable.update {
             it.status to ProcessStatus.ABORTED.toString()
-            where { (it.id eq processId) and (it.status notEq ProcessStatus.CLOSED.toString()) and (it.status notEq ProcessStatus.ABORTED.toString()) }
+            where {
+                (it.id eq processId) and
+                        (it.status notEq ProcessStatus.CLOSED.toString()) and
+                        (it.status notEq ProcessStatus.ABORTED.toString())
+            }
         }
         if (affectedRows == 0)
             throw NoSuchElementException()

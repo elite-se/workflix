@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessTemplateContainer
 import de.se.team3.logic.container.UserContainer
+import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
-import java.lang.IllegalArgumentException
 import java.time.Instant
 
 /**
  * Represents a process.
  */
-class Process(
+data class Process(
     val id: Int?,
     val starterId: String,
     val processGroupId: Int,
@@ -28,6 +28,11 @@ class Process(
     val tasks: Map<Int, Task>?
 ) {
 
+    init {
+        if (tasks != null)
+            tasks.forEach { i, task -> task.process = this }
+    }
+
     @get:JsonIgnore
     val starter by lazy { UserContainer.getUser(starterId) }
     @get:JsonIgnore
@@ -43,10 +48,20 @@ class Process(
     val progress by lazy {
         var estimatedDurationDone = 0
         tasks?.forEach { id, task ->
-            if (task.isDone)
-                estimatedDurationDone += task.taskTemplate.estimatedDuration ?: 1
+            if (task.status == TaskStatus.CLOSED)
+                estimatedDurationDone += task.taskTemplate!!.estimatedDuration ?: 1
         }
         (estimatedDurationDone / processTemplate.estimatedDurationSum * 100).toInt()
+    }
+
+    @get:JsonIgnore
+    val closeable by lazy {
+        var closeable = true
+        tasks!!.forEach { i, task ->
+            if (task.status != TaskStatus.CLOSED)
+                closeable = false
+        }
+        closeable
     }
 
     /**
@@ -71,9 +86,13 @@ class Process(
         createTasks(processTemplateId)) {
 
         if (title.isEmpty())
-            throw IllegalArgumentException("title must not be empty")
+            throw InvalidInputException("title must not be empty")
         if (processTemplate.deleted)
-            throw IllegalArgumentException("must not be based on a deleted process template")
+            throw InvalidInputException("must not be based on a deleted process template")
+    }
+
+    fun findTask(taskId: Int): Task {
+        return tasks!!.map { it.value }.find { it.id == taskId }!!
     }
 
     companion object {
