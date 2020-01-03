@@ -26,7 +26,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
     this.updateWidth()
   }
 
-  updateWidth = () => this.setState({ width: this.div?.getBoundingClientRect().width })
+  updateWidth = () => this.setState({ width: this.div ? this.div.getBoundingClientRect().width : null })
 
   state = {
     width: null
