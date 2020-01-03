@@ -50,9 +50,9 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     this.setState({ selectedTaskId: id })
   }
 
-  selectedTaskChanged = (task: TaskTemplateType) => {
+  taskChanged = (task: TaskTemplateType) => {
     this.setState(state => ({
-      tasks: state.tasks.map(node => node.id === state.selectedTaskId ? task : node)
+      tasks: state.tasks.map(_task => _task.id === task.id ? task : _task)
     }))
   }
 
@@ -80,7 +80,7 @@ class CreateProcessTemplate extends React.Component<{}, StateType> {
     if (!task) {
       return null
     }
-    return <TaskTemplateEditor task={task} onChange={this.selectedTaskChanged} allTasks={tasks}/>
+    return <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks}/>
   }
 
   render () {

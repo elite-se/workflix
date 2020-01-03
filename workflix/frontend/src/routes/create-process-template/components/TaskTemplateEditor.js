@@ -5,6 +5,7 @@ import { Colors, H3, H4, InputGroup } from '@blueprintjs/core'
 import type { TaskTemplateType } from '../../../datatypes/TaskType'
 import { difference } from 'lodash'
 import PredecessorSelect from './PredecessorSelect'
+import SuccessorSelect from './SuccessorSelect'
 
 type PropsType = {
   task: TaskTemplateType,
@@ -49,6 +50,7 @@ class TaskTemplateEditor extends React.Component<PropsType> {
 
     const possiblePreds = difference(allTasks, findDescendants(task, allTasks))
     const possibleSuccs = difference(allTasks, findAncestors(task, allTasks))
+    const succs = allTasks.filter(_task => _task.predecessors.indexOf(task.id) >= 0)
 
     return <div style={{
       paddingTop: '10px',
@@ -74,6 +76,11 @@ class TaskTemplateEditor extends React.Component<PropsType> {
       <div>
         <H4>Predecessor tasks:</H4>
         <PredecessorSelect allTasks={allTasks} onChange={onChange} possiblePreds={possiblePreds} task={task}/>
+      </div>
+      <div>
+        <H4>Successor tasks:</H4>
+        <SuccessorSelect allTasks={allTasks} succs={succs} onChange={onChange} possibleSuccs={possibleSuccs}
+                         task={task}/>
       </div>
     </div>
   }
