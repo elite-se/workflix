@@ -7,7 +7,7 @@ import type { ProcessGroupType } from '../datatypes/ProcessGroup'
 const processGroupsBackend = `${BACKEND}/processGroups`
 
 class ProcessGroupsApi {
-  getProcessGroups (): Promise<ProcessGroupType[]> {
+  getProcessGroups (): Promise<Map<number, ProcessGroupType>> {
     return safeFetch(processGroupsBackend)
       .then(response => response.json())
       .then(json => json.groups)
@@ -16,6 +16,7 @@ class ProcessGroupsApi {
         ...group,
         createdAt: group.createdAt && new Date(group.createdAt)
       })))
+      .then(procGroups => new Map(procGroups.map(group => [group.id, group])))
   }
 }
 
