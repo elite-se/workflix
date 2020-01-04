@@ -33,6 +33,6 @@ export type ProcessType = {
   starterId: string,
   status: ProcessStatusType,
   progress: number,
-  startedAt: string,
+  startedAt: Date,
   tasks: TaskType[]
 }

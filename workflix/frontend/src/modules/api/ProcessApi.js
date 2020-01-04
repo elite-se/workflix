@@ -41,6 +41,10 @@ class ProcessApi {
             .then(response => response.json())
         )
       ))
+      .then(processes => processes.map(process => ({
+        ...process,
+        startedAt: process.startedAt && new Date(process.startedAt)
+      })))
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
