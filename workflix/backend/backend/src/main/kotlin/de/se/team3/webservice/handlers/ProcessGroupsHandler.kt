@@ -10,6 +10,9 @@ import org.json.JSONObject
 
 object ProcessGroupsHandler {
 
+    /**
+     * Handles requests for getting all process groups.
+     */
     fun getAll(ctx: Context) {
         val groups = ProcessGroupsContainer.getAllProcessGroups()
 
@@ -20,6 +23,9 @@ object ProcessGroupsHandler {
             .contentType("application/json")
     }
 
+    /**
+     * Handles requests for creating a process group.
+     */
     fun create(ctx: Context) {
         val content = ctx.body()
         val processGroupJsonObject = JSONObject(content)
@@ -28,42 +34,35 @@ object ProcessGroupsHandler {
         val description = processGroupJsonObject.getString("description")
         val ownerID = processGroupJsonObject.getString("ownerId")
 
-        try {
-            val processGroup = ProcessGroup(ownerID, title, description)
-            val newId = ProcessGroupsContainer.createProcessGroup(processGroup)
+        val processGroup = ProcessGroup(ownerID, title, description)
+        val newId = ProcessGroupsContainer.createProcessGroup(processGroup)
 
-            val newIdObject = JSONObject()
-            newIdObject.put("newId", newId)
+        val newIdObject = JSONObject()
+        newIdObject.put("newId", newId)
 
-            ctx.result(newIdObject.toString())
-        } catch (e: IllegalArgumentException) {
-            ctx.status(400).result(e.toString())
-        }
+        ctx.result(newIdObject.toString())
+            .contentType("application/json")
     }
 
+    /**
+     * Handles requests for updating an process group.
+     */
     fun update(ctx: Context, processGroupId: Int) {
-        try {
-            val content = ctx.body()
-            val processGroupJsonObject = JSONObject(content)
+        val content = ctx.body()
+        val processGroupJsonObject = JSONObject(content)
 
-            val title = processGroupJsonObject.getString("title")
-            val description = processGroupJsonObject.getString("description")
-            val ownerID = processGroupJsonObject.getString("ownerId")
+        val title = processGroupJsonObject.getString("title")
+        val description = processGroupJsonObject.getString("description")
+        val ownerID = processGroupJsonObject.getString("ownerId")
 
-            val processGroup = ProcessGroup(processGroupId, ownerID, title, description)
-            ProcessGroupsContainer.updateProcessGroup(processGroup)
-        } catch (e: JSONException) {
-            ctx.status(400).result(e.toString())
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("process group not found")
-        }
+        val processGroup = ProcessGroup(processGroupId, ownerID, title, description)
+        ProcessGroupsContainer.updateProcessGroup(processGroup)
     }
 
+    /**
+     * Handles requests for deleting a process group.
+     */
     fun delete(ctx: Context, processGroupId: Int) {
-        try {
-            ProcessGroupsContainer.deleteProcessGroup(processGroupId)
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("process group not found")
-        }
+        ProcessGroupsContainer.deleteProcessGroup(processGroupId)
     }
 }

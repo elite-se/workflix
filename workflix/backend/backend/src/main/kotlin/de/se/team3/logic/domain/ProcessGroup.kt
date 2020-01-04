@@ -1,5 +1,6 @@
 package de.se.team3.logic.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.AlreadyExistsException
@@ -20,13 +21,16 @@ data class ProcessGroup(
     private val members: MutableList<User>
 ) {
 
+    @JsonIgnore
     fun getOwner() = owner
+
+    fun getOwnerId() = owner.id
 
     fun getTitle() = title
 
     fun getDescription() = description
 
-    fun getMembers() = members.toList()
+    fun getMembersIds() = members.map { it.id }.toList()
 
     /**
      * Create-Constructor

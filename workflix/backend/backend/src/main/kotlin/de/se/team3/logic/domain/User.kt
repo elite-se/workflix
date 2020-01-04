@@ -1,4 +1,5 @@
 package de.se.team3.logic.domain
+import com.fasterxml.jackson.annotation.JsonIgnore
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
@@ -24,9 +25,10 @@ class User(
      * Returns all process groups the user is a member of.
      * Using the try-catch-block here probably is kinda hacky...
      */
+    @JsonIgnore // avoids cyclomatic call with process groups
     fun getMemberships(): List<ProcessGroup> {
         val allGroups = ProcessGroupsContainer.getAllProcessGroups()
-        return allGroups.filter { it.members.contains(this) }
+        return allGroups.filter { it.hasMember(id) }
     }
 
     fun toJSON(): JSONObject {
