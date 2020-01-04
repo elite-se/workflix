@@ -98,6 +98,7 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
   onSaveClick = () => {
     const { title, description, durationLimit, owner, tasks } = this.state
     if (!durationLimit || !owner) {
+      // todo validate
       return alert('mööp')
     }
     new ProcessApi().addProcessTemplate({
