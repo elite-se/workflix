@@ -21,6 +21,22 @@ type NewIdResultType = {
   newId: number
 }
 
+export type AddProcessTemplateType = {|
+  title: string,
+  description: string,
+  durationLimit: number,
+  ownerId: string,
+  taskTemplates: {|
+    id: number,
+    responsibleUserRoleId: number,
+    name: string,
+    description: string,
+    estimatedDuration: number,
+    necessaryClosings: number,
+    predecessors: number[]
+  |}[]
+|}
+
 class ProcessApi {
   getProcesses (filters: FiltersType = {}): Promise<ProcessType[]> {
     // convert filters into URL parameters
@@ -57,6 +73,14 @@ class ProcessApi {
     return safeFetch(
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'DELETE' })
+  }
+
+  addProcessTemplate (processTemplate: AddProcessTemplateType): Promise<NewIdResultType> {
+    return safeFetch(`${processesTemplatesBackend}`, {
+      method: 'POST',
+      body: JSON.stringify(processTemplate)
+    })
+      .then(response => response.json())
   }
 
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
