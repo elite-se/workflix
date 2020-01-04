@@ -113,7 +113,7 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
       <Item>
         <H4>Responsible User Role:</H4>
         <UserRoleSelect userRoles={Array.from(userRoles.values())}
-                        activeItem={userRoles.get(task.responsibleUserRoleId)}
+                        activeItem={task.responsibleUserRoleId ? userRoles.get(task.responsibleUserRoleId) : null}
                         onItemSelect={this.onResponsibleUserRoleChange}/>
       </Item>
       <Item>
