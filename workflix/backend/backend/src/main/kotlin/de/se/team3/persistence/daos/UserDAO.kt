@@ -21,18 +21,22 @@ object UserDAO : UserDAOInterface {
     private val key = SecretKeySpec(Arrays.copyOf("tHiSiSaVeRySeCuReKeY".toByteArray(), 16), "AES")
 
     private fun encryptPassword(password: String): String {
-        val data = key.getEncoded()
-        val skeySpec = SecretKeySpec(data, 0, data.size, "AES")
-        val cipher = Cipher.getInstance("AES", "BC")
-        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.getBlockSize())))
-        return cipher.doFinal(password.toByteArray()).toString()
+        //TODO fix this shit
+        //val data = key.getEncoded()
+        //val skeySpec = SecretKeySpec(data, 0, data.size, "AES")
+        //val cipher = Cipher.getInstance("AES")
+        //cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.getBlockSize())))
+        //return cipher.doFinal(password.toByteArray()).toString()
+        return password.map { it.inc() }.toString()
     }
 
     private fun decryptPassword(encryptedPassword: String): String {
-        val decrypted: ByteArray
-        val cipher = Cipher.getInstance("AES", "BC")
-        cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(cipher.blockSize)))
-        return cipher.doFinal(encryptedPassword.toByteArray()).toString()
+        //TODO fix this shit
+        //val decrypted: ByteArray
+        //val cipher = Cipher.getInstance("AES")
+        //cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(cipher.blockSize)))
+        //return cipher.doFinal(encryptedPassword.toByteArray()).toString()
+        return encryptedPassword.map { it.dec() }.toString()
     }
 
     /**
@@ -42,7 +46,7 @@ object UserDAO : UserDAOInterface {
         val users = ArrayList<User>()
         val result = UsersTable.select()
         for (row in result)
-            users.add(User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]!!)))
+            users.add(User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]?:"N/A")))
 
         return users.toList()
     }
