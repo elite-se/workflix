@@ -5,6 +5,7 @@ import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../datatypes/Filters'
+import { parseDatesInProcess, parseDatesInProcessTemplate } from './parseDates'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
@@ -41,22 +42,7 @@ class ProcessApi {
             .then(response => response.json())
         )
       ))
-      .then(processes => processes.map(process => ({
-        // convert strings to dates
-        ...process,
-        startedAt: process.startedAt && new Date(process.startedAt),
-        tasks: process.tasks.map(task => ({
-          ...task,
-          comments: task.comments.map(comment => ({
-            ...comment,
-            createdAt: comment.createdAt && new Date(comment.createdAt)
-          })),
-          assignments: task.assignments.map(ass => ({
-            ...ass,
-            createdAt: ass.createdAt && new Date(ass.createdAt)
-          }))
-        }))
-      })))
+      .then(processes => processes.map(parseDatesInProcess))
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
@@ -86,10 +72,7 @@ class ProcessApi {
     return Promise.all(processTemplateIds.map(procTempId =>
       safeFetch(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
-        .then(template => ({
-          ...template,
-          createdAt: template.createdAt && new Date(template.startedAt)
-        }))
+        .then(parseDatesInProcessTemplate)
     ))
   }
 
