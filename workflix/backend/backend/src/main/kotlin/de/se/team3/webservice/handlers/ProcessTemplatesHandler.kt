@@ -70,7 +70,14 @@ object ProcessTemplatesHandler {
         for (entry in taskTemplatesJsonArray) {
             val taskTemplateJsonObject = entry as JSONObject
 
-            val taskTemplate = JsonHelper.fromJson(taskTemplateJsonObject.toString(), TaskTemplate::class.java)
+            val id = taskTemplateJsonObject.getInt("id")
+            val responsibleUserRoleId = taskTemplateJsonObject.getInt("responsibleUserRoleId")
+            val name = taskTemplateJsonObject.getString("name")
+            val description = taskTemplateJsonObject.getString("description")
+            val estimatedDuration = taskTemplateJsonObject.getInt("estimatedDuration")
+            val necessaryClosings = taskTemplateJsonObject.getInt("necessaryClosings")
+
+            val taskTemplate = TaskTemplate(id, responsibleUserRoleId, name, description, estimatedDuration, necessaryClosings)
             taskTemplatesMap.put(taskTemplate.id, taskTemplate)
 
             val predecessorsJsonArray = taskTemplateJsonObject.getJSONArray("predecessors")
