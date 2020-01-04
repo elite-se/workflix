@@ -4,7 +4,7 @@ import { union, uniq } from 'lodash'
 import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
-import type { FiltersType } from '../../routes/tasks/types/Filters'
+import type { FiltersType } from '../datatypes/Filters'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
