@@ -42,8 +42,20 @@ class ProcessApi {
         )
       ))
       .then(processes => processes.map(process => ({
+        // convert strings to dates
         ...process,
-        startedAt: process.startedAt && new Date(process.startedAt)
+        startedAt: process.startedAt && new Date(process.startedAt),
+        tasks: process.tasks.map(task => ({
+          ...task,
+          comments: task.comments.map(comment => ({
+            ...comment,
+            createdAt: comment.createdAt && new Date(comment.createdAt)
+          })),
+          assignments: task.assignments.map(ass => ({
+            ...ass,
+            createdAt: ass.createdAt && new Date(ass.createdAt)
+          }))
+        }))
       })))
   }
 
