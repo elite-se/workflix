@@ -11,6 +11,7 @@ import UserApi from '../../../modules/api/UsersApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
 import { calcGraph } from '../graph-utils'
+import ProcessApi from '../../../modules/api/ProcessApi'
 
 export type IncompleteTaskTemplateType = {|
   id: number,
@@ -94,6 +95,28 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
   onDurationLimitChange = (durationLimit: ?number) => this.setState({ durationLimit })
   onOwnerChange = (owner: UserType) => this.setState({ owner })
 
+  onSaveClick = () => {
+    const { title, description, durationLimit, owner, tasks } = this.state
+    if (!durationLimit || !owner) {
+      return alert('mööp')
+    }
+    new ProcessApi().addProcessTemplate({
+      title,
+      description,
+      durationLimit,
+      ownerId: owner?.id,
+      taskTemplates: tasks.map(task => ({
+        id: task.id,
+        responsibleUserRoleId: task.responsibleUserRoleId || 0,
+        name: task.name,
+        description: task.description,
+        estimatedDuration: task.estimatedDuration,
+        necessaryClosings: task.necessaryClosings,
+        predecessors: task.predecessors
+      }))
+    }).catch(e => console.error(e))
+  }
+
   render () {
     const { tasks, title, description, durationLimit, owner, selectedTaskId } = this.state
     const { users, userRoles } = this.props
@@ -113,7 +136,7 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
         justifyContent: 'start',
         alignItems: 'center'
       }}>
-        <Button icon='floppy-disk' text='Save' intent='primary'/>
+        <Button icon='floppy-disk' text='Save' intent='primary' onClick={this.onSaveClick}/>
         <H2 style={{
           display: 'inline',
           marginLeft: '40px'
