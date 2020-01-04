@@ -10,5 +10,4 @@ class UserSerializer : JsonSerializer<User>() {
     override fun serialize(user: User, generator: JsonGenerator, serializers: SerializerProvider) {
         generator?.writeObject(user?.id)
     }
-
 }

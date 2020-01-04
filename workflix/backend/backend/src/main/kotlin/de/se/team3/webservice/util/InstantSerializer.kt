@@ -13,5 +13,4 @@ class InstantSerializer : JsonSerializer<Instant>() {
 
         generator.writeObject(formatter.format(time))
     }
-
 }

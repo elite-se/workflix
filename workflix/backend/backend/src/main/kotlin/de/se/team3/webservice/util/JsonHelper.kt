@@ -1,14 +1,9 @@
 package de.se.team3.webservice.util
 
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import de.se.team3.logic.domain.User
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -42,6 +37,4 @@ object JsonHelper {
             ).toInstant(ZoneOffset.UTC)
         }
     }
-
 }
-

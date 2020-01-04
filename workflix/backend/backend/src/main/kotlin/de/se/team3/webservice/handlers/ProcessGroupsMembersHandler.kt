@@ -14,8 +14,6 @@ object ProcessGroupsMembersHandler {
 
     fun add(ctx: Context, processGroupId: Int, memberId: String) {
 
-
-
         try {
             val content = ctx.body()
             val memberJSONObject = JSONObject(content)
@@ -39,5 +37,4 @@ object ProcessGroupsMembersHandler {
             ctx.status(404).result("user or process group not found")
         }
     }
-
 }
