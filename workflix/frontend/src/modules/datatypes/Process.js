@@ -18,7 +18,7 @@ export type ProcessTemplateType = {
   description: string,
   durationLimit: number,
   ownerId: string,
-  createdAt: string,
+  createdAt: Date,
   process_count: number,
   running_processes: number,
   deleted: boolean,

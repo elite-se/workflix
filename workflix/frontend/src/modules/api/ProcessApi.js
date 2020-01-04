@@ -74,6 +74,10 @@ class ProcessApi {
     return Promise.all(processTemplateIds.map(procTempId =>
       safeFetch(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
+        .then(template => ({
+          ...template,
+          createdAt: template.createdAt && new Date(template.startedAt)
+        }))
     ))
   }
 
