@@ -1,7 +1,7 @@
 // @flow
 
 import { union, uniq } from 'lodash'
-import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
+import type { ProcessTemplateMasterDataType, ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../../routes/tasks/types/Filters'
@@ -86,6 +86,12 @@ class ProcessApi {
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
     return this.getProcessTemplates([processTemplateId])
       .then(templates => templates[0])
+  }
+
+  getAllProcessTemplates (): Promise<ProcessTemplateMasterDataType[]> {
+    return safeFetch(`${processesTemplatesBackend}/`)
+      .then(response => response.json())
+      .then(json => json.templates)
   }
 
   getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {
