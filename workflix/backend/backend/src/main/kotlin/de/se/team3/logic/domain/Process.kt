@@ -103,7 +103,7 @@ class Process(
      */
     @JsonProperty("progress")
     fun getProgress(): Int {
-        var estimatedDurationDone = 0
+        var estimatedDurationDone = 0.0
         tasks?.forEach { _, task ->
             if (task.isClosed())
                 estimatedDurationDone += task.taskTemplate!!.estimatedDuration
