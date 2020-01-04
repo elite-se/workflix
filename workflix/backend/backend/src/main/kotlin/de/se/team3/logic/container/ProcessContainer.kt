@@ -1,6 +1,7 @@
 package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.Process
+import de.se.team3.logic.domain.ProcessQueryPredicate
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
@@ -18,8 +19,8 @@ object ProcessContainer : ProcessContainerInterface {
     /**
      * Returns a reduced form (without tasks) of all processes.
      */
-    override fun getAllProcesses(): List<Process> {
-        return ProcessDAO.getAllProcesses()
+    override fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process> {
+        return ProcessDAO.getAllProcesses(predicate)
     }
 
     /**

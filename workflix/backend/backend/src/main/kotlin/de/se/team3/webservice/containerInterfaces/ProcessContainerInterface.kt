@@ -1,10 +1,11 @@
 package de.se.team3.webservice.containerInterfaces
 
 import de.se.team3.logic.domain.Process
+import de.se.team3.logic.domain.ProcessQueryPredicate
 
 interface ProcessContainerInterface {
 
-    fun getAllProcesses(): List<Process>
+    fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process>
 
     fun getProcess(processId: Int): Process
 
