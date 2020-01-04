@@ -75,6 +75,24 @@ class Process(
     }
 
     /**
+     * @return All users assigned to any task in the process.
+     */
+    fun getAssignees(): List<User> {
+        if (tasks != null) {
+            val assignments = tasks.values.map { it.getAssignments() }
+            val assignmentList = ArrayList<TaskAssignment>()
+            assignments.forEach {
+                if (it != null) {
+                    assignmentList.addAll(it)
+                }
+            }
+            val assigneeIDs = assignmentList.map { it.assigneeId }
+            return assigneeIDs.map { id -> UserContainer.getUser(id) }
+        }
+        return ArrayList<User>()
+    }
+
+    /**
      * Returns the current progress in percent.
      *
      * The progress is the percentage of tasks done weighted by the estimated duration. The estimated
@@ -85,7 +103,7 @@ class Process(
      */
     @JsonProperty("progress")
     fun getProgress(): Int {
-        var estimatedDurationDone = 0
+        var estimatedDurationDone = 0.0
         tasks?.forEach { _, task ->
             if (task.isClosed())
                 estimatedDurationDone += task.taskTemplate!!.estimatedDuration

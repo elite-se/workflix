@@ -1,26 +1,33 @@
 // @flow
 
 import { union, uniq } from 'lodash'
-import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
+import type { ProcessTemplateMasterDataType, ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../datatypes/Filters'
 import { parseDatesInProcess, parseDatesInProcessTemplate } from './parseDates'
+import type { NewIdResultType } from './common'
+import { BACKEND } from './common'
 
-const backend = 'https://wf-backend.herokuapp.com'
-const processesBackend = `${backend}/processes`
-const processesTemplatesBackend = `${backend}/processTemplates`
-const tasksBackend = `${backend}/tasks`
+const processesBackend = `${BACKEND}/processes`
+const processesTemplatesBackend = `${BACKEND}/processTemplates`
+const tasksBackend = `${BACKEND}/tasks`
 
-const defaultFetchOptions = {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
-
-type NewIdResultType = {
-  newId: number
-}
+export type AddProcessTemplateType = {|
+  title: string,
+  description: string,
+  durationLimit: number,
+  ownerId: string,
+  taskTemplates: {|
+    id: number,
+    responsibleUserRoleId: number,
+    name: string,
+    description: string,
+    estimatedDuration: number,
+    necessaryClosings: number,
+    predecessors: number[]
+  |}[]
+|}
 
 class ProcessApi {
   getProcesses (filters: FiltersType = {}): Promise<ProcessType[]> {
@@ -47,7 +54,6 @@ class ProcessApi {
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
     return safeFetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
-      ...defaultFetchOptions,
       method: 'PUT',
       body: JSON.stringify({
         immediateClosing
@@ -62,9 +68,23 @@ class ProcessApi {
       { method: 'DELETE' })
   }
 
+  addProcessTemplate (processTemplate: AddProcessTemplateType): Promise<NewIdResultType> {
+    return safeFetch(`${processesTemplatesBackend}`, {
+      method: 'POST',
+      body: JSON.stringify(processTemplate)
+    })
+      .then(response => response.json())
+  }
+
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
     return this.getProcessTemplates([processTemplateId])
       .then(templates => templates[0])
+  }
+
+  getAllProcessTemplates (): Promise<ProcessTemplateMasterDataType[]> {
+    return safeFetch(`${processesTemplatesBackend}/`)
+      .then(response => response.json())
+      .then(json => json.templates)
   }
 
   getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {

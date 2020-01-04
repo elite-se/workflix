@@ -8,16 +8,17 @@ graph:  1 ----- 3 - 6
         0 - 2 - 4 - 5 - 7
 */
 
-import type { TaskTemplateType } from '../../../modules/datatypes/Task'
+import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
 
-const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
+const MOCK_TASK_TEMPLATES: Array<IncompleteTaskTemplateType> = [
   {
     id: 0,
     predecessors: [],
     estimatedDuration: 1,
     name: 'Do stuff 0',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   },
   {
     id: 1,
@@ -25,7 +26,8 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     estimatedDuration: 2,
     name: 'Do stuff 1',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   },
   {
     id: 2,
@@ -33,7 +35,8 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     estimatedDuration: 1.4,
     name: 'Do stuff 2',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   },
   {
     id: 3,
@@ -41,7 +44,8 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     estimatedDuration: 1.3,
     name: 'Do stuff 3',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   },
   {
     id: 4,
@@ -49,7 +53,8 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     estimatedDuration: 2,
     name: 'Do stuff 4',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   },
   {
     id: 5,
@@ -57,7 +62,8 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     estimatedDuration: 2,
     name: 'Do stuff 5',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   },
   {
     id: 6,
@@ -65,7 +71,8 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     estimatedDuration: 1,
     name: 'Do stuff 6',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   },
   {
     id: 7,
@@ -73,7 +80,8 @@ const MOCK_TASK_TEMPLATES: Array<TaskTemplateType> = [
     estimatedDuration: 1,
     name: 'Do stuff 7',
     description: '',
-    necessaryClosings: 1
+    necessaryClosings: 1,
+    responsibleUserRoleId: null
   }
 ]
 

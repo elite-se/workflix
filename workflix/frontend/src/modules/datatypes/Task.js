@@ -23,6 +23,7 @@ export type TaskTemplateType = {|
   description: string,
   estimatedDuration: number,
   necessaryClosings: number,
+  responsibleUserRoleId: number,
   predecessors: number[]
 |}
 
