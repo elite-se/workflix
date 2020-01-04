@@ -78,6 +78,8 @@ object UserRoleHandler {
 
             val userID = relationshipJSON.getString("userId")
             val userRoleID = relationshipJSON.getInt("userRoleId")
+
+            UserRoleContainer.addUserToRole(userID, userRoleID)
         } catch (e: NoSuchElementException) {
             ctx.status(404).result("user role or user not found")
         }
