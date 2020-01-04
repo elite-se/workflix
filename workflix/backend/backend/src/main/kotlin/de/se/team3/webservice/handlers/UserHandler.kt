@@ -13,28 +13,21 @@ object UserHandler {
     val mapper = ObjectMapper().registerModule(KotlinModule())
 
     fun getAll(ctx: Context) {
-        try {
-            val users = UserContainer.getAllUsers()
+        val users = UserContainer.getAllUsers()
 
-            val userArray = JSONArray(users.map { it.toJSON() })
-            val usersJSON = JSONObject().put("users", userArray)
+        val userArray = JSONArray(users.map { it.toJSON() })
+        val usersJSON = JSONObject().put("users", userArray)
 
-            ctx.result(usersJSON.toString())
-                .contentType("application/json")
-        } catch (e: IllegalArgumentException) {
-            ctx.status(404).result("page not found")
-        }
+        ctx.result(usersJSON.toString())
+            .contentType("application/json")
     }
 
     fun getOne(ctx: Context, userID: String) {
-        try {
-            val user = UserContainer.getUser(userID)
-            val userJSON = user.toJSON()
+        val user = UserContainer.getUser(userID)
+        val userJSON = user.toJSON()
 
-            ctx.result(userJSON.toString()).contentType("application/json")
-        } catch (e: IllegalArgumentException) {
-            ctx.status(404).result("user not found")
-        }
+        ctx.result(userJSON.toString())
+            .contentType("application/json")
     }
 
     fun createFrom***REMOVED***(ctx: Context) {
@@ -47,6 +40,7 @@ object UserHandler {
         val user = UserContainer.create***REMOVED***User(email, password)
         val resultJSON = JSONObject().put("newId", user.id)
 
-        ctx.result(resultJSON.toString()).contentType("application/json")
+        ctx.result(resultJSON.toString())
+            .contentType("application/json")
     }
 }
