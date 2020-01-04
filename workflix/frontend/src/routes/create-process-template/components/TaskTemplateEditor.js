@@ -95,7 +95,7 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
         <H4>Description:</H4>
         <AutoSizeTextArea placeholder={'Add description...\n\nWhat should be done?\nWhat needs special attention?'}
                           value={this.props.task.description}
-                          style={{ resize: 'vertical' }}
+                          style={{ resize: 'none' }}
                           className='bp3-fill' minRows={4}
                           onChange={this.onDescriptionChange}/>
       </p>
