@@ -7,30 +7,33 @@ import React from 'react'
 import highlightText from './highlightText'
 import type { UserType } from '../datatypes/User'
 
-const CustomSelect = Select.ofType<UserType>()
+const CustomSelect = Select.ofType<?UserType>()
 
 type PropsType = {
   users: UserType[],
   activeItem: ?UserType,
-  onItemSelect: ?UserType => void
+  onItemSelect: ?UserType => void,
+  nullSelectionText?: string,
+  allowNullSelection?: boolean,
+  textPrefix?: string
 }
 
 class UserSelect extends React.Component<PropsType> {
-  itemRenderer: ItemRenderer = (item: UserType, { handleClick, modifiers, query }) => {
+  itemRenderer: ItemRenderer = (item: ?UserType, { handleClick, modifiers, query }) => {
     return <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
       icon={this.props.activeItem === item ? 'tick' : 'blank'}
-      label={highlightText(item.displayname, query)}
-      key={item.id}
+      label={highlightText(item?.displayname || '', query)}
+      key={item?.id}
       onClick={handleClick}
       shouldDismissPopover={false}
-      text={highlightText(item.name, query)}/>
+      text={highlightText(this.getNameOrNoSelectionText(item), query)}/>
   }
 
-  filterUsers: ItemPredicate<UserType> = (query, user, _index, exactMatch) => {
-    const normalizedName = user.name.toLocaleLowerCase()
-    const normalizedDN = user.displayname.toLocaleLowerCase()
+  filterUsers: ItemPredicate<?UserType> = (query, user, _index, exactMatch) => {
+    const normalizedName = this.getNameOrNoSelectionText(user).toLocaleLowerCase()
+    const normalizedDN = user ? user.displayname.toLocaleLowerCase() : ''
     const normalizedQuery = query.toLocaleLowerCase()
     return exactMatch
       ? [normalizedName, normalizedDN].includes(normalizedQuery)
@@ -39,16 +42,21 @@ class UserSelect extends React.Component<PropsType> {
 
   render () {
     const { users, activeItem, onItemSelect } = this.props
-    return <CustomSelect items={users}
-                         activeItem={activeItem}
+    const items = this.props.allowNullSelection ? [null, ...users] : users
+    return <CustomSelect items={items}
                          itemPredicate={this.filterUsers}
                          itemRenderer={this.itemRenderer}
                          onItemSelect={onItemSelect}>
       <Button icon='user'
               rightIcon='caret-down'
               fill
-              text={activeItem?.name || '(No selection)'}/>
+              text={`${this.props.textPrefix || ''}
+              ${this.getNameOrNoSelectionText(activeItem)}`}/>
     </CustomSelect>
+  }
+
+  getNameOrNoSelectionText (user: ?UserType): string {
+    return user?.name || this.props.nullSelectionText || '(No selection)'
   }
 }
 
