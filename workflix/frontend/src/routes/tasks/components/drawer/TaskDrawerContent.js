@@ -1,12 +1,12 @@
 // @flow
 
 import React from 'react'
-import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import styled from 'styled-components'
-import TaskAssignmentSelect from './TaskAssignmentSelect'
-import TaskComments from './TaskComments'
-import type { UserType } from '../../../modules/datatypes/User'
 import { H4 } from '@blueprintjs/core'
+import type { TaskTemplateType, TaskType } from '../../../../modules/datatypes/Task'
+import type { UserType } from '../../../../modules/datatypes/User'
+import TaskAssignmentSelect from './assignments/TaskAssignmentSelect'
+import TaskComments from './comments/TaskComments'
 
 const StyledContainer = styled<{}, {}, 'div'>('div')`
   margin: 8px;

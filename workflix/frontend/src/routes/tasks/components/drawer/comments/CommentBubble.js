@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react'
-import type { TaskCommentType } from '../../../modules/datatypes/Task'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { TaskCommentType } from '../../../../../modules/datatypes/Task'
+import type { UserType } from '../../../../../modules/datatypes/User'
 import { TalkBubble } from './TalkBubble'
 
 type PropsType = {
