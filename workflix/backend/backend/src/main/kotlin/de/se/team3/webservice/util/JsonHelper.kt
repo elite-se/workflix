@@ -17,7 +17,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 object JsonHelper {
-    val mapper = ObjectMapper().registerModule(KotlinModule())
+
+    private val mapper = ObjectMapper().registerModule(KotlinModule())
 
     fun toJsonObject(obj: Any): JSONObject {
         val json = mapper.writeValueAsString(obj)
@@ -41,26 +42,6 @@ object JsonHelper {
             ).toInstant(ZoneOffset.UTC)
         }
     }
+
 }
 
-class UserSerializer : JsonSerializer<User>() {
-    override fun serialize(user: User, generator: JsonGenerator, serializers: SerializerProvider) {
-        generator?.writeObject(user?.id)
-    }
-}
-
-/*class UserDeserializer: StdDeserializer<User>(User::class.java) {
-    override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): User {
-        val ownerId = parser.readValueAs(String::class.java)
-        return UserContainer.getUser(ownerId)
-    }
-}*/
-
-class InstantSerializer : JsonSerializer<Instant>() {
-    override fun serialize(time: Instant, generator: JsonGenerator, serializers: SerializerProvider) {
-        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.GERMANY).withZone(
-            ZoneId.systemDefault())
-
-        generator.writeObject(formatter.format(time))
-    }
-}
