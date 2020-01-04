@@ -1,6 +1,5 @@
 package de.se.team3.logic.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
-import de.se.team3.logic.container.ProcessGroupContainer
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.exceptions.InvalidInputException
