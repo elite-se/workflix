@@ -55,6 +55,9 @@ fun main(args: Array<String>) {
     app.get("users") { ctx ->
         UserHandler.getAll(ctx)
     }
+    app.get("users/:userId") { ctx ->
+        UserHandler.getOne(ctx, ctx.pathParam("userId").toString())
+    }
     app.post("users") { ctx ->
         UserHandler.createFrom***REMOVED***(ctx)
     }
