@@ -107,8 +107,6 @@ fun main(args: Array<String>) {
         ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
 
-
-
     // process groups
     app.get("processGroups") { ctx ->
         ProcessGroupsHandler.getAll(ctx)

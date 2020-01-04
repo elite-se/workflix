@@ -14,5 +14,4 @@ data class ProcessQueryPredicate(
 
         processGroupIds.forEach { if (it < 1) throw InvalidInputException("process group id must be positive") }
     }
-
 }
