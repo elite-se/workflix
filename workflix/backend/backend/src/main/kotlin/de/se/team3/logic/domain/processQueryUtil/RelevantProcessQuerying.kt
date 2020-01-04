@@ -1,7 +1,7 @@
 package de.se.team3.logic.domain.processQueryUtil
 
 import de.se.team3.logic.container.ProcessContainer
-import de.se.team3.logic.container.ProcessGroupContainer
+import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.TaskAssignmentsContainer
 import de.se.team3.logic.container.TasksContainer
 import de.se.team3.logic.domain.User
@@ -13,14 +13,21 @@ object RelevantProcessQuerying {
      * @return List of all processes which are processes of the given user's process group and the user's role is
      * assigned, or to which the user is assigned.
      */
-    fun queryRelevantProcesses(user: User): ArrayList<Process> {
+    fun queryRelevantProcesses(user: User): List<Process> {
         val processesInUsersGroup = ProcessContainer.getAllProcesses()
-            .filter { ProcessGroupContainer
+            .filter { ProcessGroupsContainer
                 .getProcessGroup(it.processGroupId)
-                .members.contains(user)}
-        //TODO processesUsersGroupIsAssignedTo
+                .getMembersIds()
+                .contains(user.id)}
+        val processesInUsersGroupItsRoleIsAssignedTo = processesInUsersGroup
+            .filter { process ->
+                process.tasks?.values?.filter { task ->
+                user
+                    .getUserRoleMemberships()
+                    .map { it.id }
+                    .contains(task.taskTemplate?.responsibleUserRoleId) }?.size ?: 0 != 0 }
         val processesUserIsAssignedTo = ProcessContainer.getAllProcesses().filter { it.getAssignees().contains(user) }
-        TODO()
+        return processesInUsersGroupItsRoleIsAssignedTo + processesUserIsAssignedTo
     }
 
     /**
@@ -29,9 +36,10 @@ object RelevantProcessQuerying {
      */
     fun queryProcessGroupProcesses(user: User): List<Process> {
         val processesInUsersGroup = ProcessContainer.getAllProcesses()
-            .filter { ProcessGroupContainer
+            .filter { ProcessGroupsContainer
                 .getProcessGroup(it.processGroupId)
-                .members.contains(user)}
+                .getMembersIds()
+                .contains(user.id)}
         val processesUserIsAssignedTo = ProcessContainer.getAllProcesses().filter { it.getAssignees().contains(user) }
         return processesInUsersGroup + processesUserIsAssignedTo
     }
