@@ -10,6 +10,7 @@ import de.se.team3.logic.exceptions.InvalidInputException
  */
 class TaskTemplate(
     val id: Int,
+    val responsibleUserRoleId: Int,
     val name: String,
     val description: String,
     val estimatedDuration: Int,

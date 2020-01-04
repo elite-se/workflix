@@ -32,29 +32,29 @@ const ancestorsInCriticalPath = (tasks: ProcessedTaskTemplateType[], task: Proce
 }
 
 class ProcessChart extends React.Component<PropsType, StateType> {
-  div: HTMLDivElement | null
+  resizeObserver: ResizeObserver = new ResizeObserver(entries => this.updateWidth(entries[0]?.contentRect.width))
+
   setDivRef = (div: HTMLDivElement | null) => {
-    this.div = div
-    this.updateWidth()
+    if (div) {
+      this.resizeObserver.observe(div)
+      this.updateWidth(div.getBoundingClientRect().width)
+    }
   }
 
-  updateWidth = () => this.setState({ width: this.div ? this.div.getBoundingClientRect().width : null })
+  updateWidth = (width: number | null) => this.setState({ width })
 
   state = {
     width: null
   }
 
-  componentDidMount () {
-    window.addEventListener('resize', this.updateWidth)
-  }
-
   componentWillUnmount () {
-    window.removeEventListener('resize', this.updateWidth)
+    this.resizeObserver.disconnect()
   }
 
-  renderSvg (width: number): Node {
+  renderSvg (): Node {
     const { tasks } = this.props
-    if (tasks.length === 0) {
+    const { width } = this.state
+    if (tasks.length === 0 || !width) {
       return null
     }
     const lastEndDate = Math.max(...tasks.map(task => task.endDate))
@@ -112,12 +112,11 @@ class ProcessChart extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const div = this.div
     return <div ref={this.setDivRef} style={{
       flex: 1,
       position: 'relative'
     }}>
-      {div && this.renderSvg(div.getBoundingClientRect().width)}
+      {this.renderSvg()}
     </div>
   }
 }

@@ -9,7 +9,7 @@ data class UserRole(
     var name: String,
     var description: String,
     val createdAt: Instant,
-    val members: List<User>
+    val members: ArrayList<User>
 ) {
     constructor(name: String, description: String) :
         this(0, name, description, Instant.now(), ArrayList<User>())
@@ -20,7 +20,7 @@ data class UserRole(
         json.put("name", this.name)
         json.put("description", this.description)
         json.put("createdAt", this.createdAt)
-        json.put("memberIds", JSONArray(members.map { id }))
+        json.put("memberIds", JSONArray(members.map { it.id }))
         return json
     }
 }

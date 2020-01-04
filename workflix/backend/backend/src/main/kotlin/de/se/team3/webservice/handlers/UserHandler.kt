@@ -28,10 +28,6 @@ object UserHandler {
 
     fun getOne(ctx: Context, userID: String) {
         try {
-            val content = ctx.body()
-            val contentJSON = JSONObject(content)
-
-            val userID = contentJSON.getString("userId")
             val user = UserContainer.getUser(userID)
             val userJSON = user.toJSON()
 
@@ -39,5 +35,18 @@ object UserHandler {
         } catch (e: IllegalArgumentException) {
             ctx.status(404).result("user not found")
         }
+    }
+
+    fun createFrom***REMOVED***(ctx: Context) {
+        val content = ctx.body()
+        val contentJSON = JSONObject(content)
+
+        val email = contentJSON.getString("email")
+        val password = contentJSON.getString("password")
+
+        val user = UserContainer.create***REMOVED***User(email, password)
+        val resultJSON = JSONObject().put("newId", user.id)
+
+        ctx.result(resultJSON.toString()).contentType("application/json")
     }
 }

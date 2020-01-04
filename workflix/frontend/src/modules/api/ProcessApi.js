@@ -1,9 +1,10 @@
 // @flow
 
-import { uniq } from 'lodash'
+import { union, uniq } from 'lodash'
 import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
+import type { FiltersType } from '../datatypes/Filters'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
@@ -21,8 +22,17 @@ type NewIdResultType = {
 }
 
 class ProcessApi {
-  getProcesses (): Promise<ProcessType[]> {
-    return safeFetch(processesBackend)
+  getProcesses (filters: FiltersType = {}): Promise<ProcessType[]> {
+    // convert filters into URL parameters
+    const url = new URL(processesBackend)
+    const params = union(
+      filters.status ? filters.status.map(status => ['status', status]) : [],
+      filters.involving ? [['involving', filters.involving.id]] : []
+    )
+    url.search = new URLSearchParams(params).toString()
+
+    // fetch the filtered processes
+    return safeFetch(url)
       .then(response => response.json())
       .then(result => result.processes)
       .then(processes => Promise.all(
