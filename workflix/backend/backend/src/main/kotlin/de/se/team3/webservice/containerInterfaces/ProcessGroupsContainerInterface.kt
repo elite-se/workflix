@@ -2,7 +2,7 @@ package de.se.team3.webservice.containerInterfaces
 
 import de.se.team3.logic.domain.ProcessGroup
 
-interface ProcessGroupContainerInterface {
+interface ProcessGroupsContainerInterface {
 
     fun getAllProcessGroups(): List<ProcessGroup>
 

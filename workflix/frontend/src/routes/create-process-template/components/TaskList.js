@@ -23,26 +23,29 @@ const ListContainer = styled<{}, {}, 'div'>('div')`
 type PropsType = {
   taskTemplates: Array<ProcessedTaskTemplateType>,
   createTask: () => void,
-  editTask: (id: number) => void
+  selectTaskId: (id: number) => void,
+  selectedId: ?number
 }
 
 class TaskList extends React.Component<PropsType> {
-  editTask = (id: number) => () => {
-    this.props.editTask(id)
+  selectTaskId = (id: number) => () => {
+    this.props.selectTaskId(id)
   }
 
   render () {
+    const { taskTemplates, selectedId, createTask } = this.props
     return <ListContainer>
       {
-        this.props.taskTemplates.map(
+        taskTemplates.map(
           node => <StyledButton className='bp3-minimal'
-                                onClick={this.editTask(node.id)}
+                                onClick={this.selectTaskId(node.id)}
+                                active={node.id === selectedId}
                                 key={node.id}>{node.name}</StyledButton>
         )
       }
       <StyledButton style={{ marginTop: '10px' }}
                     className='bp3-minimal' icon='add'
-                    text='Add task' onClick={this.props.createTask}/>
+                    text='Add task' onClick={createTask}/>
     </ListContainer>
   }
 }
