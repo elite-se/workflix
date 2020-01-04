@@ -1,18 +1,18 @@
 // @flow
 
 import { Button, MenuItem } from '@blueprintjs/core'
-import type { UserType } from '../../../modules/datatypes/User'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, Select } from '@blueprintjs/select'
-import highlightText from '../../../modules/common/highlightText'
 import React from 'react'
+import highlightText from './highlightText'
+import type { UserType } from '../datatypes/User'
 
 const CustomSelect = Select.ofType<UserType>()
 
 type PropsType = {
   users: UserType[],
   activeItem: ?UserType,
-  onItemSelect: UserType => void
+  onItemSelect: ?UserType => void
 }
 
 class UserSelect extends React.Component<PropsType> {
@@ -39,7 +39,7 @@ class UserSelect extends React.Component<PropsType> {
 
   render () {
     const { users, activeItem, onItemSelect } = this.props
-    return <CustomSelect items={Array.from(users.values())}
+    return <CustomSelect items={users}
                          activeItem={activeItem}
                          itemPredicate={this.filterUsers}
                          itemRenderer={this.itemRenderer}
