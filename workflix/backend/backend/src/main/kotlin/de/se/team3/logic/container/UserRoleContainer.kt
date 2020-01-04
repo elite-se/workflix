@@ -1,35 +1,60 @@
 package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.UserRole
+import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.UserRoleDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
 object UserRoleContainer : UserRoleContainerInterface {
+
+    private val userRoleCache = HashMap<Int, UserRole>()
+
     override fun getAllUserRoles(): List<UserRole> {
         return UserRoleDAO.getAllUserRoles()
     }
 
     override fun getUserRole(userRoleID: Int): UserRole {
-        return UserRoleDAO.getUserRole(userRoleID)
+        return if (userRoleCache.containsKey(userRoleID)) {
+            userRoleCache[userRoleID]!!
+        } else {
+            val userRole = UserRoleDAO.getUserRole(userRoleID)
+                ?: throw NotFoundException("user role $userRoleID does not exist")
+
+            userRoleCache[userRoleID] = userRole
+            userRole
+        }
     }
 
     override fun createUserRole(userRole: UserRole): Int {
-        return UserRoleDAO.createUserRole(userRole)
+        val newID = UserRoleDAO.createUserRole(userRole)
+        userRoleCache[newID] = userRole
+        return newID
     }
 
     override fun updateUserRole(userRole: UserRole) {
         UserRoleDAO.updateUserRole(userRole)
+        userRoleCache[userRole.id] = userRole
     }
 
     override fun deleteUserRole(userRoleID: Int) {
-        return UserRoleDAO.deleteUserRole(userRoleID)
+        if (!UserRoleDAO.deleteUserRole(userRoleID))
+            throw NotFoundException("user role $userRoleID does not exist")
+        userRoleCache.remove(userRoleID)
     }
 
     override fun addUserToRole(userID: String, userRoleID: Int) {
-        return UserRoleDAO.addUserToRole(userID, userRoleID)
+        UserRoleDAO.addUserToRole(userID, userRoleID)
+        if (userRoleCache.containsKey(userRoleID))
+            userRoleCache[userRoleID]!!.members.add(UserContainer.getUser(userID))
+        else
+            userRoleCache[userRoleID] = getUserRole(userRoleID)
     }
 
     override fun deleteUserFromRole(userID: String, userRoleID: Int) {
-        return UserRoleDAO.deleteUserFromRole(userID, userRoleID)
+        UserRoleDAO.deleteUserFromRole(userID, userRoleID)
+        if (userRoleCache.containsKey(userRoleID))
+            userRoleCache[userRoleID]!!.members.remove(UserContainer.getUser(userID))
+        else
+            userRoleCache[userRoleID] = getUserRole(userRoleID)
     }
 }

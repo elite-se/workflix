@@ -38,7 +38,7 @@ object UserRoleDAO : UserRoleDAOInterface {
         return userRoles
     }
 
-    override fun getUserRole(userRoleID: Int): UserRole {
+    override fun getUserRole(userRoleID: Int): UserRole? {
         val userRoleResult = UserRolesTable
             .select()
             .where { UserRolesTable.ID eq userRoleID }
@@ -48,7 +48,9 @@ object UserRoleDAO : UserRoleDAOInterface {
             members.add(UserContainer.getUser(row[UserRoleMembers.userID]!!))
         }
 
-        val row = userRoleResult.rowSet.iterator().next()
+        val row = userRoleResult.rowSet
+        if (!row.next())
+            return null
 
         return UserRole(row[UserRolesTable.ID]!!,
             row[UserRolesTable.name]!!,
@@ -75,13 +77,11 @@ object UserRoleDAO : UserRoleDAOInterface {
         }
     }
 
-    override fun deleteUserRole(userRoleID: Int) {
-        val affectedRows = UserRolesTable.update {
+    override fun deleteUserRole(userRoleID: Int): Boolean {
+        return UserRolesTable.update {
             it.deleted to true
             where { it.ID eq userRoleID }
-        }
-        if (affectedRows == 0)
-            throw NoSuchElementException()
+        } != 0
     }
 
     override fun addUserToRole(userID: String, userRoleID: Int) {
