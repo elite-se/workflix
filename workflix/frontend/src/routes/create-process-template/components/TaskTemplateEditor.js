@@ -36,7 +36,7 @@ const findAncestors = (task: TaskTemplateType, allTasks: TaskTemplateType[]) => 
 const findDescendants = (task: TaskTemplateType, allTasks: TaskTemplateType[]) => {
   return [
     task,
-    ...allTasks.filter(_task => _task.predecessors.find(id => id === task.id))
+    ...allTasks.filter(_task => _task.predecessors.includes(task.id))
       .flatMap(_task => findDescendants(_task, allTasks))
   ]
 }
