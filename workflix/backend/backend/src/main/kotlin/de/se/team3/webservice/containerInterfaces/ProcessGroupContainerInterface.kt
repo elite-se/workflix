@@ -10,5 +10,7 @@ interface ProcessGroupContainerInterface {
 
     fun createProcessGroup(processGroup: ProcessGroup): Int
 
+    fun updateProcessGroup(processGroup: ProcessGroup)
+
     fun deleteProcessGroup(processGroupId: Int)
 }

@@ -1,43 +1,40 @@
 package de.se.team3.logic.domain
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.UserContainer
+import de.se.team3.webservice.util.InstantSerializer
+import de.se.team3.webservice.util.UserSerializer
 import java.time.Instant
-import kotlin.collections.ArrayList
-import org.json.JSONArray
-import org.json.JSONObject
 
-class ProcessGroup(
-    var id: Int?,
+data class ProcessGroup(
+    val id: Int?,
+    @JsonSerialize(using = UserSerializer::class)
     var owner: User,
     var title: String,
     var description: String,
+    @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
     val members: MutableList<User>
 ) {
 
-    constructor(id: Int, owner: User, title: String, createdAt: Instant) :
-        this(id, owner, title, "", createdAt, ArrayList<User>())
+    /**
+     * Create-Constructor
+     */
+    constructor(ownerID: String, title: String, description: String) :
+            this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), ArrayList<User>())
 
     /**
-     * Creates a new process group with no specified ID.
+     * Update-Constructor
      */
-    constructor(title: String, description: String, ownerID: String, createdAt: Instant) :
-            this(null, UserContainer.getUser(ownerID), title, "", createdAt, ArrayList<User>())
+    constructor(id: Int, ownerId: String, title: String, description: String) :
+            this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), ArrayList<User>())
 
     /**
-     * Creates a new process group, and adds a given list of users to it.
+     * Checks whether the specified user is member of this process group.
+     *
+     * @return True if and only if the specified user is member of this process group.
      */
-    constructor(id: Int, owner: User, title: String, createdAt: Instant, members: MutableList<User>) :
-        this(id, owner, title, "", createdAt, members)
-
-    fun toJSON(): JSONObject {
-        val json = JSONObject()
-        json.put("id", this.id)
-        json.put("title", this.title)
-        json.put("description", this.description)
-        json.put("ownerId", this.owner.id)
-        json.put("createdAt", this.createdAt)
-        json.put("membersIds", JSONArray(members.map { id }))
-        return json
+    fun hasMember(memberId: String): Boolean {
+        return members.find { it.id == memberId } != null
     }
 }

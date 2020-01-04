@@ -6,7 +6,7 @@ import io.javalin.http.Context
 import org.json.JSONObject
 
 /**
- * Handles requests to resources of forms:
+ * Handles requests to resources of form:
  * /tasks/:taskId/assignments/:assigneeId
  */
 object TasksAssignmentsHandler {
