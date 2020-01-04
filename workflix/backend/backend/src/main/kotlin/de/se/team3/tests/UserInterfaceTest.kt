@@ -8,8 +8,6 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import org.json.JSONArray
-import org.json.JSONObject
 
 const val ENV_PORT = "PORT"
 const val DEFAULT_PORT = 7000
@@ -33,18 +31,4 @@ fun main(args: Array<String>) {
         .GET()
         .build()
     val responseGetUserDetails = client.send(getUserDetails, HttpResponse.BodyHandlers.ofString())
-
-    println(JSONObject(responseGetUserDetails.body()))
-
-    println(users.map { it.toJSON() })
-
-    val userArray = JSONArray(users.map { it.toJSON() })
-    val usersJSON = JSONObject().put("users", userArray)
-
-    println(usersJSON)
-
-    val user = UserContainer.getUser("58c120552c94decf6cf3b701")
-    val userJSON = user.toJSON()
-
-    println(userJSON)
 }
