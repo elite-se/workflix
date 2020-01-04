@@ -6,7 +6,7 @@ import { Button, Drawer, H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import UserApi from '../../../modules/api/UsersApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
@@ -32,7 +32,8 @@ type StateType = {
 }
 
 type PropsType = {
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  userRoles: Map<number, UserRoleType>
 }
 
 class CreateProcessTemplate extends React.Component<PropsType, StateType> {
@@ -136,5 +137,12 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
   }
 }
 
-const promiseCreator = () => new UserApi().getUsers().then(users => ({ users }))
+const promiseCreator = () => Promise.all([
+  new UserApi().getUsers(),
+  new UserApi().getUserRoles()
+]).then(([users, userRoles]) => ({
+  users,
+  userRoles
+}))
+
 export default withPromiseResolver<*, *>(promiseCreator)(CreateProcessTemplate)
