@@ -25,7 +25,7 @@ class UserSelect extends React.Component<PropsType> {
       disabled={modifiers.disabled}
       icon={this.props.activeItem === item ? 'tick' : 'blank'}
       label={highlightText(item?.displayname || '', query)}
-      key={item?.id}
+      key={item?.id || ''}
       onClick={handleClick}
       shouldDismissPopover={false}
       text={highlightText(this.getNameOrNoSelectionText(item), query)}/>
