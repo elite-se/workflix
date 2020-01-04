@@ -11,7 +11,7 @@ type PropsType = {|
 
 class Filters extends React.Component<PropsType> {
   render () {
-    return <div>
+    return <div style={{ margin: '5px' }}>
       <StateFilter filters={this.props.filters} onFiltersChanged={this.props.onFiltersChanged}/>
     </div>
   }
