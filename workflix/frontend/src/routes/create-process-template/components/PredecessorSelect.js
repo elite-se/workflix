@@ -2,31 +2,31 @@
 
 import React from 'react'
 import { Button, MenuItem, Tooltip } from '@blueprintjs/core'
-import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, MultiSelect } from '@blueprintjs/select'
 import highlightText from '../../../modules/common/highlightText'
 import { difference } from 'lodash'
+import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
 
 type PropsType = {
-  task: TaskTemplateType,
-  onChange: (task: TaskTemplateType) => void,
-  allTasks: TaskTemplateType[],
-  possiblePreds: TaskTemplateType[]
+  task: IncompleteTaskTemplateType,
+  onChange: (task: IncompleteTaskTemplateType) => void,
+  allTasks: IncompleteTaskTemplateType[],
+  possiblePreds: IncompleteTaskTemplateType[]
 }
 
-const TemplateSelect = MultiSelect.ofType<TaskTemplateType>()
+const TemplateSelect = MultiSelect.ofType<IncompleteTaskTemplateType>()
 
-const filterTaskTemplates: ItemPredicate<TaskTemplateType> = (query, task, _index, exactMatch) => {
+const filterTaskTemplates: ItemPredicate<IncompleteTaskTemplateType> = (query, task, _index, exactMatch) => {
   const normalizedName = task.name.toLocaleLowerCase()
   const normalizedQuery = query.toLocaleLowerCase()
   return exactMatch ? normalizedName === normalizedQuery : normalizedName.indexOf(normalizedQuery) >= 0
 }
 
-const tagRenderer = (task: TaskTemplateType) => task.name
+const tagRenderer = (task: IncompleteTaskTemplateType) => task.name
 
 class PredecessorSelect extends React.Component<PropsType> {
-  renderTaskTemplate: ItemRenderer<TaskTemplateType> = (task, { handleClick, modifiers, query }) => {
+  renderTaskTemplate: ItemRenderer<IncompleteTaskTemplateType> = (task, { handleClick, modifiers, query }) => {
     if (!modifiers.matchesPredicate) {
       return null
     }
@@ -62,7 +62,7 @@ class PredecessorSelect extends React.Component<PropsType> {
     })
   }
 
-  itemDisabled = (item: TaskTemplateType) => this.props.possiblePreds.indexOf(item) < 0
+  itemDisabled = (item: IncompleteTaskTemplateType) => this.props.possiblePreds.indexOf(item) < 0
 
   render () {
     const { task, allTasks } = this.props
@@ -87,7 +87,7 @@ class PredecessorSelect extends React.Component<PropsType> {
     />
   }
 
-  handlePredTaskSelect = (selectedTask: TaskTemplateType) => {
+  handlePredTaskSelect = (selectedTask: IncompleteTaskTemplateType) => {
     const { task, onChange } = this.props
     const index = task.predecessors.indexOf(selectedTask.id)
     if (index < 0) {

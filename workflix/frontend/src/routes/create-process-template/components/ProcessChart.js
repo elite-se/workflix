@@ -2,12 +2,12 @@
 
 import type { Node } from 'react'
 import React from 'react'
-import { uniq } from 'lodash'
 import { Colors } from '@blueprintjs/core'
-import type { ProcessedTaskTemplateType } from './CreateProcessTemplate'
+import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
+import type { ProcessedNodeType } from '../graph-utils'
 
 type PropsType = {
-  tasks: Array<ProcessedTaskTemplateType> /* sorted by calculated startDate */
+  tasks: ProcessedNodeType<IncompleteTaskTemplateType>[] /* sorted by calculated startDate */
 }
 
 type StateType = {
@@ -18,18 +18,6 @@ export const ITEM_HEIGHT = 50
 const NODE_STROKE_WIDTH = 15
 const EDGE_STROKE_WIDTH = 2
 const STROKE_RADIUS = 20
-
-const ancestorsInCriticalPath = (tasks: ProcessedTaskTemplateType[], task: ProcessedTaskTemplateType) => {
-  return [
-    task,
-    ...uniq(
-      task.predecessors
-        .map(id => tasks.find(_task => _task.id === id)).filter(Boolean)
-        .filter(_task => _task.endDate === task.startDate)
-        .flatMap(_task => ancestorsInCriticalPath(tasks, _task))
-    )
-  ]
-}
 
 class ProcessChart extends React.Component<PropsType, StateType> {
   resizeObserver: ResizeObserver = new ResizeObserver(entries => this.updateWidth(entries[0]?.contentRect.width))
@@ -58,9 +46,6 @@ class ProcessChart extends React.Component<PropsType, StateType> {
       return null
     }
     const lastEndDate = Math.max(...tasks.map(task => task.endDate))
-    const criticalNodes = tasks.filter(task => task.endDate === lastEndDate)
-      .flatMap(task => ancestorsInCriticalPath(tasks, task))
-
     const scale = width / lastEndDate
 
     return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute' }}>
@@ -78,11 +63,11 @@ class ProcessChart extends React.Component<PropsType, StateType> {
       </defs>
       {[
         ...tasks.flatMap((node, index) =>
-          node.predecessors
+          node.data.predecessors
             .map(id => tasks.findIndex(x => x.id === id))
             .map(predIndex => {
               const pred = tasks[predIndex]
-              const criticalEdge = criticalNodes.includes(pred) && criticalNodes.includes(node)
+              const criticalEdge = node.critical && pred.endDate === node.startDate
               return {
                 zIndex: criticalEdge ? 1 : 0,
                 path: <path key={`${index},${predIndex}`}
@@ -102,7 +87,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         tasks.map((node, index) => (
           <path key={index}
                 d={`M ${node.startDate * scale + NODE_STROKE_WIDTH / 2} ${(index + 1 / 2) * ITEM_HEIGHT}
-                    h ${node.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
+                    h ${node.data.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
                 strokeWidth={NODE_STROKE_WIDTH}
                 strokeLinecap='round'
                 stroke={Colors.BLUE1}/>
