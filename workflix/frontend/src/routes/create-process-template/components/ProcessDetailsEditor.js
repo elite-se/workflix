@@ -5,9 +5,16 @@ import { InputGroup, Label, NumericInput } from '@blueprintjs/core'
 import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
 import UserSelect from './UserSelect'
 import type { UserType } from '../../../modules/datatypes/User'
+import styled from 'styled-components'
 
 const handleStringChange = (handler: string => void) =>
   (event: SyntheticInputEvent<HTMLInputElement>) => handler(event.target.value)
+
+const Third = styled<{}, {}, 'div'>('div')`
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+`
 
 type PropsType = {
   onTitleChange: (title: string) => void,
@@ -48,23 +55,15 @@ class ProcessDetailsEditor extends React.Component<PropsType> {
         flexDirection: 'row',
         justifyContent: 'space-between'
       }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '30%'
-        }}>
+        <Third>
           <Label>Description
             <AutoSizeTextArea
               style={{ resize: 'none' }} minRows={4} className='bp3-fill'
               onChange={handleStringChange(onDescriptionChange)} value={description}
               placeholder={'Add description...\n\nWhat is this process about?\nWhen should it be initiated?'}/>
           </Label>
-        </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '30%'
-        }}>
+        </Third>
+        <Third>
           <Label>Duration limit
             <NumericInput onValueChange={onDurationLimitChange} min={0.1} stepSize={0.1}
                           value={durationLimit !== null ? durationLimit : ''} fill/>
@@ -72,8 +71,8 @@ class ProcessDetailsEditor extends React.Component<PropsType> {
           <Label>Owner
             <UserSelect users={Array.from(users.values())} activeItem={owner} onItemSelect={onOwnerChange}/>
           </Label>
-        </div>
-        <div style={{ width: '30%' }}/>
+        </Third>
+        <Third/>
       </div>
     </>
   }
