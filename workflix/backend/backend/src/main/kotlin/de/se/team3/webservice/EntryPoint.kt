@@ -102,13 +102,12 @@ fun main(args: Array<String>) {
     app.get("processes/:processId") { ctx ->
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
-
-    // running processes
-    app.get("processes/running/:ownerId") { }
-    app.post("processes/running") { ctx -> ProcessesRunningHandler.create(ctx) }
-    app.delete("processes/running/:processId") { ctx ->
+    app.post("processes") { ctx -> ProcessesRunningHandler.create(ctx) }
+    app.delete("processes") { ctx ->
         ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
+
+
 
     // process groups
     app.get("processGroups") { ctx ->
