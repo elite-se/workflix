@@ -5,7 +5,6 @@ import de.se.team3.logic.container.UserContainer
 import de.se.team3.webservice.util.InstantSerializer
 import de.se.team3.webservice.util.UserSerializer
 import java.time.Instant
-import kotlin.collections.ArrayList
 
 data class ProcessGroup(
     val id: Int?,

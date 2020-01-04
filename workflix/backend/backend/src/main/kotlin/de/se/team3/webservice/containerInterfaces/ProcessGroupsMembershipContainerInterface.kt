@@ -6,5 +6,5 @@ interface ProcessGroupsMembershipContainerInterface {
 
     fun createProcessGroupMembership(processGroupMembership: ProcessGroupMembership): Int
 
-    fun deleteProcessGroupMembership(processGroupId: Int, memberId: String)
+    fun deleteProcessGroupMembership(processGroupMembership: ProcessGroupMembership)
 }

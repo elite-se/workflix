@@ -1,6 +1,6 @@
 package de.se.team3.logic.DAOInterfaces
 
-interface ProcessGroupsMembershiipDAOInterface {
+interface ProcessGroupsMembershipDAOInterface {
 
     fun createProcessGroupMembership(processGroupId: Int, memberId: String): Int
 
