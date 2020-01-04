@@ -32,7 +32,7 @@ class SuccessorSelect extends React.Component<PropsType> {
       return null
     }
     const menuItem = <MenuItem
-      active={false}
+      active={modifiers.active}
       disabled={modifiers.disabled}
       icon={
         modifiers.disabled ? 'disable'
