@@ -8,8 +8,6 @@ import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
-import org.json.JSONArray
-import org.json.JSONObject
 
 class User(
     val id: String,

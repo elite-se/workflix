@@ -5,8 +5,6 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context
-import java.lang.IllegalArgumentException
-import org.json.JSONArray
 import org.json.JSONObject
 
 object UserHandler {
