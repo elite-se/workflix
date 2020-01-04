@@ -55,9 +55,7 @@ object UserRoleHandler {
             val name = userRoleJsonObject.getString("name")
             val description = userRoleJsonObject.getString("description")
 
-            val role = UserRoleContainer.getUserRole(userRoleID)
-            role.name = name
-            role.description = description
+            val role = UserRoleContainer.updateUserRole(userRoleID, name, description)
         } catch (e: JSONException) {
             ctx.status(400).result(e.toString())
         } catch (e: NoSuchElementException) {
