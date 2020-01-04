@@ -3,16 +3,15 @@
 import React from 'react'
 import ProcessChart from './ProcessChart'
 import { times } from 'lodash'
-import { Button, Drawer, H2, InputGroup, Label } from '@blueprintjs/core'
+import { Button, Drawer, H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
 import type { TaskTemplateType } from '../../../modules/datatypes/Task'
-import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
 import type { UserType } from '../../../modules/datatypes/User'
 import UserApi from '../../../modules/api/UsersApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
-import UserSelect from './UserSelect'
+import ProcessDetailsEditor from './ProcessDetailsEditor'
 
 export type ProcessedTaskTemplateType = {|
   ...TaskTemplateType,
@@ -105,38 +104,15 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
     }))
   }
 
-  renderTaskTemplateEditor (): React$Node {
-    const { tasks, selectedTaskId } = this.state
-    const task = tasks.find(task => task.id === selectedTaskId)
-    return <Drawer
-      size={Drawer.SIZE_SMALL}
-      hasBackdrop={false}
-      isOpen={task != null}
-      title={task?.name || ''}
-      onClose={this.unselectTask}
-      style={{ overflow: 'auto' }}>
-      {task &&
-      <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}/>}
-    </Drawer>
-  }
-
-  onTitleChange = (event: SyntheticInputEvent<HTMLInputElement>) => this.setState(
-    { title: event.target.value }
-  )
-
-  onDescriptionChange = (event: SyntheticInputEvent<HTMLInputElement>) => this.setState(
-    { description: event.target.value }
-  )
-
-  onDurationLimitChange = (event: SyntheticInputEvent<HTMLInputElement>) => this.setState(
-    { durationLimit: event.target.value ? Number(event.target.value) : null }
-  )
-
+  onTitleChange = (title: string) => this.setState({ title })
+  onDescriptionChange = (description: string) => this.setState({ description })
+  onDurationLimitChange = (durationLimit: ?number) => this.setState({ durationLimit })
   onOwnerChange = (owner: UserType) => this.setState({ owner })
 
   render () {
     const { tasks, title, description, durationLimit, owner, selectedTaskId } = this.state
     const { users } = this.props
+    const task = tasks.find(task => task.id === selectedTaskId)
     const processedNodes = calcEndDates(tasks)
     return <div style={{
       flex: 1,
@@ -158,59 +134,20 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
           marginLeft: '40px'
         }}>Create Process Template</H2>
       </div>
-      <div style={{ display: 'flex' }}>
-        <Label>
-          Title
-          <InputGroup large style={{ minWidth: '500px' }} onChange={this.onTitleChange} value={title}
-                      placeholder='Add process template title...'/>
-        </Label>
-      </div>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '30%'
-        }}>
-          <Label>Description
-            <AutoSizeTextArea
-              style={{
-                resize: 'none'
-              }}
-              minRows={4}
-              className='bp3-fill'
-              onChange={this.onDescriptionChange}
-              value={description}
-              placeholder={'Add description...\n\nWhat is this process about?\nWhen should it be initiated?'}/>
-          </Label>
-        </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '30%'
-        }}>
-          <Label>Duration limit
-            <InputGroup
-              type='number'
-              style={{ resize: 'none' }}
-              onChange={this.onDurationLimitChange}
-              value={durationLimit}/>
-          </Label>
-          <Label>Owner
-            <UserSelect users={Array.from(users.values())} activeItem={owner} onItemSelect={this.onOwnerChange}/>
-          </Label>
-        </div>
-        <div style={{ width: '30%' }}/>
-      </div>
+      <ProcessDetailsEditor durationLimit={durationLimit} onDurationLimitChange={this.onDurationLimitChange}
+                            onDescriptionChange={this.onDescriptionChange} description={description}
+                            onTitleChange={this.onTitleChange} title={title}
+                            users={users} owner={owner} onOwnerChange={this.onOwnerChange}/>
       <div style={{ display: 'flex' }}>
         <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes} createTask={this.createTask}
                   selectTaskId={this.selectTaskId}/>
         <ProcessChart tasks={processedNodes}/>
       </div>
-      {this.renderTaskTemplateEditor()}
+      <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
+              onClose={this.unselectTask} style={{ overflow: 'auto' }}>
+        {task &&
+        <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}/>}
+      </Drawer>
     </div>
   }
 }
