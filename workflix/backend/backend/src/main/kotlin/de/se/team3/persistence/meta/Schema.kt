@@ -12,6 +12,7 @@ object UsersTable : Table<Nothing>("users") {
     val name by varchar("name")
     val displayname by varchar("displayname")
     val email by varchar("email")
+    val password by varchar("password")
     val deleted by boolean("deleted")
 }
 

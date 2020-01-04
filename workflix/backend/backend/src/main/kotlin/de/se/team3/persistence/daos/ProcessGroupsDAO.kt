@@ -1,6 +1,7 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessGroupDAOInterface
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupsMembersTable
@@ -33,10 +34,10 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
 
             val members = ArrayList<User>()
             for (memberRow in groupMembersResult) {
-                members.add(UserDAO.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
+                members.add(UserContainer.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
             }
 
-            val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
+            val owner = UserContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
 
             processGroups.add(ProcessGroup(
                 row[ProcessGroupsTable.id]!!,
@@ -67,10 +68,10 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
 
         val members = ArrayList<User>()
         for (memberRow in ProcessGroupsMembersTable.select().where { ProcessGroupsMembersTable.processGroupId eq processGroupId }) {
-            members.add(UserDAO.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
+            members.add(UserContainer.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
         }
 
-        val owner = UserDAO.getUser(row[ProcessGroupsTable.ownerId]!!)
+        val owner = UserContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
 
         return ProcessGroup(row[ProcessGroupsTable.id]!!,
                             owner,
