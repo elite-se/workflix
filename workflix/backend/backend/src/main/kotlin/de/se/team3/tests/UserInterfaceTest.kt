@@ -34,17 +34,5 @@ fun main(args: Array<String>) {
         .build()
     val responseGetUserDetails = client.send(getUserDetails, HttpResponse.BodyHandlers.ofString())
 
-    println(JSONObject(responseGetUserDetails.body()))
 
-    println(users.map { it.toJSON() })
-
-    val userArray = JSONArray(users.map { it.toJSON() })
-    val usersJSON = JSONObject().put("users", userArray)
-
-    println(usersJSON)
-
-    val user = UserContainer.getUser("58c120552c94decf6cf3b701")
-    val userJSON = user.toJSON()
-
-    println(userJSON)
 }

@@ -3,6 +3,7 @@ package de.se.team3.webservice.handlers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.se.team3.logic.container.UserContainer
+import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context
 import java.lang.IllegalArgumentException
 import org.json.JSONArray
@@ -15,18 +16,18 @@ object UserHandler {
     fun getAll(ctx: Context) {
         val users = UserContainer.getAllUsers()
 
-        val userArray = JSONArray(users.map { it.toJSON() })
-        val usersJSON = JSONObject().put("users", userArray)
+        val usersJsonArray = JsonHelper.toJsonArray(users)
+        val responseJsonObject = JSONObject().put("users", usersJsonArray)
 
-        ctx.result(usersJSON.toString())
+        ctx.result(responseJsonObject.toString())
             .contentType("application/json")
     }
 
     fun getOne(ctx: Context, userID: String) {
         val user = UserContainer.getUser(userID)
-        val userJSON = user.toJSON()
+        val userJsonObject = JsonHelper.toJsonObject(user)
 
-        ctx.result(userJSON.toString())
+        ctx.result(userJsonObject.toString())
             .contentType("application/json")
     }
 
