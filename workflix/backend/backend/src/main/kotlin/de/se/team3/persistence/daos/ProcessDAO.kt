@@ -32,8 +32,8 @@ object ProcessDAO : ProcessDAOInterface {
     /**
      * Makes a single process object from the given row.
      */
-    private fun makeProcess(row: QueryRowSet, tasks: MutableMap<Int, Task>?): Process {
-        val process = Process(
+    private fun makeProcess(row: QueryRowSet, tasks: Map<Int, Task>): Process {
+        return Process(
             row[ProcessesTable.id]!!,
             row[ProcessesTable.starterId]!!,
             row[ProcessesTable.groupId]!!,
@@ -45,59 +45,12 @@ object ProcessDAO : ProcessDAOInterface {
             row[ProcessesTable.startedAt]!!,
             tasks
         )
-        process.tasks?.values?.forEach { it.process = process }
-        return process
     }
 
     /**
-     * Returns all processes.
+     * Returns the comments to the specified task.
      */
-    override fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process> {
-        val result = ProcessesTable
-            .select()
-            // depending on predicate several conditions are added
-            // note that the conditions are concatenated by or
-            .whereWithOrConditions { conditionList ->
-                predicate.statuses.forEach { status ->
-                    conditionList += ProcessesTable.status eq status.toString()
-                }
-                predicate.processGroupIds.forEach { processGroupId ->
-                    conditionList += ProcessesTable.groupId eq processGroupId
-                }
-            }
-
-        val processes = ArrayList<Process>()
-
-        for (row in result) {
-            val tasks = HashMap<Int, Task>()
-            val tasksResult = TasksTable.select().where { TasksTable.processId eq row[ProcessesTable.id]!! }
-
-            for (taskRow in tasksResult) {
-                val taskId = taskRow[TasksTable.id]!!
-                val taskTemplateId = taskRow[TasksTable.taskTemplateId]!!
-                val task = Task(
-                    taskId,
-                    taskTemplateId,
-                    taskRow[TasksTable.startedAt],
-                    getComments(taskId),
-                    getAssignments(taskId),
-                    null
-                )
-                tasks.put(taskTemplateId, task)
-            }
-
-            processes.add(
-                makeProcess(row, tasks)
-            )
-        }
-
-        return processes.toList()
-    }
-
-    /**
-     * Returns the comments to the given task.
-     */
-    private fun getComments(taskId: Int): ArrayList<TaskComment> {
+    private fun queryComments(taskId: Int): ArrayList<TaskComment> {
         val comments = ArrayList<TaskComment>()
         val commentsResult = TaskCommentsTable.select()
             .where {
@@ -119,9 +72,9 @@ object ProcessDAO : ProcessDAOInterface {
     }
 
     /**
-     * Returns the assignments to the given task.
+     * Returns the assignments to the specified task.
      */
-    private fun getAssignments(taskId: Int): ArrayList<TaskAssignment> {
+    private fun queryAssignments(taskId: Int): ArrayList<TaskAssignment> {
         val assignments = ArrayList<TaskAssignment>()
         val assigmentsResult = TaskAssignmentsTable.select()
             .where { TaskAssignmentsTable.taskId eq taskId }
@@ -141,6 +94,56 @@ object ProcessDAO : ProcessDAOInterface {
     }
 
     /**
+     * Returns the tasks for the specified process.
+     */
+    private fun queryTasks(processId: Int): Map<Int, Task> {
+        val tasks = HashMap<Int, Task>()
+        val tasksResult = TasksTable.select().where { TasksTable.processId eq processId }
+
+        for (row in tasksResult) {
+            val taskId = row[TasksTable.id]!!
+            val taskTemplateId = row[TasksTable.taskTemplateId]!!
+            val task = Task(
+                taskId,
+                taskTemplateId,
+                row[TasksTable.startedAt],
+                queryComments(taskId),
+                queryAssignments(taskId),
+                null
+            )
+            tasks.put(taskTemplateId, task)
+        }
+
+        return tasks.toMap()
+    }
+
+    /**
+     * Returns all processes.
+     */
+    override fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process> {
+        val result = ProcessesTable
+            .select()
+            // depending on predicate several conditions are added
+            // not that the conditions are concatenated by or
+            .whereWithOrConditions { conditionList ->
+                predicate.statuses.forEach { status ->
+                    conditionList += ProcessesTable.status eq status.toString()
+                }
+                predicate.processGroupIds.forEach { processGroupId ->
+                    conditionList += ProcessesTable.groupId eq processGroupId
+                }
+            }
+
+        val processes = ArrayList<Process>()
+        for (row in result) {
+            val tasks = queryTasks(row[ProcessesTable.id]!!)
+            processes.add(makeProcess(row, tasks))
+        }
+
+        return processes.toList()
+    }
+
+    /**
      * Returns the specified process.
      *
      * @return Null if the specified process does not exist.
@@ -156,8 +159,8 @@ object ProcessDAO : ProcessDAOInterface {
                 taskId,
                 taskTemplateId,
                 row[TasksTable.startedAt],
-                getComments(taskId),
-                getAssignments(taskId),
+                queryComments(taskId),
+                queryAssignments(taskId),
                 null
             )
             tasks.put(taskTemplateId, task)
