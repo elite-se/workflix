@@ -27,3 +27,8 @@ export const parseDatesInProcessTemplate = (template: any) => ({
   ...template,
   createdAt: template.createdAt && new Date(template.startedAt)
 })
+
+export const parseDatesInUserRole = (role: any) => ({
+  ...role,
+  createdAt: role.createdAt && new Date(role.createdAt)
+})
