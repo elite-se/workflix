@@ -21,13 +21,12 @@ data class ProcessGroupMembership(
      *
      * @throws InvalidInputException Is thrown if at least one of the given ids has an invalid format.
      */
-    constructor(processGroupId: Int, memberId: String)
-            : this(null, processGroupId, memberId) {
+    constructor(processGroupId: Int, memberId: String) :
+            this(null, processGroupId, memberId) {
 
         if (processGroupId < 1)
             throw InvalidInputException("process group id must be positive")
         if (memberId.length != 24)
             throw InvalidInputException("invalid member id")
     }
-
 }

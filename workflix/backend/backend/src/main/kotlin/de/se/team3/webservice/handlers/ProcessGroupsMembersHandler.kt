@@ -1,12 +1,8 @@
 package de.se.team3.webservice.handlers
 
-import de.se.team3.logic.container.ProcessGroupContainer
 import de.se.team3.logic.container.ProcessGroupsMembershipContainer
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessGroupMembership
 import io.javalin.http.Context
-import java.util.NoSuchElementException
-import org.json.JSONObject
 
 /**
  * Handles requests to resources of form:
