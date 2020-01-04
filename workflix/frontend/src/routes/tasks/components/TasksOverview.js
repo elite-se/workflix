@@ -6,10 +6,10 @@ import ProcessApi from '../../../modules/api/ProcessApi'
 import ProcessCard from './ProcessCard'
 import styled from 'styled-components'
 import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
-import TaskDrawer from './TaskDrawer'
 import UserApi from '../../../modules/api/UsersApi'
 import type { UserType } from '../../../modules/datatypes/User'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
+import TaskDrawer from './drawer/TaskDrawer'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;

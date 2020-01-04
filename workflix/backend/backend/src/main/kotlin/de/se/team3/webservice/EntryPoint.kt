@@ -119,14 +119,14 @@ fun main(args: Array<String>) {
     }
 
     // group memberships
-    app.post("groupMembership") { ctx ->
-        ProcessGroupMembershipHandler.add(ctx)
+    app.post("processGroups/:processGroupId/members/:memberId") { ctx ->
+        ProcessGroupsMembersHandler.add(ctx, ctx.pathParam("processGroupId").toInt(), ctx.pathParam("memberId"))
     }
-    app.delete("groupMembership/:processGroupID/:userID") { ctx ->
-        ProcessGroupMembershipHandler.revoke(
+    app.delete("groupMembership/:processGroupId/:userId") { ctx ->
+        ProcessGroupsMembersHandler.revoke(
             ctx,
-            ctx.pathParam("processGroupID").toInt(),
-            ctx.pathParam("userID")
+            ctx.pathParam("processGroupId").toInt(),
+            ctx.pathParam("memberId")
         )
     }
 

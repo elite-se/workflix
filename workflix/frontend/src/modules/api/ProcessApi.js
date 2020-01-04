@@ -3,6 +3,7 @@
 import { uniq } from 'lodash'
 import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
+import { safeFetch } from './SafeFetch'
 
 const backend = 'https://wf-backend.herokuapp.com'
 const processesBackend = `${backend}/processes`
@@ -15,25 +16,25 @@ const defaultFetchOptions = {
   }
 }
 
-type AddAssigneeResultType = {
+type NewIdResultType = {
   newId: number
 }
 
 class ProcessApi {
   getProcesses (): Promise<ProcessType[]> {
-    return fetch(processesBackend)
+    return safeFetch(processesBackend)
       .then(response => response.json())
       .then(result => result.processes)
       .then(processes => Promise.all(
         processes.map(proc =>
-          fetch(`${processesBackend}/${proc.id}`)
+          safeFetch(`${processesBackend}/${proc.id}`)
             .then(response => response.json())
         )
       ))
   }
 
-  addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<AddAssigneeResultType> {
-    return fetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
+  addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
+    return safeFetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
       ...defaultFetchOptions,
       method: 'PUT',
       body: JSON.stringify({
@@ -44,7 +45,7 @@ class ProcessApi {
   }
 
   removeAssignee (taskId: number, assigneeId: string): Promise<Response> {
-    return fetch(
+    return safeFetch(
       `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
       { method: 'DELETE' })
   }
@@ -57,7 +58,7 @@ class ProcessApi {
   getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {
     processTemplateIds = uniq(processTemplateIds)
     return Promise.all(processTemplateIds.map(procTempId =>
-      fetch(`${processesTemplatesBackend}/${procTempId}`)
+      safeFetch(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
     ))
   }
@@ -66,6 +67,25 @@ class ProcessApi {
     return this.getProcessTemplates(processTemplateIds)
       .then(procTemps => procTemps.flatMap(procTemp => procTemp.taskTemplates))
       .then(taskTemps => new Map<number, TaskTemplateType>(taskTemps.map(taskTemp => [taskTemp.id, taskTemp])))
+  }
+
+  markAsDone (taskId: number, assigneeId: string): Promise<Response> {
+    return safeFetch(
+      `${tasksBackend}/${taskId}/assignments/${assigneeId}`,
+      { method: 'PATCH' })
+  }
+
+  addComment (taskId: number, creatorId: string, content: string): Promise<NewIdResultType> {
+    return safeFetch(
+      `${tasksBackend}/${taskId}/comments`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          creatorId,
+          content
+        })
+      }
+    ).then(response => response.json())
   }
 }
 

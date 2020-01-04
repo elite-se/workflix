@@ -121,7 +121,6 @@ object TaskAssignmentsTable : Table<Nothing>("task_assignments") {
     val assigneeId by varchar("assignee_id")
     val createdAt by timestamp("created_at")
     val doneAt by timestamp("done_at")
-    val deleted by boolean("deleted")
 }
 
 object TaskCommentsTable : Table<Nothing>("task_comments") {

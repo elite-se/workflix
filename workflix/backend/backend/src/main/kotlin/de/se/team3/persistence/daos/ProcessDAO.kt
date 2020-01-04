@@ -89,10 +89,7 @@ object ProcessDAO : ProcessDAOInterface {
     private fun getAssignments(taskId: Int): ArrayList<TaskAssignment> {
         val assignments = ArrayList<TaskAssignment>()
         val assigmentsResult = TaskAssignmentsTable.select()
-            .where {
-                (TaskAssignmentsTable.taskId eq taskId) and
-                        (TaskAssignmentsTable.deleted notEq true)
-            }
+            .where { TaskAssignmentsTable.taskId eq taskId }
 
         for (row in assigmentsResult) {
             assignments.add(
