@@ -30,8 +30,8 @@ object ProcessDAO : ProcessDAOInterface {
     /**
      * Makes a single process object from the given row.
      */
-    private fun makeProcess(row: QueryRowSet, tasks: MutableMap<Int, Task>?): Process {
-        val process = Process(
+    private fun makeProcess(row: QueryRowSet, tasks: Map<Int, Task>): Process {
+        return Process(
             row[ProcessesTable.id]!!,
             row[ProcessesTable.starterId]!!,
             row[ProcessesTable.groupId]!!,
@@ -43,47 +43,12 @@ object ProcessDAO : ProcessDAOInterface {
             row[ProcessesTable.startedAt]!!,
             tasks
         )
-        process.tasks?.values?.forEach { it.process = process }
-        return process
     }
 
     /**
-     * Returns all processes.
+     * Returns the comments to the specified task.
      */
-    override fun getAllProcesses(): List<Process> {
-        val processes = ArrayList<Process>()
-        val result = ProcessesTable.select()
-
-        for (row in result) {
-            val tasks = HashMap<Int, Task>()
-            val tasksResult = TasksTable.select().where { TasksTable.processId eq row[ProcessesTable.id]!! }
-
-            for (taskRow in tasksResult) {
-                val taskId = taskRow[TasksTable.id]!!
-                val taskTemplateId = taskRow[TasksTable.taskTemplateId]!!
-                val task = Task(
-                    taskId,
-                    taskTemplateId,
-                    taskRow[TasksTable.startedAt],
-                    getComments(taskId),
-                    getAssignments(taskId),
-                    null
-                )
-                tasks.put(taskTemplateId, task)
-            }
-
-            processes.add(
-                makeProcess(row, tasks)
-            )
-        }
-
-        return processes.toList()
-    }
-
-    /**
-     * Returns the comments to the given task.
-     */
-    private fun getComments(taskId: Int): ArrayList<TaskComment> {
+    private fun queryComments(taskId: Int): ArrayList<TaskComment> {
         val comments = ArrayList<TaskComment>()
         val commentsResult = TaskCommentsTable.select()
             .where {
@@ -105,7 +70,7 @@ object ProcessDAO : ProcessDAOInterface {
     }
 
     /**
-     * Returns the assignments to the given task.
+     * Returns the assignments to the specified task.
      */
     private fun getAssignments(taskId: Int): ArrayList<TaskAssignment> {
         val assignments = ArrayList<TaskAssignment>()
@@ -127,11 +92,9 @@ object ProcessDAO : ProcessDAOInterface {
     }
 
     /**
-     * Returns the specified process.
-     *
-     * @return Null if the specified process does not exist.
+     * Returns the tasks for the specified process.
      */
-    override fun getProcess(processId: Int): Process? {
+    private fun queryTasks(processId: Int): Map<Int, Task> {
         val tasks = HashMap<Int, Task>()
         val tasksResult = TasksTable.select().where { TasksTable.processId eq processId }
 
@@ -142,18 +105,43 @@ object ProcessDAO : ProcessDAOInterface {
                 taskId,
                 taskTemplateId,
                 row[TasksTable.startedAt],
-                getComments(taskId),
+                queryComments(taskId),
                 getAssignments(taskId),
                 null
             )
             tasks.put(taskTemplateId, task)
         }
 
+        return tasks.toMap()
+    }
+
+    /**
+     * Returns all processes.
+     */
+    override fun getAllProcesses(): List<Process> {
+        val processes = ArrayList<Process>()
+        val result = ProcessesTable.select()
+
+        for (row in result) {
+            val tasks = queryTasks(row[ProcessesTable.id]!!)
+            processes.add(makeProcess(row, tasks))
+        }
+
+        return processes.toList()
+    }
+
+    /**
+     * Returns the specified process.
+     *
+     * @return Null if the specified process does not exist.
+     */
+    override fun getProcess(processId: Int): Process? {
         val processResult = ProcessesTable.select().where { ProcessesTable.id eq processId }
         val row = processResult.rowSet
         if (!row.next())
             return null
 
+        val tasks = queryTasks(processId)
         return makeProcess(row, tasks)
     }
 
