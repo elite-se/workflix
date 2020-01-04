@@ -6,7 +6,7 @@ import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../../routes/tasks/types/Filters'
 import type { NewIdResultType } from './common'
-import { BACKEND, FETCH_OPTIONS_JSON_BODY } from './common'
+import { BACKEND } from './common'
 
 const processesBackend = `${BACKEND}/processes`
 const processesTemplatesBackend = `${BACKEND}/processTemplates`
@@ -35,7 +35,6 @@ class ProcessApi {
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
     return safeFetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
-      ...FETCH_OPTIONS_JSON_BODY,
       method: 'PUT',
       body: JSON.stringify({
         immediateClosing
