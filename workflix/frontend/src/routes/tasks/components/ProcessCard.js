@@ -9,6 +9,7 @@ import type { StyledComponent } from 'styled-components'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import type { UserType } from '../../../modules/datatypes/User'
+import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 
 const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
   margin: 5px;
@@ -40,7 +41,12 @@ class ProcessCard extends React.Component<PropsType> {
 
   render () {
     const process = this.props.process
-    const taskProgress = process.progress
+    const [progressIntent, progressValue] =
+      process.status === 'ABORTED'
+        ? [Intent.DANGER, 1]
+        : process.status === 'CLOSED'
+          ? [Intent.SUCCESS, 1]
+          : [Intent.PRIMARY, process.progress]
     const isSelected = !!process.tasks.find(task => this.isSelected(task))
     return <CardWithMargin interactive elevation={isSelected ? Elevation.FOUR : undefined}>
       <H3>{process.title} (#{process.id})</H3>
@@ -56,7 +62,7 @@ class ProcessCard extends React.Component<PropsType> {
           ))
         }
       </TaskList>
-      <ProcessProgress animate={false} intent='success' value={taskProgress}/>
+      <ProcessProgress animate={false} intent={progressIntent} value={progressValue}/>
     </CardWithMargin>
   }
 }

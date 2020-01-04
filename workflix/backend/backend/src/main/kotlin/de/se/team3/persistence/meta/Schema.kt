@@ -1,8 +1,5 @@
 package de.se.team3.persistence.meta
 
-import de.se.team3.persistence.meta.ProcessGroupMembers.primaryKey
-import de.se.team3.persistence.meta.ProcessTemplatesTable.primaryKey
-import de.se.team3.persistence.meta.TaskTemplatesTable.primaryKey
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.boolean
 import me.liuwj.ktorm.schema.int
@@ -125,7 +122,6 @@ object TaskAssignmentsTable : Table<Nothing>("task_assignments") {
     val assigneeId by varchar("assignee_id")
     val createdAt by timestamp("created_at")
     val doneAt by timestamp("done_at")
-    val deleted by boolean("deleted")
 }
 
 object TaskCommentsTable : Table<Nothing>("task_comments") {
@@ -135,10 +131,4 @@ object TaskCommentsTable : Table<Nothing>("task_comments") {
     val content by text("content")
     val createdAt by timestamp("created_at")
     val deleted by boolean("deleted")
-}
-
-object ProcessGroupMembers : Table<Nothing>("process_group_members") {
-    val ID by int("id").primaryKey() // necessary since composite primary keys do not appear to be implemented in ktorm
-    val processGroupID by int("process_group_id") // TODO foreign key implementation
-    val userID by varchar("user_id") // TODO foreign key implementation
 }

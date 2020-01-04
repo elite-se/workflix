@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserType } from '../../../../../modules/datatypes/User'
 
 type PropsType = {
   assignee: UserType

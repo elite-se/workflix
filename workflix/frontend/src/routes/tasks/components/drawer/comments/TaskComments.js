@@ -1,13 +1,15 @@
 // @flow
 
 import React from 'react'
-import type { TaskType } from '../../../modules/datatypes/Task'
+import type { TaskType } from '../../../../../modules/datatypes/Task'
 import CommentBubble from './CommentBubble'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserType } from '../../../../../modules/datatypes/User'
+import WriteCommentBubble from './WriteCommentBubble'
 
 type PropsType = {
   task: TaskType,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  onTaskModified: (task: TaskType) => void
 }
 
 class TaskComments extends React.Component<PropsType> {
@@ -17,6 +19,7 @@ class TaskComments extends React.Component<PropsType> {
       {task.comments.map(comment => {
         return <CommentBubble key={comment.id} comment={comment} users={this.props.users}/>
       })}
+      <WriteCommentBubble task={this.props.task} onTaskModified={this.props.onTaskModified}/>
     </div>
   }
 }
