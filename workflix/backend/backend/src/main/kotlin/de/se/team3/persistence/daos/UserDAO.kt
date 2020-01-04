@@ -27,7 +27,11 @@ object UserDAO : UserDAOInterface {
         //val cipher = Cipher.getInstance("AES")
         //cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.getBlockSize())))
         //return cipher.doFinal(password.toByteArray()).toString()
-        return password.map { it.inc() }.toString()
+        var pw = ""
+        password.forEach { pw += it.inc() }
+        println("encrypted: $pw")
+        println("decrypted: ${decryptPassword(pw)}")
+        return pw
     }
 
     private fun decryptPassword(encryptedPassword: String): String {
@@ -36,7 +40,9 @@ object UserDAO : UserDAOInterface {
         //val cipher = Cipher.getInstance("AES")
         //cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(cipher.blockSize)))
         //return cipher.doFinal(encryptedPassword.toByteArray()).toString()
-        return encryptedPassword.map { it.dec() }.toString()
+        var pw = ""
+        encryptedPassword.forEach { pw += it.dec() }
+        return pw
     }
 
     /**
