@@ -46,7 +46,8 @@ class StateFilter extends React.Component<PropsType> {
     return <div style={{ textAlign: 'center' }}>
       <span style={{ marginRight: '5px' }}>Status:</span>
       {allProcessStatuses.map(status =>
-        selectedStatusesDrawn.includes(status) && <IconWithMargin icon={statusRepresentation.get(status)?.icon}/>
+        selectedStatusesDrawn.includes(status) &&
+        <IconWithMargin key={status} icon={statusRepresentation.get(status)?.icon}/>
       )}
     </div>
   }
