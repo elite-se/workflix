@@ -4,8 +4,6 @@ import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context
-import java.util.NoSuchElementException
-import org.json.JSONException
 import org.json.JSONObject
 
 object ProcessGroupsHandler {
