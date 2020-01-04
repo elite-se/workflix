@@ -10,8 +10,8 @@ import UserApi from '../../../modules/api/UsersApi'
 import type { UserType } from '../../../modules/datatypes/User'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import TaskDrawer from './drawer/TaskDrawer'
-import type { FiltersType } from '../types/Filters'
 import Filters from './filtering/Filters'
+import type { FiltersType } from '../../../modules/datatypes/Filters'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
@@ -84,7 +84,7 @@ class TasksOverview extends React.Component<PropsType, StateType> {
 
   render () {
     return <div>
-      <Filters onFiltersChanged={this.onFiltersChanged} filters={this.state.filters}/>
+      <Filters onFiltersChanged={this.onFiltersChanged} filters={this.state.filters} users={this.props.users}/>
       <ProcessListWrapper>{
         this.state.processes.map(process => (
           <ProcessCard

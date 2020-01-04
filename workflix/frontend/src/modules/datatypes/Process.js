@@ -1,18 +1,18 @@
 // @flow
 
 import type { TaskTemplateType, TaskType } from './Task'
-import type { UserType } from './User'
 
 export type ProcessStatusType = 'RUNNING' | 'CLOSED' | 'ABORTED'
 
 export type ProcessTemplateMasterDataType = {|
   id: number,
   title: string,
+  description: string,
   durationLimit: ?number,
-  owner: UserType
+  ownerId: string
 |}
 
-export type ProcessTemplateType = {
+export type ProcessTemplateType = {|
   id: number,
   title: string,
   description: string,
@@ -23,9 +23,9 @@ export type ProcessTemplateType = {
   running_processes: number,
   deleted: boolean,
   taskTemplates: TaskTemplateType[]
-}
+|}
 
-export type ProcessType = {
+export type ProcessType = {|
   id: number,
   title: string,
   description: string,
@@ -35,4 +35,4 @@ export type ProcessType = {
   progress: number,
   startedAt: string,
   tasks: TaskType[]
-}
+|}

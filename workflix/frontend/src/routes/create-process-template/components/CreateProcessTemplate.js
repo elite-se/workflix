@@ -2,45 +2,29 @@
 
 import React from 'react'
 import ProcessChart from './ProcessChart'
-import { times } from 'lodash'
 import { Button, Drawer, H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
-import type { TaskTemplateType } from '../../../modules/datatypes/Task'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import UserApi from '../../../modules/api/UsersApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
+import { calcGraph } from '../graph-utils'
+import ProcessApi from '../../../modules/api/ProcessApi'
 
-export type ProcessedTaskTemplateType = {|
-  ...TaskTemplateType,
-  startDate: number, /* earliest possible start date */
-  endDate: number /* earliest possible end date */
+export type IncompleteTaskTemplateType = {|
+  id: number,
+  name: string,
+  description: string,
+  estimatedDuration: number,
+  necessaryClosings: number,
+  responsibleUserRoleId: ?number,
+  predecessors: number[]
 |}
 
-const calcEndDates = (nodes: Array<TaskTemplateType>): Array<ProcessedTaskTemplateType> => {
-  const leveledNodes = nodes.map(node => ({
-    ...node,
-    startDate: 0,
-    endDate: node.estimatedDuration
-  }))
-
-  times(leveledNodes.length - 1, () => { // Bellman-Ford
-    for (const node of leveledNodes) {
-      node.startDate = Math.max(
-        0,
-        ...(node.predecessors.map(id => leveledNodes.find(x => x.id === id)?.endDate || 0))
-      )
-      node.endDate = node.startDate + node.estimatedDuration
-    }
-  })
-
-  return leveledNodes.sort((node1, node2) => node1.startDate - node2.startDate)
-}
-
 type StateType = {
-  tasks: Array<TaskTemplateType>,
+  tasks: Array<IncompleteTaskTemplateType>,
   selectedTaskId: ?number,
   title: string,
   description: string,
@@ -49,7 +33,8 @@ type StateType = {
 }
 
 type PropsType = {
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  userRoles: Map<number, UserRoleType>
 }
 
 class CreateProcessTemplate extends React.Component<PropsType, StateType> {
@@ -66,7 +51,7 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
     this.setState({ selectedTaskId: id })
   }
 
-  taskChanged = (task: TaskTemplateType) => {
+  taskChanged = (task: IncompleteTaskTemplateType) => {
     this.setState(state => ({
       tasks: state.tasks.map(_task => _task.id === task.id ? task : _task)
     }))
@@ -75,12 +60,13 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
   createTask = () => {
     this.setState(state => {
       const newId = Math.max(...state.tasks.map(node => node.id), -1) + 1
-      const newTask: TaskTemplateType = {
+      const newTask: IncompleteTaskTemplateType = {
         id: newId,
         predecessors: [],
         name: '',
         estimatedDuration: 1,
         description: '',
+        responsibleUserRoleId: null,
         necessaryClosings: 0
       }
       return {
@@ -107,13 +93,36 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
   onTitleChange = (title: string) => this.setState({ title })
   onDescriptionChange = (description: string) => this.setState({ description })
   onDurationLimitChange = (durationLimit: ?number) => this.setState({ durationLimit })
-  onOwnerChange = (owner: UserType) => this.setState({ owner })
+  onOwnerChange = (owner: ?UserType) => this.setState({ owner })
+
+  onSaveClick = () => {
+    const { title, description, durationLimit, owner, tasks } = this.state
+    if (!durationLimit || !owner) {
+      // todo validate
+      return alert('mööp')
+    }
+    new ProcessApi().addProcessTemplate({
+      title,
+      description,
+      durationLimit,
+      ownerId: owner?.id,
+      taskTemplates: tasks.map(task => ({
+        id: task.id,
+        responsibleUserRoleId: task.responsibleUserRoleId || 0,
+        name: task.name,
+        description: task.description,
+        estimatedDuration: task.estimatedDuration,
+        necessaryClosings: task.necessaryClosings,
+        predecessors: task.predecessors
+      }))
+    }).catch(e => console.error(e))
+  }
 
   render () {
     const { tasks, title, description, durationLimit, owner, selectedTaskId } = this.state
-    const { users } = this.props
+    const { users, userRoles } = this.props
     const task = tasks.find(task => task.id === selectedTaskId)
-    const processedNodes = calcEndDates(tasks)
+    const processedNodes = calcGraph(tasks)
     return <div style={{
       flex: 1,
       display: 'flex',
@@ -128,7 +137,7 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
         justifyContent: 'start',
         alignItems: 'center'
       }}>
-        <Button icon='floppy-disk' text='Save' intent='primary'/>
+        <Button icon='floppy-disk' text='Save' intent='primary' onClick={this.onSaveClick}/>
         <H2 style={{
           display: 'inline',
           marginLeft: '40px'
@@ -139,18 +148,26 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
                             onTitleChange={this.onTitleChange} title={title}
                             users={users} owner={owner} onOwnerChange={this.onOwnerChange}/>
       <div style={{ display: 'flex' }}>
-        <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes} createTask={this.createTask}
-                  selectTaskId={this.selectTaskId}/>
+        <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes.map(node => node.data)}
+                  createTask={this.createTask} selectTaskId={this.selectTaskId}/>
         <ProcessChart tasks={processedNodes}/>
       </div>
       <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
               onClose={this.unselectTask} style={{ overflow: 'auto' }}>
         {task &&
-        <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}/>}
+        <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}
+                            userRoles={userRoles}/>}
       </Drawer>
     </div>
   }
 }
 
-const promiseCreator = () => new UserApi().getUsers().then(users => ({ users }))
+const promiseCreator = () => Promise.all([
+  new UserApi().getUsers(),
+  new UserApi().getUserRoles()
+]).then(([users, userRoles]) => ({
+  users,
+  userRoles
+}))
+
 export default withPromiseResolver<*, *>(promiseCreator)(CreateProcessTemplate)
