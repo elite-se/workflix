@@ -55,9 +55,7 @@ object UserRoleHandler {
             val name = userRoleJsonObject.getString("name")
             val description = userRoleJsonObject.getString("description")
 
-            val role = UserRoleContainer.getUserRole(userRoleID)
-            role.name = name
-            role.description = description
+            UserRoleContainer.updateUserRole(userRoleID, name, description)
         } catch (e: JSONException) {
             ctx.status(400).result(e.toString())
         } catch (e: NoSuchElementException) {
@@ -80,6 +78,8 @@ object UserRoleHandler {
 
             val userID = relationshipJSON.getString("userId")
             val userRoleID = relationshipJSON.getInt("userRoleId")
+
+            UserRoleContainer.addUserToRole(userID, userRoleID)
         } catch (e: NoSuchElementException) {
             ctx.status(404).result("user role or user not found")
         }

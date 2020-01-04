@@ -90,6 +90,11 @@
             <version>2.8.6</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.xml.crypto</groupId>
+            <artifactId>jsr105-api</artifactId>
+            <version>1.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
