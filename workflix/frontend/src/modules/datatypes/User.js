@@ -12,5 +12,5 @@ export type UserRoleType = {|
   name: string,
   description: string,
   createdAt: string,
-  memberId: number[]
+  memberIds: number[]
 |}

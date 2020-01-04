@@ -96,7 +96,7 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
 
   render () {
     const { tasks, title, description, durationLimit, owner, selectedTaskId } = this.state
-    const { users } = this.props
+    const { users, userRoles } = this.props
     const task = tasks.find(task => task.id === selectedTaskId)
     const processedNodes = calcGraph(tasks)
     return <div style={{
@@ -131,7 +131,8 @@ class CreateProcessTemplate extends React.Component<PropsType, StateType> {
       <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
               onClose={this.unselectTask} style={{ overflow: 'auto' }}>
         {task &&
-        <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}/>}
+        <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}
+                            userRoles={userRoles}/>}
       </Drawer>
     </div>
   }

@@ -8,11 +8,14 @@ import SuccessorSelect from './SuccessorSelect'
 import styled from 'styled-components'
 import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
 import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
+import UserRoleSelect from './UserRoleSelect'
+import type { UserRoleType } from '../../../modules/datatypes/User'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,
   onChange: (task: IncompleteTaskTemplateType) => void,
   allTasks: IncompleteTaskTemplateType[],
+  userRoles: Map<number, UserRoleType>,
   onDelete: () => void
 }
 
@@ -71,9 +74,13 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
 
   onOpenDeleteAlert = () => this.setState({ deleteAlertOpen: true })
   onCloseDeleteAlert = () => this.setState({ deleteAlertOpen: false })
+  onResponsibleUserRoleChange = (userRole: UserRoleType) => this.props.onChange({
+    ...this.props.task,
+    responsibleUserRoleId: userRole.id
+  })
 
   render () {
-    const { task, allTasks, onChange } = this.props
+    const { task, allTasks, onChange, userRoles } = this.props
     const { deleteAlertOpen } = this.state
 
     const possiblePreds = difference(allTasks, findDescendants(task, allTasks))
@@ -102,6 +109,12 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
                           style={{ resize: 'none' }}
                           className='bp3-fill' minRows={4}
                           onChange={this.onDescriptionChange}/>
+      </Item>
+      <Item>
+        <H4>Responsible User Role:</H4>
+        <UserRoleSelect userRoles={Array.from(userRoles.values())}
+                        activeItem={userRoles.get(task.responsibleUserRoleId)}
+                        onItemSelect={this.onResponsibleUserRoleChange}/>
       </Item>
       <Item>
         <H4>Duration:</H4>
