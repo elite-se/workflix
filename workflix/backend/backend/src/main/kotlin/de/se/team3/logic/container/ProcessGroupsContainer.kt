@@ -14,7 +14,6 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
      * Returns a list of all process groups.
      *
      * @return All process groups currently saved in the database.
-     * @throws NotFoundException The process group does not exist. // TODO was tut das denn hier?
      */
     override fun getAllProcessGroups(): List<ProcessGroup> {
         return ProcessGroupsDAO.getAllProcessGroups()
