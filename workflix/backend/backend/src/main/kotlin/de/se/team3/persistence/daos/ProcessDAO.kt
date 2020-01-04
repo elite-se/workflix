@@ -45,6 +45,8 @@ object ProcessDAO : ProcessDAOInterface {
             row[ProcessesTable.startedAt]!!,
             tasks
         )
+        process.tasks?.values?.forEach { it.process = process }
+        return process
     }
 
     /**
