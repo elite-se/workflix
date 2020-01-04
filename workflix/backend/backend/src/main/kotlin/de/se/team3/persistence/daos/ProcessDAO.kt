@@ -33,7 +33,7 @@ object ProcessDAO : ProcessDAOInterface {
      * Makes a single process object from the given row.
      */
     private fun makeProcess(row: QueryRowSet, tasks: MutableMap<Int, Task>?): Process {
-        return Process(
+        val process = Process(
             row[ProcessesTable.id]!!,
             row[ProcessesTable.starterId]!!,
             row[ProcessesTable.groupId]!!,
@@ -45,6 +45,8 @@ object ProcessDAO : ProcessDAOInterface {
             row[ProcessesTable.startedAt]!!,
             tasks
         )
+        process.tasks?.values?.forEach { it.process = process }
+        return process
     }
 
     /**
@@ -54,7 +56,7 @@ object ProcessDAO : ProcessDAOInterface {
         val result = ProcessesTable
             .select()
             // depending on predicate several conditions are added
-            // not that the conditions are concatenated by or
+            // note that the conditions are concatenated by or
             .whereWithOrConditions { conditionList ->
                 predicate.statuses.forEach { status ->
                     conditionList += ProcessesTable.status eq status.toString()
@@ -65,9 +67,29 @@ object ProcessDAO : ProcessDAOInterface {
             }
 
         val processes = ArrayList<Process>()
-        for (row in result)
+
+        for (row in result) {
+            val tasks = HashMap<Int, Task>()
+            val tasksResult = TasksTable.select().where { TasksTable.processId eq row[ProcessesTable.id]!! }
+
+            for (taskRow in tasksResult) {
+                val taskId = taskRow[TasksTable.id]!!
+                val taskTemplateId = taskRow[TasksTable.taskTemplateId]!!
+                val task = Task(
+                    taskId,
+                    taskTemplateId,
+                    taskRow[TasksTable.startedAt],
+                    getComments(taskId),
+                    getAssignments(taskId),
+                    null
+                )
+                tasks.put(taskTemplateId, task)
+            }
+
             processes.add(
-                makeProcess(row, null))
+                makeProcess(row, tasks)
+            )
+        }
 
         return processes.toList()
     }
