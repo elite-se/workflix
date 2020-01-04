@@ -1,12 +1,12 @@
 // @flow
 
 import React from 'react'
-import type { FiltersType } from '../../types/Filters'
 import { Button, Icon, Menu, MenuItem, Popover } from '@blueprintjs/core'
 import { Position } from '@blueprintjs/core/lib/cjs/common/position'
 import styled from 'styled-components'
 import type { ProcessStatusType } from '../../../../modules/datatypes/Process'
 import { difference, isEmpty } from 'lodash'
+import type { FiltersType } from '../../../../modules/datatypes/Filters'
 
 type PropsType = {|
   filters: FiltersType,
