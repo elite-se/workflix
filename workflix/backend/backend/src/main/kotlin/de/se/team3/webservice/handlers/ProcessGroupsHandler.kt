@@ -1,6 +1,6 @@
 package de.se.team3.webservice.handlers
 
-import de.se.team3.logic.container.ProcessGroupContainer
+import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context
@@ -11,7 +11,7 @@ import org.json.JSONObject
 object ProcessGroupsHandler {
 
     fun getAll(ctx: Context) {
-        val groups = ProcessGroupContainer.getAllProcessGroups()
+        val groups = ProcessGroupsContainer.getAllProcessGroups()
 
         val groupsArray = JsonHelper.toJsonArray(groups)
         val groupsJSON = JSONObject().put("groups", groupsArray)
@@ -30,7 +30,7 @@ object ProcessGroupsHandler {
 
         try {
             val processGroup = ProcessGroup(ownerID, title, description)
-            val newId = ProcessGroupContainer.createProcessGroup(processGroup)
+            val newId = ProcessGroupsContainer.createProcessGroup(processGroup)
 
             val newIdObject = JSONObject()
             newIdObject.put("newId", newId)
@@ -51,7 +51,7 @@ object ProcessGroupsHandler {
             val ownerID = processGroupJsonObject.getString("ownerId")
 
             val processGroup = ProcessGroup(processGroupId, ownerID, title, description)
-            ProcessGroupContainer.updateProcessGroup(processGroup)
+            ProcessGroupsContainer.updateProcessGroup(processGroup)
         } catch (e: JSONException) {
             ctx.status(400).result(e.toString())
         } catch (e: NoSuchElementException) {
@@ -61,7 +61,7 @@ object ProcessGroupsHandler {
 
     fun delete(ctx: Context, processGroupId: Int) {
         try {
-            ProcessGroupContainer.deleteProcessGroup(processGroupId)
+            ProcessGroupsContainer.deleteProcessGroup(processGroupId)
         } catch (e: NoSuchElementException) {
             ctx.status(404).result("process group not found")
         }

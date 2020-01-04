@@ -1,5 +1,5 @@
 package de.se.team3.logic.domain
-import de.se.team3.logic.container.ProcessGroupContainer
+import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
 import org.json.JSONObject
@@ -25,7 +25,7 @@ class User(
      * Using the try-catch-block here probably is kinda hacky...
      */
     fun getMemberships(): List<ProcessGroup> {
-        val allGroups = ProcessGroupContainer.getAllProcessGroups()
+        val allGroups = ProcessGroupsContainer.getAllProcessGroups()
         return allGroups.filter { it.members.contains(this) }
     }
 

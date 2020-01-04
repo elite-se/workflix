@@ -3,22 +3,26 @@ package de.se.team3.logic.container
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessGroupsDAO
-import de.se.team3.webservice.containerInterfaces.ProcessGroupContainerInterface
+import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
 
-object ProcessGroupContainer : ProcessGroupContainerInterface {
+object ProcessGroupsContainer : ProcessGroupsContainerInterface {
 
     // caches process groups using their id
     private val processGroupsCache = HashMap<Int, ProcessGroup>()
 
     /**
+     * Returns a list of all process groups.
+     *
      * @return All process groups currently saved in the database.
-     * @throws NotFoundException The process group does not exist.
+     * @throws NotFoundException The process group does not exist. // TODO was tut das denn hier?
      */
     override fun getAllProcessGroups(): List<ProcessGroup> {
         return ProcessGroupsDAO.getAllProcessGroups()
     }
 
     /**
+     * Returns the specified process group.
+     *
      * @return Process group specified by its ID.
      * @throws NotFoundException The process group does not exist.
      */
@@ -35,20 +39,6 @@ object ProcessGroupContainer : ProcessGroupContainerInterface {
     }
 
     /**
-     * Updates the given process group.
-     *
-     * @throws NotFoundException Is thrown if the given process group does not exist.
-     */
-    override fun updateProcessGroup(processGroup: ProcessGroup) {
-        val exists = ProcessGroupsDAO.updateProcessGroup(processGroup)
-        if (!exists)
-            throw NotFoundException("process group does not exist")
-
-        processGroupsCache.remove(processGroup.id!!)
-        processGroupsCache.put(processGroup.id, ProcessGroupsDAO.getProcessGroup(processGroup.id!!)!!)
-    }
-
-    /**
      * Creates a new process group.
      *
      * @return automatically generated unique ID
@@ -57,6 +47,23 @@ object ProcessGroupContainer : ProcessGroupContainerInterface {
         val newId = ProcessGroupsDAO.createProcessGroup(processGroup)
         processGroupsCache[newId] = processGroup.copy(id = newId)
         return newId
+    }
+
+    /**
+     * Updates the given process group.
+     *
+     * @throws NotFoundException Is thrown if the given process group does not exist.
+     */
+    override fun updateProcessGroup(processGroup: ProcessGroup) {
+        val cachedProcessGroup = getProcessGroup(processGroup.id!!)
+
+        val exists = ProcessGroupsDAO.updateProcessGroup(processGroup)
+        if (!exists)
+            throw NotFoundException("process group does not exist")
+
+        cachedProcessGroup.setTitle(processGroup.getTitle())
+        cachedProcessGroup.setDescription(processGroup.getDescription())
+        cachedProcessGroup.setOwnerById(processGroup.getOwner().id)
     }
 
     /**
