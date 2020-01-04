@@ -2,10 +2,8 @@ package de.se.team3.logic.domain.processQueryUtil
 
 import de.se.team3.logic.container.ProcessContainer
 import de.se.team3.logic.container.ProcessGroupsContainer
-import de.se.team3.logic.container.TaskAssignmentsContainer
-import de.se.team3.logic.container.TasksContainer
-import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.Process
+import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ConnectionManager
 import java.time.Instant
 
@@ -20,7 +18,7 @@ object RelevantProcessQuerying {
             .filter { ProcessGroupsContainer
                 .getProcessGroup(it.processGroupId)
                 .getMembersIds()
-                .contains(user.id)}
+                .contains(user.id) }
         val processesInUsersGroupItsRoleIsAssignedTo = processesInUsersGroup
             .filter { process ->
                 process.tasks?.values?.filter { task ->
@@ -29,7 +27,7 @@ object RelevantProcessQuerying {
                     .map { it.id }
                     .contains(task.taskTemplate?.responsibleUserRoleId) }?.size ?: 0 != 0 }
         val processesUserIsAssignedTo = ProcessContainer.getAllProcesses().filter { it.getAssignees().contains(user) }
-        return processesInUsersGroupItsRoleIsAssignedTo //+ processesUserIsAssignedTo
+        return processesInUsersGroupItsRoleIsAssignedTo // + processesUserIsAssignedTo
     }
 
     /**
@@ -41,11 +39,10 @@ object RelevantProcessQuerying {
             .filter { ProcessGroupsContainer
                 .getProcessGroup(it.processGroupId)
                 .getMembersIds()
-                .contains(user.id)}
+                .contains(user.id) }
         val processesUserIsAssignedTo = ProcessContainer.getAllProcesses().filter { it.getAssignees().map { it.id }.contains(user.id) }
         return processesInUsersGroup + processesUserIsAssignedTo
     }
-
 }
 
 fun main() {
