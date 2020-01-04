@@ -5,17 +5,11 @@ import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../../routes/tasks/types/Filters'
+import { BACKEND, FETCH_OPTIONS_JSON_BODY } from './common'
 
-const backend = 'https://wf-backend.herokuapp.com'
-const processesBackend = `${backend}/processes`
-const processesTemplatesBackend = `${backend}/processTemplates`
-const tasksBackend = `${backend}/tasks`
-
-const defaultFetchOptions = {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
+const processesBackend = `${BACKEND}/processes`
+const processesTemplatesBackend = `${BACKEND}/processTemplates`
+const tasksBackend = `${BACKEND}/tasks`
 
 type NewIdResultType = {
   newId: number
@@ -44,7 +38,7 @@ class ProcessApi {
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
     return safeFetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
-      ...defaultFetchOptions,
+      ...FETCH_OPTIONS_JSON_BODY,
       method: 'PUT',
       body: JSON.stringify({
         immediateClosing
