@@ -4,8 +4,6 @@ import de.se.team3.logic.container.ProcessContainer
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.User
-import de.se.team3.persistence.meta.ConnectionManager
-import java.time.Instant
 
 object RelevantProcessQuerying {
 
