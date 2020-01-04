@@ -28,10 +28,6 @@ object UserHandler {
 
     fun getOne(ctx: Context, userID: String) {
         try {
-            val content = ctx.body()
-            val contentJSON = JSONObject(content)
-
-            val userID = contentJSON.getString("userId")
             val user = UserContainer.getUser(userID)
             val userJSON = user.toJSON()
 

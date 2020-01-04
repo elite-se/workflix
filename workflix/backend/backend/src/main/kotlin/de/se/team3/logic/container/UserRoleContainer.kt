@@ -36,6 +36,13 @@ object UserRoleContainer : UserRoleContainerInterface {
         userRoleCache[userRole.id] = userRole
     }
 
+    override fun updateUserRole(userRoleID: Int, name: String, description: String) {
+        val userRole = getUserRole(userRoleID)
+        userRole.name = name
+        userRole.description = description
+        updateUserRole(userRole)
+    }
+
     override fun deleteUserRole(userRoleID: Int) {
         if (!UserRoleDAO.deleteUserRole(userRoleID))
             throw NotFoundException("user role $userRoleID does not exist")

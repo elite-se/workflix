@@ -12,6 +12,7 @@ object UsersTable : Table<Nothing>("users") {
     val name by varchar("name")
     val displayname by varchar("displayname")
     val email by varchar("email")
+    val createdAt by timestamp("created_at")
     val password by varchar("password")
     val deleted by boolean("deleted")
 }
@@ -24,7 +25,7 @@ object UserRolesTable : Table<Nothing>("user_roles") {
     val deleted by boolean("deleted")
 }
 
-object UserRoleMembers : Table<Nothing>("user_role_members") {
+object UserRoleMembersTable : Table<Nothing>("user_role_members") {
     val ID by int("id").primaryKey()
     val userID by varchar("user_id")
     val userRoleID by int("user_role_id")

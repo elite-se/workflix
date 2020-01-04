@@ -20,7 +20,7 @@ data class UserRole(
         json.put("name", this.name)
         json.put("description", this.description)
         json.put("createdAt", this.createdAt)
-        json.put("memberIds", JSONArray(members.map { id }))
+        json.put("memberIds", JSONArray(members.map { it.id }))
         return json
     }
 }

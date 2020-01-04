@@ -4,8 +4,6 @@ import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.UsersTable
 import java.util.Arrays
-import javax.crypto.Cipher
-import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.collections.ArrayList
 import me.liuwj.ktorm.dsl.eq
@@ -21,18 +19,28 @@ object UserDAO : UserDAOInterface {
     private val key = SecretKeySpec(Arrays.copyOf("tHiSiSaVeRySeCuReKeY".toByteArray(), 16), "AES")
 
     private fun encryptPassword(password: String): String {
-        val data = key.getEncoded()
-        val skeySpec = SecretKeySpec(data, 0, data.size, "AES")
-        val cipher = Cipher.getInstance("AES", "BC")
-        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.getBlockSize())))
-        return cipher.doFinal(password.toByteArray()).toString()
+        // TODO fix this shit
+        // val data = key.getEncoded()
+        // val skeySpec = SecretKeySpec(data, 0, data.size, "AES")
+        // val cipher = Cipher.getInstance("AES")
+        // cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.getBlockSize())))
+        // return cipher.doFinal(password.toByteArray()).toString()
+        var pw = ""
+        password.forEach { pw += it.inc() }
+        println("encrypted: $pw")
+        println("decrypted: ${decryptPassword(pw)}")
+        return pw
     }
 
     private fun decryptPassword(encryptedPassword: String): String {
-        val decrypted: ByteArray
-        val cipher = Cipher.getInstance("AES", "BC")
-        cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(cipher.blockSize)))
-        return cipher.doFinal(encryptedPassword.toByteArray()).toString()
+        // TODO fix this shit
+        // val decrypted: ByteArray
+        // val cipher = Cipher.getInstance("AES")
+        // cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(cipher.blockSize)))
+        // return cipher.doFinal(encryptedPassword.toByteArray()).toString()
+        var pw = ""
+        encryptedPassword.forEach { pw += it.dec() }
+        return pw
     }
 
     /**
@@ -42,7 +50,13 @@ object UserDAO : UserDAOInterface {
         val users = ArrayList<User>()
         val result = UsersTable.select()
         for (row in result)
-            users.add(User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]!!)))
+            users.add(User(row[UsersTable.ID]!!,
+                row[UsersTable.name]!!,
+                row[UsersTable.displayname]!!,
+                row[UsersTable.email]!!,
+                decryptPassword(row[UsersTable.password] ?: "N/A"),
+                row[UsersTable.createdAt]!!)
+            )
 
         return users.toList()
     }
@@ -55,7 +69,12 @@ object UserDAO : UserDAOInterface {
         val row = result.rowSet
         if (!row.next())
             return null
-        return User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]!!))
+        return User(row[UsersTable.ID]!!,
+            row[UsersTable.name]!!,
+            row[UsersTable.displayname]!!,
+            row[UsersTable.email]!!,
+            decryptPassword(row[UsersTable.password] ?: "N/A"),
+            row[UsersTable.createdAt]!!)
     }
 
     override fun createUser(user: User) {
@@ -71,11 +90,13 @@ object UserDAO : UserDAOInterface {
 
     override fun create***REMOVED***User(email: String, password: String): User {
         val ***REMOVED***User = User.query***REMOVED***andCreateUser(email, password)
+        println(***REMOVED***User.id)
         UsersTable.insert {
             it.ID to ***REMOVED***User.id
             it.name to ***REMOVED***User.name
             it.displayname to ***REMOVED***User.displayname
             it.email to ***REMOVED***User.email
+            it.createdAt to ***REMOVED***User.createdAt
             it.password to encryptPassword(***REMOVED***User.password)
             it.deleted to false
         }
