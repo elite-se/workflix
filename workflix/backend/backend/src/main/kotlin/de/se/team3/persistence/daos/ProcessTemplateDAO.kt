@@ -152,7 +152,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         // adds the task templates
         taskTemplates.forEach { taskTemplate ->
             val generatedTaskTemplateId = TaskTemplatesTable.insertAndGenerateKey { row ->
-                row.processTemplateId to processTemplateId as Int
+                row.processTemplateId to processTemplateId
+                row.responsibleUserRoleId to taskTemplate.responsibleUserRoleId
                 row.name to taskTemplate.name
                 row.description to taskTemplate.description
                 row.estimatedDuration to taskTemplate.estimatedDuration
