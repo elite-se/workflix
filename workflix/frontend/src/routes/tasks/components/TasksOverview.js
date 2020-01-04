@@ -66,7 +66,7 @@ class TasksOverview extends React.Component<PropsType, StateType> {
   }
 
   onFiltersChanged = (newFilters: FiltersType) => {
-    new ProcessApi().getProcesses()
+    new ProcessApi().getProcesses(newFilters)
       .then(
         processes => Promise.all([
           Promise.resolve(processes),
