@@ -85,15 +85,13 @@ class Process(
      */
     @JsonProperty("progress")
     fun getProgress(): Int {
-        var estimatedDurationDone = 0
-        println("tasks: $tasks")
+        var estimatedDurationDone = 0.0
         tasks?.forEach { _, task ->
             if (task.isClosed())
                 estimatedDurationDone += task.taskTemplate!!.estimatedDuration
         }
 
-        val ratio = estimatedDurationDone / (processTemplate.estimatedDurationSum * 1.0)
-        println("ratio: $ratio")
+        val ratio = estimatedDurationDone / processTemplate.estimatedDurationSum
         return (ratio * 100).toInt()
     }
 
