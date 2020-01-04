@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
     ConnectionManager.connect()
 
     // exception handling
-    app.exception(NumberFormatException::class.java) { e, ctx ->
+    app.exception(NumberFormatException::class.java) { _, ctx ->
         ctx.status(400).result("invalid id format")
     }
     app.exception(InvalidInputException::class.java) { e, ctx ->
@@ -104,7 +104,7 @@ fun main(args: Array<String>) {
     }
 
     // running processes
-    app.get("processes/running/:ownerId") { ctx -> }
+    app.get("processes/running/:ownerId") { }
     app.post("processes/running") { ctx -> ProcessesRunningHandler.create(ctx) }
     app.delete("processes/running/:processId") { ctx ->
         ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
