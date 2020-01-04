@@ -32,5 +32,4 @@ object ProcessGroupsMembershipDAO : ProcessGroupsMembershiipDAOInterface {
         }
         return affectedRows != 0
     }
-
 }

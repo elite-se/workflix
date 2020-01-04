@@ -38,5 +38,4 @@ data class ProcessGroup(
     fun hasMember(memberId: String): Boolean {
         return members.find { it.id == memberId } != null
     }
-
 }

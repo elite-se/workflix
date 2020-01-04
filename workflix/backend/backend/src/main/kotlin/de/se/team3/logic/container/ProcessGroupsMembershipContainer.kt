@@ -10,14 +10,12 @@ object ProcessGroupsMembershipContainer : ProcessGroupsMembershipContainerInterf
 
         // TODO check user existence
 
-        if (processGroup.hasMember(processGroupMembership.memberId))
+        //if (processGroup.hasMember(processGroupMembership.memberId))
 
-
-
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun deleteProcessGroupMembership(processGroupId: Int, memberId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }
