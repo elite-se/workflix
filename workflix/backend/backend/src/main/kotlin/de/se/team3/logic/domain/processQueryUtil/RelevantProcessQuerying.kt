@@ -6,7 +6,7 @@ object RelevantProcessQuerying {
      * @return List of all processes which are processes of the given user's process group and the user's role is
      * assigned, or to which the user is assigned.
      */
-    /*fun queryRelevantProcesses(user: User): List<Process> {
+    fun queryRelevantProcesses(user: User): List<Process> {
         val processesInUsersGroup = ProcessContainer.getAllProcesses()
             .filter { ProcessGroupsContainer
                 .getProcessGroup(it.processGroupId)
@@ -34,10 +34,10 @@ object RelevantProcessQuerying {
                 .contains(user.id) }
         val processesUserIsAssignedTo = ProcessContainer.getAllProcesses().filter { it.getAssignees().map { it.id }.contains(user.id) }
         return processesInUsersGroup + processesUserIsAssignedTo
-    }*/
+    }
 }
 
-/*fun main() {
+fun main() {
     ConnectionManager.connect()
     val elias = User("58c120552c94decf6cf3b722", "Elias Keis", "EK", "ek@web.de", "r", Instant.now())
     val michael = User("58c120552c94decf6cf3b700", "Michael Markl", "MM", "mm@gmx.net", "b", Instant.now())
@@ -54,4 +54,4 @@ object RelevantProcessQuerying {
             println("   $name")
         }
     }*/
-}*/
+}
