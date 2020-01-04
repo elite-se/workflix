@@ -2,7 +2,6 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
 import '@blueprintjs/core/lib/css/blueprint.css'
 
 import App from './App'
@@ -19,3 +18,4 @@ ReactDOM.render(<App/>, root)
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister()
+document.getElementById('splash').className = 'remove'
