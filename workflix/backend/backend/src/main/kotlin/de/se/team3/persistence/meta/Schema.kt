@@ -71,6 +71,7 @@ object ProcessTemplatesFilteredView : Table<Nothing>("process_templates_filtered
 object TaskTemplatesTable : Table<Nothing>("task_templates") {
     val id by int("id").primaryKey()
     val processTemplateId by int("process_template_id")
+    val responsibleUserRoleId by int("responsible_user_role_id")
     val name by varchar("name")
     val description by text("description")
     val estimatedDuration by int("estimated_duration")

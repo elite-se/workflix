@@ -18,6 +18,9 @@ import me.liuwj.ktorm.dsl.where
 
 object ProcessGroupsDAO : ProcessGroupDAOInterface {
 
+    /**
+     * Returns a list of all process groups.
+     */
     override fun getAllProcessGroups(): List<ProcessGroup> {
         val processGroupResult = ProcessGroupsTable.select()
             .where { ProcessGroupsTable.deleted notEq true }
@@ -49,6 +52,11 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
         return processGroups
     }
 
+    /**
+     * Returns the specified process Group.
+     *
+     * @return The specified process group or null if the specified group does not exist.
+     */
     override fun getProcessGroup(processGroupId: Int): ProcessGroup? {
         val processGroupResult = ProcessGroupsTable
             .select()
@@ -73,11 +81,16 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
                             members)
     }
 
+    /**
+     * Creates the given process group.
+     *
+     * @return The generated id of the process group.
+     */
     override fun createProcessGroup(processGroup: ProcessGroup): Int {
         return ProcessGroupsTable.insertAndGenerateKey {
-            it.ownerId to processGroup.owner.id
-            it.title to processGroup.title
-            it.description to processGroup.description
+            it.ownerId to processGroup.getOwner().id
+            it.title to processGroup.getTitle()
+            it.description to processGroup.getDescription()
             it.createdAt to processGroup.createdAt
             it.deleted to false
         } as Int
@@ -90,9 +103,9 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
      */
     override fun updateProcessGroup(processGroup: ProcessGroup): Boolean {
         val affectedRows = ProcessGroupsTable.update { row ->
-            row.title to processGroup.title
-            row.description to processGroup.description
-            row.ownerId to processGroup.owner.id
+            row.title to processGroup.getTitle()
+            row.description to processGroup.getDescription()
+            row.ownerId to processGroup.getOwner().id
 
             where {
                 (row.id eq processGroup.id!!) and
@@ -103,9 +116,9 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
     }
 
     /**
-     * Sets the deleted flag for the given process template.
+     * Deletes the specified process group.
      *
-     * @return true if the process group do be deleted existed
+     * @return True if and only if the specified process group existed.
      */
     override fun deleteProcessGroup(processGroupId: Int): Boolean {
         return ProcessGroupsTable.update {

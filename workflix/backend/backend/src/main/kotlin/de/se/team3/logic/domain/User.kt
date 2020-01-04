@@ -1,5 +1,6 @@
 package de.se.team3.logic.domain
-import de.se.team3.logic.container.ProcessGroupContainer
+import com.fasterxml.jackson.annotation.JsonIgnore
+import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
@@ -35,6 +36,7 @@ class User(
     /**
      * @return All user roles the user is a member of.
      */
+    @JsonIgnore // avoids cyclomatic call with process groups
     fun getUserRoleMemberships(): List<UserRole> {
         return UserRoleContainer
             .getAllUserRoles()
@@ -44,10 +46,11 @@ class User(
     /**
      * @return All process groups the user is a member of.
      */
+    @JsonIgnore // avoids cyclomatic call with process groups
     fun getProcessGroupMemberships(): List<ProcessGroup> {
-        return ProcessGroupContainer
+        return ProcessGroupsContainer
             .getAllProcessGroups()
-            .filter { it.members.contains(this) }
+            .filter { it.hasMember(id) }
     }
 
     fun toJSON(): JSONObject {
