@@ -5,15 +5,12 @@ import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../../routes/tasks/types/Filters'
+import type { NewIdResultType } from './common'
 import { BACKEND, FETCH_OPTIONS_JSON_BODY } from './common'
 
 const processesBackend = `${BACKEND}/processes`
 const processesTemplatesBackend = `${BACKEND}/processTemplates`
 const tasksBackend = `${BACKEND}/tasks`
-
-type NewIdResultType = {
-  newId: number
-}
 
 class ProcessApi {
   getProcesses (filters: FiltersType = {}): Promise<ProcessType[]> {
