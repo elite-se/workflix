@@ -3,8 +3,8 @@
 import React from 'react'
 import { ITEM_HEIGHT } from './ProcessChart'
 import { Button } from '@blueprintjs/core'
-import type { ProcessedTaskTemplateType } from './CreateProcessTemplate'
 import styled from 'styled-components'
+import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
 
 const StyledButton = styled(Button)`
   height: ${ITEM_HEIGHT}px;
@@ -21,7 +21,7 @@ const ListContainer = styled<{}, {}, 'div'>('div')`
 `
 
 type PropsType = {
-  taskTemplates: Array<ProcessedTaskTemplateType>,
+  taskTemplates: IncompleteTaskTemplateType[],
   createTask: () => void,
   selectTaskId: (id: number) => void,
   selectedId: ?number

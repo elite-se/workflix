@@ -2,17 +2,17 @@
 
 import React from 'react'
 import { Alert, Button, H3, H4, InputGroup } from '@blueprintjs/core'
-import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 import { difference } from 'lodash'
 import PredecessorSelect from './PredecessorSelect'
 import SuccessorSelect from './SuccessorSelect'
 import styled from 'styled-components'
 import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
+import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
 
 type PropsType = {
-  task: TaskTemplateType,
-  onChange: (task: TaskTemplateType) => void,
-  allTasks: TaskTemplateType[],
+  task: IncompleteTaskTemplateType,
+  onChange: (task: IncompleteTaskTemplateType) => void,
+  allTasks: IncompleteTaskTemplateType[],
   onDelete: () => void
 }
 
@@ -24,7 +24,7 @@ const TrashButton = styled(Button)`
   margin-top: 20px;
 `
 
-const findAncestors = (task: TaskTemplateType, allTasks: TaskTemplateType[]) => {
+const findAncestors = (task: IncompleteTaskTemplateType, allTasks: IncompleteTaskTemplateType[]) => {
   return [
     task,
     ...task.predecessors
@@ -33,7 +33,7 @@ const findAncestors = (task: TaskTemplateType, allTasks: TaskTemplateType[]) => 
   ]
 }
 
-const findDescendants = (task: TaskTemplateType, allTasks: TaskTemplateType[]) => {
+const findDescendants = (task: IncompleteTaskTemplateType, allTasks: IncompleteTaskTemplateType[]) => {
   return [
     task,
     ...allTasks.filter(_task => _task.predecessors.includes(task.id))
