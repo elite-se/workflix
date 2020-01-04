@@ -4,9 +4,9 @@ import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
+import java.time.Instant
 import org.json.JSONArray
 import org.json.JSONObject
-import java.time.Instant
 
 class User(
     val id: String,
@@ -21,13 +21,13 @@ class User(
      * Create-Constructor
      */
     constructor(name: String, displayname: String, email: String, createdAt: Instant) :
-        this("", name, displayname, email, "changeme", Instant.now()) {
+        this("", name, displayname, email, "changeme", createdAt) {
             if (name.isEmpty() || displayname.isEmpty() || email.isEmpty())
                 throw IllegalArgumentException("none of the arguments may be empty")
         }
 
     constructor(id: String, name: String, displayname: String, email: String, createdAt: Instant) :
-            this(id, name, displayname, email, "changeme", Instant.now()) {
+            this(id, name, displayname, email, "changeme", createdAt) {
         if (id.isEmpty() || name.isEmpty() || displayname.isEmpty() || email.isEmpty())
             throw IllegalArgumentException("none of the arguments may be empty")
     }
@@ -66,7 +66,7 @@ class User(
         /**
          * Queries the ***REMOVED*** API for ***REMOVED*** Users registered under the given e-mail address.
          * @return User object corresponding to the ***REMOVED*** user using the given password.
-         * @throws InavlidInputexception Either the given e-mail address is not of a valid format, no ***REMOVED*** User
+         * @throws InvalidInputException Either the given e-mail address is not of a valid format, no ***REMOVED*** User
          * with this address can be found or the user does already exist.
          */
         fun query***REMOVED***andCreateUser(email: String, password: String): User {
@@ -91,7 +91,7 @@ class User(
             // checks whether email is a (syntactically) valid e-mail address
             if (!email.matches(Regex("""^\w+@\w+..{2,3}(.{2,3})?$""")))
                 throw java.lang.IllegalArgumentException("The e-mail address given is not of a valid format.")
-            var generatedID = ""
+            var generatedID: String
             do {
                 val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
                 generatedID = (1..20)
@@ -107,8 +107,7 @@ class User(
          * TODO(improvement) apply a faster searching algorithm; this may however require sorting the data first
          */
         fun userIdAlreadyUsed(id: String): Boolean {
-            var i = 0
-            var userList = UserDAO.getAllUsers()
+            val userList = UserDAO.getAllUsers()
             for (user in userList)
                 if (user.id == id) return true
             return false

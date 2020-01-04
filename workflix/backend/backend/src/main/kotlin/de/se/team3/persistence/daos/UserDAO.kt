@@ -4,8 +4,6 @@ import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.UsersTable
 import java.util.Arrays
-import javax.crypto.Cipher
-import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.collections.ArrayList
 import me.liuwj.ktorm.dsl.eq
@@ -21,12 +19,12 @@ object UserDAO : UserDAOInterface {
     private val key = SecretKeySpec(Arrays.copyOf("tHiSiSaVeRySeCuReKeY".toByteArray(), 16), "AES")
 
     private fun encryptPassword(password: String): String {
-        //TODO fix this shit
-        //val data = key.getEncoded()
-        //val skeySpec = SecretKeySpec(data, 0, data.size, "AES")
-        //val cipher = Cipher.getInstance("AES")
-        //cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.getBlockSize())))
-        //return cipher.doFinal(password.toByteArray()).toString()
+        // TODO fix this shit
+        // val data = key.getEncoded()
+        // val skeySpec = SecretKeySpec(data, 0, data.size, "AES")
+        // val cipher = Cipher.getInstance("AES")
+        // cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.getBlockSize())))
+        // return cipher.doFinal(password.toByteArray()).toString()
         var pw = ""
         password.forEach { pw += it.inc() }
         println("encrypted: $pw")
@@ -35,11 +33,11 @@ object UserDAO : UserDAOInterface {
     }
 
     private fun decryptPassword(encryptedPassword: String): String {
-        //TODO fix this shit
-        //val decrypted: ByteArray
-        //val cipher = Cipher.getInstance("AES")
-        //cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(cipher.blockSize)))
-        //return cipher.doFinal(encryptedPassword.toByteArray()).toString()
+        // TODO fix this shit
+        // val decrypted: ByteArray
+        // val cipher = Cipher.getInstance("AES")
+        // cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(ByteArray(cipher.blockSize)))
+        // return cipher.doFinal(encryptedPassword.toByteArray()).toString()
         var pw = ""
         encryptedPassword.forEach { pw += it.dec() }
         return pw
@@ -56,7 +54,7 @@ object UserDAO : UserDAOInterface {
                 row[UsersTable.name]!!,
                 row[UsersTable.displayname]!!,
                 row[UsersTable.email]!!,
-                decryptPassword(row[UsersTable.password]?:"N/A"),
+                decryptPassword(row[UsersTable.password] ?: "N/A"),
                 row[UsersTable.createdAt]!!)
             )
 
@@ -75,7 +73,7 @@ object UserDAO : UserDAOInterface {
             row[UsersTable.name]!!,
             row[UsersTable.displayname]!!,
             row[UsersTable.email]!!,
-            decryptPassword(row[UsersTable.password]?:"N/A"),
+            decryptPassword(row[UsersTable.password] ?: "N/A"),
             row[UsersTable.createdAt]!!)
     }
 
