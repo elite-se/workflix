@@ -6,3 +6,11 @@ export type UserType = {|
   id: string,
   email: string
 |}
+
+export type UserRoleType = {|
+  id: number,
+  name: string,
+  description: string,
+  createdAt: string,
+  memberId: number[]
+|}
