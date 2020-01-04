@@ -4,7 +4,7 @@ import { union, uniq } from 'lodash'
 import type { ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
-import type { FiltersType } from '../../routes/tasks/types/Filters'
+import type { FiltersType } from '../datatypes/Filters'
 import type { NewIdResultType } from './common'
 import { BACKEND } from './common'
 
@@ -17,7 +17,8 @@ class ProcessApi {
     // convert filters into URL parameters
     const url = new URL(processesBackend)
     const params = union(
-      filters.status ? filters.status.map(status => ['status', status]) : []
+      filters.status ? filters.status.map(status => ['status', status]) : [],
+      filters.involving ? [['involving', filters.involving.id]] : []
     )
     url.search = new URLSearchParams(params).toString()
 
