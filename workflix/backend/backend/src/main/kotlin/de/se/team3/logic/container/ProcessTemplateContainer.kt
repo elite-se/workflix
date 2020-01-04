@@ -49,7 +49,7 @@ object ProcessTemplateContainer : ProcessTemplateContainerInterface {
      * @throws NotFoundException Is thrown if the given process template does not exist.
      */
     override fun updateProcessTemplate(processTemplate: ProcessTemplate): Int {
-        var newId: Int? = null
+        var newId: Int?
         val currentId = processTemplate.id!!
 
         if (processTemplate.getProcessCount() == 0) {
@@ -70,7 +70,7 @@ object ProcessTemplateContainer : ProcessTemplateContainerInterface {
             newId = ProcessTemplateDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
         }
 
-        processTemplatesCache.put(newId, ProcessTemplateDAO.getProcessTemplate(newId)!!)
+        processTemplatesCache[newId] = ProcessTemplateDAO.getProcessTemplate(newId)!!
         return newId
     }
 

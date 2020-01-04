@@ -17,6 +17,7 @@ object TaskTemplateDAO : TaskTemplateDAOInterface {
     fun makeTaskTemplate(row: QueryRowSet): TaskTemplate {
         return TaskTemplate(
             row[TaskTemplatesTable.id]!!,
+            row[TaskTemplatesTable.responsibleUserRoleId]!!,
             row[TaskTemplatesTable.name]!!,
             row[TaskTemplatesTable.description]!!,
             row[TaskTemplatesTable.estimatedDuration]!!,

@@ -5,20 +5,17 @@ import de.se.team3.logic.domain.User
 interface UserDAOInterface {
 
     /**
-     * Returns a list of users specified by offset and limit as well as the total amount of users in the database.
-     */
-    fun getAllUsers(offset: Int, limit: Int): Pair<List<User>, Int>
-
-    /**
      * Returns a list of all users.
      */
     fun getAllUsers(): List<User>
 
-    fun getUser(userId: String): User
+    fun getUser(userId: String): User?
 
     fun createUser(user: User)
 
+    fun create***REMOVED***User(email: String, password: String): User
+
     fun updateUser(user: User)
 
-    fun deleteUser(user: User)
+    fun deleteUser(user: User): Boolean
 }
