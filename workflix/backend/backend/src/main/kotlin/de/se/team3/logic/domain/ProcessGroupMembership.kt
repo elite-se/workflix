@@ -30,5 +30,4 @@ data class ProcessGroupMembership(
             throw InvalidInputException("invalid member id")
     }
 
-
 }
