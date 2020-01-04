@@ -4,13 +4,12 @@ import de.se.team3.logic.DAOInterfaces.UserRoleDAOInterface
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
-import de.se.team3.persistence.meta.UserRoleMembers
+import de.se.team3.persistence.meta.UserRoleMembersTable
 import de.se.team3.persistence.meta.UserRolesTable
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.delete
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
@@ -24,8 +23,8 @@ object UserRoleDAO : UserRoleDAOInterface {
 
         for (roleRow in userRoleResult) {
             val members = ArrayList<User>()
-            for (memberRow in UserRoleMembers.select().where { UserRoleMembers.userRoleID eq UserRolesTable.ID }) {
-                members.add(UserContainer.getUser(memberRow[UserRoleMembers.userID]!!))
+            for (memberRow in UserRoleMembersTable.select().where { UserRoleMembersTable.userRoleID eq roleRow[UserRolesTable.ID]!! }) {
+                members.add(UserContainer.getUser(memberRow[UserRoleMembersTable.userID]!!))
             }
 
             userRoles.add(UserRole(roleRow[UserRolesTable.ID]!!,
@@ -44,8 +43,8 @@ object UserRoleDAO : UserRoleDAOInterface {
             .where { UserRolesTable.ID eq userRoleID }
 
         val members = ArrayList<User>()
-        for (row in UserRoleMembers.select().where { UserRoleMembers.userRoleID eq userRoleID }) {
-            members.add(UserContainer.getUser(row[UserRoleMembers.userID]!!))
+        for (row in UserRoleMembersTable.select().where { UserRoleMembersTable.userRoleID eq userRoleID }) {
+            members.add(UserContainer.getUser(row[UserRoleMembersTable.userID]!!))
         }
 
         val row = userRoleResult.rowSet
@@ -85,14 +84,14 @@ object UserRoleDAO : UserRoleDAOInterface {
     }
 
     override fun addUserToRole(userID: String, userRoleID: Int) {
-        UserRoleMembers.insertAndGenerateKey {
+        UserRoleMembersTable.insertAndGenerateKey {
             it.userID to userID
             it.userRoleID to userRoleID
         }
     }
 
     override fun deleteUserFromRole(userID: String, userRoleID: Int) {
-        UserRoleMembers.delete {
+        UserRoleMembersTable.delete {
             (it.userID eq userID) and (it.userRoleID eq userRoleID)
         }
     }

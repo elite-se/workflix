@@ -59,7 +59,7 @@ object UserDAO : UserDAOInterface {
         val row = result.rowSet
         if (!row.next())
             return null
-        return User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]!!))
+        return User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]?:"N/A"))
     }
 
     override fun createUser(user: User) {
