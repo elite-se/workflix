@@ -91,7 +91,7 @@ fun main(args: Array<String>) {
     app.post("usersToRoles") { ctx ->
         UserRoleHandler.addUserToRole(ctx)
     }
-    app.delete("usersToRoles/:userId:/userRoleId") { ctx ->
+    app.delete("usersToRoles/:userId/:userRoleId") { ctx ->
         UserRoleHandler.deleteUserFromRole(ctx,
             ctx.pathParam("userId").toString(),
             ctx.pathParam("userRoleId").toInt())
