@@ -67,7 +67,6 @@ object ProcessDAO : ProcessDAOInterface {
             }
 
         val processes = ArrayList<Process>()
-        val result = ProcessesTable.select()
 
         for (row in result) {
             val tasks = HashMap<Int, Task>()
