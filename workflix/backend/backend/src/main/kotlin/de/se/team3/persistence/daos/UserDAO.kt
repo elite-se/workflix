@@ -52,7 +52,13 @@ object UserDAO : UserDAOInterface {
         val users = ArrayList<User>()
         val result = UsersTable.select()
         for (row in result)
-            users.add(User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]?:"N/A")))
+            users.add(User(row[UsersTable.ID]!!,
+                row[UsersTable.name]!!,
+                row[UsersTable.displayname]!!,
+                row[UsersTable.email]!!,
+                decryptPassword(row[UsersTable.password]?:"N/A"),
+                row[UsersTable.createdAt]!!)
+            )
 
         return users.toList()
     }
@@ -65,7 +71,12 @@ object UserDAO : UserDAOInterface {
         val row = result.rowSet
         if (!row.next())
             return null
-        return User(row[UsersTable.ID]!!, row[UsersTable.name]!!, row[UsersTable.displayname]!!, row[UsersTable.email]!!, decryptPassword(row[UsersTable.password]?:"N/A"))
+        return User(row[UsersTable.ID]!!,
+            row[UsersTable.name]!!,
+            row[UsersTable.displayname]!!,
+            row[UsersTable.email]!!,
+            decryptPassword(row[UsersTable.password]?:"N/A"),
+            row[UsersTable.createdAt]!!)
     }
 
     override fun createUser(user: User) {
@@ -81,11 +92,13 @@ object UserDAO : UserDAOInterface {
 
     override fun create***REMOVED***User(email: String, password: String): User {
         val ***REMOVED***User = User.query***REMOVED***andCreateUser(email, password)
+        println(***REMOVED***User.id)
         UsersTable.insert {
             it.ID to ***REMOVED***User.id
             it.name to ***REMOVED***User.name
             it.displayname to ***REMOVED***User.displayname
             it.email to ***REMOVED***User.email
+            it.createdAt to ***REMOVED***User.createdAt
             it.password to encryptPassword(***REMOVED***User.password)
             it.deleted to false
         }

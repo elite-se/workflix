@@ -50,7 +50,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 row[UsersTable.ID]!!,
                 row[UsersTable.name]!!,
                 row[UsersTable.displayname]!!,
-                row[UsersTable.email]!!
+                row[UsersTable.email]!!,
+                row[UsersTable.createdAt]!!
             )
             val processTemplate = ProcessTemplate(
                 row[ProcessTemplatesFilteredView.id]!!,
@@ -122,7 +123,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             row[UsersTable.ID]!!,
             row[UsersTable.name]!!,
             row[UsersTable.displayname]!!,
-            row[UsersTable.email]!!
+            row[UsersTable.email]!!,
+            row[UsersTable.createdAt]!!
         )
         val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
 

@@ -32,8 +32,7 @@ class Process(
     fun getStatus() = status
 
     init {
-        if (tasks != null)
-            tasks.forEach { i, task -> task.process = this }
+        tasks?.forEach { (_, task) -> task.process = this }
     }
 
     @get:JsonIgnore
@@ -87,9 +86,9 @@ class Process(
     @JsonProperty("progress")
     fun getProgress(): Int {
         var estimatedDurationDone = 0
-        tasks?.forEach { id, task ->
+        tasks?.forEach { _, task ->
             if (task.isClosed())
-                estimatedDurationDone += task.taskTemplate!!.estimatedDuration ?: 1
+                estimatedDurationDone += task.taskTemplate!!.estimatedDuration
         }
 
         val ratio = estimatedDurationDone / processTemplate.estimatedDurationSum
@@ -106,7 +105,7 @@ class Process(
             return false
 
         var closeable = true
-        tasks!!.forEach { i, task ->
+        tasks!!.forEach { (_, task) ->
             if (!task.isClosed())
                 closeable = false
         }

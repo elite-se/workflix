@@ -6,26 +6,28 @@ import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.Instant
 
 class User(
     val id: String,
     val name: String,
     val displayname: String,
     val email: String,
-    var password: String
+    var password: String,
+    val createdAt: Instant
 ) {
 
     /**
      * Create-Constructor
      */
-    constructor(name: String, displayname: String, email: String) :
-        this("", name, displayname, email, "changeme") {
+    constructor(name: String, displayname: String, email: String, createdAt: Instant) :
+        this("", name, displayname, email, "changeme", Instant.now()) {
             if (name.isEmpty() || displayname.isEmpty() || email.isEmpty())
                 throw IllegalArgumentException("none of the arguments may be empty")
         }
 
-    constructor(id: String, name: String, displayname: String, email: String) :
-            this(id, name, displayname, email, "changeme") {
+    constructor(id: String, name: String, displayname: String, email: String, createdAt: Instant) :
+            this(id, name, displayname, email, "changeme", Instant.now()) {
         if (id.isEmpty() || name.isEmpty() || displayname.isEmpty() || email.isEmpty())
             throw IllegalArgumentException("none of the arguments may be empty")
     }
@@ -54,6 +56,7 @@ class User(
         json.put("name", this.name)
         json.put("displayname", this.displayname)
         json.put("email", this.email)
+        json.put("createdAt", this.createdAt)
         json.put("userRoleIds", JSONArray(getUserRoleMemberships().map { toJSON() }))
         json.put("processGroupIds", JSONArray(getProcessGroupMemberships().map { toJSON() }))
         return json
@@ -96,7 +99,7 @@ class User(
                     .map(charPool::get)
                     .joinToString("")
             } while (!userIdAlreadyUsed(generatedID))
-            return User("$generatedID-gen", name, displayname, email, password)
+            return User("$generatedID-gen", name, displayname, email, password, Instant.now())
         }
 
         /**
