@@ -33,7 +33,7 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
 
             val members = ArrayList<User>()
             for (memberRow in groupMembersResult) {
-                members.add(UserDAO.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
+                members.add(UserContainer.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
             }
 
             val owner = UserContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
