@@ -3,8 +3,8 @@
 import type { Node } from 'react'
 import React from 'react'
 import { Colors } from '@blueprintjs/core'
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
 import type { ProcessedNodeType } from '../graph-utils'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 type PropsType = {
   tasks: ProcessedNodeType<IncompleteTaskTemplateType>[] /* sorted by calculated startDate */

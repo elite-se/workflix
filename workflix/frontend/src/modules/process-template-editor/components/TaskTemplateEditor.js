@@ -7,9 +7,9 @@ import PredecessorSelect from './PredecessorSelect'
 import SuccessorSelect from './SuccessorSelect'
 import styled from 'styled-components'
 import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
 import UserRoleSelect from './UserRoleSelect'
 import type { UserRoleType } from '../../datatypes/User'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,

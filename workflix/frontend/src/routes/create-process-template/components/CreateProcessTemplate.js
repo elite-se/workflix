@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import type { IncompleteProcessTemplateType } from '../../../modules/process-template-editor/components/ProcessTemplateEditor'
 import ProcessTemplateEditor from '../../../modules/process-template-editor/components/ProcessTemplateEditor'
 import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
@@ -10,6 +9,7 @@ import ProcessApi from '../../../modules/api/ProcessApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import UserApi from '../../../modules/api/UsersApi'
 import { navigate } from '@reach/router'
+import type { IncompleteProcessTemplateType } from '../../../modules/process-template-editor/ProcessTemplateEditorTypes'
 
 type PropsType = {
   users: Map<string, UserType>,

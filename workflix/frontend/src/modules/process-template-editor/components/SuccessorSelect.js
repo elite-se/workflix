@@ -6,7 +6,7 @@ import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, MultiSelect } from '@blueprintjs/select'
 import highlightText from '../../common/highlightText'
 import { difference } from 'lodash'
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,

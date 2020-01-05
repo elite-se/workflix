@@ -4,7 +4,7 @@ import React from 'react'
 import { ITEM_HEIGHT } from './ProcessChart'
 import { Button } from '@blueprintjs/core'
 import styled from 'styled-components'
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 const StyledButton = styled(Button)`
   height: ${ITEM_HEIGHT}px;
