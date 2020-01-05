@@ -4,7 +4,6 @@ import React from 'react'
 import type { FiltersType } from '../../../../modules/datatypes/Filters'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import { ItemListPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select'
-import { ProcessGroupRenderItem } from './ProcessGroupRenderItem'
 import { MenuItem } from '@blueprintjs/core'
 import { filter, sortBy, uniq, without } from 'lodash'
 import highlightText from '../../../../modules/common/highlightText'
@@ -19,7 +18,7 @@ type PropsType = {|
 
 class ProcessGroupFilter extends React.Component<PropsType> {
   renderProcessGroupTag (group: ProcessGroupType): React$Node {
-    return <ProcessGroupRenderItem procGroup={group}/>
+    return group.title
   }
 
   renderProcessGroup: ItemRenderer<ProcessGroupType> = (group, { modifiers, handleClick, query }) => {
@@ -45,8 +44,8 @@ class ProcessGroupFilter extends React.Component<PropsType> {
         ? without(this.getSelectedGroups(), group)
         : uniq([...this.getSelectedGroups(), group]))
 
-  onTagRemove = (tag: ProcessGroupRenderItem) => {
-    this.onGroupsUpdated(without(this.getSelectedGroups(), tag.props.procGroup))
+  onTagRemove = (tag: string, index: number) => {
+    this.onGroupsUpdated(this.getSelectedGroups().filter((_, idx) => idx !== index))
   }
 
   onGroupsUpdated = (processGroups: ProcessGroupType[]) =>
