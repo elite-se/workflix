@@ -6,9 +6,7 @@ import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
 import type { UserType } from '../../datatypes/User'
 import styled from 'styled-components'
 import UserSelect from '../../../modules/common/UserSelect'
-
-const handleStringChange = (handler: string => void) =>
-  (event: SyntheticInputEvent<HTMLInputElement>) => handler(event.target.value)
+import handleStringChange from '../../common/handleStringChange'
 
 const Third = styled<{}, {}, 'div'>('div')`
   display: flex;

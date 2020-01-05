@@ -34,10 +34,7 @@ class SuccessorSelect extends React.Component<PropsType> {
     const menuItem = <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
-      icon={
-        modifiers.disabled ? 'disable'
-          : task.predecessors.indexOf(this.props.task.id) >= 0 ? 'tick' : 'blank'
-      }
+      icon={modifiers.disabled ? 'disable' : task.predecessors.includes(this.props.task.id) ? 'tick' : 'blank'}
       key={task.id}
       onClick={handleClick}
       shouldDismissPopover={false}

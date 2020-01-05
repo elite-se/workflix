@@ -10,6 +10,7 @@ import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
 import UserRoleSelect from './UserRoleSelect'
 import type { UserRoleType } from '../../datatypes/User'
 import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
+import handleStringChange from '../../common/handleStringChange'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,
@@ -52,26 +53,20 @@ const Item = styled<{}, {}, 'div'>('div')`
 class TaskTemplateEditor extends React.Component<PropsType, StateType> {
   state = { deleteAlertOpen: false }
 
-  onTitleChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
-    this.props.onChange({
-      ...this.props.task,
-      name: event.target.value
-    })
-  }
+  onTitleChange = handleStringChange(name => this.props.onChange({
+    ...this.props.task,
+    name
+  }))
 
-  onDurationChange = (value: number) => {
-    this.props.onChange({
-      ...this.props.task,
-      estimatedDuration: value > 0 ? value : null
-    })
-  }
+  onDurationChange = (value: number) => this.props.onChange({
+    ...this.props.task,
+    estimatedDuration: value > 0 ? value : null
+  })
 
-  onDescriptionChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
-    this.props.onChange({
-      ...this.props.task,
-      description: event.target.value
-    })
-  }
+  onDescriptionChange = handleStringChange(description => this.props.onChange({
+    ...this.props.task,
+    description
+  }))
 
   onOpenDeleteAlert = () => this.setState({ deleteAlertOpen: true })
   onCloseDeleteAlert = () => this.setState({ deleteAlertOpen: false })
@@ -81,7 +76,7 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
   })
 
   render () {
-    const { task, allTasks, onChange, userRoles, highlightValidation } = this.props
+    const { task, allTasks, onChange, userRoles, highlightValidation, onDelete } = this.props
     const { deleteAlertOpen } = this.state
 
     const possiblePreds = difference(allTasks, findDescendants(task, allTasks))
@@ -126,7 +121,7 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
       <Item style={{ textAlign: 'center' }}>
         <TrashButton icon='trash' text='Delete Task Template' intent='danger' onClick={this.onOpenDeleteAlert}/>
         <Alert isOpen={deleteAlertOpen} icon='trash' intent='danger' confirmButtonText='Delete' canEscapeKeyCancel
-               canOutsideClickCancel cancelButtonText='Cancel' onConfirm={this.props.onDelete}
+               canOutsideClickCancel cancelButtonText='Cancel' onConfirm={onDelete}
                onCancel={this.onCloseDeleteAlert}>
           <H4>Delete Task Template?</H4>
           <p>
