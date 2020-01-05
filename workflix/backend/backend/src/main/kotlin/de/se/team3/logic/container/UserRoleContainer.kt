@@ -2,7 +2,6 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.logic.exceptions.NotFoundException
-import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.persistence.daos.UserRoleDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
