@@ -9,6 +9,7 @@ import UserApi from '../../../modules/api/UsersApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import type { FilledProcessTemplateType } from '../../../modules/api/ProcessApi'
 import ProcessApi from '../../../modules/api/ProcessApi'
+import { navigate } from '@reach/router'
 
 type PropsType = {
   users: Map<string, UserType>,
@@ -19,6 +20,7 @@ type PropsType = {
 class EditProcessTemplate extends React.Component<PropsType> {
   onSave = (processTemplate: FilledProcessTemplateType) => {
     new ProcessApi().editProcessTemplate(this.props.initialProcessTemplate.id, processTemplate)
+      .then(() => navigate('/process-templates'))
       .catch(e => console.error(e))
   }
 
