@@ -9,8 +9,6 @@ import org.json.JSONObject
 
 object UserHandler {
 
-    val mapper = ObjectMapper().registerModule(KotlinModule())
-
     fun getAll(ctx: Context) {
         val users = UserContainer.getAllUsers()
 
