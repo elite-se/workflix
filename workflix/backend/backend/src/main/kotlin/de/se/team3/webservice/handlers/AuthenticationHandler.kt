@@ -8,7 +8,7 @@ import de.se.team3.logic.exceptions.NotVerifiedException
 import io.javalin.http.Context
 import org.json.JSONObject
 
-object AuthentificationHandler {
+object AuthenticationHandler {
 
     /**
      * Handles user verification before every request.
@@ -19,8 +19,10 @@ object AuthentificationHandler {
         val bearerToken = ctx.header("Authorization")
             ?: throw NotVerifiedException("Every request must be enriched by an authorization token.")
 
-        if (!AuthorizationManager.tokenIsRegistered(bearerToken))
+        if (!AuthorizationManager.authorizeRequest(bearerToken))
             throw NotVerifiedException("You are not authorized to perform this request.")
+
+
     }
 
     /**
@@ -29,12 +31,12 @@ object AuthentificationHandler {
      * If all is well, it runs through.
      * Otherwise, an exception is thrown.
      */
-    fun endAuthorizedRequest(ctx: Context) {
+    fun finishAuthorizedRequest(ctx: Context) {
         val bearerToken = ctx.header("Authorization")
             ?: throw InvalidInputException("Every request must be enriched by an authorization token.")
 
         if (!AuthorizationManager.finishAuthorizedRequest(bearerToken))
-            throw NotVerifiedException("You were not verified to perform this request. How did you do this?")
+            throw NotVerifiedException("You were not authorized to perform this request. How did you do this?")
     }
 
     /**
@@ -61,6 +63,7 @@ object AuthentificationHandler {
         val bearerToken = ctx.header("Authorization")
             ?: throw InvalidInputException("Every request must be enriched by an authorization token.")
         val stringToken = bearerToken.substringAfter(' ')
+        println("logout: $stringToken")
 
         LoginManager.logout(stringToken)
     }

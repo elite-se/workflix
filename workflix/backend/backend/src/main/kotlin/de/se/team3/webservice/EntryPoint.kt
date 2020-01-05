@@ -1,9 +1,6 @@
 package de.se.team3.webservice
 
-import de.se.team3.logic.exceptions.AlreadyClosedException
-import de.se.team3.logic.exceptions.AlreadyExistsException
-import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.logic.exceptions.*
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.*
 import io.javalin.Javalin
@@ -42,26 +39,24 @@ fun main(args: Array<String>) {
     app.exception(JSONException::class.java) { e, ctx ->
         ctx.status(400).result("" + e.message)
     }
+    app.exception(NotVerifiedException::class.java) { e, ctx ->
+        ctx.status(401).result(e.message)
+    }
 
     //authentification handling before every request (excluding login)
     app.before() { ctx ->
         if (ctx.path() != "/login") {
-            AuthentificationHandler.authorizeRequest(ctx)
+            AuthenticationHandler.authorizeRequest(ctx)
         }
-    }
-
-    //necessary to reset the active user after every request
-    app.after() { ctx ->
-        AuthentificationHandler.endAuthorizedRequest(ctx)
     }
 
     //login
     app.post("login") { ctx ->
-        AuthentificationHandler.login(ctx)
+        AuthenticationHandler.login(ctx)
     }
     //logout
     app.delete("login") { ctx ->
-        AuthentificationHandler.logout(ctx)
+        AuthenticationHandler.logout(ctx)
     }
 
     // users
@@ -166,5 +161,12 @@ fun main(args: Array<String>) {
     }
     app.delete("tasks/comments/:taskCommentId") { ctx ->
         TasksCommentsHandler.delete(ctx, ctx.pathParam("taskCommentId").toInt())
+    }
+
+    //necessary to reset the active user after every request
+    app.after() { ctx ->
+        if (ctx.path() != "/login") {
+            AuthenticationHandler.finishAuthorizedRequest(ctx)
+        }
     }
 }

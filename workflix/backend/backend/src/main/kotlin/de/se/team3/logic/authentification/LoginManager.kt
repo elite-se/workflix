@@ -42,7 +42,7 @@ object LoginManager {
      * @param username name of the user to be logged out (i.e., currently the users email address)
      */
     fun logout(token: String) {
-        tokensInUse.remove(tokensInUse.first { it.token == token })
+        tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
     }
 
     fun getActiveUser(): User? {
@@ -55,7 +55,7 @@ object LoginManager {
      * @param token Token of the user to be set as active.
      */
     fun setActiveUser(token: String) {
-        activeUser = tokensInUse.first { it.token == token }.user
+        activeUser = tokensInUse.firstOrNull { it.token == token }?.user
     }
 
     /**
@@ -65,7 +65,7 @@ object LoginManager {
      * @return true iff the token is valid
      */
     fun removeActiveUser(token: String): Boolean {
-        return if (tokensInUse.first { it.token == token }.user == activeUser) {
+        return if (tokensInUse.firstOrNull { it.token == token }?.user == activeUser) {
             activeUser = null
             true
         } else
