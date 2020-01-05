@@ -14,7 +14,7 @@ const CenterScreen = styled<{}, {}, 'div'>('div')`
 `
 
 function withPromiseResolver<P1: {}, P2: {}> (
-  promiseCreator: $Diff<P1, P2> => Promise<P2>
+  promiseCreator: ($Diff<P1, P2>, (soft: boolean) => void) => Promise<P2>
 ): (ComponentType<P1> => ComponentType<$Diff<P1, P2>>) {
   return (WrappedComponent: ComponentType<P1>) => {
     return class extends React.Component<$Diff<P1, P2>, { error: ?string, props: ?P2 }> {
@@ -28,9 +28,13 @@ function withPromiseResolver<P1: {}, P2: {}> (
         this.startPromise()
       }
 
+      refresh = (soft: boolean) => {
+        this.startPromise()
+      }
+
       startPromise () {
         this.setState({ error: undefined })
-        promiseCreator(this.props)
+        promiseCreator(this.props, this.refresh)
           .then(props => this.setState({ props }))
           .catch(error => {
             this.setState({ error: error.message })
