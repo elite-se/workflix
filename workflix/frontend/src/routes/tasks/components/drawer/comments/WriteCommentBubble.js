@@ -29,7 +29,7 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
   onKeyPress = (event: KeyboardEvent) => {
     if (this.state.text && event.key === 'Enter' && !event.shiftKey) {
       this.doSend()
-      if (event.preventDefault()) {
+      if (event.preventDefault) {
         event.preventDefault()
       }
       return false
