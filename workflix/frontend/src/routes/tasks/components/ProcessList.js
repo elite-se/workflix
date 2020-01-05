@@ -89,4 +89,6 @@ const promiseCreator = (props: *, refresh) =>
       })
     )
 
-export default withPromiseResolver<PropsType, *>(promiseCreator)(ProcessList)
+const shouldUpdate = (oldProps: *, newProps: *) => oldProps.filters !== newProps.filters
+
+export default withPromiseResolver<PropsType, *>(promiseCreator, shouldUpdate)(ProcessList)
