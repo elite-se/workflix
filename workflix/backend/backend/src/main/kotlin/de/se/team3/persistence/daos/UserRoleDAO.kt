@@ -15,6 +15,10 @@ import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
 
 object UserRoleDAO : UserRoleDAOInterface {
+
+    /**
+     * Returns all user roles.
+     */
     override fun getAllUserRoles(): List<UserRole> {
         val userRoleResult = UserRolesTable
             .select()
@@ -37,19 +41,23 @@ object UserRoleDAO : UserRoleDAOInterface {
         return userRoles
     }
 
+    /**
+     * Returns the specified user role.
+     */
     override fun getUserRole(userRoleID: Int): UserRole? {
         val userRoleResult = UserRolesTable
             .select()
             .where { UserRolesTable.ID eq userRoleID }
 
+        val row = userRoleResult.rowSet
+        if (!row.next())
+            return null
+
+        // collecting members
         val members = ArrayList<User>()
         for (row in UserRoleMembersTable.select().where { UserRoleMembersTable.userRoleID eq userRoleID }) {
             members.add(UserContainer.getUser(row[UserRoleMembersTable.userID]!!))
         }
-
-        val row = userRoleResult.rowSet
-        if (!row.next())
-            return null
 
         return UserRole(row[UserRolesTable.ID]!!,
             row[UserRolesTable.name]!!,
@@ -58,6 +66,11 @@ object UserRoleDAO : UserRoleDAOInterface {
             members)
     }
 
+    /**
+     * Creates the given user role.
+     *
+     * @return The generated user role id.
+     */
     override fun createUserRole(userRole: UserRole): Int {
         return UserRolesTable.insertAndGenerateKey {
             it.name to userRole.name
@@ -67,6 +80,9 @@ object UserRoleDAO : UserRoleDAOInterface {
         } as Int
     }
 
+    /**
+     * Updates the given user role.
+     */
     override fun updateUserRole(userRole: UserRole) {
         UserRolesTable.update {
             it.name to userRole.name
@@ -76,6 +92,11 @@ object UserRoleDAO : UserRoleDAOInterface {
         }
     }
 
+    /**
+     * Deletes the specified user role.
+     *
+     * @return True if and only if the specified user role existed.
+     */
     override fun deleteUserRole(userRoleID: Int): Boolean {
         return UserRolesTable.update {
             it.deleted to true
@@ -83,16 +104,4 @@ object UserRoleDAO : UserRoleDAOInterface {
         } != 0
     }
 
-    override fun addUserToRole(userID: String, userRoleID: Int) {
-        UserRoleMembersTable.insertAndGenerateKey {
-            it.userID to userID
-            it.userRoleID to userRoleID
-        }
-    }
-
-    override fun deleteUserFromRole(userID: String, userRoleID: Int) {
-        UserRoleMembersTable.delete {
-            (it.userID eq userID) and (it.userRoleID eq userRoleID)
-        }
-    }
 }

@@ -7,10 +7,31 @@ import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
 object UserRoleContainer : UserRoleContainerInterface {
 
+    // Each user role lays under its id
     private val userRoleCache = HashMap<Int, UserRole>()
 
+    // Indicates whether the cache is already filled with all elements
+    private var filled = false
+
+    /**
+     * Ensures that all user roles are cached.
+     */
+    private fun fillCache() {
+        val userRoles = UserRoleDAO.getAllUserRoles()
+        userRoles.forEach { userRole ->
+            userRoleCache.put(userRole.id!!, userRole)
+        }
+        filled = true
+    }
+
+    /**
+     * Returns all user roles.
+     */
     override fun getAllUserRoles(): List<UserRole> {
-        return UserRoleDAO.getAllUserRoles()
+        if (!filled)
+           fillCache()
+
+        return userRoleCache.map { it.value }.toList()
     }
 
     /**
@@ -82,19 +103,4 @@ object UserRoleContainer : UserRoleContainerInterface {
         userRoleCache.remove(userRoleID)
     }
 
-    override fun addUserToRole(userID: String, userRoleID: Int) {
-        UserRoleDAO.addUserToRole(userID, userRoleID)
-        if (userRoleCache.containsKey(userRoleID))
-            userRoleCache[userRoleID]!!.members.add(UserContainer.getUser(userID))
-        else
-            userRoleCache[userRoleID] = getUserRole(userRoleID)
-    }
-
-    override fun deleteUserFromRole(userID: String, userRoleID: Int) {
-        UserRoleDAO.deleteUserFromRole(userID, userRoleID)
-        if (userRoleCache.containsKey(userRoleID))
-            userRoleCache[userRoleID]!!.members.remove(UserContainer.getUser(userID))
-        else
-            userRoleCache[userRoleID] = getUserRole(userRoleID)
-    }
 }

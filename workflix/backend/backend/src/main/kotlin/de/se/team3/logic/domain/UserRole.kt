@@ -1,6 +1,8 @@
 package de.se.team3.logic.domain
 
+import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
+import de.se.team3.logic.exceptions.NotFoundException
 import java.time.Instant
 import org.json.JSONArray
 import org.json.JSONObject
@@ -10,8 +12,10 @@ data class UserRole(
     val name: String,
     val description: String,
     val createdAt: Instant,
-    val members: ArrayList<User>
+    private val members: ArrayList<User>
 ) {
+
+    fun getMembers() = members
 
     /**
      * Create-Constructor
@@ -31,6 +35,38 @@ data class UserRole(
 
         if (name.isEmpty())
             throw InvalidInputException("name must not be empty")
+    }
+
+    /**
+     * Checks whether the specified user is a member of this group.
+     *
+     * @return True if and only if the user is member of this group.
+     */
+    fun hasMember(memberId: String): Boolean {
+        return members.find { it.id == memberId } != null
+    }
+
+    /**
+     * Adds the given member.
+     *
+     * @throws AlreadyExistsException Is thrown if the given user is already a member of this user role.
+     */
+    fun addMember(user: User) {
+        if (hasMember(user.id))
+            throw AlreadyExistsException("the given user is already a member of this user role")
+
+        members.add(user)
+    }
+
+    /**
+     * Removes the specified member.
+     *
+     * @throws NotFoundException Is thrown if the specified member does not exist.
+     */
+    fun removeMember(memberId: String) {
+        val existed = members.removeIf { it.id == memberId }
+        if (!existed)
+            throw NotFoundException("member does not exist")
     }
 
     fun toJSON(): JSONObject {
