@@ -26,10 +26,11 @@ object ProcessContainer : ProcessContainerInterface {
     }
 
     private fun filterProcesses(predicate: ProcessQueryPredicate) {
+        //TODO what about this function?
     }
 
     /**
-     * Returns a reduced form (without tasks) of all processes.
+     * Returns all processes fulfilling the predicate.
      */
     override fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process> {
         if (!filled)
@@ -38,6 +39,17 @@ object ProcessContainer : ProcessContainerInterface {
         return processesCache
             .map { it.value }
             .filter { predicate.satisfiedBy(it) }
+    }
+
+    /**
+     * Returns all processes.
+     */
+    override fun getAllProcesses(): List<Process> {
+        if (!filled)
+            fillCache()
+
+        return processesCache
+            .map { it.value }
     }
 
     /**

@@ -7,6 +7,8 @@ interface ProcessContainerInterface {
 
     fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process>
 
+    fun getAllProcesses(): List<Process>
+
     fun getProcess(processId: Int): Process
 
     fun createProcess(process: Process): Int
