@@ -26,7 +26,7 @@ object ProcessContainer : ProcessContainerInterface {
     }
 
     private fun filterProcesses(predicate: ProcessQueryPredicate) {
-        //TODO what about this function?
+        // TODO what about this function?
     }
 
     /**

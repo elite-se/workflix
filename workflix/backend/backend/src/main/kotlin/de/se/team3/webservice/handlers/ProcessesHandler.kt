@@ -7,8 +7,8 @@ import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
-import org.json.JSONObject
 import java.lang.IllegalArgumentException
+import org.json.JSONObject
 
 /**
  * Handles requests due to the general properties of processes.
@@ -36,7 +36,7 @@ object ProcessesHandler {
                 if (param.value.size != 1)
                     ctx.status(400).result("query must not contain more than one involving parameter")
 
-                involvingUserId = param.value.get(0)
+                involvingUserId = param.value[0]
             }
         }
 

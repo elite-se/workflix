@@ -5,8 +5,6 @@ import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.TaskTemplateContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.Process
-import de.se.team3.persistence.meta.ConnectionManager
-import java.time.Instant
 
 object RelevantProcessQuerying {
 
@@ -35,7 +33,7 @@ object RelevantProcessQuerying {
         val processesUserIsAssignedTo = ProcessContainer
             .getAllProcesses()
             .filter { process -> process.getAssignees().map { it.id }.contains(userID) }
-        return (processesInUsersGroupItsRoleIsAssignedTo  + processesUserIsAssignedTo).toSet().map { it.id!! }
+        return (processesInUsersGroupItsRoleIsAssignedTo + processesUserIsAssignedTo).toSet().map { it.id!! }
     }
 
     /**
@@ -62,22 +60,22 @@ object RelevantProcessQuerying {
      * one of the user's role is is assigned to the process, or the user is assigned to one of the processes tasks.
      */
     fun isRelevantFor(userID: String?, process: Process): Boolean {
-        //no userID given is handled as true so that the AND-clause in ProcessQueryPredicate.satisfiedBy works
+        // no userID given is handled as true so that the AND-clause in ProcessQueryPredicate.satisfiedBy works
         if (userID == null)
             return true
 
-        //all relevant information
+        // all relevant information
         val user = UserContainer.getUser(userID)
         val usersGroupIDs = user.getProcessGroupIds()
         val usersRoleIDs = user.getUserRoleIds()
 
-        //user is in process's group and one of his/her roles is assigned to it
+        // user is in process's group and one of his/her roles is assigned to it
         val inUsersGroups = usersGroupIDs.contains(process.processGroupId)
         val assignedToUsersRoles = process.tasks.values.map { TaskTemplateContainer.getTaskTemplate(it.taskTemplateId).responsibleUserRoleId }.intersect(usersRoleIDs).isNotEmpty()
         if (inUsersGroups && assignedToUsersRoles)
             return true
 
-        //user is assigned to one of the processes tasks
+        // user is assigned to one of the processes tasks
         if (process.getAssignees().map { it.id }.contains(userID))
             return true
 
