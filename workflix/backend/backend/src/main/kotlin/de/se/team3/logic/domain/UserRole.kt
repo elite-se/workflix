@@ -9,11 +9,15 @@ import org.json.JSONObject
 
 data class UserRole(
     val id: Int?,
-    val name: String,
-    val description: String,
+    private var name: String,
+    private var description: String,
     val createdAt: Instant,
     private val members: ArrayList<User>
 ) {
+
+    fun getName() = name
+
+    fun getDescription() = description
 
     fun getMembers() = members
 
@@ -35,6 +39,25 @@ data class UserRole(
 
         if (name.isEmpty())
             throw InvalidInputException("name must not be empty")
+    }
+
+    /**
+     * Sets the name of this user role.
+     *
+     * @throws InvalidInputException Is thrown if the given name is empty.
+     */
+    fun setName(name: String) {
+        if (name.isEmpty())
+            throw InvalidInputException("name must not be empty")
+
+        this.name = name
+    }
+
+    /**
+     * Sets the description of this user role.
+     */
+    fun setDescription(description: String) {
+        this.description = description
     }
 
     /**

@@ -80,15 +80,14 @@ object UserRoleContainer : UserRoleContainerInterface {
 
     /**
      * Updates the given user role.
-     *
-     * @throws NotFoundException Is thrown if the given user role does not exist.
      */
     override fun updateUserRole(userRole: UserRole) {
-        if (!hasUserRole(userRole.id!!))
-            throw NotFoundException("user role does not exist")
+        val cachedUserRole = getUserRole(userRole.id!!) // throws NotFoundException
 
         UserRoleDAO.updateUserRole(userRole)
-        userRoleCache[userRole.id] = userRole
+
+        cachedUserRole.setName(userRole.getName())
+        cachedUserRole.setDescription(userRole.getDescription())
     }
 
     /**
