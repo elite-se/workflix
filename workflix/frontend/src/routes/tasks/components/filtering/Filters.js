@@ -6,11 +6,14 @@ import styled from 'styled-components'
 import InvolvingFilter from './InvolvingFilter'
 import type { UserType } from '../../../../modules/datatypes/User'
 import type { FiltersType } from '../../../../modules/datatypes/Filters'
+import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
+import ProcessGroupFilter from './ProcessGroupFilter'
 
 type PropsType = {|
   filters: FiltersType,
   onFiltersChanged: (FiltersType) => void,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  processGroups: Map<number, ProcessGroupType>
 |}
 
 const FiltersContainer = styled<{}, {}, 'div'>('div')`
@@ -42,6 +45,8 @@ class Filters extends React.Component<PropsType> {
         onFiltersChanged={this.props.onFiltersChanged}
         users={this.props.users}
       />
+      <ProcessGroupFilter filters={this.props.filters} onFiltersChanged={this.props.onFiltersChanged}
+                          processGroups={this.props.processGroups}/>
     </FiltersContainer>
   }
 }

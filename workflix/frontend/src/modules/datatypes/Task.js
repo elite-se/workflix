@@ -4,7 +4,7 @@ export type TaskCommentType = {
   id: number,
   creatorId: string,
   content: string,
-  createdAt: string
+  createdAt: Date
 }
 
 export type TaskStateType = 'BLOCKED' | 'RUNNING' | 'CLOSED'
@@ -12,7 +12,7 @@ export type TaskStateType = 'BLOCKED' | 'RUNNING' | 'CLOSED'
 export type TaskAssignmentType = {|
   id: ?number,
   assigneeId: string,
-  createdAt: ?string,
+  createdAt: ?Date,
   doneAt: ?string,
   closed: boolean
 |}
