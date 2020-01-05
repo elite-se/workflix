@@ -11,6 +11,7 @@ object ProcessGroupsMembershipContainer : ProcessGroupsMembershipContainerInterf
     /**
      * Creates the given process group membership.
      *
+     * @throws NotFoundException Is thrown if the user specified in processMembership does not exist.
      * @throws AlreadyExistsException Is thrown if the given membership already exists, i.d. if
      * the process group specified in processGroupMembership has the user specified in
      * processGroupMembership as member.
@@ -18,8 +19,8 @@ object ProcessGroupsMembershipContainer : ProcessGroupsMembershipContainerInterf
     override fun createProcessGroupMembership(processGroupMembership: ProcessGroupMembership): Int {
         val processGroup = processGroupMembership.processGroup // throws not found exception
 
-        // TODO check user existence
-
+        if (!UserContainer.hasUser(processGroupMembership.memberId))
+            throw NotFoundException("the user does not exist")
         if (processGroup.hasMember(processGroupMembership.memberId))
             throw AlreadyExistsException("the membership already exists")
 

@@ -5,6 +5,7 @@ import type { ProcessTemplateMasterDataType, ProcessTemplateType, ProcessType } 
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../datatypes/Filters'
+import { parseDatesInProcess, parseDatesInProcessTemplate } from './parseDates'
 import type { NewIdResultType } from './common'
 import { BACKEND } from './common'
 
@@ -12,7 +13,7 @@ const processesBackend = `${BACKEND}/processes`
 const processesTemplatesBackend = `${BACKEND}/processTemplates`
 const tasksBackend = `${BACKEND}/tasks`
 
-export type AddProcessTemplateType = {|
+export type FilledProcessTemplateType = {|
   title: string,
   description: string,
   durationLimit: number,
@@ -34,7 +35,8 @@ class ProcessApi {
     const url = new URL(processesBackend)
     const params = union(
       filters.status ? filters.status.map(status => ['status', status]) : [],
-      filters.involving ? [['involving', filters.involving.id]] : []
+      filters.involving ? [['involving', filters.involving.id]] : [],
+      filters.processGroups ? filters.processGroups.map(group => ['processGroupId', group.id.toString()]) : []
     )
     url.search = new URLSearchParams(params).toString()
 
@@ -48,6 +50,7 @@ class ProcessApi {
             .then(response => response.json())
         )
       ))
+      .then(processes => processes.map(parseDatesInProcess))
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
@@ -66,9 +69,17 @@ class ProcessApi {
       { method: 'DELETE' })
   }
 
-  addProcessTemplate (processTemplate: AddProcessTemplateType): Promise<NewIdResultType> {
+  addProcessTemplate (processTemplate: FilledProcessTemplateType): Promise<NewIdResultType> {
     return safeFetch(`${processesTemplatesBackend}`, {
       method: 'POST',
+      body: JSON.stringify(processTemplate)
+    })
+      .then(response => response.json())
+  }
+
+  editProcessTemplate (id: number, processTemplate: FilledProcessTemplateType): Promise<NewIdResultType> {
+    return safeFetch(`${processesTemplatesBackend}/${id}`, {
+      method: 'PATCH',
       body: JSON.stringify(processTemplate)
     })
       .then(response => response.json())
@@ -90,6 +101,7 @@ class ProcessApi {
     return Promise.all(processTemplateIds.map(procTempId =>
       safeFetch(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
+        .then(parseDatesInProcessTemplate)
     ))
   }
 

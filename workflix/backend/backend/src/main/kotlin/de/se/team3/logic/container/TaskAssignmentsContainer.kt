@@ -30,9 +30,8 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
             throw AlreadyClosedException("task is already closed")
         if (taskAssignment.isClosed() && task.isBlocked())
             throw NotFoundException("the assignment can only be closed if all predecessors have been closed")
-
-        // TODO check user existence
-
+        if (!UserContainer.hasUser(taskAssignment.assigneeId))
+            throw NotFoundException("the assignee does not exist")
         if (task.hasAssignment(taskAssignment.assigneeId))
             throw AlreadyExistsException("task assignment already exists")
 

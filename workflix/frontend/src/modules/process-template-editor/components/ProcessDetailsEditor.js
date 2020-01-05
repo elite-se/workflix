@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { InputGroup, Label, NumericInput } from '@blueprintjs/core'
-import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
-import type { UserType } from '../../../modules/datatypes/User'
+import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
+import type { UserType } from '../../datatypes/User'
 import styled from 'styled-components'
 import UserSelect from '../../../modules/common/UserSelect'
 

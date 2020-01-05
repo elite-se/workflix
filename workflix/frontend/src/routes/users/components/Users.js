@@ -6,7 +6,7 @@ import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import type { UserType } from '../../../modules/datatypes/User'
 import UsersApi from '../../../modules/api/UsersApi'
 
-type PropsType = {| users: Map<string, UserType>, path: string |}
+type PropsType = {| users: Map<string, UserType> |}
 
 class Users extends React.Component<PropsType> {
   render () {

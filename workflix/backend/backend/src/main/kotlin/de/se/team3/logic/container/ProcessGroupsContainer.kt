@@ -10,13 +10,30 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
     // caches process groups using their id
     private val processGroupsCache = HashMap<Int, ProcessGroup>()
 
+    // Indicates whether the cache is already filled with all elements
+    private var filled = false
+
+    /**
+     * Ensures that all process groups are cached.
+     */
+    private fun fillCache() {
+        val processGroups = ProcessGroupsDAO.getAllProcessGroups()
+        processGroups.forEach { processGroup ->
+            processGroupsCache.put(processGroup.id!!, processGroup)
+        }
+        filled = true
+    }
+
     /**
      * Returns a list of all process groups.
      *
      * @return All process groups currently saved in the database.
      */
     override fun getAllProcessGroups(): List<ProcessGroup> {
-        return ProcessGroupsDAO.getAllProcessGroups()
+        if (!filled)
+            fillCache()
+
+        return processGroupsCache.map { it.value }.toList()
     }
 
     /**
@@ -71,10 +88,12 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
      * @throws NotFoundException The process group does not exist.
      */
     override fun deleteProcessGroup(processGroupId: Int) {
+        val cachedProcessGroup = getProcessGroup(processGroupId)
+
         val existed = ProcessGroupsDAO.deleteProcessGroup(processGroupId)
         if (!existed)
             throw NotFoundException("process group not found")
 
-        processGroupsCache.remove(processGroupId)
+        cachedProcessGroup.delete()
     }
 }
