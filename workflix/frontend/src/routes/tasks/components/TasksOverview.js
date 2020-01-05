@@ -23,8 +23,7 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
 type PropsType = {|
   initialProcesses: Array<ProcessType>,
   initialTaskTemplates: Map<number, TaskTemplateType>,
-  users: Map<string, UserType>,
-  path: string
+  users: Map<string, UserType>
 |}
 type StateType = {|
   selectedTask: ?TaskType,

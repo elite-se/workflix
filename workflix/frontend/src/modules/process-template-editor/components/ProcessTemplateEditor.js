@@ -6,12 +6,9 @@ import { Button, Drawer, H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import TaskTemplateEditor from './TaskTemplateEditor'
 import type { UserRoleType, UserType } from '../../datatypes/User'
-import UserApi from '../../api/UsersApi'
-import withPromiseResolver from '../../app/hocs/withPromiseResolver'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
 import { calcGraph } from '../graph-utils'
-import ProcessApi from '../../api/ProcessApi'
-import type { ProcessTemplateType } from '../../datatypes/Process'
+import type { FilledProcessTemplateType } from '../../api/ProcessApi'
 
 export type IncompleteTaskTemplateType = {|
   id: number,
@@ -23,28 +20,31 @@ export type IncompleteTaskTemplateType = {|
   predecessors: number[]
 |}
 
-type StateType = {
+export type IncompleteProcessTemplateType = {|
   tasks: IncompleteTaskTemplateType[],
-  selectedTaskId: ?number,
   title: string,
   description: string,
   durationLimit: ?number,
   owner: ?UserType
-}
+|}
 
 type PropsType = {
   users: Map<string, UserType>,
-  userRoles: Map<number, UserRoleType>
+  userRoles: Map<number, UserRoleType>,
+  title: string,
+  initialProcessTemplate: IncompleteProcessTemplateType,
+  onSave: FilledProcessTemplateType => void
 }
+
+type StateType = {|
+  ...IncompleteProcessTemplateType,
+  selectedTaskId: ?number
+|}
 
 class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   state = {
-    tasks: MOCK_TASK_TEMPLATES,
-    selectedTaskId: null,
-    durationLimit: null,
-    description: '',
-    title: '',
-    owner: null
+    ...this.props.initialProcessTemplate,
+    selectedTaskId: null
   }
 
   selectTaskId = (id: number) => {
@@ -101,7 +101,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       // todo validate
       return alert('mööp')
     }
-    new ProcessApi().addProcessTemplate({
+    this.props.onSave({
       title,
       description,
       durationLimit,
@@ -115,7 +115,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
         necessaryClosings: task.necessaryClosings,
         predecessors: task.predecessors
       }))
-    }).catch(e => console.error(e))
+    })
   }
 
   render () {
@@ -141,7 +141,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
         <H2 style={{
           display: 'inline',
           marginLeft: '40px'
-        }}>Create Process Template</H2>
+        }}>{this.props.title}</H2>
       </div>
       <ProcessDetailsEditor durationLimit={durationLimit} onDurationLimitChange={this.onDurationLimitChange}
                             onDescriptionChange={this.onDescriptionChange} description={description}
@@ -162,12 +162,4 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   }
 }
 
-const promiseCreator = () => Promise.all([
-  new UserApi().getUsers(),
-  new UserApi().getUserRoles()
-]).then(([users, userRoles]) => ({
-  users,
-  userRoles
-}))
-
-export default withPromiseResolver<*, *>(promiseCreator)(ProcessTemplateEditor)
+export default ProcessTemplateEditor
