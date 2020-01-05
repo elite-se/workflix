@@ -2,6 +2,7 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.persistence.daos.UserRoleDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
@@ -23,6 +24,22 @@ object UserRoleContainer : UserRoleContainerInterface {
             userRoleCache[userRoleID] = userRole
             userRole
         }
+    }
+
+    /**
+     * Checks whether the specified user role exists or not.
+     */
+    fun hasUserRole(userRoleId: Int): Boolean {
+        if (userRoleCache.containsKey(userRoleId))
+            return true
+
+        val userRole = UserRoleDAO.getUserRole(userRoleId)
+        if (userRole != null) {
+            userRoleCache.put(userRoleId, userRole)
+            return true
+        }
+
+        return false
     }
 
     override fun createUserRole(userRole: UserRole): Int {
