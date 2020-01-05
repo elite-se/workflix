@@ -90,12 +90,13 @@ object ProcessContainer : ProcessContainerInterface {
      * @throws NotFoundException Is thrown if the specified process does not exist.
      */
     override fun abortProcess(processId: Int) {
+        val process = getProcess(processId)
+
         val existed = ProcessDAO.abortProcess(processId)
         if (!existed)
             throw NotFoundException("process does not exist")
 
         // update status of process and running processes of process template
-        val process = getProcess(processId)
         process.abort()
     }
 }

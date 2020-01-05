@@ -82,7 +82,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
                 processTemplate.description,
                 processTemplate.durationLimit,
                 processTemplate.owner.id,
-                processTemplate.taskTemplates!!
+                processTemplate.taskTemplates
             )
             newId = ProcessTemplateDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
         }
