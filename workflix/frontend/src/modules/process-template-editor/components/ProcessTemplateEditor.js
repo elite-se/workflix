@@ -9,6 +9,7 @@ import type { UserRoleType, UserType } from '../../datatypes/User'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
 import { calcGraph } from '../graph-utils'
 import type { FilledProcessTemplateType } from '../../api/ProcessApi'
+import AppToaster from '../../app/AppToaster'
 
 export type IncompleteTaskTemplateType = {|
   id: number,
@@ -38,13 +39,15 @@ type PropsType = {
 
 type StateType = {|
   ...IncompleteProcessTemplateType,
-  selectedTaskId: ?number
+  selectedTaskId: ?number,
+  highlightValidation: boolean
 |}
 
 class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   state = {
     ...this.props.initialProcessTemplate,
-    selectedTaskId: null
+    selectedTaskId: null,
+    highlightValidation: false
   }
 
   selectTaskId = (id: number) => {
@@ -92,14 +95,20 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
 
   onTitleChange = (title: string) => this.setState({ title })
   onDescriptionChange = (description: string) => this.setState({ description })
-  onDurationLimitChange = (durationLimit: ?number) => this.setState({ durationLimit })
+  onDurationLimitChange = (durationLimit: number) => this.setState({
+    durationLimit: durationLimit > 0 ? durationLimit : null
+  })
   onOwnerChange = (owner: ?UserType) => this.setState({ owner })
 
   onSaveClick = () => {
     const { title, description, durationLimit, owner, tasks } = this.state
-    if (!durationLimit || !owner) {
-      // todo validate
-      return alert('mööp')
+    if (!title || !durationLimit || !owner) {
+      AppToaster.show({
+        icon: 'error',
+        message: 'Please fill in all required values.',
+        intent: 'danger'
+      })
+      return this.setState({ highlightValidation: true })
     }
     this.props.onSave({
       title,
@@ -119,7 +128,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { tasks, title, description, durationLimit, owner, selectedTaskId } = this.state
+    const { tasks, title, description, durationLimit, owner, selectedTaskId, highlightValidation } = this.state
     const { users, userRoles } = this.props
     const task = tasks.find(task => task.id === selectedTaskId)
     const processedNodes = calcGraph(tasks)
@@ -145,7 +154,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       </div>
       <ProcessDetailsEditor durationLimit={durationLimit} onDurationLimitChange={this.onDurationLimitChange}
                             onDescriptionChange={this.onDescriptionChange} description={description}
-                            onTitleChange={this.onTitleChange} title={title}
+                            onTitleChange={this.onTitleChange} title={title} highlightValidation={highlightValidation}
                             users={users} owner={owner} onOwnerChange={this.onOwnerChange}/>
       <div style={{ display: 'flex' }}>
         <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes.map(node => node.data)}

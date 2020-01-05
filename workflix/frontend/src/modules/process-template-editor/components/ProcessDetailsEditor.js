@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { InputGroup, Label, NumericInput } from '@blueprintjs/core'
+import { FormGroup, InputGroup, NumericInput } from '@blueprintjs/core'
 import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
 import type { UserType } from '../../datatypes/User'
 import styled from 'styled-components'
@@ -21,11 +21,12 @@ type PropsType = {
   title: string,
   onDescriptionChange: (description: string) => void,
   description: string,
-  onDurationLimitChange: (durationLimit: ?number) => void,
+  onDurationLimitChange: (durationLimit: number) => void,
   durationLimit: ?number,
   users: Map<string, UserType>,
   owner: ?UserType,
-  onOwnerChange: (owner: ?UserType) => void
+  onOwnerChange: (owner: ?UserType) => void,
+  highlightValidation: boolean
 }
 
 class ProcessDetailsEditor extends React.Component<PropsType> {
@@ -39,38 +40,42 @@ class ProcessDetailsEditor extends React.Component<PropsType> {
       durationLimit,
       users,
       owner,
-      onOwnerChange
+      onOwnerChange,
+      highlightValidation
     } = this.props
 
     return <>
       <div style={{ display: 'flex' }}>
-        <Label>
-          Title
+        <FormGroup label='Title' labelInfo='(required)'>
           <InputGroup large style={{ minWidth: '500px' }} onChange={handleStringChange(onTitleChange)} value={title}
-                      placeholder='Add process template title...'/>
-        </Label>
+                      placeholder='Add process template title...'
+                      intent={highlightValidation && !title ? 'danger' : 'none'}/>
+        </FormGroup>
       </div>
       <div style={{
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'stretch'
       }}>
         <Third>
-          <Label>Description
+          <FormGroup label='Description'>
             <AutoSizeTextArea
               style={{ resize: 'none' }} minRows={4} className='bp3-fill'
               onChange={handleStringChange(onDescriptionChange)} value={description}
               placeholder={'Add description...\n\nWhat is this process about?\nWhen should it be initiated?'}/>
-          </Label>
+          </FormGroup>
         </Third>
         <Third>
-          <Label>Duration limit
+          <FormGroup label='Duration Limit' labelInfo='(required, positive)'>
             <NumericInput onValueChange={onDurationLimitChange} min={0.1} stepSize={0.1}
+                          intent={highlightValidation && (!durationLimit || durationLimit <= 0) ? 'danger' : 'none'}
                           value={durationLimit !== null ? durationLimit : ''} fill/>
-          </Label>
-          <Label>Owner
-            <UserSelect users={Array.from(users.values())} activeItem={owner} onItemSelect={onOwnerChange}/>
-          </Label>
+          </FormGroup>
+          <FormGroup label='Owner' labelInfo='(required)'>
+            <UserSelect users={Array.from(users.values())} activeItem={owner} onItemSelect={onOwnerChange} fill
+                        intent={highlightValidation && !owner ? 'danger' : 'none'}/>
+          </FormGroup>
         </Third>
         <Third/>
       </div>
