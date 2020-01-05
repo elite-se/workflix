@@ -24,7 +24,7 @@ class MainRouter extends React.Component<{}> {
       <Match path='/users'>{UsersMatch}</Match>
       <Match path='/process-templates'>{ProcessTemplatesMatch}</Match>
       <Match path='/process-templates/create'>{CreateProcessTemplateMatch}</Match>
-      <Match path='/process-templates/:id'>{EditProcessTemplateMatch}</Match>
+      <Match path='/process-templates/edit/:id'>{EditProcessTemplateMatch}</Match>
     </>
   }
 }
