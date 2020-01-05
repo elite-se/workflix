@@ -18,7 +18,7 @@ object UserContainer : UserContainerInterface {
      */
     private fun fillCache() {
         val users = UserDAO.getAllUsers()
-        users.forEach {  user ->
+        users.forEach { user ->
             userCache.put(user.id, user)
         }
         filled = true

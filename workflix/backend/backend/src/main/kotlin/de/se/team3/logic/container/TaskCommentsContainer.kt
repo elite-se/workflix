@@ -78,5 +78,4 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
         task.deleteTaskComment(taskCommentId)
         taskCommentsTaskIdCache.remove(taskCommentId)
     }
-
 }

@@ -105,5 +105,4 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
         // delete task assignment from task
         task.deleteTaskAssignment(assigneeId)
     }
-
 }
