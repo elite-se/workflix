@@ -100,7 +100,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
                   transform: `scaleX(${scale})`,
                   transformOrigin: '0 0',
                   cursor: 'pointer',
-                  transition: 'x 0.2s, y 0.5s, width 0.2s'
+                  transition: 'x 0.2s, y 0.5s, width 0.2s, fill 0.3s'
                 }}
                 x={node.startDate} y={index * ITEM_HEIGHT + (ITEM_HEIGHT - NODE_HEIGHT) / 2}
                 width={(node.data.estimatedDuration || 1)} height={NODE_HEIGHT}
