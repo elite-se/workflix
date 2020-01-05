@@ -10,7 +10,7 @@ export type ProcessedNodeType<T> = {|
   endDate: number /* earliest possible end date */
 |}
 
-export function calcGraph<T: { id: number, predecessors: number[], estimatedDuration: number }> (
+export function calcGraph<T: { id: number, predecessors: number[], estimatedDuration: ?number }> (
   tasks: T[]
 ): ProcessedNodeType<T>[] {
   const nodes = tasks.map(node => ({
@@ -18,7 +18,7 @@ export function calcGraph<T: { id: number, predecessors: number[], estimatedDura
     id: node.id,
     critical: false,
     startDate: 0,
-    endDate: node.estimatedDuration
+    endDate: node.estimatedDuration || 0
   }))
 
   times(nodes.length - 1, () => { // Bellman-Ford
@@ -27,7 +27,7 @@ export function calcGraph<T: { id: number, predecessors: number[], estimatedDura
         0,
         ...(node.data.predecessors.map(id => nodes.find(x => x.id === id)?.endDate || 0))
       )
-      node.endDate = node.startDate + node.data.estimatedDuration
+      node.endDate = node.startDate + (node.data.estimatedDuration || 0)
     }
   })
 

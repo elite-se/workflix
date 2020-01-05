@@ -87,7 +87,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         tasks.map((node, index) => (
           <path key={index}
                 d={`M ${node.startDate * scale + NODE_STROKE_WIDTH / 2} ${(index + 1 / 2) * ITEM_HEIGHT}
-                    h ${node.data.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
+                    h ${(node.data.estimatedDuration || 0) * scale - NODE_STROKE_WIDTH}`}
                 strokeWidth={NODE_STROKE_WIDTH}
                 strokeLinecap='round'
                 stroke={Colors.BLUE1}/>

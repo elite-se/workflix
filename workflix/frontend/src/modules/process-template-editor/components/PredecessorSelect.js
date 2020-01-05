@@ -41,7 +41,7 @@ class PredecessorSelect extends React.Component<PropsType> {
       onClick={handleClick}
       shouldDismissPopover={false}
       text={highlightText(task.name, query)}/>
-    return modifiers.disabled ? <div><Tooltip content='Adding this would create a cyclic dependency.'>
+    return modifiers.disabled ? <div key={task.id}><Tooltip content='Adding this would create a cyclic dependency.'>
         {menuItem}
       </Tooltip></div>
       : menuItem

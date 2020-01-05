@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Alert, Button, H3, H4, InputGroup } from '@blueprintjs/core'
+import { Alert, Button, FormGroup, H3, H4, InputGroup, NumericInput } from '@blueprintjs/core'
 import { difference } from 'lodash'
 import PredecessorSelect from './PredecessorSelect'
 import SuccessorSelect from './SuccessorSelect'
@@ -16,6 +16,7 @@ type PropsType = {
   onChange: (task: IncompleteTaskTemplateType) => void,
   allTasks: IncompleteTaskTemplateType[],
   userRoles: Map<number, UserRoleType>,
+  highlightValidation: boolean,
   onDelete: () => void
 }
 
@@ -58,10 +59,10 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
     })
   }
 
-  onDurationChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
+  onDurationChange = (value: number) => {
     this.props.onChange({
       ...this.props.task,
-      estimatedDuration: Number(event.target.value)
+      estimatedDuration: value > 0 ? value : null
     })
   }
 
@@ -80,7 +81,7 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
   })
 
   render () {
-    const { task, allTasks, onChange, userRoles } = this.props
+    const { task, allTasks, onChange, userRoles, highlightValidation } = this.props
     const { deleteAlertOpen } = this.state
 
     const possiblePreds = difference(allTasks, findDescendants(task, allTasks))
@@ -95,43 +96,33 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
       flex: 1
     }}>
       <H3>Edit Task Template</H3>
-      <Item>
-        <H4>Name:</H4>
-        <InputGroup type='text' placeholder='Name...'
-                    value={this.props.task.name}
-                    fill
-                    onChange={this.onTitleChange}/>
-      </Item>
-      <Item>
-        <H4>Description:</H4>
+      <FormGroup label='Name' labelInfo='(required)'>
+        <InputGroup type='text' placeholder='Name...' value={task.name}
+                    fill onChange={this.onTitleChange} intent={highlightValidation && !task.name ? 'danger' : 'none'}/>
+      </FormGroup>
+      <FormGroup label='Description'>
         <AutoSizeTextArea placeholder={'Add description...\n\nWhat should be done?\nWhat needs special attention?'}
-                          value={this.props.task.description}
-                          style={{ resize: 'none' }}
-                          className='bp3-fill' minRows={4}
-                          onChange={this.onDescriptionChange}/>
-      </Item>
-      <Item>
-        <H4>Responsible User Role:</H4>
+                          value={this.props.task.description} style={{ resize: 'none' }} className='bp3-fill'
+                          minRows={4} onChange={this.onDescriptionChange}/>
+      </FormGroup>
+      <FormGroup label='Responsible User Role' labelInfo='(required)'>
         <UserRoleSelect userRoles={Array.from(userRoles.values())}
+                        intent={highlightValidation && !task.responsibleUserRoleId ? 'danger' : 'none'}
                         activeItem={task.responsibleUserRoleId ? userRoles.get(task.responsibleUserRoleId) : null}
                         onItemSelect={this.onResponsibleUserRoleChange}/>
-      </Item>
-      <Item>
-        <H4>Duration:</H4>
-        <InputGroup type='number' placeholder='Duration...'
-                    value={this.props.task.estimatedDuration}
-                    fill
-                    onChange={this.onDurationChange} min={0.1} step={0.1}/>
-      </Item>
-      <Item>
-        <H4>Predecessor tasks:</H4>
+      </FormGroup>
+      <FormGroup label='Duration' labelInfo='(required, positive)'>
+        <NumericInput placeholder='Duration...' value={task.estimatedDuration || ''}
+                      intent={highlightValidation && (!task.estimatedDuration || task.estimatedDuration <= 0) ? 'danger' : 'none'}
+                      fill onValueChange={this.onDurationChange} min={0.1} stepSize={0.1}/>
+      </FormGroup>
+      <FormGroup label='Predecessor Tasks'>
         <PredecessorSelect allTasks={allTasks} onChange={onChange} possiblePreds={possiblePreds} task={task}/>
-      </Item>
-      <Item>
-        <H4>Successor tasks:</H4>
+      </FormGroup>
+      <FormGroup label='Successor Tasks'>
         <SuccessorSelect allTasks={allTasks} succs={succs} onChange={onChange} possibleSuccs={possibleSuccs}
                          task={task}/>
-      </Item>
+      </FormGroup>
       <Item style={{ textAlign: 'center' }}>
         <TrashButton icon='trash' text='Delete Task Template' intent='danger' onClick={this.onOpenDeleteAlert}/>
         <Alert isOpen={deleteAlertOpen} icon='trash' intent='danger' confirmButtonText='Delete' canEscapeKeyCancel
