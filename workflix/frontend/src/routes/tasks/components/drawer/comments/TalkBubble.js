@@ -16,16 +16,8 @@ export const TalkBubble = styled<{ floatEnd: boolean }, {}, 'div'>('div')`
     -moz-border-radius: 5px;
     
     @keyframes pop-up {
-      0% {
-       -webkit-transform: scale(0);
-        -ms-transform: scale(0);
-        transform: scale(0); 
-      }
-      100% {
-        -webkit-transform: scale(1);
-        -ms-transform: scale(1);
-        transform: scale(1); 
-      }
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
     }
     animation-duration: 0.3s;
 `
