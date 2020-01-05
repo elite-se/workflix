@@ -12,5 +12,4 @@ interface UserRoleDAOInterface {
     fun updateUserRole(userRole: UserRole)
 
     fun deleteUserRole(userRoleID: Int): Boolean
-
 }

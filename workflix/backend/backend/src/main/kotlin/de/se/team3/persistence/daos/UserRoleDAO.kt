@@ -6,8 +6,6 @@ import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.persistence.meta.UserRoleMembersTable
 import de.se.team3.persistence.meta.UserRolesTable
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.delete
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.select
@@ -103,5 +101,4 @@ object UserRoleDAO : UserRoleDAOInterface {
             where { it.ID eq userRoleID }
         } != 0
     }
-
 }

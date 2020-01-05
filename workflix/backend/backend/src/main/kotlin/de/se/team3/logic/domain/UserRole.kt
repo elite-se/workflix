@@ -30,8 +30,8 @@ data class UserRole(
     /**
      * Update-Constructor
      */
-    constructor(id: Int, name: String, description: String)
-            : this(id, name, description, Instant.now(), ArrayList<User>()) {
+    constructor(id: Int, name: String, description: String) :
+            this(id, name, description, Instant.now(), ArrayList<User>()) {
 
         if (name.isEmpty())
             throw InvalidInputException("name must not be empty")

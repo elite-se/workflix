@@ -29,7 +29,7 @@ object UserRoleContainer : UserRoleContainerInterface {
      */
     override fun getAllUserRoles(): List<UserRole> {
         if (!filled)
-           fillCache()
+            fillCache()
 
         return userRoleCache.map { it.value }.toList()
     }
@@ -102,5 +102,4 @@ object UserRoleContainer : UserRoleContainerInterface {
 
         userRoleCache.remove(userRoleID)
     }
-
 }

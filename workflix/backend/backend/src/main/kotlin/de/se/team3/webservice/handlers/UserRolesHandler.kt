@@ -1,12 +1,9 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.UserRoleContainer
-import de.se.team3.logic.container.UserRoleMembershipContainer
 import de.se.team3.logic.domain.UserRole
 import io.javalin.http.Context
-import java.util.NoSuchElementException
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 
 /**
@@ -68,5 +65,4 @@ object UserRolesHandler {
     fun delete(ctx: Context, userRoleID: Int) {
         UserRoleContainer.deleteUserRole(userRoleID)
     }
-
 }

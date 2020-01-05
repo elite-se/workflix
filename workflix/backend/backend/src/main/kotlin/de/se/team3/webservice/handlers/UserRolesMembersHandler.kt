@@ -2,7 +2,6 @@ package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.UserRoleMembershipContainer
 import io.javalin.http.Context
-import org.json.JSONObject
 
 /**
  * Handles requests to resources of form:
@@ -23,5 +22,4 @@ object UserRolesMembersHandler {
     fun delete(ctx: Context, userRoleID: Int, memberId: String) {
         UserRoleMembershipContainer.deleteUserFromRole(memberId, userRoleID)
     }
-
 }

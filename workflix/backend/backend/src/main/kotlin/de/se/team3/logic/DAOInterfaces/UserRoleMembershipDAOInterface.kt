@@ -5,5 +5,4 @@ interface UserRoleMembershipDAOInterface {
     fun addUserToRole(userID: String, userRoleID: Int): Int
 
     fun deleteUserFromRole(userID: String, userRoleID: Int): Boolean
-
 }

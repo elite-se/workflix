@@ -7,7 +7,7 @@ import me.liuwj.ktorm.dsl.delete
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 
-object UserRoleMembershipDAO: UserRoleMembershipDAOInterface {
+object UserRoleMembershipDAO : UserRoleMembershipDAOInterface {
 
     /**
      * Creates the specified membership of a user in a user role.
@@ -34,5 +34,4 @@ object UserRoleMembershipDAO: UserRoleMembershipDAOInterface {
         }
         return affectedRows != 0
     }
-
 }

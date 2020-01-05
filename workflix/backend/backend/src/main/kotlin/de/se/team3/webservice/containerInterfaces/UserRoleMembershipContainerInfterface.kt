@@ -5,5 +5,4 @@ interface UserRoleMembershipContainerInfterface {
     fun addUserToRole(userID: String, userRoleID: Int)
 
     fun deleteUserFromRole(userID: String, userRoleID: Int)
-
 }

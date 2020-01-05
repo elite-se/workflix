@@ -5,7 +5,7 @@ import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.UserRoleMembershipDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleMembershipContainerInfterface
 
-object UserRoleMembershipContainer: UserRoleMembershipContainerInfterface {
+object UserRoleMembershipContainer : UserRoleMembershipContainerInfterface {
 
     /**
      * Creates the specified membership of a user in a user role.
@@ -39,5 +39,4 @@ object UserRoleMembershipContainer: UserRoleMembershipContainerInfterface {
 
         userRole.removeMember(user.id)
     }
-
 }
