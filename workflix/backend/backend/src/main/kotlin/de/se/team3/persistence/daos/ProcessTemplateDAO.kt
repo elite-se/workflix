@@ -3,7 +3,6 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.ProcessTemplateDAOInterface
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
-import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessTemplatesFilteredView
 import de.se.team3.persistence.meta.ProcessTemplatesTable
 import de.se.team3.persistence.meta.ProcessTemplatesView

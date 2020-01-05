@@ -33,7 +33,7 @@ data class ProcessTemplate(
     fun getDeleted() = deleted
 
     @get:JsonIgnore
-    val owner by lazy { UserContainer.getUser(ownerId)}
+    val owner by lazy { UserContainer.getUser(ownerId) }
 
     @get:JsonIgnore
     val taskTemplatesList by lazy { taskTemplates!!.map { it.value } }
