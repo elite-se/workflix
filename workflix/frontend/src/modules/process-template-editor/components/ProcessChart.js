@@ -3,8 +3,8 @@
 import type { Node } from 'react'
 import React from 'react'
 import { Colors } from '@blueprintjs/core'
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
 import type { ProcessedNodeType } from '../graph-utils'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 type PropsType = {
   tasks: ProcessedNodeType<IncompleteTaskTemplateType>[] /* sorted by calculated startDate */
@@ -87,7 +87,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         tasks.map((node, index) => (
           <path key={index}
                 d={`M ${node.startDate * scale + NODE_STROKE_WIDTH / 2} ${(index + 1 / 2) * ITEM_HEIGHT}
-                    h ${node.data.estimatedDuration * scale - NODE_STROKE_WIDTH}`}
+                    h ${(node.data.estimatedDuration || 0) * scale - NODE_STROKE_WIDTH}`}
                 strokeWidth={NODE_STROKE_WIDTH}
                 strokeLinecap='round'
                 stroke={Colors.BLUE1}/>

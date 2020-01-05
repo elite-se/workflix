@@ -1,6 +1,6 @@
 // @flow
 
-import { Button, MenuItem } from '@blueprintjs/core'
+import { Button, Intent, MenuItem } from '@blueprintjs/core'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, Select } from '@blueprintjs/select'
 import React from 'react'
@@ -15,7 +15,9 @@ type PropsType = {
   onItemSelect: ?UserType => void,
   nullSelectionText?: string,
   allowNullSelection?: boolean,
-  textPrefix?: string
+  textPrefix?: string,
+  fill?: boolean,
+  intent?: Intent
 }
 
 class UserSelect extends React.Component<PropsType> {
@@ -41,15 +43,17 @@ class UserSelect extends React.Component<PropsType> {
   }
 
   render () {
-    const { users, activeItem, onItemSelect } = this.props
+    const { users, activeItem, onItemSelect, fill } = this.props
     const items = this.props.allowNullSelection ? [null, ...users] : users
     return <CustomSelect items={items}
+                         popoverProps={{ fill }}
                          itemPredicate={this.filterUsers}
                          itemRenderer={this.itemRenderer}
                          onItemSelect={onItemSelect}>
       <Button icon='user'
               rightIcon='caret-down'
               fill
+              intent={this.props.intent}
               text={`${this.props.textPrefix || ''}
               ${this.getNameOrNoSelectionText(activeItem)}`}/>
     </CustomSelect>

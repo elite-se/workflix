@@ -6,7 +6,7 @@ import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, MultiSelect } from '@blueprintjs/select'
 import highlightText from '../../common/highlightText'
 import { difference } from 'lodash'
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,
@@ -41,7 +41,7 @@ class PredecessorSelect extends React.Component<PropsType> {
       onClick={handleClick}
       shouldDismissPopover={false}
       text={highlightText(task.name, query)}/>
-    return modifiers.disabled ? <div><Tooltip content='Adding this would create a cyclic dependency.'>
+    return modifiers.disabled ? <div key={task.id}><Tooltip content='Adding this would create a cyclic dependency.'>
         {menuItem}
       </Tooltip></div>
       : menuItem

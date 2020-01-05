@@ -4,7 +4,7 @@ import React from 'react'
 import { ITEM_HEIGHT } from './ProcessChart'
 import { Button } from '@blueprintjs/core'
 import styled from 'styled-components'
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 const StyledButton = styled(Button)`
   height: ${ITEM_HEIGHT}px;
@@ -17,14 +17,15 @@ const ListContainer = styled<{}, {}, 'div'>('div')`
   min-width: 100px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 `
 
 type PropsType = {
   taskTemplates: IncompleteTaskTemplateType[],
   createTask: () => void,
   selectTaskId: (id: number) => void,
-  selectedId: ?number
+  selectedId: ?number,
+  highlightAdd: boolean
 }
 
 class TaskList extends React.Component<PropsType> {
@@ -33,7 +34,7 @@ class TaskList extends React.Component<PropsType> {
   }
 
   render () {
-    const { taskTemplates, selectedId, createTask } = this.props
+    const { taskTemplates, selectedId, createTask, highlightAdd } = this.props
     return <ListContainer>
       {
         taskTemplates.map(
@@ -43,8 +44,9 @@ class TaskList extends React.Component<PropsType> {
                                 key={node.id}>{node.name}</StyledButton>
         )
       }
-      <StyledButton style={{ marginTop: '10px' }}
-                    className='bp3-minimal' icon='add'
+      <StyledButton style={{ marginTop: taskTemplates.length !== 0 ? '10px' : '0' }}
+                    minimal icon='add'
+                    intent={highlightAdd ? 'danger' : 'none'}
                     text='Add task' onClick={createTask}/>
     </ListContainer>
   }

@@ -25,9 +25,6 @@ object ProcessContainer : ProcessContainerInterface {
         filled = true
     }
 
-    private fun filterProcesses(predicate: ProcessQueryPredicate) {
-    }
-
     /**
      * Returns a reduced form (without tasks) of all processes.
      */
