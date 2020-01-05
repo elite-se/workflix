@@ -7,6 +7,7 @@ import TasksOverview from './routes/tasks/components/TasksOverview'
 import Users from './routes/users/components/Users'
 import EditProcessTemplate from './routes/edit-process-template/components/EditProcessTemplate'
 import CreateProcessTemplate from './routes/create-process-template/components/CreateProcessTemplate'
+import Login from './routes/login/components/Login'
 
 type PropsType<Params> = { match: null | {| ...$Exact<Params> |} }
 
@@ -16,6 +17,7 @@ const ProcessTemplatesMatch = (props: PropsType<{}>) => props.match ? <ProcessTe
 const CreateProcessTemplateMatch = (props: PropsType<{}>) => props.match ? <CreateProcessTemplate/> : null
 const EditProcessTemplateMatch = (props: PropsType<{ id: string }>) => props.match
   ? <EditProcessTemplate id={Number(props.match.id)}/> : null
+const LoginMatch = (props: PropsType<{}>) => props.match ? <Login/> : null
 
 class MainRouter extends React.Component<{}> {
   render () {
@@ -25,6 +27,7 @@ class MainRouter extends React.Component<{}> {
       <Match path='/process-templates'>{ProcessTemplatesMatch}</Match>
       <Match path='/process-templates/create'>{CreateProcessTemplateMatch}</Match>
       <Match path='/process-templates/edit/:id'>{EditProcessTemplateMatch}</Match>
+      <Match path='/login'>{LoginMatch}</Match>
     </>
   }
 }

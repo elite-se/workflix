@@ -31,6 +31,7 @@ class Header extends React.Component<{}, { title: React$Node }> {
         <Link to='process-templates'><Button className='bp3-minimal' intent='primary' icon='new-layers'
                                              text='Process templates'/></Link>
         <Link to='users'><Button className='bp3-minimal' icon='user' text='Users'/></Link>
+        <Link to='login'><Button className='bp3-minimal' icon='unlock' text='Login'/></Link>
       </Navbar.Group>
     </Navbar>
   }
