@@ -11,12 +11,18 @@ type PropsType = {
 }
 
 class CommentBubble extends React.Component<PropsType> {
+  alreadySeen = false
+
   isOwnComment: boolean = this.props.comment.creatorId === ('58c120552c94decf6cf3b722') // TODO implement real check
 
   render () {
     const comment = this.props.comment
     const user = this.props.users.get(comment.creatorId)
-    return <TalkBubble floatEnd={this.isOwnComment}>
+    const wasAlreadySeen = this.alreadySeen
+    this.alreadySeen = true
+    return <TalkBubble
+      floatEnd={this.isOwnComment}
+      style={{ animationName: wasAlreadySeen || 'pop-up' }}>
       <small style={{ wordWrap: 'break-word' }}>
         {user ? user.name : comment.creatorId}
       </small>
