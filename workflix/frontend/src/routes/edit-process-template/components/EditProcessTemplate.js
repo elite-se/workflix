@@ -23,6 +23,11 @@ class EditProcessTemplate extends React.Component<PropsType> {
     navigate('/process-templates')
   }
 
+  onDelete = async () => {
+    await new ProcessApi().deleteProcessTemplate(this.props.initialProcessTemplate.id)
+    navigate('/process-templates')
+  }
+
   render () {
     const { users, userRoles, initialProcessTemplate } = this.props
     const initial: IncompleteProcessTemplateType = {
@@ -33,7 +38,8 @@ class EditProcessTemplate extends React.Component<PropsType> {
       owner: users.get(initialProcessTemplate.ownerId)
     }
     return <ProcessTemplateEditor userRoles={userRoles} users={users} title='Edit Process Template'
-                                  initialProcessTemplate={initial} onSave={this.onSave}/>
+                                  initialProcessTemplate={initial} onSave={this.onSave} showDelete
+                                  onDelete={this.onDelete}/>
   }
 }
 
