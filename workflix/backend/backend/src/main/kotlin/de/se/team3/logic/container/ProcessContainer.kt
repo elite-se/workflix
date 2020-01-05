@@ -11,16 +11,33 @@ object ProcessContainer : ProcessContainerInterface {
     // The cached processes lay under their id.
     private val processesCache = HashMap<Int, Process>()
 
-    fun refreshCachedProcess(processId: Int) {
-        processesCache.remove(processId)
-        processesCache.put(processId, ProcessDAO.getProcess(processId)!!)
+    // Indicates whether the cache is already filled with all elements
+    private var filled = false
+
+    /**
+     * Ensures that all processes are cached.
+     */
+    private fun fillCache() {
+        val processes = ProcessDAO.getAllProcesses()
+        processes.forEach { process ->
+            processesCache.put(process.id!!, process)
+        }
+        filled = true
+    }
+
+    private fun filterProcesses(predicate: ProcessQueryPredicate) {
     }
 
     /**
      * Returns a reduced form (without tasks) of all processes.
      */
     override fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process> {
-        return ProcessDAO.getAllProcesses(predicate)
+        if (!filled)
+            fillCache()
+
+        return processesCache
+            .map { it.value }
+            .filter { predicate.satisfiedBy(it) }
     }
 
     /**
@@ -73,12 +90,13 @@ object ProcessContainer : ProcessContainerInterface {
      * @throws NotFoundException Is thrown if the specified process does not exist.
      */
     override fun abortProcess(processId: Int) {
+        val process = getProcess(processId)
+
         val existed = ProcessDAO.abortProcess(processId)
         if (!existed)
             throw NotFoundException("process does not exist")
 
         // update status of process and running processes of process template
-        val process = getProcess(processId)
         process.abort()
     }
 }

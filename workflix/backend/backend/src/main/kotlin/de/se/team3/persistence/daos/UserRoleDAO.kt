@@ -6,8 +6,7 @@ import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.persistence.meta.UserRoleMembersTable
 import de.se.team3.persistence.meta.UserRolesTable
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.delete
+import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.select
@@ -15,6 +14,24 @@ import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
 
 object UserRoleDAO : UserRoleDAOInterface {
+
+    /**
+     * Makes a user role of the given row.
+     */
+    private fun makeUserRole(roleRow: QueryRowSet, members: MutableList<User>): UserRole {
+        return UserRole(
+            roleRow[UserRolesTable.ID]!!,
+            roleRow[UserRolesTable.name]!!,
+            roleRow[UserRolesTable.description]!!,
+            roleRow[UserRolesTable.createdAt]!!,
+            roleRow[UserRolesTable.deleted]!!,
+            members
+        )
+    }
+
+    /**
+     * Returns all user roles.
+     */
     override fun getAllUserRoles(): List<UserRole> {
         val userRoleResult = UserRolesTable
             .select()
@@ -27,72 +44,68 @@ object UserRoleDAO : UserRoleDAOInterface {
                 members.add(UserContainer.getUser(memberRow[UserRoleMembersTable.userID]!!))
             }
 
-            userRoles.add(UserRole(roleRow[UserRolesTable.ID]!!,
-                roleRow[UserRolesTable.name]!!,
-                roleRow[UserRolesTable.description]!!,
-                roleRow[UserRolesTable.createdAt]!!,
-                members))
+            userRoles.add(makeUserRole(roleRow, members))
         }
 
         return userRoles
     }
 
+    /**
+     * Returns the specified user role.
+     */
     override fun getUserRole(userRoleID: Int): UserRole? {
         val userRoleResult = UserRolesTable
             .select()
             .where { UserRolesTable.ID eq userRoleID }
 
+        val row = userRoleResult.rowSet
+        if (!row.next())
+            return null
+
+        // collecting members
         val members = ArrayList<User>()
         for (row in UserRoleMembersTable.select().where { UserRoleMembersTable.userRoleID eq userRoleID }) {
             members.add(UserContainer.getUser(row[UserRoleMembersTable.userID]!!))
         }
 
-        val row = userRoleResult.rowSet
-        if (!row.next())
-            return null
-
-        return UserRole(row[UserRolesTable.ID]!!,
-            row[UserRolesTable.name]!!,
-            row[UserRolesTable.description]!!,
-            row[UserRolesTable.createdAt]!!,
-            members)
+        return makeUserRole(row, members)
     }
 
+    /**
+     * Creates the given user role.
+     *
+     * @return The generated user role id.
+     */
     override fun createUserRole(userRole: UserRole): Int {
         return UserRolesTable.insertAndGenerateKey {
-            it.name to userRole.name
-            it.description to userRole.description
+            it.name to userRole.getName()
+            it.description to userRole.getDescription()
             it.createdAt to userRole.createdAt
             it.deleted to false
         } as Int
     }
 
+    /**
+     * Updates the given user role.
+     */
     override fun updateUserRole(userRole: UserRole) {
         UserRolesTable.update {
-            it.name to userRole.name
-            it.description to userRole.description
+            it.name to userRole.getName()
+            it.description to userRole.getDescription()
 
-            where { it.ID eq userRole.id }
+            where { it.ID eq userRole.id!! }
         }
     }
 
+    /**
+     * Deletes the specified user role.
+     *
+     * @return True if and only if the specified user role existed.
+     */
     override fun deleteUserRole(userRoleID: Int): Boolean {
         return UserRolesTable.update {
             it.deleted to true
             where { it.ID eq userRoleID }
         } != 0
-    }
-
-    override fun addUserToRole(userID: String, userRoleID: Int) {
-        UserRoleMembersTable.insertAndGenerateKey {
-            it.userID to userID
-            it.userRoleID to userRoleID
-        }
-    }
-
-    override fun deleteUserFromRole(userID: String, userRoleID: Int) {
-        UserRoleMembersTable.delete {
-            (it.userID eq userID) and (it.userRoleID eq userRoleID)
-        }
     }
 }

@@ -15,7 +15,8 @@ const CenterScreen = styled<{}, {}, 'div'>('div')`
 `
 
 function withPromiseResolver<P1: {}, P2: {}> (
-  promiseCreator: ($Diff<P1, P2>, (soft: boolean) => void) => Promise<P2>
+  promiseCreator: ($Diff<P1, P2>, (soft: boolean) => void) => Promise<P2>,
+  shouldUpdate: (oldProps: $Diff<P1, P2>, newProps: $Diff<P1, P2>) => boolean = () => false
 ): (ComponentType<P1> => ComponentType<$Diff<P1, P2>>) {
   return (WrappedComponent: ComponentType<P1>) => {
     return class extends React.Component<$Diff<P1, P2>, { error: ?string, props: ?P2, softLoading: boolean }> {
@@ -23,6 +24,12 @@ function withPromiseResolver<P1: {}, P2: {}> (
 
       componentDidMount () {
         this.startPromise(false)
+      }
+
+      componentDidUpdate (prevProps: $Diff<P1, P2>) {
+        if (shouldUpdate(prevProps, this.props)) {
+          this.startPromise(false)
+        }
       }
 
       handleClickRefresh = () => {

@@ -27,13 +27,11 @@ class TaskDrawer extends React.Component<PropsType> {
       onClose={this.props.onClose}
       onOpening={onOpenRemoveOverlayClass}
       style={{ overflow: 'auto' }}>
-      {selectedTask != null
-        ? <TaskDrawerContent
+      {selectedTask && <TaskDrawerContent
           task={selectedTask}
           onTaskModified={this.props.onTaskModified}
           users={this.props.users}
-          taskTemplates={this.props.taskTemplates}/>
-        : ''}
+          taskTemplates={this.props.taskTemplates}/>}
     </Drawer>
   }
 }

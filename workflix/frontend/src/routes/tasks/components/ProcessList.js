@@ -23,6 +23,7 @@ type PropsType = {|
   processes: Array<ProcessType>,
   taskTemplates: Map<number, TaskTemplateType>,
   users: Map<string, UserType>,
+  onTaskSelected: ?TaskType => void,
   refresh: (soft: boolean) => void
 |}
 type StateType = {|
@@ -34,15 +35,16 @@ class ProcessList extends React.Component<PropsType, StateType> {
     selectedTaskId: null
   }
 
-  onTaskSelected = (selectedTask: TaskType) => {
+  onTaskSelected = (selectedTask: ?TaskType) => {
     this.setState({ selectedTaskId: selectedTask?.id })
+    this.props.onTaskSelected(selectedTask)
   }
 
   onDrawerClosed = () => {
-    this.setState({ selectedTaskId: null })
+    this.onTaskSelected(null)
   }
 
-  onTaskModified = (modifiedTaks: TaskType) => {
+  onTaskModified = () => {
     this.props.refresh(true)
   }
 
@@ -53,7 +55,7 @@ class ProcessList extends React.Component<PropsType, StateType> {
 
   render () {
     const selectedTask = this.findSelectedTask()
-    return <div>
+    return <div style={{ maxWidth: '100%', overflowX: 'auto', display: 'flex' }}>
       <ProcessListWrapper>{
         this.props.processes.map(process => (
           <ProcessCard
@@ -89,4 +91,6 @@ const promiseCreator = (props: *, refresh) =>
       })
     )
 
-export default withPromiseResolver<PropsType, *>(promiseCreator)(ProcessList)
+const shouldUpdate = (oldProps: *, newProps: *) => oldProps.filters !== newProps.filters
+
+export default withPromiseResolver<PropsType, *>(promiseCreator, shouldUpdate)(ProcessList)

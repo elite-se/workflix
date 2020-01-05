@@ -13,7 +13,8 @@ import de.se.team3.webservice.handlers.ProcessesRunningHandler
 import de.se.team3.webservice.handlers.TasksAssignmentsHandler
 import de.se.team3.webservice.handlers.TasksCommentsHandler
 import de.se.team3.webservice.handlers.UserHandler
-import de.se.team3.webservice.handlers.UserRoleHandler
+import de.se.team3.webservice.handlers.UserRolesHandler
+import de.se.team3.webservice.handlers.UserRolesMembersHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 import org.json.JSONException
@@ -77,24 +78,32 @@ fun main(args: Array<String>) {
 
     // user roles
     app.get("userRoles") { ctx ->
-        UserRoleHandler.getAll(ctx)
+        UserRolesHandler.getAll(ctx)
     }
     app.post("userRoles") { ctx ->
-        UserRoleHandler.create(ctx)
+        UserRolesHandler.create(ctx)
     }
     app.patch("userRoles/:userRoleId") { ctx ->
-        UserRoleHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
+        UserRolesHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
     }
     app.delete("userRoles/:userRoleId") { ctx ->
-        UserRoleHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
+        UserRolesHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
     }
-    app.post("usersToRoles") { ctx ->
-        UserRoleHandler.addUserToRole(ctx)
+
+    // user role memberships
+    app.put("userRoles/:userRoleId/members/:memberId") { ctx ->
+        UserRolesMembersHandler.create(
+            ctx,
+            ctx.pathParam("userRoleId").toInt(),
+            ctx.pathParam("memberId")
+        )
     }
-    app.delete("usersToRoles/:userId/:userRoleId") { ctx ->
-        UserRoleHandler.deleteUserFromRole(ctx,
-            ctx.pathParam("userId").toString(),
-            ctx.pathParam("userRoleId").toInt())
+    app.delete("userRoles/:userRoleId/members/:memberId") { ctx ->
+        UserRolesMembersHandler.delete(
+            ctx,
+            ctx.pathParam("userRoleId").toInt(),
+            ctx.pathParam("memberId")
+        )
     }
 
     // processes

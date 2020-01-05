@@ -1,6 +1,7 @@
 package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 
 /**
@@ -25,5 +26,11 @@ class TaskTemplate(
     init {
         if (necessaryClosings < 1)
             throw InvalidInputException("there must be at least one user who closes a task explicitly")
+        if (name.isEmpty())
+            throw InvalidInputException("name must not be empty")
+        if (estimatedDuration < 1)
+            throw InvalidInputException("estimated duration must be positive")
+        if (!UserRoleContainer.hasUserRole(responsibleUserRoleId))
+            throw InvalidInputException("user role specified as responsible does not exist")
     }
 }
