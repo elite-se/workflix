@@ -32,3 +32,8 @@ export const parseDatesInUserRole = (role: any) => ({
   ...role,
   createdAt: role.createdAt && new Date(role.createdAt)
 })
+
+export const parseDatesInProcessGroup = (group: any) => ({
+  ...group,
+  createdAt: group.createdAt && new Date(group.createdAt)
+})
