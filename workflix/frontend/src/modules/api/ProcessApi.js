@@ -77,6 +77,10 @@ class ProcessApi {
       .then(response => response.json())
   }
 
+  deleteProcessTemplate (id: number) {
+    return safeFetch(`${processesTemplatesBackend}/${id}`, { method: 'DELETE' })
+  }
+
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
     return this.getProcessTemplates([processTemplateId])
       .then(templates => templates[0])
