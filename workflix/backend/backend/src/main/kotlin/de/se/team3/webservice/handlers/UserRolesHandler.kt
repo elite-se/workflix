@@ -1,6 +1,7 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.UserRoleContainer
+import de.se.team3.logic.container.UserRoleMembershipContainer
 import de.se.team3.logic.domain.UserRole
 import io.javalin.http.Context
 import java.util.NoSuchElementException
@@ -47,6 +48,9 @@ object UserRolesHandler {
         ctx.result(newIdObject.toString())
     }
 
+    /**
+     * Handles requests for updating a user role.
+     */
     fun update(ctx: Context, userRoleID: Int) {
         val content = ctx.body()
         val userRoleJsonObject = JSONObject(content)
@@ -58,21 +62,11 @@ object UserRolesHandler {
         UserRoleContainer.updateUserRole(userRole)
     }
 
+    /**
+     * Handles requests for deleting a user role.
+     */
     fun delete(ctx: Context, userRoleID: Int) {
         UserRoleContainer.deleteUserRole(userRoleID)
     }
 
-    fun addUserToRole(ctx: Context) {
-        val content = ctx.body()
-        val relationshipJSON = JSONObject(content)
-
-        val userID = relationshipJSON.getString("userId")
-        val userRoleID = relationshipJSON.getInt("userRoleId")
-
-        UserRoleContainer.addUserToRole(userID, userRoleID)
-    }
-
-    fun deleteUserFromRole(ctx: Context, userID: String, userRoleID: Int) {
-        UserRoleContainer.deleteUserFromRole(userID, userRoleID)
-    }
 }

@@ -80,11 +80,13 @@ fun main(args: Array<String>) {
     app.delete("userRoles/:userRoleId") { ctx ->
         UserRolesHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
     }
+
+    // user role memberships
     app.post("usersToRoles") { ctx ->
-        UserRolesHandler.addUserToRole(ctx)
+        UserRolesMembersHandler.create(ctx)
     }
     app.delete("usersToRoles/:userId/:userRoleId") { ctx ->
-        UserRolesHandler.deleteUserFromRole(ctx,
+        UserRolesMembersHandler.delete(ctx,
             ctx.pathParam("userId").toString(),
             ctx.pathParam("userRoleId").toInt())
     }
