@@ -3,7 +3,7 @@ package de.se.team3.logic.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import de.se.team3.logic.container.ProcessTemplateContainer
+import de.se.team3.logic.container.ProcessTemplatesContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
@@ -38,7 +38,7 @@ class Process(
     @get:JsonIgnore
     val starter by lazy { UserContainer.getUser(starterId) }
     @get:JsonIgnore
-    val processTemplate by lazy { ProcessTemplateContainer.getProcessTemplate(processTemplateId) }
+    val processTemplate by lazy { ProcessTemplatesContainer.getProcessTemplate(processTemplateId) }
 
     /**
      * Create-Constructor
@@ -63,7 +63,7 @@ class Process(
 
         if (title.isEmpty())
             throw InvalidInputException("title must not be empty")
-        if (processTemplate.deleted)
+        if (processTemplate.getDeleted())
             throw InvalidInputException("must not be based on a deleted process template")
     }
 
@@ -109,7 +109,7 @@ class Process(
                 estimatedDurationDone += task.taskTemplate!!.estimatedDuration
         }
 
-        val ratio = estimatedDurationDone / processTemplate.estimatedDurationSum
+        val ratio = estimatedDurationDone / processTemplate.getEstimatedDurationSum()
         return (ratio * 100).toInt()
     }
 
@@ -163,7 +163,7 @@ class Process(
          */
         fun createTasks(processTemplateId: Int): Map<Int, Task> {
             val tasks = HashMap<Int, Task>()
-            val processTemplate = ProcessTemplateContainer.getProcessTemplate(processTemplateId)
+            val processTemplate = ProcessTemplatesContainer.getProcessTemplate(processTemplateId)
             val taskTemplates = processTemplate.taskTemplates!!
             for ((id, taskTemplate) in taskTemplates) {
                 val startedAt = if (taskTemplate.predecessors.size == 0) Instant.now() else null
