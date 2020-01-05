@@ -1,9 +1,8 @@
 package de.se.team3.webservice.handlers
 
-import de.se.team3.logic.authentification.LoginManager
 import de.se.team3.logic.authentification.AuthorizationManager
+import de.se.team3.logic.authentification.LoginManager
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.NotVerifiedException
 import io.javalin.http.Context
 import org.json.JSONObject
@@ -21,8 +20,6 @@ object AuthenticationHandler {
 
         if (!AuthorizationManager.authorizeRequest(bearerToken))
             throw NotVerifiedException("You are not authorized to perform this request.")
-
-
     }
 
     /**
@@ -63,7 +60,6 @@ object AuthenticationHandler {
         val bearerToken = ctx.header("Authorization")
             ?: throw InvalidInputException("Every request must be enriched by an authorization token.")
         val stringToken = bearerToken.substringAfter(' ')
-        println("logout: $stringToken")
 
         LoginManager.logout(stringToken)
     }

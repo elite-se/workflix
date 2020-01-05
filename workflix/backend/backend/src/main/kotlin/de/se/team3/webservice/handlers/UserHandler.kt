@@ -1,7 +1,5 @@
 package de.se.team3.webservice.handlers
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context

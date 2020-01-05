@@ -3,11 +3,10 @@ package de.se.team3.logic.authentification
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.InvalidInputException
-import java.time.Instant
 
 object LoginManager {
     val tokensInUse = ArrayList<AuthentificationToken>()
-    //authorized user currently performing a request, or null if none is performed
+    // authorized user currently performing a request, or null if none is performed
     private var activeUser: User? = null
 
     /**
@@ -23,7 +22,7 @@ object LoginManager {
      */
     fun login(email: String, password: String): AuthentificationToken {
         val userList = UserContainer.getAllUsers().filter { it.email == email }
-        //if there are more than two users with the same email address, something went terribly wrong during user creation
+        // if there are more than two users with the same email address, something went terribly wrong during user creation
         if (userList.size < 1)
             throw InvalidInputException("There is no user with this email address.")
         if (userList.size > 1)

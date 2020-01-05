@@ -10,7 +10,6 @@ object AuthorizationManager {
      */
     fun authorizeRequest(bearerToken: String): Boolean {
         val stringToken = bearerToken.substringAfter(' ')
-        println("authorizeRequest: $stringToken")
         return if (tokenIsRegistered(stringToken)) {
             LoginManager.setActiveUser(stringToken)
             true
@@ -26,7 +25,6 @@ object AuthorizationManager {
      */
     fun finishAuthorizedRequest(bearerToken: String): Boolean {
         val stringToken = bearerToken.substringAfter(' ')
-        println("finishAuthorizedRequest: $stringToken")
         return LoginManager.removeActiveUser(stringToken)
     }
 
@@ -34,9 +32,7 @@ object AuthorizationManager {
      * @param token token used as verification
      * @return true iff the given token is registered as in use
      */
-    fun tokenIsRegistered(token: String): Boolean {
-        println("Token: |$token|")
-        LoginManager.tokensInUse.map { println("    |" + it.token + "|") }
+    private fun tokenIsRegistered(token: String): Boolean {
         return LoginManager.tokensInUse.map { it.token }.contains(token)
     }
 }

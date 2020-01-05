@@ -1,8 +1,21 @@
 package de.se.team3.webservice
 
-import de.se.team3.logic.exceptions.*
+import de.se.team3.logic.exceptions.AlreadyClosedException
+import de.se.team3.logic.exceptions.AlreadyExistsException
+import de.se.team3.logic.exceptions.InvalidInputException
+import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.logic.exceptions.NotVerifiedException
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.webservice.handlers.*
+import de.se.team3.webservice.handlers.AuthenticationHandler
+import de.se.team3.webservice.handlers.ProcessGroupsHandler
+import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
+import de.se.team3.webservice.handlers.ProcessTemplatesHandler
+import de.se.team3.webservice.handlers.ProcessesHandler
+import de.se.team3.webservice.handlers.ProcessesRunningHandler
+import de.se.team3.webservice.handlers.TasksAssignmentsHandler
+import de.se.team3.webservice.handlers.TasksCommentsHandler
+import de.se.team3.webservice.handlers.UserHandler
+import de.se.team3.webservice.handlers.UserRoleHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 import org.json.JSONException
@@ -43,18 +56,18 @@ fun main(args: Array<String>) {
         ctx.status(401).result(e.message)
     }
 
-    //authentification handling before every request (excluding login)
+    // authentification handling before every request (excluding login)
     app.before() { ctx ->
         if (ctx.path() != "/login") {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }
 
-    //login
+    // login
     app.post("login") { ctx ->
         AuthenticationHandler.login(ctx)
     }
-    //logout
+    // logout
     app.delete("login") { ctx ->
         AuthenticationHandler.logout(ctx)
     }
@@ -163,7 +176,7 @@ fun main(args: Array<String>) {
         TasksCommentsHandler.delete(ctx, ctx.pathParam("taskCommentId").toInt())
     }
 
-    //necessary to reset the active user after every request
+    // necessary to reset the active user after every request
     app.after() { ctx ->
         if (ctx.path() != "/login") {
             AuthenticationHandler.finishAuthorizedRequest(ctx)
