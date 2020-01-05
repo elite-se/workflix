@@ -18,6 +18,7 @@ export const ITEM_HEIGHT = 50
 const NODE_STROKE_WIDTH = 15
 const EDGE_STROKE_WIDTH = 2
 const STROKE_RADIUS = 20
+const HORIZONTAL_PADDING = 10
 
 class ProcessChart extends React.Component<PropsType, StateType> {
   resizeObserver: ResizeObserver = new ResizeObserver(entries => this.updateWidth(entries[0]?.contentRect.width))
@@ -46,9 +47,11 @@ class ProcessChart extends React.Component<PropsType, StateType> {
       return null
     }
     const lastEndDate = Math.max(...tasks.map(task => task.endDate))
-    const scale = width / lastEndDate
+    const drawWidth = width - 2 * HORIZONTAL_PADDING
+    const scale = drawWidth / lastEndDate
 
-    return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute' }}>
+    return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute' }}
+                viewBox={`-${HORIZONTAL_PADDING} 0 ${width} ${tasks.length * ITEM_HEIGHT}`}>
       <defs>
         <marker id='TriangleGray' viewBox='0 0 10 10' refX='10' refY='5'
                 markerUnits='strokeWidth' markerWidth='5' markerHeight='5'
@@ -62,6 +65,10 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         </marker>
       </defs>
       {[
+        tasks.map((node, index) => (index % 2 === 0 &&
+          <rect key={index} x={-HORIZONTAL_PADDING} y={index * ITEM_HEIGHT}
+                height={ITEM_HEIGHT} width={width} fill={Colors.LIGHT_GRAY4}/>
+        )),
         ...tasks.flatMap((node, index) =>
           node.data.predecessors
             .map(id => tasks.findIndex(x => x.id === id))
