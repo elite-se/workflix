@@ -45,6 +45,7 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
                 row[ProcessGroupsTable.title]!!,
                 row[ProcessGroupsTable.description]!!,
                 row[ProcessGroupsTable.createdAt]!!,
+                row[ProcessGroupsTable.deleted]!!,
                 members
             ))
         }
@@ -78,6 +79,7 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
                             row[ProcessGroupsTable.title]!!,
                             row[ProcessGroupsTable.description]!!,
                             row[ProcessGroupsTable.createdAt]!!,
+                            row[ProcessGroupsTable.deleted]!!,
                             members)
     }
 
