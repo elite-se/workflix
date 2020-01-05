@@ -1,7 +1,6 @@
 package de.se.team3.logic.DAOInterfaces
 
 import de.se.team3.logic.domain.Process
-import de.se.team3.logic.domain.ProcessQueryPredicate
 
 interface ProcessDAOInterface {
 

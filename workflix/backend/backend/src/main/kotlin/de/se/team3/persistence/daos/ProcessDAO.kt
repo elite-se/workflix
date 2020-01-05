@@ -2,7 +2,6 @@ package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.domain.Process
-import de.se.team3.logic.domain.ProcessQueryPredicate
 import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskAssignment
@@ -22,7 +21,6 @@ import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
-import me.liuwj.ktorm.dsl.whereWithOrConditions
 
 /**
  * DAO for processes.

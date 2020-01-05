@@ -134,7 +134,5 @@ data class ProcessTemplate(
             if (!ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
                 throw InvalidInputException("connection between task templates must be acyclic")
         }
-
     }
-
 }
