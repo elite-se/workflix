@@ -3,7 +3,7 @@
 import React from 'react'
 import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'
-import { Card, H3, ProgressBar } from '@blueprintjs/core'
+import { Card, H3, ProgressBar, Tooltip } from '@blueprintjs/core'
 import type { ProcessType } from '../../../modules/datatypes/Process'
 import TaskSummaryCard from './TaskSummaryCard'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
@@ -39,6 +39,14 @@ type PropsType = {
   taskTemplates: Map<number, TaskTemplateType>
 }
 
+const statusTranslation = {
+  ABORTED: 'aborted',
+  CLOSED: 'closed',
+  RUNNING: 'running'
+}
+
+const HUNDRED = 100
+
 class ProcessCard extends React.Component<PropsType> {
   isSelected (task: TaskType): boolean {
     const selectedTask = this.props.selectedTask
@@ -52,7 +60,7 @@ class ProcessCard extends React.Component<PropsType> {
         ? [Intent.DANGER, 1]
         : process.status === 'CLOSED'
           ? [Intent.SUCCESS, 1]
-          : [Intent.PRIMARY, process.progress]
+          : [Intent.PRIMARY, process.progress / HUNDRED]
     const isSelected = !!process.tasks.find(task => this.isSelected(task))
     return <CardWithMargin interactive elevation={isSelected ? Elevation.FOUR : undefined}>
       <H3>{process.title} (#{process.id})</H3>
@@ -68,7 +76,9 @@ class ProcessCard extends React.Component<PropsType> {
           ))
         }
       </TaskList>
-      <ProcessProgress animate={false} intent={progressIntent} value={progressValue}/>
+      <Tooltip content={`This process is ${statusTranslation[process.status]}.`} fill>
+        <ProcessProgress animate={false} intent={progressIntent} value={progressValue}/>
+      </Tooltip>
     </CardWithMargin>
   }
 }
