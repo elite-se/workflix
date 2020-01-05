@@ -11,16 +11,28 @@ object ProcessContainer : ProcessContainerInterface {
     // The cached processes lay under their id.
     private val processesCache = HashMap<Int, Process>()
 
-    fun refreshCachedProcess(processId: Int) {
-        processesCache.remove(processId)
-        processesCache.put(processId, ProcessDAO.getProcess(processId)!!)
+    // Indicates whether the cache is already filled with all elements
+    private var filled = false
+
+    /**
+     * Ensures that all processes are cached.
+     */
+    private fun fillCache() {
+        val processes = ProcessDAO.getAllProcesses()
+        processes.forEach { process ->
+            processesCache.put(process.id!!, process)
+        }
+        filled = true
     }
 
     /**
      * Returns a reduced form (without tasks) of all processes.
      */
     override fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process> {
-        return ProcessDAO.getAllProcesses(predicate)
+        if (!filled)
+            fillCache()
+
+        return processesCache.map { it.value }.toList()
     }
 
     /**

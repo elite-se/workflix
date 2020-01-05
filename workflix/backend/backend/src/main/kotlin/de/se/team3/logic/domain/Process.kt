@@ -26,13 +26,13 @@ class Process(
     val startedAt: Instant,
     @JsonIgnore
     // the tasks lies under the id of the corresponding task template
-    val tasks: Map<Int, Task>?
+    val tasks: Map<Int, Task>
 ) {
 
     fun getStatus() = status
 
     init {
-        tasks?.forEach { (_, task) -> task.process = this }
+        tasks.forEach { (_, task) -> task.process = this }
     }
 
     @get:JsonIgnore
@@ -61,10 +61,7 @@ class Process(
         Instant.now(), // started at
         createTasks(processTemplateId)) {
 
-        if (title.isEmpty())
-            throw InvalidInputException("title must not be empty")
-        if (processTemplate.getDeleted())
-            throw InvalidInputException("must not be based on a deleted process template")
+        checkProperties(title, processTemplate)
     }
 
     /**
@@ -75,21 +72,19 @@ class Process(
     }
 
     /**
-     * @return All users assigned to any task in the process.
+     * Returns all assignees of this process.
      */
-    fun getAssignees(): List<User> {
-        if (tasks != null) {
-            val assignments = tasks.values.map { it.getAssignments() }
-            val assignmentList = ArrayList<TaskAssignment>()
-            assignments.forEach {
-                if (it != null) {
-                    assignmentList.addAll(it)
-                }
+    @JsonIgnore
+    fun getAssignees(): List<User> { // TODO ineffizient?
+        val assignments = tasks.values.map { it.getAssignments() }
+        val assignmentsList = ArrayList<TaskAssignment>()
+        assignments.forEach {
+            if (it != null) {
+                assignmentsList.addAll(it)
             }
-            val assigneeIDs = assignmentList.map { it.assigneeId }
-            return assigneeIDs.map { id -> UserContainer.getUser(id) }
         }
-        return ArrayList<User>()
+        val assigneeIDs = assignmentsList.map { it.assigneeId }
+        return assigneeIDs.map { id -> UserContainer.getUser(id) }
     }
 
     /**
@@ -159,6 +154,19 @@ class Process(
     companion object {
 
         /**
+         * Checks property constraints.
+         *
+         * @throws InvalidInputException Is thrown if the title is empty or if the underlying
+         * process template is already deleted.
+         */
+        fun checkProperties(title: String, processTemplate: ProcessTemplate) {
+            if (title.isEmpty())
+                throw InvalidInputException("title must not be empty")
+            if (processTemplate.isDeleted())
+                throw InvalidInputException("must not be based on a deleted process template")
+        }
+
+        /**
          * Creates the tasks of the process by looping over the underlying task templates.
          */
         fun createTasks(processTemplateId: Int): Map<Int, Task> {
@@ -172,5 +180,7 @@ class Process(
             }
             return tasks
         }
+
     }
+
 }

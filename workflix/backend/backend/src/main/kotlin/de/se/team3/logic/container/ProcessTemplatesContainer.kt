@@ -14,7 +14,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
     private var filled = false
 
     /**
-     * Handles startup of the container.
+     * Ensures that all process templates are cached.
      */
     private fun fillCache() {
         val processTemplates = ProcessTemplateDAO.getAllProcessTemplates()

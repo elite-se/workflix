@@ -120,19 +120,9 @@ object ProcessDAO : ProcessDAOInterface {
     /**
      * Returns all processes.
      */
-    override fun getAllProcesses(predicate: ProcessQueryPredicate): List<Process> {
+    override fun getAllProcesses(): List<Process> {
         val result = ProcessesTable
             .select()
-            // depending on predicate several conditions are added
-            // not that the conditions are concatenated by or
-            .whereWithOrConditions { conditionList ->
-                predicate.statuses.forEach { status ->
-                    conditionList += ProcessesTable.status eq status.toString()
-                }
-                predicate.processGroupIds.forEach { processGroupId ->
-                    conditionList += ProcessesTable.groupId eq processGroupId
-                }
-            }
 
         val processes = ArrayList<Process>()
         for (row in result) {
