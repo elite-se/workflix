@@ -1,6 +1,7 @@
 package de.se.team3.logic.domain
 
 import de.se.team3.logic.exceptions.InvalidInputException
+import de.se.team3.logic.util.RelevantProcessQuerying
 
 data class ProcessQueryPredicate(
     val statuses: List<ProcessStatus>,
@@ -37,7 +38,10 @@ data class ProcessQueryPredicate(
         if (statuses.containsOrEmpty(process.getStatus()) && processGroupIds.containsOrEmpty(process.processGroupId))
             return true
 
-        // TODO involving user check
+        if (involvingUserId != null) {
+            if (RelevantProcessQuerying.queryRelevantProcesses(involvingUserId!!).contains(process.id))
+                return true
+        }
 
         return false
     }

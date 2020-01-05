@@ -3,9 +3,6 @@ package de.se.team3.logic.util
 import de.se.team3.logic.container.ProcessContainer
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.UserContainer
-import de.se.team3.logic.domain.Process
-import de.se.team3.logic.domain.ProcessQueryPredicate
-import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ConnectionManager
 import java.time.Instant
@@ -25,11 +22,11 @@ object RelevantProcessQuerying {
                 .contains(userID) }
         val processesInUsersGroupItsRoleIsAssignedTo = processesInUsersGroup
             .filter { process ->
-                process.tasks?.values?.filter { task ->
-                UserContainer
-                    .getUser(userID)
-                    .getUserRoleIds()
-                    .contains(task.taskTemplate?.responsibleUserRoleId) }?.size ?: 0 != 0 }
+                process.tasks.values.filter { task ->
+                    UserContainer
+                        .getUser(userID)
+                        .getUserRoleIds()
+                        .contains(task.taskTemplate?.responsibleUserRoleId) }.size ?: 0 != 0 }
         val processesUserIsAssignedTo = ProcessContainer
             .getAllProcesses()
             .filter { it.getAssignees().map { it.id }.contains(userID) }
