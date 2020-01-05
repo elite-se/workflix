@@ -60,8 +60,8 @@ object UserRoleDAO : UserRoleDAOInterface {
 
     override fun createUserRole(userRole: UserRole): Int {
         return UserRolesTable.insertAndGenerateKey {
-            it.name to userRole.getName()
-            it.description to userRole.getDescription()
+            it.name to userRole.name
+            it.description to userRole.description
             it.createdAt to userRole.createdAt
             it.deleted to false
         } as Int
@@ -69,8 +69,8 @@ object UserRoleDAO : UserRoleDAOInterface {
 
     override fun updateUserRole(userRole: UserRole) {
         UserRolesTable.update {
-            it.name to userRole.getName()
-            it.description to userRole.getDescription()
+            it.name to userRole.name
+            it.description to userRole.description
 
             where { it.ID eq userRole.id!! }
         }

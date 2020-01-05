@@ -7,15 +7,11 @@ import org.json.JSONObject
 
 data class UserRole(
     val id: Int?,
-    private var name: String,
-    private var description: String,
+    val name: String,
+    val description: String,
     val createdAt: Instant,
     val members: ArrayList<User>
 ) {
-
-    fun getName() = name
-
-    fun getDescription() = description
 
     /**
      * Create-Constructor
@@ -23,33 +19,18 @@ data class UserRole(
     constructor(name: String, description: String) :
         this(null, name, description, Instant.now(), ArrayList<User>()) {
 
-        setName(name)
-        setDescription(description)
+        if (name.isEmpty())
+            throw InvalidInputException("name must not be empty")
     }
 
     /**
      * Update-Constructor
      */
     constructor(id: Int, name: String, description: String)
-            : this(id, name, description, Instant.now(), ArrayList<User>())
+            : this(id, name, description, Instant.now(), ArrayList<User>()) {
 
-    /**
-     * Sets the name.
-     *
-     * @throws InvalidInputException Is thrown if the given name is empty.
-     */
-    fun setName(name: String) {
         if (name.isEmpty())
             throw InvalidInputException("name must not be empty")
-
-        this.name = name
-    }
-
-    /**
-     * Sets the description.
-     */
-    fun setDescription(description: String) {
-        this.description = description
     }
 
     fun toJSON(): JSONObject {
