@@ -8,6 +8,7 @@ const loginBackend = `${BACKEND}/login`
 class LoginApi {
   getToken (email: string, password: string): Promise<string> {
     return safeFetch(loginBackend, {
+      method: 'POST',
       body: JSON.stringify({ email, password })
     })
       .then(response => response.json())
