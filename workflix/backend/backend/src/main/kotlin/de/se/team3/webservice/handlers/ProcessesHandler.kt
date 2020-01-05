@@ -28,7 +28,7 @@ object ProcessesHandler {
                 for (statusEntry in param.value)
                     statuses.add(ProcessStatus.valueOf(statusEntry))
 
-            if (param.key == "groupId") // loops over all query parameters named groupId
+            if (param.key == "processGroupId") // loops over all query parameters named groupId
                 for (groupIdEntry in param.value)
                     groupIds.add(groupIdEntry.toInt())
 
