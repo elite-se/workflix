@@ -5,15 +5,7 @@ import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.webservice.handlers.ProcessGroupsHandler
-import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
-import de.se.team3.webservice.handlers.ProcessTemplatesHandler
-import de.se.team3.webservice.handlers.ProcessesHandler
-import de.se.team3.webservice.handlers.ProcessesRunningHandler
-import de.se.team3.webservice.handlers.TasksAssignmentsHandler
-import de.se.team3.webservice.handlers.TasksCommentsHandler
-import de.se.team3.webservice.handlers.UserHandler
-import de.se.team3.webservice.handlers.UserRoleHandler
+import de.se.team3.webservice.handlers.*
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 import org.json.JSONException
@@ -77,22 +69,22 @@ fun main(args: Array<String>) {
 
     // user roles
     app.get("userRoles") { ctx ->
-        UserRoleHandler.getAll(ctx)
+        UserRolesHandler.getAll(ctx)
     }
     app.post("userRoles") { ctx ->
-        UserRoleHandler.create(ctx)
+        UserRolesHandler.create(ctx)
     }
     app.patch("userRoles/:userRoleId") { ctx ->
-        UserRoleHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
+        UserRolesHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
     }
     app.delete("userRoles/:userRoleId") { ctx ->
-        UserRoleHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
+        UserRolesHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
     }
     app.post("usersToRoles") { ctx ->
-        UserRoleHandler.addUserToRole(ctx)
+        UserRolesHandler.addUserToRole(ctx)
     }
     app.delete("usersToRoles/:userId/:userRoleId") { ctx ->
-        UserRoleHandler.deleteUserFromRole(ctx,
+        UserRolesHandler.deleteUserFromRole(ctx,
             ctx.pathParam("userId").toString(),
             ctx.pathParam("userRoleId").toInt())
     }

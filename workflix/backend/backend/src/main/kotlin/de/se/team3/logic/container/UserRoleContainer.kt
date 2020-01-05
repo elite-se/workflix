@@ -54,8 +54,8 @@ object UserRoleContainer : UserRoleContainerInterface {
 
     override fun updateUserRole(userRoleID: Int, name: String, description: String) {
         val userRole = getUserRole(userRoleID)
-        userRole.name = name
-        userRole.description = description
+        userRole.setName(name)
+        userRole.setDescription(description)
         updateUserRole(userRole)
     }
 

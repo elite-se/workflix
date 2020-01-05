@@ -1,18 +1,50 @@
 package de.se.team3.logic.domain
 
+import de.se.team3.logic.exceptions.InvalidInputException
 import java.time.Instant
 import org.json.JSONArray
 import org.json.JSONObject
 
 data class UserRole(
-    var id: Int,
-    var name: String,
-    var description: String,
+    val id: Int,
+    private var name: String,
+    private var description: String,
     val createdAt: Instant,
     val members: ArrayList<User>
 ) {
+
+    fun getName() = name
+
+    fun getDescription() = description
+
+    /**
+     * Create-Constructor
+     */
     constructor(name: String, description: String) :
-        this(0, name, description, Instant.now(), ArrayList<User>())
+        this(0, name, description, Instant.now(), ArrayList<User>()) {
+
+        setName(name)
+        setDescription(description)
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @throws InvalidInputException Is thrown if the given name is empty.
+     */
+    fun setName(name: String) {
+        if (name.isEmpty())
+            throw InvalidInputException("name must not be empty")
+
+        this.name = name
+    }
+
+    /**
+     * Sets the description.
+     */
+    fun setDescription(description: String) {
+        this.description = description
+    }
 
     fun toJSON(): JSONObject {
         val json = JSONObject()
