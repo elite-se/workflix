@@ -5,15 +5,7 @@ import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.webservice.handlers.ProcessGroupsHandler
-import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
-import de.se.team3.webservice.handlers.ProcessTemplatesHandler
-import de.se.team3.webservice.handlers.ProcessesHandler
-import de.se.team3.webservice.handlers.ProcessesRunningHandler
-import de.se.team3.webservice.handlers.TasksAssignmentsHandler
-import de.se.team3.webservice.handlers.TasksCommentsHandler
-import de.se.team3.webservice.handlers.UserHandler
-import de.se.team3.webservice.handlers.UserRoleHandler
+import de.se.team3.webservice.handlers.*
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 import org.json.JSONException
@@ -49,6 +41,11 @@ fun main(args: Array<String>) {
     }
     app.exception(JSONException::class.java) { e, ctx ->
         ctx.status(400).result("" + e.message)
+    }
+
+    //login
+    app.post("login") { ctx ->
+        AuthentificationHandler.login(ctx)
     }
 
     // users

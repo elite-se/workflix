@@ -19,7 +19,7 @@ object LoginManager {
      * @throws InvalidInputException if there is no or more than one user with this email address, or the user
      * is already logged in.
      */
-    fun login(email: String, password: String): AuthentificationToken? {
+    fun login(email: String, password: String): AuthentificationToken {
         val userList = UserContainer.getAllUsers().filter { it.email == email }
         //if there are more than two users with the same email address, something went terribly wrong during user creation
         if (userList.size < 1)
