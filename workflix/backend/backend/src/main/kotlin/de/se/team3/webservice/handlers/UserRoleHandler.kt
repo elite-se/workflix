@@ -8,88 +8,70 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-object UserRoleHandler {
+/**
+ * Handles requests to resources of form:
+ * /usersRoles
+ * /usersRoles/:userRoleId
+ */
+object UserRolesHandler {
+
+    /**
+     * Handles requests for all user roles.
+     */
     fun getAll(ctx: Context) {
-        try {
-            val roles = UserRoleContainer.getAllUserRoles()
+        val roles = UserRoleContainer.getAllUserRoles()
 
-            val rolesArray = JSONArray(roles.map { it.toJSON() })
-            val groupsJSON = JSONObject().put("roles", rolesArray)
+        val rolesArray = JSONArray(roles.map { it.toJSON() })
+        val groupsJSON = JSONObject().put("roles", rolesArray)
 
-            ctx.result(groupsJSON.toString())
-                .contentType("application/json")
-        } catch (e: IllegalArgumentException) {
-            ctx.status(404).result("page not found")
-        }
+        ctx.result(groupsJSON.toString())
+            .contentType("application/json")
     }
 
+    /**
+     * Handles requests for creating a user role.
+     */
     fun create(ctx: Context) {
-        try {
-            val content = ctx.body()
-            val userRoleJsonObject = JSONObject(content)
+        val content = ctx.body()
+        val userRoleJsonObject = JSONObject(content)
 
-            val name = userRoleJsonObject.getString("name")
-            val description = userRoleJsonObject.getString("description")
+        val name = userRoleJsonObject.getString("name")
+        val description = userRoleJsonObject.getString("description")
 
-            try {
-                val userRole = UserRole(name, description)
-                val newId = UserRoleContainer.createUserRole(userRole)
-                userRole.id = newId
-                val newIdObject = JSONObject()
-                newIdObject.put("newId", newId)
+        val userRole = UserRole(name, description)
+        val newId = UserRoleContainer.createUserRole(userRole)
+        userRole.id = newId
+        val newIdObject = JSONObject()
+        newIdObject.put("newId", newId)
 
-                ctx.result(newIdObject.toString())
-            } catch (e: IllegalArgumentException) {
-                ctx.status(400).result(e.toString())
-            }
-        } catch (e: JSONException) {
-            ctx.status(400).result(e.toString())
-        }
+        ctx.result(newIdObject.toString())
     }
 
     fun update(ctx: Context, userRoleID: Int) {
-        try {
-            val content = ctx.body()
-            val userRoleJsonObject = JSONObject(content)
+        val content = ctx.body()
+        val userRoleJsonObject = JSONObject(content)
 
-            val name = userRoleJsonObject.getString("name")
-            val description = userRoleJsonObject.getString("description")
+        val name = userRoleJsonObject.getString("name")
+        val description = userRoleJsonObject.getString("description")
 
-            UserRoleContainer.updateUserRole(userRoleID, name, description)
-        } catch (e: JSONException) {
-            ctx.status(400).result(e.toString())
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user role not found")
-        }
+        UserRoleContainer.updateUserRole(userRoleID, name, description)
     }
 
     fun delete(ctx: Context, userRoleID: Int) {
-        try {
-            UserRoleContainer.deleteUserRole(userRoleID)
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user role not found")
-        }
+        UserRoleContainer.deleteUserRole(userRoleID)
     }
 
     fun addUserToRole(ctx: Context) {
-        try {
-            val content = ctx.body()
-            val relationshipJSON = JSONObject(content)
+        val content = ctx.body()
+        val relationshipJSON = JSONObject(content)
 
-            val userID = relationshipJSON.getString("userId")
-            val userRoleID = relationshipJSON.getInt("userRoleId")
+        val userID = relationshipJSON.getString("userId")
+        val userRoleID = relationshipJSON.getInt("userRoleId")
 
-            UserRoleContainer.addUserToRole(userID, userRoleID)
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user role or user not found")
-        }
+        UserRoleContainer.addUserToRole(userID, userRoleID)
     }
 
     fun deleteUserFromRole(ctx: Context, userID: String, userRoleID: Int) {
-        try {
-            UserRoleContainer.deleteUserFromRole(userID, userRoleID)
-        } catch (e: NoSuchElementException) {
-            ctx.status(404).result("user role or user not found")
-        }
+        UserRoleContainer.deleteUserFromRole(userID, userRoleID)
     }
 }
