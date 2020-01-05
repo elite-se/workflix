@@ -35,7 +35,8 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
     override fun createTaskComment(taskComment: TaskComment): Int {
         val task = TasksContainer.getTask(taskComment.taskId!!) // throws NotFoundException
 
-        // TODO check user existence
+        if (!UserContainer.hasUser(taskComment.creatorId!!))
+            throw NotFoundException("the creator does not exist")
 
         val newId = TaskCommentsDAO.createTaskComment(taskComment)
         taskCommentsTaskIdCache.put(newId, taskComment.taskId!!)
@@ -77,4 +78,5 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
         task.deleteTaskComment(taskCommentId)
         taskCommentsTaskIdCache.remove(taskCommentId)
     }
+
 }
