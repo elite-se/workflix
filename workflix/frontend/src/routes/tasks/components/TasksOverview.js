@@ -26,8 +26,7 @@ type PropsType = {|
   initialProcesses: Array<ProcessType>,
   initialTaskTemplates: Map<number, TaskTemplateType>,
   users: Map<string, UserType>,
-  processGroups: Map<number, ProcessGroupType>,
-  path: string
+  processGroups: Map<number, ProcessGroupType>
 |}
 type StateType = {|
   selectedTask: ?TaskType,

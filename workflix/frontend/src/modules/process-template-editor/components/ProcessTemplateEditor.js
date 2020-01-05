@@ -93,7 +93,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   onTitleChange = (title: string) => this.setState({ title })
   onDescriptionChange = (description: string) => this.setState({ description })
   onDurationLimitChange = (durationLimit: ?number) => this.setState({ durationLimit })
-  onOwnerChange = (owner: UserType) => this.setState({ owner })
+  onOwnerChange = (owner: ?UserType) => this.setState({ owner })
 
   onSaveClick = () => {
     const { title, description, durationLimit, owner, tasks } = this.state
