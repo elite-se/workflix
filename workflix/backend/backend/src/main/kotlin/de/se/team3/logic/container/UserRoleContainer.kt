@@ -25,6 +25,22 @@ object UserRoleContainer : UserRoleContainerInterface {
         }
     }
 
+    /**
+     * Checks whether the specified user role exists or not.
+     */
+    fun hasUserRole(userRoleId: Int): Boolean {
+        if (userRoleCache.containsKey(userRoleId))
+            return true
+
+        val userRole = UserRoleDAO.getUserRole(userRoleId)
+        if (userRole != null) {
+            userRoleCache.put(userRoleId, userRole)
+            return true
+        }
+
+        return false
+    }
+
     override fun createUserRole(userRole: UserRole): Int {
         val newID = UserRoleDAO.createUserRole(userRole)
         userRoleCache[newID] = userRole

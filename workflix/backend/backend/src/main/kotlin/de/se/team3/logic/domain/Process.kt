@@ -61,7 +61,7 @@ class Process(
         Instant.now(), // started at
         createTasks(processTemplateId)) {
 
-        checkProperties(title, processTemplate)
+        checkProperties(starterId, title, processTemplate)
     }
 
     /**
@@ -159,11 +159,13 @@ class Process(
          * @throws InvalidInputException Is thrown if the title is empty or if the underlying
          * process template is already deleted.
          */
-        fun checkProperties(title: String, processTemplate: ProcessTemplate) {
+        fun checkProperties(starterId: String, title: String, processTemplate: ProcessTemplate) {
             if (title.isEmpty())
                 throw InvalidInputException("title must not be empty")
             if (processTemplate.isDeleted())
                 throw InvalidInputException("must not be based on a deleted process template")
+            if (!UserContainer.hasUser(starterId))
+                throw InvalidInputException("user specified as owner does not exist")
         }
 
         /**
