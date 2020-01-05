@@ -41,22 +41,26 @@ object UserRoleContainer : UserRoleContainerInterface {
         return false
     }
 
+    /**
+     * Creates the given user role.
+     *
+     * @return The generated id of the user role.
+     */
     override fun createUserRole(userRole: UserRole): Int {
         val newID = UserRoleDAO.createUserRole(userRole)
-        userRoleCache[newID] = userRole
+        userRoleCache[newID] = userRole.copy(id = newID)
         return newID
     }
 
+    /**
+     * Updates the given user role.
+     */
     override fun updateUserRole(userRole: UserRole) {
+        if (!hasUserRole(userRole.id!!))
+            throw NotFoundException("user role does not exist")
+
         UserRoleDAO.updateUserRole(userRole)
         userRoleCache[userRole.id] = userRole
-    }
-
-    override fun updateUserRole(userRoleID: Int, name: String, description: String) {
-        val userRole = getUserRole(userRoleID)
-        userRole.setName(name)
-        userRole.setDescription(description)
-        updateUserRole(userRole)
     }
 
     override fun deleteUserRole(userRoleID: Int) {

@@ -42,7 +42,7 @@ class User(
         return UserRoleContainer
             .getAllUserRoles()
             .filter { it.members.contains(this) }
-            .map { it.id }
+            .map { it.id!! }
     }
 
     /**

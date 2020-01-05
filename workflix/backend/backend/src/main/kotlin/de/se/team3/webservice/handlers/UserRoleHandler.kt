@@ -40,7 +40,7 @@ object UserRolesHandler {
 
         val userRole = UserRole(name, description)
         val newId = UserRoleContainer.createUserRole(userRole)
-        userRole.id = newId
+
         val newIdObject = JSONObject()
         newIdObject.put("newId", newId)
 
@@ -54,7 +54,8 @@ object UserRolesHandler {
         val name = userRoleJsonObject.getString("name")
         val description = userRoleJsonObject.getString("description")
 
-        UserRoleContainer.updateUserRole(userRoleID, name, description)
+        val userRole = UserRole(userRoleID, name, description)
+        UserRoleContainer.updateUserRole(userRole)
     }
 
     fun delete(ctx: Context, userRoleID: Int) {

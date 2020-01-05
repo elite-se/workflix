@@ -72,7 +72,7 @@ object UserRoleDAO : UserRoleDAOInterface {
             it.name to userRole.getName()
             it.description to userRole.getDescription()
 
-            where { it.ID eq userRole.id }
+            where { it.ID eq userRole.id!! }
         }
     }
 

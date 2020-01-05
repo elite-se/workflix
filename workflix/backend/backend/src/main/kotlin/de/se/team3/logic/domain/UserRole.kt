@@ -6,7 +6,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 data class UserRole(
-    val id: Int,
+    val id: Int?,
     private var name: String,
     private var description: String,
     val createdAt: Instant,
@@ -21,11 +21,17 @@ data class UserRole(
      * Create-Constructor
      */
     constructor(name: String, description: String) :
-        this(0, name, description, Instant.now(), ArrayList<User>()) {
+        this(null, name, description, Instant.now(), ArrayList<User>()) {
 
         setName(name)
         setDescription(description)
     }
+
+    /**
+     * Update-Constructor
+     */
+    constructor(id: Int, name: String, description: String)
+            : this(id, name, description, Instant.now(), ArrayList<User>())
 
     /**
      * Sets the name.
