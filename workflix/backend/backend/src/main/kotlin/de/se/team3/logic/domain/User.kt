@@ -1,13 +1,13 @@
 package de.se.team3.logic.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
+import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
-import org.json.JSONArray
-import org.json.JSONObject
 
 class User(
     val id: String,
@@ -15,6 +15,7 @@ class User(
     val displayname: String,
     val email: String,
     var password: String,
+    @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant
 ) {
 
@@ -36,33 +37,23 @@ class User(
     /**
      * @return All user roles the user is a member of.
      */
-    @JsonIgnore // avoids cyclomatic call with process groups
-    fun getUserRoleMemberships(): List<UserRole> {
+    @JsonIgnore
+    fun getUserRoleIds(): List<Int> {
         return UserRoleContainer
             .getAllUserRoles()
             .filter { it.members.contains(this) }
+            .map { it.id }
     }
 
     /**
      * @return All process groups the user is a member of.
      */
     @JsonIgnore // avoids cyclomatic call with process groups
-    fun getProcessGroupMemberships(): List<ProcessGroup> {
+    fun getProcessGroupIds(): List<Int> {
         return ProcessGroupsContainer
             .getAllProcessGroups()
             .filter { it.hasMember(id) }
-    }
-
-    fun toJSON(): JSONObject {
-        val json = JSONObject()
-        json.put("id", this.id)
-        json.put("name", this.name)
-        json.put("displayname", this.displayname)
-        json.put("email", this.email)
-        json.put("createdAt", this.createdAt)
-        json.put("userRoleIds", JSONArray(getUserRoleMemberships().map { toJSON() }))
-        json.put("processGroupIds", JSONArray(getProcessGroupMemberships().map { toJSON() }))
-        return json
+            .map { it.id!! }
     }
 
     companion object {
