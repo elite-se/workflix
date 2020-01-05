@@ -8,7 +8,7 @@ graph:  1 ----- 3 - 6
         0 - 2 - 4 - 5 - 7
 */
 
-import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
+import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 const MOCK_TASK_TEMPLATES: Array<IncompleteTaskTemplateType> = [
   {
