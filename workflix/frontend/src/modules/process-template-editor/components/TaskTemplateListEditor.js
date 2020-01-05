@@ -114,7 +114,7 @@ class TaskTemplateListEditor extends React.Component<PropsType, StateType> {
         <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes.map(node => node.data)}
                   createTask={this.createTask} selectTaskId={this.selectTaskId}
                   highlightAdd={highlightValidation && tasks.length === 0}/>
-        <ProcessChart tasks={processedNodes}/>
+        <ProcessChart tasks={processedNodes} selectedId={selectedTaskId} selectTaskId={this.selectTaskId}/>
       </div>
       <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
               onClose={this.unselectTask} style={{ overflow: 'auto' }} onOpening={onOpenRemoveOverlayClass}>
