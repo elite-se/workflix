@@ -30,6 +30,8 @@ object LoginManager {
         val user = userList.first()
         if (tokensInUse.map { it.user }.contains(user))
             throw InvalidInputException("This user is already logged in.")
+        if (user.password != password)
+            throw InvalidInputException("Wrong password.")
         val token = AuthentificationToken(user)
         tokensInUse.add(token)
         return token
@@ -38,7 +40,7 @@ object LoginManager {
     /**
      * Logs a user out.
      *
-     * @param username name of the user to be logged out (i.e., currently the users email address)
+     * @param token bearer token of the user to be logged out
      */
     fun logout(token: String) {
         tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
