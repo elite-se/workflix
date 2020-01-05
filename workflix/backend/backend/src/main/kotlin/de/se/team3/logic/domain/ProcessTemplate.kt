@@ -30,7 +30,7 @@ data class ProcessTemplate(
 
     fun getProcessCount() = processCount
 
-    fun getDeleted() = deleted
+    fun isDeleted() = deleted
 
     @get:JsonIgnore
     val owner by lazy { UserContainer.getUser(ownerId) }
@@ -117,6 +117,13 @@ data class ProcessTemplate(
     }
 
     companion object {
+
+        /**
+         * Checks property constraints.
+         *
+         * @throws InvalidInputException Is thrown if title is empty, duration limit is not positive,
+         * the list of task templates is or contains a cycle.
+         */
         fun checkProperties(title: String, durationLimit: Int?, taskTemplates: Map<Int, TaskTemplate>) {
             if (title.isEmpty())
                 throw InvalidInputException("title must not be empty")
