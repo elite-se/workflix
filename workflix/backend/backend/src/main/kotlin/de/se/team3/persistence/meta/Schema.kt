@@ -12,6 +12,8 @@ object UsersTable : Table<Nothing>("users") {
     val name by varchar("name")
     val displayname by varchar("displayname")
     val email by varchar("email")
+    val createdAt by timestamp("created_at")
+    val password by varchar("password")
     val deleted by boolean("deleted")
 }
 
@@ -23,7 +25,7 @@ object UserRolesTable : Table<Nothing>("user_roles") {
     val deleted by boolean("deleted")
 }
 
-object UserRoleMembers : Table<Nothing>("user_role_members") {
+object UserRoleMembersTable : Table<Nothing>("user_role_members") {
     val ID by int("id").primaryKey()
     val userID by varchar("user_id")
     val userRoleID by int("user_role_id")
@@ -69,6 +71,7 @@ object ProcessTemplatesFilteredView : Table<Nothing>("process_templates_filtered
 object TaskTemplatesTable : Table<Nothing>("task_templates") {
     val id by int("id").primaryKey()
     val processTemplateId by int("process_template_id")
+    val responsibleUserRoleId by int("responsible_user_role_id")
     val name by varchar("name")
     val description by text("description")
     val estimatedDuration by int("estimated_duration")

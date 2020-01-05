@@ -10,8 +10,10 @@ import UserApi from '../../../modules/api/UsersApi'
 import type { UserType } from '../../../modules/datatypes/User'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import TaskDrawer from './drawer/TaskDrawer'
-import type { FiltersType } from '../types/Filters'
 import Filters from './filtering/Filters'
+import type { FiltersType } from '../../../modules/datatypes/Filters'
+import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
@@ -23,7 +25,9 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
 type PropsType = {|
   initialProcesses: Array<ProcessType>,
   initialTaskTemplates: Map<number, TaskTemplateType>,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  processGroups: Map<number, ProcessGroupType>,
+  path: string
 |}
 type StateType = {|
   selectedTask: ?TaskType,
@@ -83,7 +87,8 @@ class TasksOverview extends React.Component<PropsType, StateType> {
 
   render () {
     return <div>
-      <Filters onFiltersChanged={this.onFiltersChanged} filters={this.state.filters}/>
+      <Filters onFiltersChanged={this.onFiltersChanged} filters={this.state.filters}
+               users={this.props.users} processGroups={this.props.processGroups}/>
       <ProcessListWrapper>{
         this.state.processes.map(process => (
           <ProcessCard
@@ -107,22 +112,26 @@ class TasksOverview extends React.Component<PropsType, StateType> {
 
 const promiseCreator = () => Promise.all([
   new ProcessApi().getProcesses(),
-  new UserApi().getUsers()
+  new UserApi().getUsers(),
+  new ProcessGroupsApi().getProcessGroups()
 ]).then(
-  ([processes, users]) => Promise.all([
+  ([processes, users, procGroups]) => Promise.all([
     Promise.resolve(processes),
     Promise.resolve(users),
-    new ProcessApi().getTaskTemplatesForProcessTemplates(processes.map(proc => proc.processTemplateId))
+    new ProcessApi().getTaskTemplatesForProcessTemplates(processes.map(proc => proc.processTemplateId)),
+    Promise.resolve(procGroups)
   ])).then(
-  ([processes, users, taskTemplates]) => ({
+  ([processes, users, taskTemplates, procGroups]) => ({
     initialProcesses: processes,
     users: users,
-    initialTaskTemplates: taskTemplates
+    initialTaskTemplates: taskTemplates,
+    processGroups: procGroups
   })
 )
 
 export default withPromiseResolver<PropsType, {|
   initialProcesses: Array<ProcessType>,
   initialTaskTemplates: Map<number, TaskTemplateType>,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  processGroups: Map<number, ProcessGroupType>
 |}>(promiseCreator)(TasksOverview)

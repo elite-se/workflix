@@ -4,22 +4,14 @@ import { union, uniq } from 'lodash'
 import type { ProcessTemplateMasterDataType, ProcessTemplateType, ProcessType } from '../datatypes/Process'
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
-import type { FiltersType } from '../../routes/tasks/types/Filters'
+import type { FiltersType } from '../datatypes/Filters'
+import { parseDatesInProcess, parseDatesInProcessTemplate } from './parseDates'
+import type { NewIdResultType } from './common'
+import { BACKEND } from './common'
 
-const backend = 'https://wf-backend.herokuapp.com'
-const processesBackend = `${backend}/processes`
-const processesTemplatesBackend = `${backend}/processTemplates`
-const tasksBackend = `${backend}/tasks`
-
-const defaultFetchOptions = {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
-
-type NewIdResultType = {
-  newId: number
-}
+const processesBackend = `${BACKEND}/processes`
+const processesTemplatesBackend = `${BACKEND}/processTemplates`
+const tasksBackend = `${BACKEND}/tasks`
 
 export type FilledProcessTemplateType = {|
   title: string,
@@ -42,7 +34,9 @@ class ProcessApi {
     // convert filters into URL parameters
     const url = new URL(processesBackend)
     const params = union(
-      filters.status ? filters.status.map(status => ['status', status]) : []
+      filters.status ? filters.status.map(status => ['status', status]) : [],
+      filters.involving ? [['involving', filters.involving.id]] : [],
+      filters.processGroups ? filters.processGroups.map(group => ['processGroupId', group.id.toString()]) : []
     )
     url.search = new URLSearchParams(params).toString()
 
@@ -56,11 +50,11 @@ class ProcessApi {
             .then(response => response.json())
         )
       ))
+      .then(processes => processes.map(parseDatesInProcess))
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
     return safeFetch(`${tasksBackend}/${taskId}/assignments/${assigneeId}`, {
-      ...defaultFetchOptions,
       method: 'PUT',
       body: JSON.stringify({
         immediateClosing
@@ -107,6 +101,7 @@ class ProcessApi {
     return Promise.all(processTemplateIds.map(procTempId =>
       safeFetch(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
+        .then(parseDatesInProcessTemplate)
     ))
   }
 

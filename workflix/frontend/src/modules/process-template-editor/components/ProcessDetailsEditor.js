@@ -3,9 +3,9 @@
 import React from 'react'
 import { InputGroup, Label, NumericInput } from '@blueprintjs/core'
 import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
-import UserSelect from './UserSelect'
 import type { UserType } from '../../datatypes/User'
 import styled from 'styled-components'
+import UserSelect from '../../../modules/common/UserSelect'
 
 const handleStringChange = (handler: string => void) =>
   (event: SyntheticInputEvent<HTMLInputElement>) => handler(event.target.value)
@@ -25,7 +25,7 @@ type PropsType = {
   durationLimit: ?number,
   users: Map<string, UserType>,
   owner: ?UserType,
-  onOwnerChange: (owner: UserType) => void
+  onOwnerChange: (owner: ?UserType) => void
 }
 
 class ProcessDetailsEditor extends React.Component<PropsType> {

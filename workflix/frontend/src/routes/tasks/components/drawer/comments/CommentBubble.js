@@ -23,7 +23,7 @@ class CommentBubble extends React.Component<PropsType> {
       <small style={{
         float: 'right',
         wordWrap: 'break-word'
-      }}>{comment.createdAt}</small>
+      }}>{comment.createdAt.toLocaleString()}</small>
       <p style={{
         wordWrap: 'break-word',
         hyphens: 'auto',

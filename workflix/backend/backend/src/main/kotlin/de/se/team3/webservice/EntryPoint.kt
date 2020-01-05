@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
     ConnectionManager.connect()
 
     // exception handling
-    app.exception(NumberFormatException::class.java) { e, ctx ->
+    app.exception(NumberFormatException::class.java) { _, ctx ->
         ctx.status(400).result("invalid id format")
     }
     app.exception(InvalidInputException::class.java) { e, ctx ->
@@ -54,6 +54,12 @@ fun main(args: Array<String>) {
     // users
     app.get("users") { ctx ->
         UserHandler.getAll(ctx)
+    }
+    app.get("users/:userId") { ctx ->
+        UserHandler.getOne(ctx, ctx.pathParam("userId").toString())
+    }
+    app.post("users") { ctx ->
+        UserHandler.createFrom***REMOVED***(ctx)
     }
 
     // process templates
@@ -85,7 +91,7 @@ fun main(args: Array<String>) {
     app.post("usersToRoles") { ctx ->
         UserRoleHandler.addUserToRole(ctx)
     }
-    app.delete("usersToRoles/:userId:/userRoleId") { ctx ->
+    app.delete("usersToRoles/:userId/:userRoleId") { ctx ->
         UserRoleHandler.deleteUserFromRole(ctx,
             ctx.pathParam("userId").toString(),
             ctx.pathParam("userRoleId").toInt())
@@ -96,11 +102,8 @@ fun main(args: Array<String>) {
     app.get("processes/:processId") { ctx ->
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
-
-    // running processes
-    app.get("processes/running/:ownerId") { ctx -> }
-    app.post("processes/running") { ctx -> ProcessesRunningHandler.create(ctx) }
-    app.delete("processes/running/:processId") { ctx ->
+    app.post("processes") { ctx -> ProcessesRunningHandler.create(ctx) }
+    app.delete("processes") { ctx ->
         ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
 

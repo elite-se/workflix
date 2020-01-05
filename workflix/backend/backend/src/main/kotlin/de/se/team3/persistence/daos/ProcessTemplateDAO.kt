@@ -25,7 +25,6 @@ import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.inList
 import me.liuwj.ktorm.dsl.innerJoin
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.iterator
 import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
@@ -50,7 +49,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
                 row[UsersTable.ID]!!,
                 row[UsersTable.name]!!,
                 row[UsersTable.displayname]!!,
-                row[UsersTable.email]!!
+                row[UsersTable.email]!!,
+                row[UsersTable.createdAt]!!
             )
             val processTemplate = ProcessTemplate(
                 row[ProcessTemplatesFilteredView.id]!!,
@@ -109,10 +109,10 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
      *
      * @return Null if the specified process does not exist.
      */
-    override fun getProcessTemplate(templateId: Int): ProcessTemplate? {
+    override fun getProcessTemplate(processTemplateId: Int): ProcessTemplate? {
         val processTemplateResult = ProcessTemplatesView
             .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesView.ownerId)
-            .select().where { ProcessTemplatesView.id eq templateId }
+            .select().where { ProcessTemplatesView.id eq processTemplateId }
 
         val row = processTemplateResult.rowSet
         if (!row.next())
@@ -122,7 +122,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             row[UsersTable.ID]!!,
             row[UsersTable.name]!!,
             row[UsersTable.displayname]!!,
-            row[UsersTable.email]!!
+            row[UsersTable.email]!!,
+            row[UsersTable.createdAt]!!
         )
         val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
 
@@ -152,7 +153,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         // adds the task templates
         taskTemplates.forEach { taskTemplate ->
             val generatedTaskTemplateId = TaskTemplatesTable.insertAndGenerateKey { row ->
-                row.processTemplateId to processTemplateId as Int
+                row.processTemplateId to processTemplateId
+                row.responsibleUserRoleId to taskTemplate.responsibleUserRoleId
                 row.name to taskTemplate.name
                 row.description to taskTemplate.description
                 row.estimatedDuration to taskTemplate.estimatedDuration
@@ -164,10 +166,10 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         // adds the relationships between task templates
         TaskTemplateRelationshipsTable.batchInsert {
             taskTemplates.forEach { taskTemplate ->
-                taskTemplate.successors!!.forEach { successor ->
+                taskTemplate.successors.forEach { successor ->
                     item { row ->
-                        row.predecessor to idMapping.get(taskTemplate.id)
-                        row.successor to idMapping.get(successor.id)
+                        row.predecessor to idMapping[taskTemplate.id]
+                        row.successor to idMapping[successor.id]
                     }
                 }
             }
@@ -250,7 +252,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
 
             // updates the task templates
             deleteTaskTemplatesRequests(processTemplate.id!!)
-            insertTaskTemplates(processTemplate.id!!, processTemplate.taskTemplatesList)
+            insertTaskTemplates(processTemplate.id, processTemplate.taskTemplatesList)
 
             transaction.commit()
             return true
