@@ -42,7 +42,7 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
         id: response.newId,
         creatorId,
         content,
-        createdAt: new Date().toISOString()
+        createdAt: new Date()
       }))
       .catch(err => console.error(err))
     this.setState({

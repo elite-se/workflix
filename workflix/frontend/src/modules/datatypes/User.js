@@ -11,6 +11,6 @@ export type UserRoleType = {|
   id: number,
   name: string,
   description: string,
-  createdAt: string,
+  createdAt: Date,
   memberIds: number[]
 |}

@@ -5,6 +5,7 @@ import type { ProcessTemplateMasterDataType, ProcessTemplateType, ProcessType } 
 import type { TaskTemplateType } from '../datatypes/Task'
 import { safeFetch } from './SafeFetch'
 import type { FiltersType } from '../datatypes/Filters'
+import { parseDatesInProcess, parseDatesInProcessTemplate } from './parseDates'
 import type { NewIdResultType } from './common'
 import { BACKEND } from './common'
 
@@ -48,6 +49,7 @@ class ProcessApi {
             .then(response => response.json())
         )
       ))
+      .then(processes => processes.map(parseDatesInProcess))
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
@@ -90,6 +92,7 @@ class ProcessApi {
     return Promise.all(processTemplateIds.map(procTempId =>
       safeFetch(`${processesTemplatesBackend}/${procTempId}`)
         .then(response => response.json())
+        .then(parseDatesInProcessTemplate)
     ))
   }
 
