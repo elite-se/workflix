@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Alert, Button, FormGroup, H3, H4, InputGroup, NumericInput } from '@blueprintjs/core'
+import { FormGroup, H3, H4, InputGroup, NumericInput } from '@blueprintjs/core'
 import { difference } from 'lodash'
 import PredecessorSelect from './PredecessorSelect'
 import SuccessorSelect from './SuccessorSelect'
@@ -11,6 +11,7 @@ import UserRoleSelect from './UserRoleSelect'
 import type { UserRoleType } from '../../datatypes/User'
 import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 import handleStringChange from '../../common/handleStringChange'
+import ButtonWithDialog from '../../common/components/ButtonWithDialog'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,
@@ -21,11 +22,7 @@ type PropsType = {
   onDelete: () => void
 }
 
-type StateType = {
-  deleteAlertOpen: boolean
-}
-
-const TrashButton = styled(Button)`
+const TrashButtonWithDialog = styled(ButtonWithDialog)`
   margin-top: 20px;
 `
 
@@ -50,9 +47,7 @@ const Item = styled<{}, {}, 'div'>('div')`
   margin: 10px 0;
 `
 
-class TaskTemplateEditor extends React.Component<PropsType, StateType> {
-  state = { deleteAlertOpen: false }
-
+class TaskTemplateEditor extends React.Component<PropsType> {
   onTitleChange = handleStringChange(name => this.props.onChange({
     ...this.props.task,
     name
@@ -68,8 +63,6 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
     description
   }))
 
-  onOpenDeleteAlert = () => this.setState({ deleteAlertOpen: true })
-  onCloseDeleteAlert = () => this.setState({ deleteAlertOpen: false })
   onResponsibleUserRoleChange = (userRole: UserRoleType) => this.props.onChange({
     ...this.props.task,
     responsibleUserRoleId: userRole.id
@@ -77,7 +70,6 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
 
   render () {
     const { task, allTasks, onChange, userRoles, highlightValidation, onDelete } = this.props
-    const { deleteAlertOpen } = this.state
 
     const possiblePreds = difference(allTasks, findDescendants(task, allTasks))
     const possibleSuccs = difference(allTasks, findAncestors(task, allTasks))
@@ -119,16 +111,14 @@ class TaskTemplateEditor extends React.Component<PropsType, StateType> {
                          task={task}/>
       </FormGroup>
       <Item style={{ textAlign: 'center' }}>
-        <TrashButton icon='trash' text='Delete Task Template' intent='danger' onClick={this.onOpenDeleteAlert}/>
-        <Alert isOpen={deleteAlertOpen} icon='trash' intent='danger' confirmButtonText='Delete' canEscapeKeyCancel
-               canOutsideClickCancel cancelButtonText='Cancel' onConfirm={onDelete}
-               onCancel={this.onCloseDeleteAlert}>
+        <TrashButtonWithDialog icon='trash' text='Delete Task Template' intent='danger'
+                               onClick={onDelete}>
           <H4>Delete Task Template?</H4>
           <p>
             Are you sure you want to delete this task template?
             All dependencies of it will be removed as well.
           </p>
-        </Alert>
+        </TrashButtonWithDialog>
       </Item>
     </div>
   }
