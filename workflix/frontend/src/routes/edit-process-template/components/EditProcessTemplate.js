@@ -18,10 +18,9 @@ type PropsType = {
 }
 
 class EditProcessTemplate extends React.Component<PropsType> {
-  onSave = (processTemplate: FilledProcessTemplateType) => {
-    new ProcessApi().editProcessTemplate(this.props.initialProcessTemplate.id, processTemplate)
-      .then(() => navigate('/process-templates'))
-      .catch(e => console.error(e))
+  onSave = async (processTemplate: FilledProcessTemplateType) => {
+    await new ProcessApi().editProcessTemplate(this.props.initialProcessTemplate.id, processTemplate)
+    navigate('/process-templates')
   }
 
   render () {

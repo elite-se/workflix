@@ -18,10 +18,9 @@ type PropsType = {
 }
 
 class CreateProcessTemplate extends React.Component<PropsType> {
-  onSave = (processTemplate: FilledProcessTemplateType) => {
-    new ProcessApi().addProcessTemplate(processTemplate)
-      .then(() => navigate('/process-templates'))
-      .catch(e => console.error(e))
+  onSave = async (processTemplate: FilledProcessTemplateType) => {
+    await new ProcessApi().addProcessTemplate(processTemplate)
+    navigate('/process-templates')
   }
 
   render () {

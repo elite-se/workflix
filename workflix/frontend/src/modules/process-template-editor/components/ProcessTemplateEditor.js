@@ -2,7 +2,7 @@
 
 import React from 'react'
 import ProcessChart from './ProcessChart'
-import { Button, Colors, Drawer, FormGroup, H2 } from '@blueprintjs/core'
+import { Alert, Button, Colors, Drawer, FormGroup, H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import TaskTemplateEditor from './TaskTemplateEditor'
 import type { UserRoleType, UserType } from '../../datatypes/User'
@@ -35,14 +35,16 @@ type PropsType = {
   userRoles: Map<number, UserRoleType>,
   title: string,
   initialProcessTemplate: IncompleteProcessTemplateType,
-  onSave: FilledProcessTemplateType => void
+  onSave: FilledProcessTemplateType => Promise<void>
 }
 
 type StateType = {|
   ...IncompleteProcessTemplateType,
   selectedTaskId: ?number,
   highlightValidation: boolean,
-  highlightTaskValidation: boolean
+  highlightTaskValidation: boolean,
+  errorAlert: ?string,
+  saveLoading: boolean
 |}
 
 const taskValid = (task: IncompleteTaskTemplateType) =>
@@ -53,7 +55,9 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
     ...this.props.initialProcessTemplate,
     selectedTaskId: null,
     highlightValidation: false,
-    highlightTaskValidation: false
+    highlightTaskValidation: false,
+    errorAlert: null,
+    saveLoading: false
   }
 
   selectTaskId = (id: number) => {
@@ -136,7 +140,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
 
   onOwnerChange = (owner: ?UserType) => this.setState({ owner })
 
-  onSaveClick = () => {
+  onSaveClick = async () => {
     const { title, description, durationLimit, owner, tasks } = this.state
     if (!title || !durationLimit || !owner || tasks.length === 0) {
       AppToaster.show({
@@ -146,26 +150,42 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       })
       return this.setState({ highlightValidation: true })
     }
-    this.props.onSave({
-      title,
-      description,
-      durationLimit,
-      ownerId: owner?.id,
-      taskTemplates: tasks.map(task => ({
-        id: task.id,
-        responsibleUserRoleId: task.responsibleUserRoleId || 0,
-        name: task.name,
-        description: task.description,
-        estimatedDuration: task.estimatedDuration || 0,
-        necessaryClosings: task.necessaryClosings,
-        predecessors: task.predecessors
-      }))
-    })
+    try {
+      this.setState({ saveLoading: true })
+      await this.props.onSave({
+        title,
+        description,
+        durationLimit,
+        ownerId: owner.id,
+        taskTemplates: tasks.map(task => {
+          if (!task.responsibleUserRoleId || !task.estimatedDuration) {
+            throw new Error(`Task ${task.name} is invalid.`)
+          }
+          return {
+            id: task.id,
+            responsibleUserRoleId: task.responsibleUserRoleId,
+            name: task.name,
+            description: task.description,
+            estimatedDuration: task.estimatedDuration || 0,
+            necessaryClosings: task.necessaryClosings,
+            predecessors: task.predecessors
+          }
+        })
+      })
+      this.setState({ saveLoading: false })
+    } catch (e) {
+      this.setState({
+        errorAlert: e.message,
+        saveLoading: false
+      })
+    }
   }
+
+  closeAlert = () => this.setState({ errorAlert: null })
 
   render () {
     const {
-      tasks, title, description, durationLimit, owner,
+      tasks, title, description, durationLimit, owner, saveLoading, errorAlert,
       selectedTaskId, highlightValidation, highlightTaskValidation
     } = this.state
     const { users, userRoles } = this.props
@@ -185,7 +205,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
         justifyContent: 'start',
         alignItems: 'center'
       }}>
-        <Button icon='floppy-disk' text='Save' intent='primary' onClick={this.onSaveClick}/>
+        <Button icon='floppy-disk' text='Save' intent='primary' loading={saveLoading} onClick={this.onSaveClick}/>
         <H2 style={{
           display: 'inline',
           marginLeft: '40px'
@@ -214,6 +234,9 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
         <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}
                             userRoles={userRoles} highlightValidation={highlightTaskValidation}/>}
       </Drawer>
+      <Alert isOpen={!!errorAlert} intent='danger' icon='error' confirmButtonText='Ok' onClose={this.closeAlert}>
+        {errorAlert}
+      </Alert>
     </div>
   }
 }
