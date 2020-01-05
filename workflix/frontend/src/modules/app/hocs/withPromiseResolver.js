@@ -11,6 +11,7 @@ const CenterScreen = styled<{}, {}, 'div'>('div')`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100%;
 `
 
 function withPromiseResolver<P1: {}, P2: {}> (
