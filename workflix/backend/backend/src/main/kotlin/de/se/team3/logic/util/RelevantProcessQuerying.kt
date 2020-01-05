@@ -10,10 +10,12 @@ import java.time.Instant
 object RelevantProcessQuerying {
 
     /**
-     * @return List of all processes which are processes of the given user's process group and the user's role is
+     * @return List of all processes which are processes of the given user's process groups and the user's role is
      * assigned, or to which the user is assigned.
      */
-    fun queryRelevantProcesses(userID: String): List<Int> {
+    fun get(userID: String?): List<Int> {
+        if (userID == null)
+            return ArrayList()
         val processesInUsersGroup = ProcessContainer
             .getAllProcesses()
             .filter { ProcessGroupsContainer
@@ -36,10 +38,12 @@ object RelevantProcessQuerying {
     }
 
     /**
-     * @return List of all processes which are processes of the given user's process group, or to which the user is
+     * @return List of all processes which are processes of the given user's process groups, or to which the user is
      * assigned.
      */
-    fun queryProcessGroupProcesses(userID: String): List<Int> {
+    fun getAllInProcessGroups(userID: String?): List<Int> {
+        if (userID == null)
+            return ArrayList()
         val processesInUsersGroup = ProcessContainer
             .getAllProcesses()
             .filter { ProcessGroupsContainer

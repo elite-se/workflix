@@ -35,13 +35,10 @@ data class ProcessQueryPredicate(
         if (statuses.isEmpty() && processGroupIds.isEmpty() && involvingUserId == null)
             return true
 
-        if (statuses.containsOrEmpty(process.getStatus()) && processGroupIds.containsOrEmpty(process.processGroupId))
+        if (statuses.containsOrEmpty(process.getStatus())
+            && processGroupIds.containsOrEmpty(process.processGroupId)
+            && RelevantProcessQuerying.get(involvingUserId).containsOrEmpty(process.id))
             return true
-
-        if (involvingUserId != null) {
-            if (RelevantProcessQuerying.queryRelevantProcesses(involvingUserId).contains(process.id))
-                return true
-        }
 
         return false
     }
