@@ -29,7 +29,9 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
   onKeyPress = (event: KeyboardEvent) => {
     if (this.state.text && event.key === 'Enter' && !event.shiftKey) {
       this.doSend()
-      if (event.preventDefault()) { event.preventDefault() }
+      if (event.preventDefault) {
+        event.preventDefault()
+      }
       return false
     }
   }
@@ -60,7 +62,11 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
 
   render () {
     return <TalkBubble floatEnd
-                       onKeyDown={this.onKeyPress}>
+                       onKeyDown={this.onKeyPress}
+                       style={{
+                         display: 'flex',
+                         flexDirection: 'column'
+                       }}>
       <AutoSizeTextArea
         style={{
           resize: 'none',
@@ -75,12 +81,12 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
         value={this.state.text}
       />
       {this.state.text &&
-        <Button
+      <Button
         rightIcon='direction-right'
-        style={{ float: 'right' }}
+        style={{ alignSelf: 'flex-end' }}
         onClick={this.doSend}>
-          Send
-        </Button>}
+        Send
+      </Button>}
     </TalkBubble>
   }
 }

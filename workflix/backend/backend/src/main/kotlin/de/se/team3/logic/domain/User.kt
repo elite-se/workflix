@@ -41,8 +41,8 @@ class User(
     fun getUserRoleIds(): List<Int> {
         return UserRoleContainer
             .getAllUserRoles()
-            .filter { it.members.contains(this) }
-            .map { it.id }
+            .filter { it.getMembers().contains(this) }
+            .map { it.id!! }
     }
 
     /**

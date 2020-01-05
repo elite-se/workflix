@@ -3,7 +3,7 @@ package de.se.team3.logic.domain
 import de.se.team3.logic.exceptions.InvalidInputException
 
 data class ProcessQueryPredicate(
-    val statuses: ArrayList<ProcessStatus>,
+    val statuses: List<ProcessStatus>,
     val processGroupIds: List<Int>,
     val involvingUserId: String?
 ) {
@@ -13,5 +13,32 @@ data class ProcessQueryPredicate(
             throw InvalidInputException("invalid user id")
 
         processGroupIds.forEach { if (it < 1) throw InvalidInputException("process group id must be positive") }
+    }
+
+    /**
+     * Checks if the given entry is contained in the list if the list ist not empty.
+     *
+     * @return True if and only if the list is empty or the list contains the given entry.
+     */
+    private fun <T> List<T>.containsOrEmpty(entry: T): Boolean {
+        return if (this.isEmpty())
+            true
+        else
+            this.contains(entry)
+    }
+
+    /**
+     * Checks whether the given process fulfills the predicate.
+     */
+    fun satisfiedBy(process: Process): Boolean {
+        if (statuses.isEmpty() && processGroupIds.isEmpty() && involvingUserId == null)
+            return true
+
+        if (statuses.containsOrEmpty(process.getStatus()) && processGroupIds.containsOrEmpty(process.processGroupId))
+            return true
+
+        // TODO involving user check
+
+        return false
     }
 }

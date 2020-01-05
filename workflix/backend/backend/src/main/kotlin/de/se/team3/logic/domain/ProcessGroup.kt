@@ -18,6 +18,7 @@ data class ProcessGroup(
     private var description: String,
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
+    private var deleted: Boolean,
     private val members: MutableList<User>
 ) {
 
@@ -30,13 +31,15 @@ data class ProcessGroup(
 
     fun getDescription() = description
 
+    fun isDeleted() = deleted
+
     fun getMembersIds() = members.map { it.id }.toList()
 
     /**
      * Create-Constructor
      */
     constructor(ownerID: String, title: String, description: String) :
-            this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), ArrayList<User>()) {
+            this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), false, ArrayList<User>()) {
 
         setTitle(title)
         setOwnerById(ownerID)
@@ -46,13 +49,20 @@ data class ProcessGroup(
      * Update-Constructor
      */
     constructor(id: Int, ownerId: String, title: String, description: String) :
-            this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), ArrayList<User>()) {
+            this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), false, ArrayList<User>()) {
 
         if (id < 1)
             throw InvalidInputException("id must be positive")
 
         setTitle(title)
         setOwnerById(ownerId)
+    }
+
+    /**
+     * Sets the deleted flag
+     */
+    fun delete() {
+        deleted = true
     }
 
     /**
