@@ -12,7 +12,8 @@ const CustomSelect = Select.ofType<UserRoleType>()
 type PropsType = {
   userRoles: UserRoleType[],
   activeItem: ?UserRoleType,
-  onItemSelect: UserRoleType => void
+  onItemSelect: UserRoleType => void,
+  intent?: string
 }
 
 class UserRoleSelect extends React.Component<PropsType> {
@@ -37,7 +38,7 @@ class UserRoleSelect extends React.Component<PropsType> {
   }
 
   render () {
-    const { userRoles, activeItem, onItemSelect } = this.props
+    const { userRoles, activeItem, onItemSelect, intent } = this.props
     return <CustomSelect items={userRoles}
                          fill
                          popoverProps={{
@@ -51,6 +52,7 @@ class UserRoleSelect extends React.Component<PropsType> {
       <Button icon='people'
               rightIcon='caret-down'
               fill
+              intent={intent}
               text={activeItem?.name || '(No selection)'}/>
     </CustomSelect>
   }

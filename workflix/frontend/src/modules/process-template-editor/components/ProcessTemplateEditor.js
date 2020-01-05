@@ -1,133 +1,102 @@
 // @flow
 
 import React from 'react'
-import ProcessChart from './ProcessChart'
-import { Button, Drawer, H2 } from '@blueprintjs/core'
-import TaskList from './TaskList'
-import TaskTemplateEditor from './TaskTemplateEditor'
+import { Alert, Button, Drawer, H2 } from '@blueprintjs/core'
 import type { UserRoleType, UserType } from '../../datatypes/User'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
-import { calcGraph } from '../graph-utils'
 import type { FilledProcessTemplateType } from '../../api/ProcessApi'
-
-export type IncompleteTaskTemplateType = {|
-  id: number,
-  name: string,
-  description: string,
-  estimatedDuration: number,
-  necessaryClosings: number,
-  responsibleUserRoleId: ?number,
-  predecessors: number[]
-|}
-
-export type IncompleteProcessTemplateType = {|
-  tasks: IncompleteTaskTemplateType[],
-  title: string,
-  description: string,
-  durationLimit: ?number,
-  owner: ?UserType
-|}
+import AppToaster from '../../app/AppToaster'
+import TaskTemplateListEditor from './TaskTemplateListEditor'
+import type { IncompleteProcessTemplateType, IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 type PropsType = {
   users: Map<string, UserType>,
   userRoles: Map<number, UserRoleType>,
   title: string,
   initialProcessTemplate: IncompleteProcessTemplateType,
-  onSave: FilledProcessTemplateType => void
+  onSave: FilledProcessTemplateType => Promise<void>
 }
 
 type StateType = {|
   ...IncompleteProcessTemplateType,
-  selectedTaskId: ?number
+  highlightValidation: boolean,
+  errorAlert: ?string,
+  saveLoading: boolean,
+  drawerOpened: boolean
 |}
 
 class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   state = {
     ...this.props.initialProcessTemplate,
-    selectedTaskId: null
-  }
-
-  selectTaskId = (id: number) => {
-    this.setState({ selectedTaskId: id })
-  }
-
-  taskChanged = (task: IncompleteTaskTemplateType) => {
-    this.setState(state => ({
-      tasks: state.tasks.map(_task => _task.id === task.id ? task : _task)
-    }))
-  }
-
-  createTask = () => {
-    this.setState(state => {
-      const newId = Math.max(...state.tasks.map(node => node.id), -1) + 1
-      const newTask: IncompleteTaskTemplateType = {
-        id: newId,
-        predecessors: [],
-        name: '',
-        estimatedDuration: 1,
-        description: '',
-        responsibleUserRoleId: null,
-        necessaryClosings: 0
-      }
-      return {
-        tasks: [...state.tasks, newTask],
-        selectedTaskId: newId
-      }
-    })
-  }
-
-  unselectTask = () => this.setState({ selectedTaskId: null })
-
-  onDeleteTask = () => {
-    this.setState(state => ({
-      tasks: state.tasks
-        .filter(task => task.id !== state.selectedTaskId)
-        .map(task => ({
-          ...task,
-          predecessors: task.predecessors.filter(id => id !== state.selectedTaskId)
-        })),
-      selectedTaskId: null
-    }))
+    highlightValidation: false,
+    errorAlert: null,
+    saveLoading: false,
+    drawerOpened: false
   }
 
   onTitleChange = (title: string) => this.setState({ title })
   onDescriptionChange = (description: string) => this.setState({ description })
-  onDurationLimitChange = (durationLimit: ?number) => this.setState({ durationLimit })
-  onOwnerChange = (owner: ?UserType) => this.setState({ owner })
+  onDurationLimitChange = (durationLimit: number) => this.setState({
+    durationLimit: durationLimit > 0 ? durationLimit : null
+  })
 
-  onSaveClick = () => {
+  onOwnerChange = (owner: ?UserType) => this.setState({ owner })
+  onTasksChange = (tasks: IncompleteTaskTemplateType[]) => this.setState({ tasks })
+
+  onSaveClick = async () => {
     const { title, description, durationLimit, owner, tasks } = this.state
-    if (!durationLimit || !owner) {
-      // todo validate
-      return alert('mööp')
+    if (!title || !durationLimit || !owner || tasks.length === 0) {
+      AppToaster.show({
+        icon: 'error',
+        message: 'Please fill in all required values.',
+        intent: 'danger'
+      })
+      return this.setState({ highlightValidation: true })
     }
-    this.props.onSave({
-      title,
-      description,
-      durationLimit,
-      ownerId: owner?.id,
-      taskTemplates: tasks.map(task => ({
-        id: task.id,
-        responsibleUserRoleId: task.responsibleUserRoleId || 0,
-        name: task.name,
-        description: task.description,
-        estimatedDuration: task.estimatedDuration,
-        necessaryClosings: task.necessaryClosings,
-        predecessors: task.predecessors
-      }))
-    })
+    try {
+      this.setState({ saveLoading: true })
+      await this.props.onSave({
+        title,
+        description,
+        durationLimit,
+        ownerId: owner.id,
+        taskTemplates: tasks.map(task => {
+          if (!task.responsibleUserRoleId || !task.estimatedDuration) {
+            throw new Error(`Task ${task.name} is invalid.`)
+          }
+          return {
+            id: task.id,
+            responsibleUserRoleId: task.responsibleUserRoleId,
+            name: task.name,
+            description: task.description,
+            estimatedDuration: task.estimatedDuration || 0,
+            necessaryClosings: task.necessaryClosings,
+            predecessors: task.predecessors
+          }
+        })
+      })
+      this.setState({ saveLoading: false })
+    } catch (e) {
+      this.setState({
+        errorAlert: e.message,
+        saveLoading: false
+      })
+    }
   }
 
+  closeAlert = () => this.setState({ errorAlert: null })
+  setDrawerOpened = (drawerOpened: boolean) => this.setState({ drawerOpened })
+
   render () {
-    const { tasks, title, description, durationLimit, owner, selectedTaskId } = this.state
+    const {
+      tasks, title, description, durationLimit, owner, saveLoading, errorAlert, highlightValidation, drawerOpened
+    } = this.state
     const { users, userRoles } = this.props
-    const task = tasks.find(task => task.id === selectedTaskId)
-    const processedNodes = calcGraph(tasks)
     return <div style={{
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      marginRight: selectedTaskId !== null ? Drawer.SIZE_SMALL : '0',
+      marginRight: drawerOpened ? Drawer.SIZE_SMALL : '0',
       transition: 'margin-right 0.3s'
     }}>
       <div style={{
@@ -137,7 +106,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
         justifyContent: 'start',
         alignItems: 'center'
       }}>
-        <Button icon='floppy-disk' text='Save' intent='primary' onClick={this.onSaveClick}/>
+        <Button icon='floppy-disk' text='Save' intent='primary' loading={saveLoading} onClick={this.onSaveClick}/>
         <H2 style={{
           display: 'inline',
           marginLeft: '40px'
@@ -145,19 +114,13 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       </div>
       <ProcessDetailsEditor durationLimit={durationLimit} onDurationLimitChange={this.onDurationLimitChange}
                             onDescriptionChange={this.onDescriptionChange} description={description}
-                            onTitleChange={this.onTitleChange} title={title}
+                            onTitleChange={this.onTitleChange} title={title} highlightValidation={highlightValidation}
                             users={users} owner={owner} onOwnerChange={this.onOwnerChange}/>
-      <div style={{ display: 'flex' }}>
-        <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes.map(node => node.data)}
-                  createTask={this.createTask} selectTaskId={this.selectTaskId}/>
-        <ProcessChart tasks={processedNodes}/>
-      </div>
-      <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
-              onClose={this.unselectTask} style={{ overflow: 'auto' }}>
-        {task &&
-        <TaskTemplateEditor task={task} onChange={this.taskChanged} allTasks={tasks} onDelete={this.onDeleteTask}
-                            userRoles={userRoles}/>}
-      </Drawer>
+      <TaskTemplateListEditor tasks={tasks} userRoles={userRoles} onTasksChange={this.onTasksChange}
+                              highlightValidation={highlightValidation} setDrawerOpened={this.setDrawerOpened}/>
+      <Alert isOpen={!!errorAlert} intent='danger' icon='error' confirmButtonText='Ok' onClose={this.closeAlert}>
+        {errorAlert}
+      </Alert>
     </div>
   }
 }

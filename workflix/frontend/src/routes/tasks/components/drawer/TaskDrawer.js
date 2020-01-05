@@ -5,6 +5,7 @@ import { Drawer } from '@blueprintjs/core'
 import TaskDrawerContent from './TaskDrawerContent'
 import type { TaskTemplateType, TaskType } from '../../../../modules/datatypes/Task'
 import type { UserType } from '../../../../modules/datatypes/User'
+import onOpenRemoveOverlayClass from '../../../../modules/common/onOpenRemoveOverlayClass'
 
 type PropsType = {|
   selectedTask: ?TaskType,
@@ -15,16 +16,6 @@ type PropsType = {|
 |}
 
 class TaskDrawer extends React.Component<PropsType> {
-  // pretty hacky: "remove" the class of the Blueprint.js overlay between portal and drawer that prevents clicks in
-  // the rest of the page
-  onDrawerOpening = (elem: HTMLElement) => {
-    const overlayElem = elem.parentElement
-    if (overlayElem == null) {
-      return
-    }
-    overlayElem.classList.remove('bp3-overlay-container')
-  }
-
   render () {
     const selectedTask = this.props.selectedTask
     const taskTemplate = selectedTask ? this.props.taskTemplates.get(selectedTask.taskTemplateId) : undefined
@@ -34,7 +25,7 @@ class TaskDrawer extends React.Component<PropsType> {
       isOpen={selectedTask != null}
       title={taskTemplate?.name || ''}
       onClose={this.props.onClose}
-      onOpening={this.onDrawerOpening}
+      onOpening={onOpenRemoveOverlayClass}
       style={{ overflow: 'auto' }}>
       {selectedTask && <TaskDrawerContent
           task={selectedTask}

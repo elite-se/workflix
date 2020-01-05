@@ -28,7 +28,7 @@ class Header extends React.Component<{}, { title: React$Node }> {
         <Navbar.Heading>{this.state.title}</Navbar.Heading>
         <Navbar.Divider onClick={this.wontfix}/>
         <Link to='/'><Button className='bp3-minimal' icon='layers' text='Tasks overview'/></Link>
-        <Link to='process-templates'><Button className='bp3-minimal' intent='primary' icon='new-layers'
+        <Link to='process-templates'><Button className='bp3-minimal' icon='new-layers'
                                              text='Process templates'/></Link>
         <Link to='users'><Button className='bp3-minimal' icon='user' text='Users'/></Link>
       </Navbar.Group>
