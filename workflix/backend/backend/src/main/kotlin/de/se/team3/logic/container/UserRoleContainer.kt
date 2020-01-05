@@ -13,6 +13,11 @@ object UserRoleContainer : UserRoleContainerInterface {
         return UserRoleDAO.getAllUserRoles()
     }
 
+    /**
+     * Returns the specified user role.
+     *
+     * @throws NotFoundException Is thrown if the specified user role does not exist.
+     */
     override fun getUserRole(userRoleID: Int): UserRole {
         return if (userRoleCache.containsKey(userRoleID)) {
             userRoleCache[userRoleID]!!
@@ -54,6 +59,8 @@ object UserRoleContainer : UserRoleContainerInterface {
 
     /**
      * Updates the given user role.
+     *
+     * @throws NotFoundException Is thrown if the given user role does not exist.
      */
     override fun updateUserRole(userRole: UserRole) {
         if (!hasUserRole(userRole.id!!))
@@ -63,9 +70,15 @@ object UserRoleContainer : UserRoleContainerInterface {
         userRoleCache[userRole.id] = userRole
     }
 
+    /**
+     * Deletes the specified user role.
+     *
+     * @throws NotFoundException Is thrown if the specified user role does not exist.
+     */
     override fun deleteUserRole(userRoleID: Int) {
         if (!UserRoleDAO.deleteUserRole(userRoleID))
             throw NotFoundException("user role $userRoleID does not exist")
+
         userRoleCache.remove(userRoleID)
     }
 
