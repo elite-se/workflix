@@ -32,7 +32,17 @@ object ProcessContainer : ProcessContainerInterface {
         if (!filled)
             fillCache()
 
-        return processesCache.map { it.value }.toList()
+        val processesFiltered = processesCache.map { it.value }.filter { process ->
+            if (predicate.statuses.contains(process.getStatus()))
+                true
+            if (predicate.processGroupIds.contains(process.processGroupId))
+                true
+            false
+        }
+
+        // TODO filter involving
+
+        return processesFiltered
     }
 
     /**
