@@ -9,7 +9,6 @@ import de.se.team3.webservice.handlers.ProcessGroupsHandler
 import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
 import de.se.team3.webservice.handlers.ProcessesHandler
-import de.se.team3.webservice.handlers.ProcessesRunningHandler
 import de.se.team3.webservice.handlers.TasksAssignmentsHandler
 import de.se.team3.webservice.handlers.TasksCommentsHandler
 import de.se.team3.webservice.handlers.UserHandler
@@ -111,9 +110,9 @@ fun main(args: Array<String>) {
     app.get("processes/:processId") { ctx ->
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
-    app.post("processes") { ctx -> ProcessesRunningHandler.create(ctx) }
+    app.post("processes") { ctx -> ProcessesHandler.create(ctx) }
     app.delete("processes") { ctx ->
-        ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
+        ProcessesHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
 
     // process groups
