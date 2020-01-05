@@ -22,14 +22,16 @@ object RelevantProcessQuerying {
                 .contains(userID) }
         val processesInUsersGroupItsRoleIsAssignedTo = processesInUsersGroup
             .filter { process ->
-                process.tasks.values.filter { task ->
+                process.tasks.values.any { task ->
                     UserContainer
                         .getUser(userID)
                         .getUserRoleIds()
-                        .contains(task.taskTemplate?.responsibleUserRoleId) }.size ?: 0 != 0 }
+                        .contains(task.taskTemplate?.responsibleUserRoleId)
+                }
+            }
         val processesUserIsAssignedTo = ProcessContainer
             .getAllProcesses()
-            .filter { it.getAssignees().map { it.id }.contains(userID) }
+            .filter { process -> process.getAssignees().map { it.id }.contains(userID) }
         return (processesInUsersGroupItsRoleIsAssignedTo  + processesUserIsAssignedTo).toSet().map { it.id!! }
     }
 
@@ -46,26 +48,7 @@ object RelevantProcessQuerying {
                 .contains(userID) }
         val processesUserIsAssignedTo = ProcessContainer
             .getAllProcesses()
-            .filter { it.getAssignees().map { it.id }.contains(userID) }
+            .filter { process -> process.getAssignees().map { it.id }.contains(userID) }
         return (processesInUsersGroup + processesUserIsAssignedTo).toSet().map { it.id!! }
     }
-}
-
-fun main() {
-    ConnectionManager.connect()
-    val elias = User("58c120552c94decf6cf3b722", "Elias Keis", "EK", "ek@web.de", "r", Instant.now())
-    val michael = User("58c120552c94decf6cf3b700", "Michael Markl", "MM", "mm@gmx.net", "b", Instant.now())
-    val erik = User("22c120552c94decf6cf3b701", "Erik Pallas", "EP", "eigenlich ist der Shit hier hinten eh egal", Instant.now())
-    val marvin = User("58c120552c94decf6cf3b701", "Marvin Brieger", "MB", "warum nochmal füll ich das so penibel aus", Instant.now())
-    for (blubb in RelevantProcessQuerying.queryRelevantProcesses(erik.id)) {
-        println(blubb)
-    }
-    /*println("all processes and their assignees:")
-    for (process in ProcessContainer.getAllProcesses()) {
-        println(process.title)
-        for (assignee in process.getAssignees()) {
-            val name = assignee.name
-            println("   $name")
-        }
-    }*/
 }

@@ -39,7 +39,7 @@ data class ProcessQueryPredicate(
             return true
 
         if (involvingUserId != null) {
-            if (RelevantProcessQuerying.queryRelevantProcesses(involvingUserId!!).contains(process.id))
+            if (RelevantProcessQuerying.queryRelevantProcesses(involvingUserId).contains(process.id))
                 return true
         }
 
