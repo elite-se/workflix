@@ -25,9 +25,7 @@ object ProcessContainer : ProcessContainerInterface {
         filled = true
     }
 
-
     private fun filterProcesses(predicate: ProcessQueryPredicate) {
-
     }
 
     /**

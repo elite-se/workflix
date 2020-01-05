@@ -21,7 +21,7 @@ data class ProcessQueryPredicate(
      * @return True if and only if the list is empty or the list contains the given entry.
      */
     private fun <T> List<T>.containsOrEmpty(entry: T): Boolean {
-        return if(this.isEmpty())
+        return if (this.isEmpty())
             true
         else
             this.contains(entry)
@@ -41,5 +41,4 @@ data class ProcessQueryPredicate(
 
         return false
     }
-
 }
