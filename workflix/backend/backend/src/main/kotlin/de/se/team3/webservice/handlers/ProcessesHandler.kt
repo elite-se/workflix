@@ -8,6 +8,7 @@ import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
 import org.json.JSONObject
+import java.lang.IllegalArgumentException
 
 /**
  * Handles requests due to the general properties of processes.
@@ -46,16 +47,20 @@ object ProcessesHandler {
      * Handles the request for all processes.
      */
     fun getAll(ctx: Context) {
-        val predicate = parseSelectionPredicate(ctx)
+        try {
+            val predicate = parseSelectionPredicate(ctx)
 
-        val processes = ProcessContainer.getAllProcesses(predicate)
+            val processes = ProcessContainer.getAllProcesses(predicate)
 
-        val pagingContainer = PagingHelper.getPagingContainer(1, 1)
-        val processesJsonArray = JsonHelper.toJsonArray(processes)
-        pagingContainer.put("processes", processesJsonArray)
+            val pagingContainer = PagingHelper.getPagingContainer(1, 1)
+            val processesJsonArray = JsonHelper.toJsonArray(processes)
+            pagingContainer.put("processes", processesJsonArray)
 
-        ctx.result(pagingContainer.toString())
-            .contentType("application/json")
+            ctx.result(pagingContainer.toString())
+                .contentType("application/json")
+        } catch (e: IllegalArgumentException) {
+        ctx.status(400).result("predicate parsing error: unknown or malformed status, group ID or user ID")
+        }
     }
 
     /**
