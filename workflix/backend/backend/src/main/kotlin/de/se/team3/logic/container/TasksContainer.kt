@@ -16,6 +16,6 @@ object TasksContainer {
             ?: throw NotFoundException("task not found") // a process does not exist only if the task does not exist
 
         val process = ProcessContainer.getProcess(processId)
-        return process.findTask(taskId)
+        return process.getTask(taskId)
     }
 }
