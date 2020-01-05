@@ -36,42 +36,6 @@ import me.liuwj.ktorm.dsl.where
 object ProcessTemplateDAO : ProcessTemplateDAOInterface {
 
     /**
-     * Returns all process templates.
-     */
-    override fun getAllProcessTemplates(): List<ProcessTemplate> {
-        val processTemplates = ArrayList<ProcessTemplate>()
-        val result = ProcessTemplatesFilteredView
-            .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesFilteredView.ownerId)
-            .select()
-
-        for (row in result) {
-            val owner = User(
-                row[UsersTable.ID]!!,
-                row[UsersTable.name]!!,
-                row[UsersTable.displayname]!!,
-                row[UsersTable.email]!!,
-                row[UsersTable.createdAt]!!
-            )
-            val processTemplate = ProcessTemplate(
-                row[ProcessTemplatesFilteredView.id]!!,
-                row[ProcessTemplatesFilteredView.title]!!,
-                row[ProcessTemplatesFilteredView.description]!!,
-                row[ProcessTemplatesFilteredView.durationLimit]!!,
-                owner,
-                row[ProcessTemplatesFilteredView.createdAt]!!,
-                row[ProcessTemplatesFilteredView.formerVersion],
-                row[ProcessTemplatesFilteredView.processCount]!!,
-                row[ProcessTemplatesFilteredView.runningProcesses]!!,
-                row[ProcessTemplatesFilteredView.deleted]!!,
-                null
-            )
-            processTemplates.add(processTemplate)
-        }
-
-        return processTemplates.toList()
-    }
-
-    /**
      * Returns the task templates for the specified process template.
      */
     private fun queryTaskTemplates(processTemplateId: Int): Map<Int, TaskTemplate> {
@@ -105,6 +69,38 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
     }
 
     /**
+     * Returns all process templates.
+     */
+    override fun getAllProcessTemplates(): List<ProcessTemplate> {
+        val processTemplates = ArrayList<ProcessTemplate>()
+        val result = ProcessTemplatesFilteredView
+            .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesFilteredView.ownerId)
+            .select()
+
+        for (row in result) {
+            val processTemplateId = row[ProcessTemplatesFilteredView.id]!!
+            val taskTemplates = queryTaskTemplates(processTemplateId)
+
+            val processTemplate = ProcessTemplate(
+                processTemplateId,
+                row[ProcessTemplatesFilteredView.title]!!,
+                row[ProcessTemplatesFilteredView.description]!!,
+                row[ProcessTemplatesFilteredView.durationLimit]!!,
+                row[ProcessTemplatesFilteredView.ownerId]!!,
+                row[ProcessTemplatesFilteredView.createdAt]!!,
+                row[ProcessTemplatesFilteredView.formerVersion],
+                row[ProcessTemplatesFilteredView.processCount]!!,
+                row[ProcessTemplatesFilteredView.runningProcesses]!!,
+                row[ProcessTemplatesFilteredView.deleted]!!,
+                taskTemplates
+            )
+            processTemplates.add(processTemplate)
+        }
+
+        return processTemplates.toList()
+    }
+
+    /**
      * Returns the specified process template.
      *
      * @return Null if the specified process does not exist.
@@ -118,21 +114,15 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         if (!row.next())
             return null
 
-        val owner = User(
-            row[UsersTable.ID]!!,
-            row[UsersTable.name]!!,
-            row[UsersTable.displayname]!!,
-            row[UsersTable.email]!!,
-            row[UsersTable.createdAt]!!
-        )
-        val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
+        val processTemplateId = row[ProcessTemplatesView.id]!!
+        val taskTemplates = queryTaskTemplates(processTemplateId)
 
         return ProcessTemplate(
-            row[ProcessTemplatesView.id]!!,
+            processTemplateId,
             row[ProcessTemplatesView.title]!!,
             row[ProcessTemplatesView.description]!!,
             row[ProcessTemplatesView.durationLimit]!!,
-            owner,
+            row[ProcessTemplatesView.ownerId]!!,
             row[ProcessTemplatesView.createdAt]!!,
             row[ProcessTemplatesView.formerVersion],
             row[ProcessTemplatesView.processCount]!!,
@@ -188,7 +178,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         try {
             // creates the actual process template
             val generatedProcessTemplateId = ProcessTemplatesTable.insertAndGenerateKey { row ->
-                row.ownerId to processTemplate.owner.id
+                row.ownerId to processTemplate.ownerId
                 row.title to processTemplate.title
                 row.description to processTemplate.description
                 row.durationLimit to processTemplate.durationLimit
@@ -226,7 +216,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
     /**
      * Updates the given process template.
      *
-     * @return True if the given process template existed.
+     * @return True if and only if the given process template existed.
      */
     override fun updateProcessTemplate(processTemplate: ProcessTemplate): Boolean {
         val transactionManager = Database.global.transactionManager
@@ -235,7 +225,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         try {
             // updates the actual process template
             val affectedRows = ProcessTemplatesTable.update { row ->
-                row.ownerId to processTemplate.owner.id
+                row.ownerId to processTemplate.ownerId
                 row.title to processTemplate.title
                 row.description to processTemplate.description
                 row.durationLimit to processTemplate.durationLimit
@@ -265,7 +255,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
     /**
      * Sets the deleted flag for the specified process template.
      *
-     * @return True if the specified process template existed.
+     * @return True if and only if the specified process template existed.
      */
     override fun deleteProcessTemplate(processTemplateId: Int): Boolean {
         val affectedRows = ProcessTemplatesTable.update {

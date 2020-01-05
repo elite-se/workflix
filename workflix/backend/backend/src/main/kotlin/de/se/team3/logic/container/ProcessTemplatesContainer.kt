@@ -5,16 +5,33 @@ import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessTemplateDAO
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
 
-object ProcessTemplateContainer : ProcessTemplateContainerInterface {
+object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
 
     // The cached process templates lay under their id.
     private val processTemplatesCache = HashMap<Int, ProcessTemplate>()
+
+    // Indicates whether the cache is already filled with all elements
+    private var filled = false
+
+    /**
+     * Handles startup of the container.
+     */
+    private fun fillCache() {
+        val processTemplates = ProcessTemplateDAO.getAllProcessTemplates()
+        processTemplates.forEach { processTemplate ->
+            processTemplatesCache.put(processTemplate.id!!, processTemplate)
+        }
+        filled = true
+    }
 
     /**
      * Returns a reduced form (without task templates) of all process templates.
      */
     override fun getAllProcessTemplates(): List<ProcessTemplate> {
-        return ProcessTemplateDAO.getAllProcessTemplates()
+        if (!filled)
+            fillCache()
+
+        return processTemplatesCache.map { it.value }.toList()
     }
 
     /**
@@ -80,10 +97,12 @@ object ProcessTemplateContainer : ProcessTemplateContainerInterface {
      * @throws NotFoundException Is thrown if the specified process template does not exist.
      */
     override fun deleteProcessTemplate(processTemplateId: Int) {
-        processTemplatesCache.remove(processTemplateId)
+        val processTemplate = getProcessTemplate(processTemplateId)
 
         val existed = ProcessTemplateDAO.deleteProcessTemplate(processTemplateId)
         if (!existed)
             throw NotFoundException("process template not found")
+
+        processTemplate.delete()
     }
 }
