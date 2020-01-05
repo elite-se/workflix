@@ -4,14 +4,14 @@ import React from 'react'
 import ProcessChart from './ProcessChart'
 import { Button, Drawer, H2 } from '@blueprintjs/core'
 import TaskList from './TaskList'
-import MOCK_TASK_TEMPLATES from './mockTasks'
 import TaskTemplateEditor from './TaskTemplateEditor'
-import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
-import UserApi from '../../../modules/api/UsersApi'
-import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
+import type { UserRoleType, UserType } from '../../datatypes/User'
+import UserApi from '../../api/UsersApi'
+import withPromiseResolver from '../../app/hocs/withPromiseResolver'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
 import { calcGraph } from '../graph-utils'
-import ProcessApi from '../../../modules/api/ProcessApi'
+import ProcessApi from '../../api/ProcessApi'
+import type { ProcessTemplateType } from '../../datatypes/Process'
 
 export type IncompleteTaskTemplateType = {|
   id: number,
@@ -24,7 +24,7 @@ export type IncompleteTaskTemplateType = {|
 |}
 
 type StateType = {
-  tasks: Array<IncompleteTaskTemplateType>,
+  tasks: IncompleteTaskTemplateType[],
   selectedTaskId: ?number,
   title: string,
   description: string,
@@ -37,7 +37,7 @@ type PropsType = {
   userRoles: Map<number, UserRoleType>
 }
 
-class CreateProcessTemplate extends React.Component<PropsType, StateType> {
+class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   state = {
     tasks: MOCK_TASK_TEMPLATES,
     selectedTaskId: null,
@@ -170,4 +170,4 @@ const promiseCreator = () => Promise.all([
   userRoles
 }))
 
-export default withPromiseResolver<*, *>(promiseCreator)(CreateProcessTemplate)
+export default withPromiseResolver<*, *>(promiseCreator)(ProcessTemplateEditor)

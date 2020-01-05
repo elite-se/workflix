@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { InputGroup, Label, NumericInput } from '@blueprintjs/core'
-import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
+import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
 import UserSelect from './UserSelect'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserType } from '../../datatypes/User'
 import styled from 'styled-components'
 
 const handleStringChange = (handler: string => void) =>

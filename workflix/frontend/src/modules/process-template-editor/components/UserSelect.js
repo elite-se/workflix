@@ -1,10 +1,10 @@
 // @flow
 
 import { Button, MenuItem } from '@blueprintjs/core'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserType } from '../../datatypes/User'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, Select } from '@blueprintjs/select'
-import highlightText from '../../../modules/common/highlightText'
+import highlightText from '../../common/highlightText'
 import React from 'react'
 
 const CustomSelect = Select.ofType<UserType>()
