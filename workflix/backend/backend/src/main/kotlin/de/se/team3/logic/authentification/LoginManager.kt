@@ -3,10 +3,12 @@ package de.se.team3.logic.authentification
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.InvalidInputException
+import java.time.Instant
 
 object LoginManager {
-    val loggedInUsers = ArrayList<User>()
     val tokensInUse = ArrayList<AuthentificationToken>()
+    //authorized user currently performing a request, or null if none is performed
+    private var activeUser: User? = null
 
     /**
      * Logs a user in if email and password match the saved information.
@@ -27,7 +29,7 @@ object LoginManager {
         if (userList.size > 1)
             throw InvalidInputException("There is more than one user with the same email address.")
         val user = userList.first()
-        if (loggedInUsers.contains(user))
+        if (tokensInUse.map { it.user }.contains(user))
             throw InvalidInputException("This user is already logged in.")
         val token = AuthentificationToken(user)
         tokensInUse.add(token)
@@ -39,8 +41,34 @@ object LoginManager {
      *
      * @param username name of the user to be logged out (i.e., currently the users email address)
      */
-    fun logout(token: AuthentificationToken) {
-        loggedInUsers.remove(token.user)
-        tokensInUse.remove(token)
+    fun logout(token: String) {
+        tokensInUse.remove(tokensInUse.first { it.token == token })
+    }
+
+    fun getActiveUser(): User? {
+        return activeUser
+    }
+
+    /**
+     * Sets the owner of the token as the active user.
+     *
+     * @param token Token of the user to be set as active.
+     */
+    fun setActiveUser(token: String) {
+        activeUser = tokensInUse.first { it.token == token }.user
+    }
+
+    /**
+     * Resets the active user to null if the token is valid.
+     *
+     * @param token Token used for authorization
+     * @return true iff the token is valid
+     */
+    fun removeActiveUser(token: String): Boolean {
+        return if (tokensInUse.first { it.token == token }.user == activeUser) {
+            activeUser = null
+            true
+        } else
+            false
     }
 }

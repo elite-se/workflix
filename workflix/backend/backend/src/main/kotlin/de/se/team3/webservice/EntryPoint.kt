@@ -43,9 +43,25 @@ fun main(args: Array<String>) {
         ctx.status(400).result("" + e.message)
     }
 
+    //authentification handling before every request (excluding login)
+    app.before() { ctx ->
+        if (ctx.path() != "/login") {
+            AuthentificationHandler.authorizeRequest(ctx)
+        }
+    }
+
+    //necessary to reset the active user after every request
+    app.after() { ctx ->
+        AuthentificationHandler.endAuthorizedRequest(ctx)
+    }
+
     //login
     app.post("login") { ctx ->
         AuthentificationHandler.login(ctx)
+    }
+    //logout
+    app.delete("login") { ctx ->
+        AuthentificationHandler.logout(ctx)
     }
 
     // users
