@@ -30,6 +30,8 @@ data class ProcessTemplate(
 
     fun getProcessCount() = processCount
 
+    fun getRunningProcesses() = runningProcesses
+
     fun isDeleted() = deleted
 
     @get:JsonIgnore
