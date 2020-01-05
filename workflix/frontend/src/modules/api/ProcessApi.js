@@ -35,7 +35,8 @@ class ProcessApi {
     const url = new URL(processesBackend)
     const params = union(
       filters.status ? filters.status.map(status => ['status', status]) : [],
-      filters.involving ? [['involving', filters.involving.id]] : []
+      filters.involving ? [['involving', filters.involving.id]] : [],
+      filters.processGroups ? filters.processGroups.map(group => ['processGroupId', group.id.toString()]) : []
     )
     url.search = new URLSearchParams(params).toString()
 
