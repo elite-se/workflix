@@ -18,7 +18,8 @@ type PropsType = {
 
 class EditProcessTemplate extends React.Component<PropsType> {
   onSave = (processTemplate: FilledProcessTemplateType) => {
-    // todo: Save edited template
+    new ProcessApi().editProcessTemplate(this.props.initialProcessTemplate.id, processTemplate)
+      .catch(e => console.error(e))
   }
 
   render () {

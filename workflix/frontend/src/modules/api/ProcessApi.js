@@ -83,6 +83,14 @@ class ProcessApi {
       .then(response => response.json())
   }
 
+  editProcessTemplate (id: number, processTemplate: FilledProcessTemplateType): Promise<NewIdResultType> {
+    return safeFetch(`${processesTemplatesBackend}/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(processTemplate)
+    })
+      .then(response => response.json())
+  }
+
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
     return this.getProcessTemplates([processTemplateId])
       .then(templates => templates[0])
