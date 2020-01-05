@@ -13,7 +13,7 @@ const processesBackend = `${BACKEND}/processes`
 const processesTemplatesBackend = `${BACKEND}/processTemplates`
 const tasksBackend = `${BACKEND}/tasks`
 
-export type AddProcessTemplateType = {|
+export type FilledProcessTemplateType = {|
   title: string,
   description: string,
   durationLimit: number,
@@ -69,9 +69,17 @@ class ProcessApi {
       { method: 'DELETE' })
   }
 
-  addProcessTemplate (processTemplate: AddProcessTemplateType): Promise<NewIdResultType> {
+  addProcessTemplate (processTemplate: FilledProcessTemplateType): Promise<NewIdResultType> {
     return safeFetch(`${processesTemplatesBackend}`, {
       method: 'POST',
+      body: JSON.stringify(processTemplate)
+    })
+      .then(response => response.json())
+  }
+
+  editProcessTemplate (id: number, processTemplate: FilledProcessTemplateType): Promise<NewIdResultType> {
+    return safeFetch(`${processesTemplatesBackend}/${id}`, {
+      method: 'PATCH',
       body: JSON.stringify(processTemplate)
     })
       .then(response => response.json())

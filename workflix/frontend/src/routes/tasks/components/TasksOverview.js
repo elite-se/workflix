@@ -12,8 +12,7 @@ import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
 type PropsType = {|
   users: Map<string, UserType>,
-  processGroups: Map<number, ProcessGroupType>,
-  path: string
+  processGroups: Map<number, ProcessGroupType>
 |}
 type StateType = {|
   filters: FiltersType

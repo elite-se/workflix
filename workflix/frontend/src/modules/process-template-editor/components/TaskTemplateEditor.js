@@ -6,10 +6,10 @@ import { difference } from 'lodash'
 import PredecessorSelect from './PredecessorSelect'
 import SuccessorSelect from './SuccessorSelect'
 import styled from 'styled-components'
-import AutoSizeTextArea from '../../../modules/common/AutoSizeTextArea'
-import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
+import AutoSizeTextArea from '../../common/components/AutoSizeTextArea'
+import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
 import UserRoleSelect from './UserRoleSelect'
-import type { UserRoleType } from '../../../modules/datatypes/User'
+import type { UserRoleType } from '../../datatypes/User'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,

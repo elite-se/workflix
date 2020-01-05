@@ -4,9 +4,9 @@ import React from 'react'
 import { Button, MenuItem, Tooltip } from '@blueprintjs/core'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, MultiSelect } from '@blueprintjs/select'
-import highlightText from '../../../modules/common/highlightText'
+import highlightText from '../../common/highlightText'
 import { difference } from 'lodash'
-import type { IncompleteTaskTemplateType } from './CreateProcessTemplate'
+import type { IncompleteTaskTemplateType } from './ProcessTemplateEditor'
 
 type PropsType = {
   task: IncompleteTaskTemplateType,
