@@ -31,7 +31,10 @@ object UserRoleContainer : UserRoleContainerInterface {
         if (!filled)
             fillCache()
 
-        return userRoleCache.map { it.value }.toList()
+        return userRoleCache
+            .map { it.value }
+            .filter { !it.isDeleted() }
+            .toList()
     }
 
     /**
@@ -96,9 +99,11 @@ object UserRoleContainer : UserRoleContainerInterface {
      * @throws NotFoundException Is thrown if the specified user role does not exist.
      */
     override fun deleteUserRole(userRoleID: Int) {
+        val userRole = getUserRole(userRoleID)
+
         if (!UserRoleDAO.deleteUserRole(userRoleID))
             throw NotFoundException("user role $userRoleID does not exist")
 
-        userRoleCache.remove(userRoleID)
+        userRole.delete()
     }
 }

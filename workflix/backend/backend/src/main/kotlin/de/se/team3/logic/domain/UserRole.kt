@@ -12,12 +12,15 @@ data class UserRole(
     private var name: String,
     private var description: String,
     val createdAt: Instant,
-    private val members: ArrayList<User>
+    private var deleted: Boolean,
+    private val members: MutableList<User>
 ) {
 
     fun getName() = name
 
     fun getDescription() = description
+
+    fun isDeleted() = deleted
 
     fun getMembers() = members
 
@@ -25,7 +28,7 @@ data class UserRole(
      * Create-Constructor
      */
     constructor(name: String, description: String) :
-        this(null, name, description, Instant.now(), ArrayList<User>()) {
+        this(null, name, description, Instant.now(), false, ArrayList<User>()) {
 
         if (name.isEmpty())
             throw InvalidInputException("name must not be empty")
@@ -35,7 +38,7 @@ data class UserRole(
      * Update-Constructor
      */
     constructor(id: Int, name: String, description: String) :
-            this(id, name, description, Instant.now(), ArrayList<User>()) {
+            this(id, name, description, Instant.now(), false, ArrayList<User>()) {
 
         if (name.isEmpty())
             throw InvalidInputException("name must not be empty")
@@ -58,6 +61,13 @@ data class UserRole(
      */
     fun setDescription(description: String) {
         this.description = description
+    }
+
+    /**
+     * Sets the deleted flag.
+     */
+    fun delete() {
+        deleted = true
     }
 
     /**

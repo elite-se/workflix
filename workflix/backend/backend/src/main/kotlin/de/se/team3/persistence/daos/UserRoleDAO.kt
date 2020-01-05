@@ -6,6 +6,7 @@ import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.persistence.meta.UserRoleMembersTable
 import de.se.team3.persistence.meta.UserRolesTable
+import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
 import me.liuwj.ktorm.dsl.select
@@ -13,6 +14,20 @@ import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
 
 object UserRoleDAO : UserRoleDAOInterface {
+
+    /**
+     * Makes a user role of the given row.
+     */
+    private fun makeUserRole(roleRow: QueryRowSet, members: MutableList<User>): UserRole {
+        return UserRole(
+            roleRow[UserRolesTable.ID]!!,
+            roleRow[UserRolesTable.name]!!,
+            roleRow[UserRolesTable.description]!!,
+            roleRow[UserRolesTable.createdAt]!!,
+            roleRow[UserRolesTable.deleted]!!,
+            members
+        )
+    }
 
     /**
      * Returns all user roles.
@@ -29,11 +44,7 @@ object UserRoleDAO : UserRoleDAOInterface {
                 members.add(UserContainer.getUser(memberRow[UserRoleMembersTable.userID]!!))
             }
 
-            userRoles.add(UserRole(roleRow[UserRolesTable.ID]!!,
-                roleRow[UserRolesTable.name]!!,
-                roleRow[UserRolesTable.description]!!,
-                roleRow[UserRolesTable.createdAt]!!,
-                members))
+            userRoles.add(makeUserRole(roleRow, members))
         }
 
         return userRoles
@@ -57,11 +68,7 @@ object UserRoleDAO : UserRoleDAOInterface {
             members.add(UserContainer.getUser(row[UserRoleMembersTable.userID]!!))
         }
 
-        return UserRole(row[UserRolesTable.ID]!!,
-            row[UserRolesTable.name]!!,
-            row[UserRolesTable.description]!!,
-            row[UserRolesTable.createdAt]!!,
-            members)
+        return makeUserRole(row, members)
     }
 
     /**
