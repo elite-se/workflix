@@ -7,6 +7,8 @@ import styled from 'styled-components'
 import { Elevation as ELEVATION } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { UserType } from '../../../modules/datatypes/User'
 
+const SCROLL_DELAY_MS = 300
+
 const FinishedTaskStyling = styled<{ status: TaskStateType }, {}, 'div'>('div')`
   margin: 3px 0;
   ${props => props.status !== 'BLOCKED' && `
@@ -25,12 +27,20 @@ type PropsType = {
 }
 
 class TaskSummaryCard extends React.Component<PropsType> {
-  onClick = () => this.props.onTaskSelected(this.props.task)
+  containerDiv: ?HTMLDivElement = null
+
+  onClick = () => {
+    this.props.onTaskSelected(this.props.task)
+  }
+
+  ref = (elem: ?HTMLDivElement) => {
+    this.containerDiv = elem
+  }
 
   render () {
     const task = this.props.task
     const taskTemplate = this.props.taskTemplates.get(task.taskTemplateId)
-    return <FinishedTaskStyling status={task.status}>
+    return <div ref={this.ref}><FinishedTaskStyling status={task.status}>
       <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
             onClick={this.onClick}>
         <span><b>{taskTemplate ? taskTemplate.name : ''}</b></span><br/>
@@ -44,7 +54,20 @@ class TaskSummaryCard extends React.Component<PropsType> {
             })
           }</span>}</small>
       </Card>
-    </FinishedTaskStyling>
+    </FinishedTaskStyling></div>
+  }
+
+  componentDidUpdate (prevProps: *) {
+    setTimeout(() => {
+      if (this.props.selected !== prevProps.selected) {
+        this.containerDiv &&
+        this.containerDiv.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        })
+      }
+    }, SCROLL_DELAY_MS)
   }
 }
 
