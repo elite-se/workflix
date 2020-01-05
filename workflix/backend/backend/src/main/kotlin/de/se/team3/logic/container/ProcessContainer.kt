@@ -25,6 +25,11 @@ object ProcessContainer : ProcessContainerInterface {
         filled = true
     }
 
+
+    private fun filterProcesses(predicate: ProcessQueryPredicate) {
+
+    }
+
     /**
      * Returns a reduced form (without tasks) of all processes.
      */
@@ -32,17 +37,9 @@ object ProcessContainer : ProcessContainerInterface {
         if (!filled)
             fillCache()
 
-        val processesFiltered = processesCache.map { it.value }.filter { process ->
-            if (predicate.statuses.contains(process.getStatus()))
-                true
-            if (predicate.processGroupIds.contains(process.processGroupId))
-                true
-            false
-        }
-
-        // TODO filter involving
-
-        return processesFiltered
+        return processesCache
+            .map { it.value }
+            .filter { predicate.satisfiedBy(it) }
     }
 
     /**
