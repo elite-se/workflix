@@ -82,13 +82,19 @@ fun main(args: Array<String>) {
     }
 
     // user role memberships
-    app.post("usersToRoles") { ctx ->
-        UserRolesMembersHandler.create(ctx)
+    app.put("userRoles/:userRoleId/members/:memberId") { ctx ->
+        UserRolesMembersHandler.create(
+            ctx,
+            ctx.pathParam("userRoleId").toInt(),
+            ctx.pathParam("memberId")
+        )
     }
-    app.delete("usersToRoles/:userId/:userRoleId") { ctx ->
-        UserRolesMembersHandler.delete(ctx,
-            ctx.pathParam("userId").toString(),
-            ctx.pathParam("userRoleId").toInt())
+    app.delete("userRoles/:userRoleId/members/:memberId") { ctx ->
+        UserRolesMembersHandler.delete(
+            ctx,
+            ctx.pathParam("userRoleId").toInt(),
+            ctx.pathParam("memberId")
+        )
     }
 
     // processes
