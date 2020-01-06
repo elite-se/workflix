@@ -17,8 +17,8 @@ const ProcessTemplatesMatch = (props: PropsType<{}>) => props.match ? <ProcessTe
 const CreateProcessTemplateMatch = (props: PropsType<{}>) => props.match ? <CreateProcessTemplate/> : null
 const EditProcessTemplateMatch = (props: PropsType<{ id: string }>) => props.match
   ? <EditProcessTemplate id={Number(props.match.id)}/> : null
-const LogoutMatch = (props: PropsType<{ onLoggedInChanged: (boolean) => void}>) =>
-  props.match ? <Logout onLoggedInChanged={props.match.onLoggedInChanged}/> : null
+const LogoutMatch = (onLoggedInChanged: boolean => void) =>
+  (props: PropsType<{}>) => props.match ? <Logout onLoggedInChanged={onLoggedInChanged}/> : null
 
 class MainRouter extends React.Component<{ onLoggedInChanged: (boolean) => void}> {
   render () {
@@ -28,7 +28,7 @@ class MainRouter extends React.Component<{ onLoggedInChanged: (boolean) => void}
       <Match path='/process-templates'>{ProcessTemplatesMatch}</Match>
       <Match path='/process-templates/create'>{CreateProcessTemplateMatch}</Match>
       <Match path='/process-templates/edit/:id'>{EditProcessTemplateMatch}</Match>
-      <Match path='/logout'>{LogoutMatch}</Match>
+      <Match path='/logout'>{LogoutMatch(this.props.onLoggedInChanged)}</Match>
     </>
   }
 }
