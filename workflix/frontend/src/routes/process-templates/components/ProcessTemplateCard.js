@@ -14,6 +14,7 @@ import ButtonWithDialog from '../../../modules/common/components/ButtonWithDialo
 import ProcessApi from '../../../modules/api/ProcessApi'
 import StartProcessForm from './StartProcessForm'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
+import ScrollIntoViewOnMount from '../../../modules/common/components/ScrollIntoViewOnMount'
 
 const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
   margin: 5px;
@@ -127,7 +128,8 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
           <CustomButtonGroup fill large minimal onClick={preventDefault}>
             <Popover fill>
               <Button icon='play' fill intent='success'>Start...</Button>
-              <StartProcessForm processGroups={processGroups} template={template}/>
+              <ScrollIntoViewOnMount><StartProcessForm processGroups={processGroups}
+                                                       template={template}/></ScrollIntoViewOnMount>
             </Popover>
             <Button icon='duplicate' fill intent='none' onClick={this.onDuplicate}
                     loading={duplicateLoading}>Duplicate</Button>
