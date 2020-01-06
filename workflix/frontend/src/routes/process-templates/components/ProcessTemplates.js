@@ -8,10 +8,25 @@ import ProcessApi from '../../../modules/api/ProcessApi'
 import type { UserType } from '../../../modules/datatypes/User'
 import UsersApi from '../../../modules/api/UsersApi'
 import ProcessTemplateCard from './ProcessTemplateCard'
+import styled from 'styled-components'
+import FlipMove from 'react-flip-move'
 
-type PropsType = { templates: ProcessTemplateType[], users: Map<string, UserType> }
+const TemplatesContainer = styled<{}, {}, 'div'>(FlipMove)`
+  margin: 10px 20px;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: start;
+  flex-direction: row;
+  max-width: 100%;
+  flex-wrap: wrap;
+`
+
+type PropsType = { templates: ProcessTemplateType[], users: Map<string, UserType>, refresh: (soft: boolean) => void }
 
 class ProcessTemplates extends React.Component<PropsType> {
+  refresh = () => this.props.refresh(true)
+
   render () {
     const { users, templates } = this.props
     return <div style={{
@@ -19,22 +34,16 @@ class ProcessTemplates extends React.Component<PropsType> {
       flexDirection: 'column'
     }}>
       <H2 style={{ textAlign: 'center' }}>All Process Templates</H2>
-      <div style={{
-        margin: '10px 20px',
-        display: 'flex',
-        flex: '1',
-        justifyContent: 'flex-start',
-        alignItems: 'stretch',
-        flexDirection: 'row'
-      }}>
-        {templates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}/>)}
-      </div>
+      <TemplatesContainer>
+        {templates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}
+                                                        refresh={this.refresh}/>)}
+      </TemplatesContainer>
     </div>
   }
 }
 
 export default withPromiseResolver<PropsType, PropsType>(
-  () => Promise.all([
+  (props, refresh) => Promise.all([
     new ProcessApi().getAllProcessTemplates()
       .then(templates => new ProcessApi().getProcessTemplates(templates
         .filter(template => !template.deleted)
@@ -44,7 +53,8 @@ export default withPromiseResolver<PropsType, PropsType>(
   ]).then(([templates, users]) => {
     return ({
       templates,
-      users
+      users,
+      refresh
     })
   })
 )(ProcessTemplates)
