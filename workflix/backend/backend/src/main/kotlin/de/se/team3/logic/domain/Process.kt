@@ -72,19 +72,17 @@ class Process(
     }
 
     /**
-     * Returns all assignees of this process.
+     * Checks whether the specified user is assigned to an task of this process.
+     *
+     * @return True iff the specified user is assigned to at least on task of this process.
      */
-    @JsonIgnore
-    fun getAssignees(): List<User> { // TODO ineffizient?
-        val assignments = tasks.values.map { it.getAssignments() }
-        val assignmentsList = ArrayList<TaskAssignment>()
-        assignments.forEach {
-            if (it != null) {
-                assignmentsList.addAll(it)
-            }
-        }
-        val assigneeIDs = assignmentsList.map { it.assigneeId }
-        return assigneeIDs.map { id -> UserContainer.getUser(id) }
+    private fun hasAssignee(userId: String): Boolean {
+        for ((key, task) in tasks)
+            for (assignment in task.getAssignments()!!)
+                if (assignment.assigneeId == userId)
+                    return true
+
+        return false
     }
 
     /**
@@ -171,7 +169,7 @@ class Process(
             return true
 
         // user is assigned to one of the processes tasks
-        if (getAssignees().map { it.id }.contains(user.id))
+        if (hasAssignee(user.id))
             return true
 
         return false
