@@ -10,6 +10,8 @@ import type { UserType } from '../../../modules/datatypes/User'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import TaskDrawer from './drawer/TaskDrawer'
 import type { FiltersType } from '../../../modules/datatypes/Filters'
+import { Colors } from '@blueprintjs/core'
+import { isEmpty } from 'lodash'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
@@ -55,18 +57,28 @@ class ProcessList extends React.Component<PropsType, StateType> {
 
   render () {
     const selectedTask = this.findSelectedTask()
-    return <div style={{ maxWidth: '100%', overflowX: 'auto', display: 'flex' }}>
-      <ProcessListWrapper>{
-        this.props.processes.map(process => (
-          <ProcessCard
-            key={process.id}
-            process={process}
-            selectedTask={selectedTask}
-            onTaskSelected={this.onTaskSelected}
-            users={this.props.users}
-            taskTemplates={this.props.taskTemplates}/>)
-        )
-      }</ProcessListWrapper>
+    return <div style={{
+      maxWidth: '100%',
+      overflowX: 'auto',
+      display: 'flex'
+    }}>
+      <ProcessListWrapper>
+        {
+          isEmpty(this.props.processes)
+            ? <span style={{
+              color: Colors.GRAY2,
+              alignItem: 'stretch'
+            }}>There are no processes matching the filters.</span>
+            : this.props.processes.map(process => (
+              <ProcessCard
+                key={process.id}
+                process={process}
+                selectedTask={selectedTask}
+                onTaskSelected={this.onTaskSelected}
+                users={this.props.users}
+                taskTemplates={this.props.taskTemplates}/>)
+            )
+        }</ProcessListWrapper>
       <TaskDrawer
         selectedTask={selectedTask}
         onClose={this.onDrawerClosed}
