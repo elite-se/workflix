@@ -1,11 +1,13 @@
 package de.se.team3.logic.domain
 
+import de.se.team3.logic.container.ProcessTemplatesContainer
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
 import java.time.Instant
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.NullPointerException
 
 data class UserRole(
     val id: Int?,
@@ -71,6 +73,24 @@ data class UserRole(
     }
 
     /**
+     * Checks whether there is an active (not deleted) process template which has
+     * an task template that refers to this user role.
+     *
+     * This method is used to decide whether a user role could be deleted or not.
+     *
+     * @throws NullPointerException Is thrown if id is null because id must not be null to
+     * do the calculations in ProcessTemplatesContainer.
+     *
+     * @return True if and only if the user role is not used in any active process template.
+     */
+    fun isUsedInActiveProcessTemplate(): Boolean {
+        if (id == null)
+            throw NullPointerException("must not be called in a state where id is null")
+
+        return ProcessTemplatesContainer.hasProcessTemplateUsingUserRole(this)
+    }
+
+    /**
      * Checks whether the specified user is a member of this group.
      *
      * @return True if and only if the user is member of this group.
@@ -111,4 +131,5 @@ data class UserRole(
         json.put("memberIds", JSONArray(members.map { it.id }))
         return json
     }
+
 }
