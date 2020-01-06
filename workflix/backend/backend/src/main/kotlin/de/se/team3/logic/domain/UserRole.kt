@@ -5,9 +5,9 @@ import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
 import java.time.Instant
+import kotlin.NullPointerException
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.NullPointerException
 
 data class UserRole(
     val id: Int?,
@@ -131,5 +131,4 @@ data class UserRole(
         json.put("memberIds", JSONArray(members.map { it.id }))
         return json
     }
-
 }
