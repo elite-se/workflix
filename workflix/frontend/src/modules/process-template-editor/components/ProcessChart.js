@@ -4,12 +4,12 @@ import type { Node } from 'react'
 import React from 'react'
 import { Colors } from '@blueprintjs/core'
 import type { ProcessedNodeType } from '../graph-utils'
-import type { IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 
 type PropsType = {
-  tasks: ProcessedNodeType<IncompleteTaskTemplateType>[], /* sorted by calculated startDate */
-  selectedId: ?number,
-  selectTaskId: (id: number) => void
+  tasks: ProcessedNodeType<*, *>[], /* sorted by calculated startDate */
+  selectedId?: ?number,
+  selectTaskId?: (id: number) => void,
+  mini?: boolean
 }
 
 type StateType = {
@@ -33,7 +33,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
   }
 
   updateWidth = (width: number | null) => this.setState({ width })
-  onClick = (id: number) => () => this.props.selectTaskId(id)
+  onClick = (id: number) => () => this.props.selectTaskId && this.props.selectTaskId(id)
 
   state = {
     width: null
@@ -44,7 +44,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
   }
 
   renderSvg (): Node {
-    const { tasks, selectedId } = this.props
+    const { tasks, selectedId, mini } = this.props
     const { width } = this.state
     if (tasks.length === 0 || !width) {
       return null
@@ -52,9 +52,12 @@ class ProcessChart extends React.Component<PropsType, StateType> {
     const lastEndDate = Math.max(...tasks.map(task => task.endDate))
     const drawWidth = width - 2 * HORIZONTAL_PADDING
     const scale = drawWidth / lastEndDate
+    const miniFactor = mini ? 1 / 2 : 1
+    const itemHeight = ITEM_HEIGHT * miniFactor
+    const strokeRadius = STROKE_RADIUS * miniFactor
 
-    return <svg width={width} height={tasks.length * ITEM_HEIGHT} style={{ position: 'absolute' }}
-                viewBox={`-${HORIZONTAL_PADDING} 0 ${width} ${tasks.length * ITEM_HEIGHT}`}>
+    return <svg width={width} height={tasks.length * itemHeight} style={{ position: 'absolute' }}
+                viewBox={`-${HORIZONTAL_PADDING} 0 ${width} ${tasks.length * itemHeight}`}>
       <defs>
         <marker id='TriangleGray' viewBox='0 0 10 10' refX='10' refY='5'
                 markerUnits='strokeWidth' markerWidth='5' markerHeight='5'
@@ -68,9 +71,9 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         </marker>
       </defs>
       {[
-        tasks.map((node, index) => (index % 2 === 0 &&
-          <rect key={index} x={-HORIZONTAL_PADDING} y={index * ITEM_HEIGHT}
-                height={ITEM_HEIGHT} width={width} fill={Colors.LIGHT_GRAY4}/>
+        !mini && tasks.map((node, index) => (index % 2 === 0 &&
+          <rect key={index} x={-HORIZONTAL_PADDING} y={index * itemHeight}
+                height={ITEM_HEIGHT * miniFactor} width={width} fill={Colors.LIGHT_GRAY4}/>
         )),
         ...tasks.flatMap((node, index) =>
           node.data.predecessors
@@ -82,9 +85,9 @@ class ProcessChart extends React.Component<PropsType, StateType> {
                 zIndex: criticalEdge ? 1 : 0,
                 path: <path key={`${index},${predIndex}`}
                             markerEnd={`url(#${criticalEdge ? 'TriangleRed' : 'TriangleGray'})`}
-                            d={`M ${(pred.startDate + pred.endDate) / 2 * scale} ${(predIndex + 1 / 2) * ITEM_HEIGHT}
-                               V ${(index + 1 / 2) * ITEM_HEIGHT - STROKE_RADIUS}
-                               q 0 ${STROKE_RADIUS} ${STROKE_RADIUS} ${STROKE_RADIUS}
+                            d={`M ${(pred.startDate + pred.endDate) / 2 * scale} ${(predIndex + 1 / 2) * itemHeight}
+                               V ${(index + 1 / 2) * itemHeight - strokeRadius}
+                               q 0 ${strokeRadius} ${strokeRadius} ${strokeRadius}
                                H ${node.startDate * scale}`}
                             fill='none'
                             stroke={criticalEdge ? Colors.RED1 : Colors.GRAY1}
@@ -102,8 +105,8 @@ class ProcessChart extends React.Component<PropsType, StateType> {
                   cursor: 'pointer',
                   transition: 'x 0.2s, y 0.5s, width 0.2s, fill 0.3s'
                 }}
-                x={node.startDate} y={index * ITEM_HEIGHT + (ITEM_HEIGHT - NODE_HEIGHT) / 2}
-                width={(node.data.estimatedDuration || 1)} height={NODE_HEIGHT}
+                x={node.startDate} y={index * itemHeight + (itemHeight - NODE_HEIGHT) / 2}
+                width={node.estimatedDuration} height={NODE_HEIGHT}
                 rx={NODE_HEIGHT / 2 / scale} ry={NODE_HEIGHT / 2}
                 fill={node.id === selectedId ? Colors.BLUE4 : Colors.BLUE1}/>
         ))
@@ -114,7 +117,8 @@ class ProcessChart extends React.Component<PropsType, StateType> {
   render () {
     return <div ref={this.setDivRef} style={{
       flex: 1,
-      position: 'relative'
+      position: 'relative',
+      height: this.props.tasks.length * ITEM_HEIGHT * (this.props.mini ? 1 / 2 : 1)
     }}>
       {this.renderSvg()}
     </div>
