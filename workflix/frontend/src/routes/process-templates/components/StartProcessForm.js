@@ -73,7 +73,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
   onStartClick = async () => {
     const { title, description, deadline, processGroup } = this.state
     const { template } = this.props
-    if (!title || !description || !processGroup) {
+    if (!title || !processGroup) {
       return AppToaster.show({
         icon: 'error',
         intent: 'danger',
@@ -111,7 +111,8 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
       flexDirection: 'column'
     }}>
       <FormGroup label='Title' labelInfo='(required)'>
-        <InputGroup large fill placeholder='Title...' value={title} onChange={this.onTitleChange}/>
+        <InputGroup large fill placeholder='Title...' intent={!title ? 'danger' : 'none'} value={title}
+                    onChange={this.onTitleChange}/>
       </FormGroup>
       <FormGroup label='Description' labelInfo='(required)'>
         <AutoSizeTextArea className='bp3-fill' style={{ resize: 'none' }} placeholder='Description...'
@@ -120,7 +121,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
       </FormGroup>
       <FormGroup label='Process Group' labelInfo='(required)'>
         <ProcessGroupSelect activeItem={processGroup} onItemSelect={this.onProcessGroupChange}
-                            items={Array.from(processGroups.values())}/>
+                            items={Array.from(processGroups.values())} intent={!processGroup ? 'danger' : 'none'}/>
       </FormGroup>
       <FormGroup label='Deadline' labelInfo='(required)'>
         <div style={{
