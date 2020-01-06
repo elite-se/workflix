@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Alert, Button, ButtonGroup, Card, Colors, H3, H4, Icon } from '@blueprintjs/core'
+import { Alert, Button, ButtonGroup, Card, Colors, H3, H4, Icon, Popover } from '@blueprintjs/core'
 import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
 import { Link, navigate } from '@reach/router'
 import type { StyledComponent } from 'styled-components'
@@ -12,6 +12,8 @@ import ProcessChart from '../../../modules/process-template-editor/components/Pr
 import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 import ButtonWithDialog from '../../../modules/common/components/ButtonWithDialog'
 import ProcessApi from '../../../modules/api/ProcessApi'
+import StartProcessForm from './StartProcessForm'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
 const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
   margin: 5px;
@@ -52,7 +54,10 @@ const AllTheWay: StyledComponent<{}, {}, *> = styled('div')`
 
 const preventDefault = (event: SyntheticMouseEvent<HTMLElement>) => event.preventDefault()
 
-type PropsType = { template: ProcessTemplateType, users: Map<string, UserType>, refresh: () => void }
+type PropsType = {
+  template: ProcessTemplateType, users: Map<string, UserType>, refresh: () => void,
+  processGroups: Map<number, ProcessGroupType>
+}
 
 type StateType = { errorAlert: ?string, deleteLoading: boolean, duplicateLoading: boolean }
 
@@ -101,7 +106,7 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
   closeErrorAlert = () => this.setState({ errorAlert: null })
 
   render () {
-    const { users, template } = this.props
+    const { users, template, processGroups } = this.props
     const { deleteLoading, duplicateLoading, errorAlert } = this.state
     const owner = users.get(template.ownerId)
     const graph = calcGraph<number, TaskTemplateType>(template.taskTemplates)
@@ -120,7 +125,10 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
         {owner && <Item><Icon icon='user'/><span>{`${owner.name} (${owner.displayname})`}</span></Item>}
         <Item>
           <CustomButtonGroup fill large minimal onClick={preventDefault}>
-            <Button icon='play' fill intent='success'>Start...</Button>
+            <Popover fill>
+              <Button icon='play' fill intent='success'>Start...</Button>
+              <StartProcessForm processGroups={processGroups} template={template}/>
+            </Popover>
             <Button icon='duplicate' fill intent='none' onClick={this.onDuplicate}
                     loading={duplicateLoading}>Duplicate</Button>
             <ButtonWithDialog icon='trash' fill intent='danger' text='Delete' loading={deleteLoading}

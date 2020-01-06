@@ -10,6 +10,8 @@ import UsersApi from '../../../modules/api/UsersApi'
 import ProcessTemplateCard from './ProcessTemplateCard'
 import styled from 'styled-components'
 import FlipMove from 'react-flip-move'
+import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
 const TemplatesContainer = styled<{}, {}, 'div'>(FlipMove)`
   margin: 10px 20px;
@@ -22,13 +24,16 @@ const TemplatesContainer = styled<{}, {}, 'div'>(FlipMove)`
   flex-wrap: wrap;
 `
 
-type PropsType = { templates: ProcessTemplateType[], users: Map<string, UserType>, refresh: (soft: boolean) => void }
+type PropsType = {
+  templates: ProcessTemplateType[], users: Map<string, UserType>, refresh: (soft: boolean) => void,
+  processGroups: Map<number, ProcessGroupType>
+}
 
 class ProcessTemplates extends React.Component<PropsType> {
   refresh = () => this.props.refresh(true)
 
   render () {
-    const { users, templates } = this.props
+    const { users, templates, processGroups } = this.props
     return <div style={{
       display: 'flex',
       flexDirection: 'column'
@@ -36,7 +41,7 @@ class ProcessTemplates extends React.Component<PropsType> {
       <H2 style={{ textAlign: 'center' }}>All Process Templates</H2>
       <TemplatesContainer>
         {templates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}
-                                                        refresh={this.refresh}/>)}
+                                                        refresh={this.refresh} process processGroups={processGroups}/>)}
       </TemplatesContainer>
     </div>
   }
@@ -49,12 +54,14 @@ export default withPromiseResolver<PropsType, PropsType>(
         .filter(template => !template.deleted)
         .map(template => template.id))
       ),
-    new UsersApi().getUsers()
-  ]).then(([templates, users]) => {
+    new UsersApi().getUsers(),
+    new ProcessGroupsApi().getProcessGroups()
+  ]).then(([templates, users, processGroups]) => {
     return ({
       templates,
       users,
-      refresh
+      refresh,
+      processGroups
     })
   })
 )(ProcessTemplates)
