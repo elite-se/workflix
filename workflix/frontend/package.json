@@ -28,6 +28,7 @@
     "flow-bin": "~0.104.0",
     "flow-typed": "^2.6.2",
     "jest": "^24.9.0",
+    "live-server": "^1.2.1",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -39,6 +40,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:production": "react-scripts build && live-server ./build --entry-file ./build/index.html",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test-ci": "CI=true react-scripts test --watch=all",
