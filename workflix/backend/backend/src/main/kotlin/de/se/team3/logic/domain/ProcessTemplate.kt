@@ -128,7 +128,7 @@ data class ProcessTemplate(
         val responsibleUserRoleIds = taskTemplates.values.map { it.responsibleUserRoleId }
         return responsibleUserRoleIds.intersect(userRoleIds).isNotEmpty()
     }
-      
+
     /**
      * Checks whether the specified user role is designated as responsible in a
      * task template of this process template.
