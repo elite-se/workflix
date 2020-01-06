@@ -21,6 +21,11 @@ export type FilledProcessTemplateType = {|
   taskTemplates: TaskTemplateType[]
 |}
 
+export type ProcessConfigType = {|
+  starterId: string, processGroupId: number, processTemplateId: number, title: string, description: string,
+  deadline: Date
+|}
+
 class ProcessApi {
   getProcesses (filters: FiltersType = {}): Promise<ProcessType[]> {
     // convert filters into URL parameters
@@ -43,6 +48,14 @@ class ProcessApi {
         )
       ))
       .then(processes => processes.map(parseDatesInProcess))
+  }
+
+  startProcess (processConfig: ProcessConfigType): Promise<NewIdResultType> {
+    return safeFetch(`${processesBackend}`, {
+      method: 'POST',
+      body: JSON.stringify({ ...processConfig, deadline: processConfig.deadline.toISOString() })
+    })
+      .then(response => response.json())
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
