@@ -9,6 +9,7 @@ export type ProcessTemplateMasterDataType = {|
   title: string,
   description: string,
   durationLimit: ?number,
+  deleted: boolean,
   ownerId: string
 |}
 

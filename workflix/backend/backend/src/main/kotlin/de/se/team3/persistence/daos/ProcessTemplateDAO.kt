@@ -3,12 +3,10 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.ProcessTemplateDAOInterface
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
-import de.se.team3.persistence.meta.ProcessTemplatesFilteredView
 import de.se.team3.persistence.meta.ProcessTemplatesTable
 import de.se.team3.persistence.meta.ProcessTemplatesView
 import de.se.team3.persistence.meta.TaskTemplateRelationshipsTable
 import de.se.team3.persistence.meta.TaskTemplatesTable
-import de.se.team3.persistence.meta.UsersTable
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.List
@@ -17,6 +15,7 @@ import kotlin.collections.forEach
 import kotlin.collections.toList
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
+import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.batchInsert
 import me.liuwj.ktorm.dsl.delete
@@ -33,6 +32,25 @@ import me.liuwj.ktorm.dsl.where
  * DAO for process templates.
  */
 object ProcessTemplateDAO : ProcessTemplateDAOInterface {
+
+    /**
+     * Makes a process template from the given row and the given task templates.
+     */
+    private fun makeProcessTemplate(row: QueryRowSet, taskTemplates: Map<Int, TaskTemplate>): ProcessTemplate {
+        return ProcessTemplate(
+            row[ProcessTemplatesView.id],
+            row[ProcessTemplatesView.title]!!,
+            row[ProcessTemplatesView.description]!!,
+            row[ProcessTemplatesView.durationLimit]!!,
+            row[ProcessTemplatesView.ownerId]!!,
+            row[ProcessTemplatesView.createdAt]!!,
+            row[ProcessTemplatesView.formerVersion],
+            row[ProcessTemplatesView.processCount]!!,
+            row[ProcessTemplatesView.runningProcesses]!!,
+            row[ProcessTemplatesView.deleted]!!,
+            taskTemplates
+        )
+    }
 
     /**
      * Returns the task templates for the specified process template.
@@ -72,28 +90,11 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
      */
     override fun getAllProcessTemplates(): List<ProcessTemplate> {
         val processTemplates = ArrayList<ProcessTemplate>()
-        val result = ProcessTemplatesFilteredView
-            .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesFilteredView.ownerId)
-            .select()
+        val result = ProcessTemplatesView.select()
 
         for (row in result) {
-            val processTemplateId = row[ProcessTemplatesFilteredView.id]!!
-            val taskTemplates = queryTaskTemplates(processTemplateId)
-
-            val processTemplate = ProcessTemplate(
-                processTemplateId,
-                row[ProcessTemplatesFilteredView.title]!!,
-                row[ProcessTemplatesFilteredView.description]!!,
-                row[ProcessTemplatesFilteredView.durationLimit]!!,
-                row[ProcessTemplatesFilteredView.ownerId]!!,
-                row[ProcessTemplatesFilteredView.createdAt]!!,
-                row[ProcessTemplatesFilteredView.formerVersion],
-                row[ProcessTemplatesFilteredView.processCount]!!,
-                row[ProcessTemplatesFilteredView.runningProcesses]!!,
-                row[ProcessTemplatesFilteredView.deleted]!!,
-                taskTemplates
-            )
-            processTemplates.add(processTemplate)
+            val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
+            processTemplates.add(makeProcessTemplate(row, taskTemplates))
         }
 
         return processTemplates.toList()
@@ -106,29 +107,15 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
      */
     override fun getProcessTemplate(processTemplateId: Int): ProcessTemplate? {
         val processTemplateResult = ProcessTemplatesView
-            .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesView.ownerId)
-            .select().where { ProcessTemplatesView.id eq processTemplateId }
+            .select()
+            .where { ProcessTemplatesView.id eq processTemplateId }
 
         val row = processTemplateResult.rowSet
         if (!row.next())
             return null
 
-        val processTemplateId = row[ProcessTemplatesView.id]!!
-        val taskTemplates = queryTaskTemplates(processTemplateId)
-
-        return ProcessTemplate(
-            processTemplateId,
-            row[ProcessTemplatesView.title]!!,
-            row[ProcessTemplatesView.description]!!,
-            row[ProcessTemplatesView.durationLimit]!!,
-            row[ProcessTemplatesView.ownerId]!!,
-            row[ProcessTemplatesView.createdAt]!!,
-            row[ProcessTemplatesView.formerVersion],
-            row[ProcessTemplatesView.processCount]!!,
-            row[ProcessTemplatesView.runningProcesses]!!,
-            row[ProcessTemplatesView.deleted]!!,
-            taskTemplates
-        )
+        val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
+        return makeProcessTemplate(row, taskTemplates)
     }
 
     /**

@@ -18,7 +18,7 @@ object ProcessesHandler {
     /**
      * Parses the selection predicate that is specified via query parameters in the request url.
      */
-    fun parseSelectionPredicate(ctx: Context): ProcessQueryPredicate {
+    private fun parseSelectionPredicate(ctx: Context): ProcessQueryPredicate {
         val statuses = ArrayList<ProcessStatus>()
         val groupIds = ArrayList<Int>()
         var involvingUserId: String? = null

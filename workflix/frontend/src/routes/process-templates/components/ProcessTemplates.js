@@ -31,10 +31,12 @@ class ProcessTemplates extends React.Component<PropsType> {
     }}>
       <H2 style={{ textAlign: 'center' }}>All Process Templates</H2>
       {
-        templates.map(template => {
+        templates
+          .filter(template => !template.deleted)
+          .map(template => {
             const owner = users.get(template.ownerId)
             return (
-              <CustomLink to={`./${template.id}`} key={template.id}><Card>
+              <CustomLink to={`./edit/${template.id}`} key={template.id}><Card>
                 <H3>{template.title}</H3>
                 <Text>Erstellt von: <i>{owner?.name} ({owner?.displayname})</i></Text>
               </Card></CustomLink>)

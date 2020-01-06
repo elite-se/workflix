@@ -18,15 +18,7 @@ export type FilledProcessTemplateType = {|
   description: string,
   durationLimit: number,
   ownerId: string,
-  taskTemplates: {|
-    id: number,
-    responsibleUserRoleId: number,
-    name: string,
-    description: string,
-    estimatedDuration: number,
-    necessaryClosings: number,
-    predecessors: number[]
-  |}[]
+  taskTemplates: TaskTemplateType[]
 |}
 
 class ProcessApi {
@@ -83,6 +75,10 @@ class ProcessApi {
       body: JSON.stringify(processTemplate)
     })
       .then(response => response.json())
+  }
+
+  deleteProcessTemplate (id: number): Promise<Response> {
+    return safeFetch(`${processesTemplatesBackend}/${id}`, { method: 'DELETE' })
   }
 
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
