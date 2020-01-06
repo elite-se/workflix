@@ -23,8 +23,7 @@ class App extends React.Component<{}, { loggedIn: boolean }> {
   onLoggedInChanged = (loggedIn: boolean) => this.setState({ loggedIn })
 
   render () {
-    const token = getToken()
-    return token
+    return this.state.loggedIn
       ? <div style={{ display: 'flex', flexDirection: 'column', flex: 1, maxWidth: '100%' }}>
           <Header/>
           <RouterWrapper><MainRouter onLoggedInChanged={this.onLoggedInChanged}/></RouterWrapper>
