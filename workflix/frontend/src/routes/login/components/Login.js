@@ -8,9 +8,15 @@ import handleStringChange from '../../../modules/common/handleStringChange'
 import AppToaster from '../../../modules/app/AppToaster'
 import LoginApi from '../../../modules/api/LoginApi'
 import { storeToken } from '../../../modules/common/tokenStorage'
-import { navigate } from '@reach/router'
 
-class Login extends React.Component<{}, { email: string, password: string, loading: boolean, showPassword: boolean }> {
+type StateType = {
+  email: string,
+  password: string,
+  loading: boolean,
+  showPassword: boolean
+}
+
+class Login extends React.Component<{ onLoggedInChanged: (boolean) => void}, StateType> {
   state = {
     email: '',
     password: '',
@@ -33,10 +39,12 @@ class Login extends React.Component<{}, { email: string, password: string, loadi
   login () {
     const { email, password } = this.state
     this.setState({ loading: true })
-    new LoginApi().getToken(email, password)
+    new LoginApi().login(email, password)
       .then(token => {
-        storeToken(token)
-        navigate('/')
+        if (token) {
+          storeToken(token)
+          this.props.onLoggedInChanged(true)
+        }
       })
       .catch(err => {
         AppToaster.show({
