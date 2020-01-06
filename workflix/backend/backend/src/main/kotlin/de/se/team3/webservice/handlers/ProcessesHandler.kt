@@ -7,6 +7,7 @@ import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
+import java.lang.IllegalArgumentException
 import org.json.JSONObject
 
 /**
@@ -27,7 +28,7 @@ object ProcessesHandler {
                 for (statusEntry in param.value)
                     statuses.add(ProcessStatus.valueOf(statusEntry))
 
-            if (param.key == "groupId") // loops over all query parameters named groupId
+            if (param.key == "processGroupId") // loops over all query parameters named groupId
                 for (groupIdEntry in param.value)
                     groupIds.add(groupIdEntry.toInt())
 
@@ -35,7 +36,7 @@ object ProcessesHandler {
                 if (param.value.size != 1)
                     ctx.status(400).result("query must not contain more than one involving parameter")
 
-                involvingUserId = param.value.get(0)
+                involvingUserId = param.value[0]
             }
         }
 
@@ -46,16 +47,20 @@ object ProcessesHandler {
      * Handles the request for all processes.
      */
     fun getAll(ctx: Context) {
-        val predicate = parseSelectionPredicate(ctx)
+        try {
+            val predicate = parseSelectionPredicate(ctx)
 
-        val processes = ProcessContainer.getAllProcesses(predicate)
+            val processes = ProcessContainer.getAllProcesses(predicate)
 
-        val pagingContainer = PagingHelper.getPagingContainer(1, 1)
-        val processesJsonArray = JsonHelper.toJsonArray(processes)
-        pagingContainer.put("processes", processesJsonArray)
+            val pagingContainer = PagingHelper.getPagingContainer(1, 1)
+            val processesJsonArray = JsonHelper.toJsonArray(processes)
+            pagingContainer.put("processes", processesJsonArray)
 
-        ctx.result(pagingContainer.toString())
-            .contentType("application/json")
+            ctx.result(pagingContainer.toString())
+                .contentType("application/json")
+        } catch (e: IllegalArgumentException) {
+        ctx.status(400).result("predicate parsing error: unknown or malformed status, group ID or user ID")
+        }
     }
 
     /**

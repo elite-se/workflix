@@ -117,6 +117,19 @@ data class ProcessTemplate(
     }
 
     /**
+     * Checks whether the given list of user role ids contains one that is designated as responsible
+     * by at least one of the task templates.
+     *
+     * @return True iff at least one task template designates one of the specified user roles
+     * as responsible.
+     */
+    @JsonIgnore
+    fun isOneResponsible(userRoleIds: List<Int>): Boolean {
+        val responsibleUserRoleIds = taskTemplates.values.map { it.responsibleUserRoleId }
+        return responsibleUserRoleIds.intersect(userRoleIds).isNotEmpty()
+    }
+
+    /**
      * Checks whether the specified user role is designated as responsible in a
      * task template of this process template.
      *
