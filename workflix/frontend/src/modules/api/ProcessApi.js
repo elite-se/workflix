@@ -82,23 +82,20 @@ class ProcessApi {
   }
 
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
-    return this.getProcessTemplates([processTemplateId])
-      .then(templates => templates[0])
+    return safeFetch(`${processesTemplatesBackend}/${processTemplateId}`)
+      .then(response => response.json())
+      .then(parseDatesInProcessTemplate)
   }
 
   getAllProcessTemplates (): Promise<ProcessTemplateMasterDataType[]> {
     return safeFetch(`${processesTemplatesBackend}/`)
       .then(response => response.json())
-      .then(json => json.templates)
+      .then(json => json.templates.map(parseDatesInProcessTemplate))
   }
 
   getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {
     processTemplateIds = uniq(processTemplateIds)
-    return Promise.all(processTemplateIds.map(procTempId =>
-      safeFetch(`${processesTemplatesBackend}/${procTempId}`)
-        .then(response => response.json())
-        .then(parseDatesInProcessTemplate)
-    ))
+    return Promise.all(processTemplateIds.map(this.getProcessTemplate))
   }
 
   getTaskTemplatesForProcessTemplates (processTemplateIds: number[]): Promise<Map<number, TaskTemplateType>> {
