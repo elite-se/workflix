@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import { CenterScreen } from '../../../modules/common/centerScreen'
 import { Button, Card, FormGroup, H1, InputGroup, Spinner, Tooltip } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import handleStringChange from '../../../modules/common/handleStringChange'
 import AppToaster from '../../../modules/app/AppToaster'
 import LoginApi from '../../../modules/api/LoginApi'
 import { storeToken } from '../../../modules/common/tokenStorage'
+import CenterScreen from '../../../modules/common/CenterScreen'
 
 type StateType = {
   email: string,

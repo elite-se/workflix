@@ -2,7 +2,7 @@
 
 import styled from 'styled-components'
 
-export const CenterScreen = styled<{}, {}, 'div'>('div')`
+const CenterScreen = styled<{}, {}, 'div'>('div')`
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -10,3 +10,4 @@ export const CenterScreen = styled<{}, {}, 'div'>('div')`
   align-items: center;
   height: 100%;
 `
+export default CenterScreen
