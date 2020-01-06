@@ -30,7 +30,7 @@ class Task(
 
     @get:JsonIgnore
     val taskTemplate by lazy {
-        process!!.processTemplate.taskTemplates!!.get(taskTemplateId)
+        process!!.processTemplate.taskTemplates.get(taskTemplateId)
     }
 
     /**
@@ -48,7 +48,7 @@ class Task(
     private fun arePredecessorsClosed(): Boolean {
         var unclosedFound = false
         taskTemplate!!.predecessors.forEach { taskTemplate ->
-            val preTask = process!!.tasks!!.get(taskTemplate.id)
+            val preTask = process!!.tasks.get(taskTemplate.id)
             if (preTask!!.status() != TaskStatus.CLOSED)
                 unclosedFound = true
         }

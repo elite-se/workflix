@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessTemplatesContainer
-import de.se.team3.logic.container.TaskTemplateContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
@@ -167,7 +166,7 @@ class Process(
 
         // user is in process's group and one of his/her roles is assigned to it
         val inUsersGroups = usersGroupIDs.contains(this.processGroupId)
-        val designatedAsResponsible = tasks.values.map { TaskTemplateContainer.getTaskTemplate(it.taskTemplateId).responsibleUserRoleId }.intersect(usersRoleIDs).isNotEmpty()
+        val designatedAsResponsible = processTemplate.isOneResponsible(usersRoleIDs)
         if (inUsersGroups && designatedAsResponsible)
             return true
 
