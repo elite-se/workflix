@@ -9,6 +9,7 @@ import ProcessApi from '../../../../../modules/api/ProcessApi'
 import AssigneeTagContent from './AssigneeTagContent'
 import { sortBy } from 'lodash'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
+import { toastifyError } from '../../../../../modules/common/toastifyError'
 
 const UserSelect = MultiSelect.ofType<UserType>()
 
@@ -50,7 +51,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
           doneAt: undefined
         }))
       })
-      .catch(err => console.error(err))
+      .catch(toastifyError)
   }
 
   onClear = () => {
@@ -60,7 +61,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       .then(() => {
         this.onAssignmentsChanged([])
       })
-      .catch(err => console.error(err))
+      .catch(toastifyError)
   }
 
   onTagRemoved = (tag: AssigneeTagContent) => {
@@ -70,7 +71,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       .then(() => {
         this.onAssignmentsChanged(task.assignments.filter(ass => ass.assigneeId !== removedAssignee.id))
       })
-      .catch(err => console.error(err))
+      .catch(toastifyError)
   }
 
   onTagClick = (tag: AssigneeTagContent) => {
@@ -86,7 +87,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
             closed: true
           } : ass))
         })
-        .catch(err => console.error(err))
+        .catch(toastifyError)
     }
   }
 
