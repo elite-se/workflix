@@ -1,7 +1,7 @@
 package de.se.team3.logic.domain
 
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.util.RelevantProcessQuerying
 
 data class ProcessQueryPredicate(
     val statuses: List<ProcessStatus>,
@@ -44,12 +44,14 @@ data class ProcessQueryPredicate(
      * @return True if and only if the predicate is satisfied.
      */
     fun satisfiedBy(process: Process): Boolean {
-        if (statuses.isEmpty() && processGroupIds.isEmpty() && involvingUserId == null)
-            return true
+        val relevantForInvolving = if (involvingUserId != null)
+            process.isRelevantFor(UserContainer.getUser(involvingUserId))
+        else
+            true
 
         if (statuses.containsOrEmpty(process.getStatus()) &&
             processGroupIds.containsOrEmpty(process.processGroupId) &&
-            RelevantProcessQuerying.isRelevantFor(involvingUserId, process))
+            relevantForInvolving)
             return true
 
         return false
