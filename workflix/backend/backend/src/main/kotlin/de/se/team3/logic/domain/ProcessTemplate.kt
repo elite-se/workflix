@@ -116,6 +116,26 @@ data class ProcessTemplate(
         deleted = true
     }
 
+    /**
+     * Checks whether the specified user role is designated as responsible in a
+     * task template of this process template.
+     *
+     * @throws NullPointerException Is thrown if the id of the given user role is null.
+     *
+     * @return True if and only if the given user role is designated as responsible in
+     * a task template of this process template.
+     */
+    fun usesUserRole(userRole: UserRole): Boolean {
+        if (userRole.id == null)
+            throw NullPointerException("id of user role must not be null")
+
+        for ((key, taskTemplate) in taskTemplates)
+            if (taskTemplate.responsibleUserRoleId == userRole.id)
+                return true
+
+        return false
+    }
+
     companion object {
 
         /**

@@ -2,17 +2,47 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.daos.UserRoleDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
 object UserRoleContainer : UserRoleContainerInterface {
 
+    // Each user role lays under its id
     private val userRoleCache = HashMap<Int, UserRole>()
 
-    override fun getAllUserRoles(): List<UserRole> {
-        return UserRoleDAO.getAllUserRoles()
+    // Indicates whether the cache is already filled with all elements
+    private var filled = false
+
+    /**
+     * Ensures that all user roles are cached.
+     */
+    private fun fillCache() {
+        val userRoles = UserRoleDAO.getAllUserRoles()
+        userRoles.forEach { userRole ->
+            userRoleCache.put(userRole.id!!, userRole)
+        }
+        filled = true
     }
 
+    /**
+     * Returns all user roles.
+     */
+    override fun getAllUserRoles(): List<UserRole> {
+        if (!filled)
+            fillCache()
+
+        return userRoleCache
+            .map { it.value }
+            .filter { !it.isDeleted() }
+            .toList()
+    }
+
+    /**
+     * Returns the specified user role.
+     *
+     * @throws NotFoundException Is thrown if the specified user role does not exist.
+     */
     override fun getUserRole(userRoleID: Int): UserRole {
         return if (userRoleCache.containsKey(userRoleID)) {
             userRoleCache[userRoleID]!!
@@ -41,43 +71,44 @@ object UserRoleContainer : UserRoleContainerInterface {
         return false
     }
 
+    /**
+     * Creates the given user role.
+     *
+     * @return The generated id of the user role.
+     */
     override fun createUserRole(userRole: UserRole): Int {
         val newID = UserRoleDAO.createUserRole(userRole)
-        userRoleCache[newID] = userRole
+        userRoleCache[newID] = userRole.copy(id = newID)
         return newID
     }
 
+    /**
+     * Updates the given user role.
+     */
     override fun updateUserRole(userRole: UserRole) {
+        val cachedUserRole = getUserRole(userRole.id!!) // throws NotFoundException
+
         UserRoleDAO.updateUserRole(userRole)
-        userRoleCache[userRole.id] = userRole
+
+        cachedUserRole.setName(userRole.getName())
+        cachedUserRole.setDescription(userRole.getDescription())
     }
 
-    override fun updateUserRole(userRoleID: Int, name: String, description: String) {
-        val userRole = getUserRole(userRoleID)
-        userRole.name = name
-        userRole.description = description
-        updateUserRole(userRole)
-    }
-
+    /**
+     * Deletes the specified user role.
+     *
+     * @throws NotFoundException Is thrown if the specified user role does not exist.
+     * @throws UnsatisfiedPreconditionException Is thrown if the specified user role is in use in an
+     * active (not deleted) process template.
+     */
     override fun deleteUserRole(userRoleID: Int) {
+        val userRole = getUserRole(userRoleID)
+
         if (!UserRoleDAO.deleteUserRole(userRoleID))
             throw NotFoundException("user role $userRoleID does not exist")
-        userRoleCache.remove(userRoleID)
-    }
+        if (userRole.isUsedInActiveProcessTemplate())
+            throw UnsatisfiedPreconditionException("user role is in use in an active process template")
 
-    override fun addUserToRole(userID: String, userRoleID: Int) {
-        UserRoleDAO.addUserToRole(userID, userRoleID)
-        if (userRoleCache.containsKey(userRoleID))
-            userRoleCache[userRoleID]!!.members.add(UserContainer.getUser(userID))
-        else
-            userRoleCache[userRoleID] = getUserRole(userRoleID)
-    }
-
-    override fun deleteUserFromRole(userID: String, userRoleID: Int) {
-        UserRoleDAO.deleteUserFromRole(userID, userRoleID)
-        if (userRoleCache.containsKey(userRoleID))
-            userRoleCache[userRoleID]!!.members.remove(UserContainer.getUser(userID))
-        else
-            userRoleCache[userRoleID] = getUserRole(userRoleID)
+        userRole.delete()
     }
 }

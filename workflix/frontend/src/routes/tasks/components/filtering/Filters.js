@@ -20,7 +20,7 @@ const FiltersContainer = styled<{}, {}, 'div'>('div')`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   
   margin: 5px;

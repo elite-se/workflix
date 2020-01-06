@@ -5,17 +5,18 @@ import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.NotVerifiedException
+import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.AuthenticationHandler
 import de.se.team3.webservice.handlers.ProcessGroupsHandler
 import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
 import de.se.team3.webservice.handlers.ProcessesHandler
-import de.se.team3.webservice.handlers.ProcessesRunningHandler
 import de.se.team3.webservice.handlers.TasksAssignmentsHandler
 import de.se.team3.webservice.handlers.TasksCommentsHandler
 import de.se.team3.webservice.handlers.UserHandler
-import de.se.team3.webservice.handlers.UserRoleHandler
+import de.se.team3.webservice.handlers.UserRolesHandler
+import de.se.team3.webservice.handlers.UserRolesMembersHandler
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 import org.json.JSONException
@@ -33,10 +34,15 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    // exception handling
+    // webservice exceptions, i.d. exceptions thrown if something is wrong if the input format
     app.exception(NumberFormatException::class.java) { _, ctx ->
         ctx.status(400).result("invalid id format")
     }
+    app.exception(JSONException::class.java) { e, ctx ->
+        ctx.status(400).result("" + e.message)
+    }
+
+    // logical exceptions, i.d. exceptions thrown if a logical illegal request was made
     app.exception(InvalidInputException::class.java) { e, ctx ->
         ctx.status(400).result(e.message)
     }
@@ -49,8 +55,8 @@ fun main(args: Array<String>) {
     app.exception(AlreadyClosedException::class.java) { e, ctx ->
         ctx.status(409).result(e.message)
     }
-    app.exception(JSONException::class.java) { e, ctx ->
-        ctx.status(400).result("" + e.message)
+    app.exception(UnsatisfiedPreconditionException::class.java) { e, ctx ->
+        ctx.status(404).result(e.message)
     }
     app.exception(NotVerifiedException::class.java) { e, ctx ->
         ctx.status(401).result(e.message)
@@ -98,24 +104,32 @@ fun main(args: Array<String>) {
 
     // user roles
     app.get("userRoles") { ctx ->
-        UserRoleHandler.getAll(ctx)
+        UserRolesHandler.getAll(ctx)
     }
     app.post("userRoles") { ctx ->
-        UserRoleHandler.create(ctx)
+        UserRolesHandler.create(ctx)
     }
     app.patch("userRoles/:userRoleId") { ctx ->
-        UserRoleHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
+        UserRolesHandler.update(ctx, ctx.pathParam("userRoleId").toInt())
     }
     app.delete("userRoles/:userRoleId") { ctx ->
-        UserRoleHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
+        UserRolesHandler.delete(ctx, ctx.pathParam("userRoleId").toInt())
     }
-    app.post("usersToRoles") { ctx ->
-        UserRoleHandler.addUserToRole(ctx)
+
+    // user role memberships
+    app.put("userRoles/:userRoleId/members/:memberId") { ctx ->
+        UserRolesMembersHandler.create(
+            ctx,
+            ctx.pathParam("userRoleId").toInt(),
+            ctx.pathParam("memberId")
+        )
     }
-    app.delete("usersToRoles/:userId/:userRoleId") { ctx ->
-        UserRoleHandler.deleteUserFromRole(ctx,
-            ctx.pathParam("userId").toString(),
-            ctx.pathParam("userRoleId").toInt())
+    app.delete("userRoles/:userRoleId/members/:memberId") { ctx ->
+        UserRolesMembersHandler.delete(
+            ctx,
+            ctx.pathParam("userRoleId").toInt(),
+            ctx.pathParam("memberId")
+        )
     }
 
     // processes
@@ -123,9 +137,9 @@ fun main(args: Array<String>) {
     app.get("processes/:processId") { ctx ->
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
-    app.post("processes") { ctx -> ProcessesRunningHandler.create(ctx) }
+    app.post("processes") { ctx -> ProcessesHandler.create(ctx) }
     app.delete("processes") { ctx ->
-        ProcessesRunningHandler.delete(ctx, ctx.pathParam("processId").toInt())
+        ProcessesHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
 
     // process groups

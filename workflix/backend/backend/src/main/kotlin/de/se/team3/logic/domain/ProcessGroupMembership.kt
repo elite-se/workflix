@@ -2,6 +2,7 @@ package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.se.team3.logic.container.ProcessGroupsContainer
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 
 /**
@@ -15,6 +16,9 @@ data class ProcessGroupMembership(
 
     @get:JsonIgnore
     val processGroup by lazy { ProcessGroupsContainer.getProcessGroup(processGroupId) }
+
+    @get:JsonIgnore
+    val member by lazy { UserContainer.getUser(memberId) }
 
     /**
      * Create-Constructor
