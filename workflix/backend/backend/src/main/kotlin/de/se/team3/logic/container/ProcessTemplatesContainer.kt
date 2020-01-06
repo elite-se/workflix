@@ -1,6 +1,7 @@
 package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.ProcessTemplate
+import de.se.team3.logic.domain.UserRole
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessTemplateDAO
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
@@ -49,6 +50,29 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
             processTemplatesCache.put(processTemplateId, processTemplate)
             processTemplate
         }
+    }
+
+    /**
+     * Checks whether the given user role is designated as responsible in any of
+     * the active (not deleted) process templates.
+     *
+     * @throws NullPointerException Is thrown if the id of the given user role is null.
+     *
+     * @return True if and only if there is any active process template that designates
+     * the given user role as responsible.
+     */
+    fun hasProcessTemplateUsingUserRole(userRole: UserRole): Boolean {
+        if (userRole.id == null)
+            throw NullPointerException("id of user role must not be null")
+
+        if (!filled)
+            fillCache()
+
+        for ((key, processTemplate) in processTemplatesCache)
+            if (!processTemplate.isDeleted() && processTemplate.usesUserRole(userRole))
+                return true
+
+        return false
     }
 
     /**
