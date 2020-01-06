@@ -1,36 +1,36 @@
 // @flow
 
 import { Button, MenuItem } from '@blueprintjs/core'
-import type { UserRoleType } from '../../datatypes/User'
 import type { ItemPredicate } from '@blueprintjs/select'
 import { ItemRenderer, Select } from '@blueprintjs/select'
-import highlightText from '../../common/highlightText'
 import React from 'react'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
+import highlightText from '../../../modules/common/highlightText'
 
-const CustomSelect = Select.ofType<UserRoleType>()
+const CustomSelect = Select.ofType<ProcessGroupType>()
 
 type PropsType = {
-  userRoles: UserRoleType[],
-  activeItem: ?UserRoleType,
-  onItemSelect: UserRoleType => void,
+  items: ProcessGroupType[],
+  activeItem: ?ProcessGroupType,
+  onItemSelect: ProcessGroupType => void,
   intent?: string
 }
 
-class UserRoleSelect extends React.Component<PropsType> {
-  itemRenderer: ItemRenderer = (item: UserRoleType, { handleClick, modifiers, query }) => {
+class ProcessGroupSelect extends React.Component<PropsType> {
+  itemRenderer: ItemRenderer = (item: ProcessGroupType, { handleClick, modifiers, query }) => {
     return <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
       icon={this.props.activeItem === item ? 'tick' : 'blank'}
-      label={highlightText(item.name, query)}
+      label={highlightText(item.title, query)}
       key={item.id}
       onClick={handleClick}
       shouldDismissPopover={false}
-      text={highlightText(item.name, query)}/>
+      text={highlightText(item.title, query)}/>
   }
 
-  filterUsers: ItemPredicate<UserRoleType> = (query, user, _index, exactMatch) => {
-    const normalizedName = user.name.toLocaleLowerCase()
+  filter: ItemPredicate<ProcessGroupType> = (query, processGroup, _index, exactMatch) => {
+    const normalizedName = processGroup.title.toLocaleLowerCase()
     const normalizedQuery = query.toLocaleLowerCase()
     return exactMatch
       ? [normalizedName].includes(normalizedQuery)
@@ -38,23 +38,23 @@ class UserRoleSelect extends React.Component<PropsType> {
   }
 
   render () {
-    const { userRoles, activeItem, onItemSelect, intent } = this.props
-    return <CustomSelect items={userRoles}
+    const { items, activeItem, onItemSelect, intent } = this.props
+    return <CustomSelect items={items}
                          fill
                          popoverProps={{
                            usePortal: false,
                            fill: true
                          }}
-                         itemPredicate={this.filterUsers}
+                         itemPredicate={this.filter}
                          itemRenderer={this.itemRenderer}
                          onItemSelect={onItemSelect}>
       <Button icon='people'
               rightIcon='caret-down'
               fill
               intent={intent}
-              text={activeItem?.name || '(No selection)'}/>
+              text={activeItem?.title || '(No selection)'}/>
     </CustomSelect>
   }
 }
 
-export default UserRoleSelect
+export default ProcessGroupSelect
