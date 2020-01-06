@@ -10,6 +10,7 @@ import ProcessApi from '../../../modules/api/ProcessApi'
 import AppToaster from '../../../modules/app/AppToaster'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import { navigate } from '@reach/router'
+import ProcessGroupSelect from './ProcessGroupSelect'
 
 type PropsType = { template: ProcessTemplateType, processGroups: Map<number, ProcessGroupType> }
 
@@ -67,6 +68,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
   onDeadlineChange = (deadline: Date) => this.setState({ deadline })
   onDeadlineButton = (deadline: Date) => () => this.onDeadlineChange(deadline)
   onCloseErrorAlert = () => this.setState({ errorAlert: null })
+  onProcessGroupChange = (processGroup: ProcessGroupType) => this.setState({ processGroup })
 
   onStartClick = async () => {
     const { title, description, deadline, processGroup } = this.state
@@ -99,7 +101,8 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { title, description, deadline, startLoading, errorAlert } = this.state
+    const { title, description, deadline, startLoading, errorAlert, processGroup } = this.state
+    const { processGroups } = this.props
     const shortcuts = getShortcuts()
     return <div style={{
       padding: '20px',
@@ -114,6 +117,10 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
         <AutoSizeTextArea className='bp3-fill' style={{ resize: 'none' }} placeholder='Description...'
                           value={description} multiline minRows={4} maxRows={12}
                           onChange={this.onDescriptionChange}/>
+      </FormGroup>
+      <FormGroup label='Process Group' labelInfo='(required)'>
+        <ProcessGroupSelect activeItem={processGroup} onItemSelect={this.onProcessGroupChange}
+                            items={Array.from(processGroups.values())}/>
       </FormGroup>
       <FormGroup label='Deadline' labelInfo='(required)'>
         <div style={{
