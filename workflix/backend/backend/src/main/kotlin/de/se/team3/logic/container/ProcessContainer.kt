@@ -25,10 +25,6 @@ object ProcessContainer : ProcessContainerInterface {
         filled = true
     }
 
-    private fun filterProcesses(predicate: ProcessQueryPredicate) {
-        // TODO what about this function?
-    }
-
     /**
      * Returns all processes fulfilling the predicate.
      */

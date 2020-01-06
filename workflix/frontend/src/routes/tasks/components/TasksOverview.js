@@ -9,29 +9,42 @@ import type { FiltersType } from '../../../modules/datatypes/Filters'
 import ProcessList from './ProcessList'
 import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
+import type { TaskType } from '../../../modules/datatypes/Task'
+import { Drawer } from '@blueprintjs/core'
 
 type PropsType = {|
   users: Map<string, UserType>,
   processGroups: Map<number, ProcessGroupType>
 |}
 type StateType = {|
-  filters: FiltersType
+  filters: FiltersType,
+  drawerOpen: boolean
 |}
 
 class TasksOverview extends React.Component<PropsType, StateType> {
   state = {
-    filters: {}
+    filters: {},
+    drawerOpen: false
   }
 
   onFiltersChanged = (newFilters: FiltersType) => {
     this.setState({ filters: newFilters })
   }
 
+  onTaskSelected = (selectedTask: ?TaskType) =>
+    this.setState({ drawerOpen: Boolean(selectedTask) })
+
   render () {
-    return <div>
+    return <div style={{
+      maxWidth: '100%',
+      boxSizing: 'border-box',
+      flex: 1,
+      paddingRight: this.state.drawerOpen ? Drawer.SIZE_SMALL : '0',
+      transition: 'padding-right 0.3s'
+    }}>
       <Filters onFiltersChanged={this.onFiltersChanged} filters={this.state.filters}
                users={this.props.users} processGroups={this.props.processGroups}/>
-      <ProcessList filters={this.state.filters} users={this.props.users}/>
+      <ProcessList filters={this.state.filters} users={this.props.users} onTaskSelected={this.onTaskSelected}/>
     </div>
   }
 }

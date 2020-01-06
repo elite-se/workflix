@@ -1,4 +1,3 @@
-/* eslint-disable flowtype/no-weak-types */
 // @flow
 
 export const parseDatesInProcess = (process: any) => ({
@@ -25,7 +24,7 @@ export const parseDatesInAssignments = (ass: any) => ({
 
 export const parseDatesInProcessTemplate = (template: any) => ({
   ...template,
-  createdAt: template.createdAt && new Date(template.startedAt)
+  createdAt: template.createdAt && new Date(template.createdAt)
 })
 
 export const parseDatesInUserRole = (role: any) => ({

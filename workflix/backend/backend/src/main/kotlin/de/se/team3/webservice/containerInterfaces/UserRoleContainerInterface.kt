@@ -12,11 +12,5 @@ interface UserRoleContainerInterface {
 
     fun updateUserRole(userRole: UserRole)
 
-    fun updateUserRole(userRoleID: Int, name: String, description: String)
-
     fun deleteUserRole(userRoleID: Int)
-
-    fun addUserToRole(userID: String, userRoleID: Int)
-
-    fun deleteUserFromRole(userID: String, userRoleID: Int)
 }

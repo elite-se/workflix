@@ -18,15 +18,12 @@ export type FilledProcessTemplateType = {|
   description: string,
   durationLimit: number,
   ownerId: string,
-  taskTemplates: {|
-    id: number,
-    responsibleUserRoleId: number,
-    name: string,
-    description: string,
-    estimatedDuration: number,
-    necessaryClosings: number,
-    predecessors: number[]
-  |}[]
+  taskTemplates: TaskTemplateType[]
+|}
+
+export type ProcessConfigType = {|
+  starterId: string, processGroupId: number, processTemplateId: number, title: string, description: string,
+  deadline: Date
 |}
 
 class ProcessApi {
@@ -51,6 +48,14 @@ class ProcessApi {
         )
       ))
       .then(processes => processes.map(parseDatesInProcess))
+  }
+
+  startProcess (processConfig: ProcessConfigType): Promise<NewIdResultType> {
+    return safeFetch(`${processesBackend}`, {
+      method: 'POST',
+      body: JSON.stringify({ ...processConfig, deadline: processConfig.deadline.toISOString() })
+    })
+      .then(response => response.json())
   }
 
   addAssignee (taskId: number, assigneeId: string, immediateClosing: boolean = false): Promise<NewIdResultType> {
@@ -85,24 +90,25 @@ class ProcessApi {
       .then(response => response.json())
   }
 
+  deleteProcessTemplate (id: number): Promise<Response> {
+    return safeFetch(`${processesTemplatesBackend}/${id}`, { method: 'DELETE' })
+  }
+
   getProcessTemplate (processTemplateId: number): Promise<ProcessTemplateType> {
-    return this.getProcessTemplates([processTemplateId])
-      .then(templates => templates[0])
+    return safeFetch(`${processesTemplatesBackend}/${processTemplateId}`)
+      .then(response => response.json())
+      .then(parseDatesInProcessTemplate)
   }
 
   getAllProcessTemplates (): Promise<ProcessTemplateMasterDataType[]> {
     return safeFetch(`${processesTemplatesBackend}/`)
       .then(response => response.json())
-      .then(json => json.templates)
+      .then(json => json.templates.map(parseDatesInProcessTemplate))
   }
 
   getProcessTemplates (processTemplateIds: number[]): Promise<ProcessTemplateType[]> {
     processTemplateIds = uniq(processTemplateIds)
-    return Promise.all(processTemplateIds.map(procTempId =>
-      safeFetch(`${processesTemplatesBackend}/${procTempId}`)
-        .then(response => response.json())
-        .then(parseDatesInProcessTemplate)
-    ))
+    return Promise.all(processTemplateIds.map(this.getProcessTemplate))
   }
 
   getTaskTemplatesForProcessTemplates (processTemplateIds: number[]): Promise<Map<number, TaskTemplateType>> {

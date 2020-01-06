@@ -14,4 +14,10 @@ export const TalkBubble = styled<{ floatEnd: boolean }, {}, 'div'>('div')`
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
+    
+    @keyframes pop-up {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+    animation-duration: 0.3s;
 `
