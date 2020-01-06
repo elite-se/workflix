@@ -9,6 +9,9 @@ export type ProcessTemplateMasterDataType = {|
   title: string,
   description: string,
   durationLimit: ?number,
+  createdAt: Date,
+  processCount: number,
+  runningProcesses: number,
   deleted: boolean,
   ownerId: string
 |}
@@ -20,8 +23,8 @@ export type ProcessTemplateType = {|
   durationLimit: number,
   ownerId: string,
   createdAt: Date,
-  process_count: number,
-  running_processes: number,
+  processCount: number,
+  runningProcesses: number,
   deleted: boolean,
   taskTemplates: TaskTemplateType[]
 |}

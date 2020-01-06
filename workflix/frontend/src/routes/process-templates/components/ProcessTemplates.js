@@ -1,60 +1,67 @@
 // @flow
 
 import React from 'react'
-import { Card, H2, H3, Text } from '@blueprintjs/core'
-import type { ProcessTemplateMasterDataType } from '../../../modules/datatypes/Process'
+import { H2 } from '@blueprintjs/core'
+import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
-import { Link } from '@reach/router'
-import type { StyledComponent } from 'styled-components'
-import styled from 'styled-components'
 import ProcessApi from '../../../modules/api/ProcessApi'
 import type { UserType } from '../../../modules/datatypes/User'
 import UsersApi from '../../../modules/api/UsersApi'
+import ProcessTemplateCard from './ProcessTemplateCard'
+import styled from 'styled-components'
+import FlipMove from 'react-flip-move'
+import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
-const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
-  margin: 5px;
+const TemplatesContainer = styled<{}, {}, 'div'>(FlipMove)`
+  margin: 10px 20px;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: start;
+  flex-direction: row;
+  max-width: 100%;
+  flex-wrap: wrap;
 `
 
-type PropsType = { templates: ProcessTemplateMasterDataType[], users: Map<string, UserType> }
+type PropsType = {
+  templates: ProcessTemplateType[], users: Map<string, UserType>, refresh: (soft: boolean) => void,
+  processGroups: Map<number, ProcessGroupType>
+}
 
 class ProcessTemplates extends React.Component<PropsType> {
+  refresh = () => this.props.refresh(true)
+
   render () {
-    const { users, templates } = this.props
+    const { users, templates, processGroups } = this.props
     return <div style={{
-      margin: '20px',
       display: 'flex',
-      maxWidth: '300px',
-      flex: '1',
-      justifyContent: 'flex-start',
-      alignItems: 'stretch',
       flexDirection: 'column'
     }}>
       <H2 style={{ textAlign: 'center' }}>All Process Templates</H2>
-      {
-        templates
-          .filter(template => !template.deleted)
-          .map(template => {
-            const owner = users.get(template.ownerId)
-            return (
-              <CustomLink to={`./edit/${template.id}`} key={template.id}><Card>
-                <H3>{template.title}</H3>
-                <Text>Erstellt von: <i>{owner?.name} ({owner?.displayname})</i></Text>
-              </Card></CustomLink>)
-          }
-        )
-      }
+      <TemplatesContainer>
+        {templates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}
+                                                        refresh={this.refresh} process processGroups={processGroups}/>)}
+      </TemplatesContainer>
     </div>
   }
 }
 
 export default withPromiseResolver<PropsType, PropsType>(
-  () => Promise.all([
-    new ProcessApi().getAllProcessTemplates(),
-    new UsersApi().getUsers()
-  ]).then(([templates, users]) => {
+  (props, refresh) => Promise.all([
+    new ProcessApi().getAllProcessTemplates()
+      .then(templates => new ProcessApi().getProcessTemplates(templates
+        .filter(template => !template.deleted)
+        .map(template => template.id))
+      ),
+    new UsersApi().getUsers(),
+    new ProcessGroupsApi().getProcessGroups()
+  ]).then(([templates, users, processGroups]) => {
     return ({
       templates,
-      users
+      users,
+      refresh,
+      processGroups
     })
   })
 )(ProcessTemplates)

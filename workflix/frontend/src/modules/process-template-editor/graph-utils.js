@@ -2,23 +2,27 @@
 
 import { times } from 'lodash'
 
-export type ProcessedNodeType<T> = {|
+export type GraphDataType<T: number | ?number> = { id: number, predecessors: number[], estimatedDuration: T }
+
+export type ProcessedNodeType<N: number | ?number, T: GraphDataType<N>> = {|
   data: T,
   id: number,
   critical: boolean,
   startDate: number, /* earliest possible start date */
+  estimatedDuration: number,
   endDate: number /* earliest possible end date */
 |}
 
-export function calcGraph<T: { id: number, predecessors: number[], estimatedDuration: ?number }> (
+export function calcGraph<N: number | ?number, T: GraphDataType<N>> (
   tasks: T[]
-): ProcessedNodeType<T>[] {
-  const nodes = tasks.map(node => ({
-    data: node,
-    id: node.id,
+): ProcessedNodeType<N, T>[] {
+  const nodes = tasks.map(task => ({
+    data: task,
+    id: task.id,
     critical: false,
     startDate: 0,
-    endDate: node.estimatedDuration || 1
+    estimatedDuration: task.estimatedDuration || 1,
+    endDate: task.estimatedDuration || 1
   }))
 
   times(nodes.length - 1, () => { // Bellman-Ford
@@ -27,11 +31,11 @@ export function calcGraph<T: { id: number, predecessors: number[], estimatedDura
         0,
         ...(node.data.predecessors.map(id => nodes.find(x => x.id === id)?.endDate || 0))
       )
-      node.endDate = node.startDate + (node.data.estimatedDuration || 1)
+      node.endDate = node.startDate + node.estimatedDuration
     }
   })
 
-  const setCriticalPath = (task: ProcessedNodeType<T>) => {
+  const setCriticalPath = (task: ProcessedNodeType<N, T>) => {
     task.critical = true
     task.data.predecessors
       .map(id => nodes.find(_task => _task.id === id)).filter(Boolean)
