@@ -67,7 +67,7 @@ class Process(
     /**
      * Returns the specified task.
      */
-    fun findTask(taskId: Int): Task {
+    fun getTask(taskId: Int): Task {
         return tasks!!.map { it.value }.find { it.id == taskId }!!
     }
 
