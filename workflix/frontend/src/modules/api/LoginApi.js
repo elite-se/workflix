@@ -12,7 +12,6 @@ class LoginApi {
       body: JSON.stringify({ email, password })
     })
       .then(response => response.json())
-      .catch(debug => { return { token: 'dummy' } }) // TODO remove when backend supports this call
       .then(result => result.token)
   }
 
@@ -20,7 +19,6 @@ class LoginApi {
     return safeFetch(loginBackend, {
       method: 'DELETE'
     })
-      .catch(debug => { return debug }) // TODO remove when backend supports this call
   }
 }
 
