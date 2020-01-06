@@ -43,17 +43,18 @@ class Login extends React.Component<{ onLoggedInChanged: (boolean) => void}, Sta
       .then(token => {
         if (token) {
           storeToken(token)
+          this.setState({ loading: false })
           this.props.onLoggedInChanged(true)
         }
       })
       .catch(err => {
+        this.setState({ loading: false })
         AppToaster.show({
           message: err.message,
           intent: Intent.DANGER,
           icon: 'key'
         })
       })
-      .finally(() => this.setState({ loading: false }))
   }
 
   toggleShowPassword = () => {
