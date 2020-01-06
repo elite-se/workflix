@@ -45,7 +45,6 @@ class ProcessGroupSelect extends React.Component<PropsType> {
                            usePortal: false,
                            fill: true
                          }}
-                         activeItem={activeItem}
                          itemPredicate={this.filter}
                          itemRenderer={this.itemRenderer}
                          onItemSelect={onItemSelect}>

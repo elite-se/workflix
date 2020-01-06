@@ -45,7 +45,6 @@ class UserRoleSelect extends React.Component<PropsType> {
                            usePortal: false,
                            fill: true
                          }}
-                         activeItem={activeItem}
                          itemPredicate={this.filterUsers}
                          itemRenderer={this.itemRenderer}
                          onItemSelect={onItemSelect}>
