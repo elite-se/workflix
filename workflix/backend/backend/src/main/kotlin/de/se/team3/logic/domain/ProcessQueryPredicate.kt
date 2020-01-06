@@ -30,6 +30,18 @@ data class ProcessQueryPredicate(
 
     /**
      * Checks whether the given process fulfills the predicate.
+     *
+     * Let status_1, ..., status_n be the elements of statuses, let
+     * processGroupId_1, ..., processGroupId_m be the elements of processGroupIds
+     * and let relevantProcessId_1, ..., relevantProcessId_k be the ids of
+     * relevant processes computed by RelevantProcessQuerying. Then the predicate to
+     * be satisfied looks like the following:
+     *
+     * (n == 0 or process.stauts == status_1 or ... process.status == status_n) and
+     * (m == 0 or process.processGroupId == processGroupId_1 or ... or process.processGroupId == processGroupId_m) and
+     * (involving == null or process.id == relevantProcessId_1 or ... or process.id == relevantProcessId_k)
+     *
+     * @return True if and only if the predicate is satisfied.
      */
     fun satisfiedBy(process: Process): Boolean {
         if (statuses.isEmpty() && processGroupIds.isEmpty() && involvingUserId == null)
