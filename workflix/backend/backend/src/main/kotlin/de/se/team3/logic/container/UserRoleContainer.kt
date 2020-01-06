@@ -2,6 +2,7 @@ package de.se.team3.logic.container
 
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.daos.UserRoleDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
@@ -97,12 +98,16 @@ object UserRoleContainer : UserRoleContainerInterface {
      * Deletes the specified user role.
      *
      * @throws NotFoundException Is thrown if the specified user role does not exist.
+     * @throws UnsatisfiedPreconditionException Is thrown if the specified user role is in use in an
+     * active (not deleted) process template.
      */
     override fun deleteUserRole(userRoleID: Int) {
         val userRole = getUserRole(userRoleID)
 
         if (!UserRoleDAO.deleteUserRole(userRoleID))
             throw NotFoundException("user role $userRoleID does not exist")
+        if (userRole.isUsedInActiveProcessTemplate())
+            throw UnsatisfiedPreconditionException("user role is in use in an active process template")
 
         userRole.delete()
     }
