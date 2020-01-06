@@ -4,14 +4,14 @@ import React from 'react'
 import LoginApi from '../../../modules/api/LoginApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import { removeToken } from '../../../modules/common/tokenStorage'
-import { navigate } from '@reach/router'
 import { CenterScreen } from '../../../modules/common/centerScreen'
+import { navigate } from '@reach/router'
 
 class Logout extends React.Component<{ onLoggedInChanged: (boolean) => void}> {
   componentDidMount () {
     removeToken()
     this.props.onLoggedInChanged(false)
-    navigate('/')
+    navigate('/tasks')
   }
 
   render () {
