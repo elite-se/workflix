@@ -1,10 +1,12 @@
 // @flow
 
 export type UserType = {|
-  displayname: string,
-  name: string,
   id: string,
-  email: string
+  name: string,
+  displayname: string,
+  email: string,
+  userRoleIds: number[],
+  processGroupIds: number[]
 |}
 
 export type UserRoleType = {|

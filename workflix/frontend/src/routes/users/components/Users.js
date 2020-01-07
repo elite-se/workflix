@@ -1,31 +1,50 @@
 // @flow
 
 import React from 'react'
-import { Card, H2, H3, Text } from '@blueprintjs/core'
+import { H2 } from '@blueprintjs/core'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import UsersApi from '../../../modules/api/UsersApi'
+import UserCard from './UserCard'
+import { sortBy } from 'lodash'
+import styled from 'styled-components'
+import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
-type PropsType = {| users: Map<string, UserType> |}
+const UsersContainer = styled<{}, {}, 'div'>('div')`
+  display: flex;
+  flex-flow: row || wrap;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: flex-start;
+`
+
+type PropsType = {|
+  users: Map<string, UserType>,
+  processGroups: Map<number, ProcessGroupType>,
+  roles: Map<number, UserRoleType>
+|}
 
 class Users extends React.Component<PropsType> {
   render () {
-    const users = Array.from(this.props.users.values())
+    const { processGroups, roles } = this.props
+    const users = sortBy(Array.from(this.props.users.values()), user => user.name)
     return <div>
       <H2 style={{ textAlign: 'center' }}>All Users</H2>
+      <UsersContainer>
       {
-        users.map(user => (
-          <Card key={user.id} style={{ margin: '5px' }}>
-            <H3>{user.displayname}</H3>
-            <Text>{user.name}</Text>
-            <a href={`mailto:${user.email}`}>{user.email}</a>
-          </Card>)
-        )
+        users.map(user => <UserCard key={user.id} user={user} processGroups={processGroups} roles={roles}/>)
       }
+      </UsersContainer>
     </div>
   }
 }
 
-const promiseCreator = () => new UsersApi().getUsers().then(users => ({ users }))
+const promiseCreator = () => Promise.all([
+  new UsersApi().getUsers(),
+  new ProcessGroupsApi().getProcessGroups(),
+  new UsersApi().getUserRoles()
+])
+  .then(([users, processGroups, roles]) => ({ users, processGroups, roles }))
 
-export default withPromiseResolver<PropsType, {| users: Map<string, UserType> |}>(promiseCreator)(Users)
+export default withPromiseResolver<*, *>(promiseCreator)(Users)
