@@ -4,10 +4,10 @@ import React from 'react'
 import { Button, Card, FormGroup, H1, InputGroup, Spinner, Tooltip } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import handleStringChange from '../../../modules/common/handleStringChange'
-import AppToaster from '../../../modules/app/AppToaster'
 import LoginApi from '../../../modules/api/LoginApi'
 import { storeToken } from '../../../modules/common/tokenStorage'
 import CenterScreen from '../../../modules/common/CenterScreen'
+import { toastifyError } from '../../../modules/common/toastifyError'
 
 type StateType = {
   email: string,
@@ -49,9 +49,7 @@ class Login extends React.Component<{ onLoggedInChanged: (boolean) => void}, Sta
       })
       .catch(err => {
         this.setState({ loading: false })
-        AppToaster.show({
-          message: err.message,
-          intent: Intent.DANGER,
+        toastifyError(err, {
           icon: 'key'
         })
       })
