@@ -26,7 +26,6 @@ class Assignments extends React.Component<PropsType> {
     const task = this.props.task
     return task.status !== 'CLOSED' &&
       !task.assignments.find(ass => ass.assigneeId === user.id)
-    // TODO check for correct process group, role etc.
   }
 
   canSetDone = (user: UserType) => {

@@ -22,7 +22,6 @@ class AssignMeButton extends React.Component<PropsType, { loading: boolean }> {
     const { task, user, onAssignmentsChanged } = this.props
     new ProcessApi().addAssignee(task.id, user.id)
       .then(json => {
-        console.debug(this)
         this.setState({ loading: false })
         onAssignmentsChanged([...task.assignments, {
           id: json.newId,
