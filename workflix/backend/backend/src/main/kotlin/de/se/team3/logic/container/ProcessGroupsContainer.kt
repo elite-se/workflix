@@ -1,11 +1,14 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.ProcessGroupDAOInterface
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessGroupsDAO
 import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
 
 object ProcessGroupsContainer : ProcessGroupsContainerInterface {
+
+    private val processGroupsDAO: ProcessGroupDAOInterface = ProcessGroupsDAO
 
     // caches process groups using their id
     private val processGroupsCache = HashMap<Int, ProcessGroup>()
@@ -17,7 +20,7 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
      * Ensures that all process groups are cached.
      */
     private fun fillCache() {
-        val processGroups = ProcessGroupsDAO.getAllProcessGroups()
+        val processGroups = processGroupsDAO.getAllProcessGroups()
         processGroups.forEach { processGroup ->
             processGroupsCache.put(processGroup.id!!, processGroup)
         }
@@ -46,7 +49,7 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
         return if (processGroupsCache.containsKey(processGroupId)) {
             processGroupsCache[processGroupId]!!
         } else {
-            val processGroup = ProcessGroupsDAO.getProcessGroup(processGroupId)
+            val processGroup = processGroupsDAO.getProcessGroup(processGroupId)
                 ?: throw NotFoundException("process group not found")
 
             processGroupsCache[processGroupId] = processGroup
@@ -60,7 +63,7 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
      * @return automatically generated unique ID
      */
     override fun createProcessGroup(processGroup: ProcessGroup): Int {
-        val newId = ProcessGroupsDAO.createProcessGroup(processGroup)
+        val newId = processGroupsDAO.createProcessGroup(processGroup)
         processGroupsCache[newId] = processGroup.copy(id = newId)
         return newId
     }
@@ -73,7 +76,7 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
     override fun updateProcessGroup(processGroup: ProcessGroup) {
         val cachedProcessGroup = getProcessGroup(processGroup.id!!)
 
-        val exists = ProcessGroupsDAO.updateProcessGroup(processGroup)
+        val exists = processGroupsDAO.updateProcessGroup(processGroup)
         if (!exists)
             throw NotFoundException("process group does not exist")
 
@@ -90,7 +93,7 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
     override fun deleteProcessGroup(processGroupId: Int) {
         val cachedProcessGroup = getProcessGroup(processGroupId)
 
-        val existed = ProcessGroupsDAO.deleteProcessGroup(processGroupId)
+        val existed = processGroupsDAO.deleteProcessGroup(processGroupId)
         if (!existed)
             throw NotFoundException("process group not found")
 

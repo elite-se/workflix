@@ -6,6 +6,7 @@ import { Button } from '@blueprintjs/core'
 import ProcessApi from '../../../../../modules/api/ProcessApi'
 import type { TaskCommentType, TaskType } from '../../../../../modules/datatypes/Task'
 import AutoSizeTextArea from '../../../../../modules/common/components/AutoSizeTextArea'
+import { toastifyError } from '../../../../../modules/common/toastifyError'
 
 type PropsType = {|
   task: TaskType,
@@ -46,7 +47,7 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
         content,
         createdAt: new Date()
       }))
-      .catch(err => console.error(err))
+      .catch(toastifyError)
     this.setState({
       text: ''
     })

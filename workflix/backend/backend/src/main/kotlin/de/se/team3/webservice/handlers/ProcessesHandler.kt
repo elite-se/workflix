@@ -4,15 +4,19 @@ import de.se.team3.logic.container.ProcessContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
 import de.se.team3.logic.domain.ProcessStatus
+import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
 import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
+import java.lang.IllegalArgumentException
 import org.json.JSONObject
 
 /**
  * Handles requests due to the general properties of processes.
  */
 object ProcessesHandler {
+
+    private val processesContainer: ProcessContainerInterface = ProcessContainer
 
     /**
      * Parses the selection predicate that is specified via query parameters in the request url.
@@ -27,7 +31,7 @@ object ProcessesHandler {
                 for (statusEntry in param.value)
                     statuses.add(ProcessStatus.valueOf(statusEntry))
 
-            if (param.key == "groupId") // loops over all query parameters named groupId
+            if (param.key == "processGroupId") // loops over all query parameters named groupId
                 for (groupIdEntry in param.value)
                     groupIds.add(groupIdEntry.toInt())
 
@@ -35,7 +39,7 @@ object ProcessesHandler {
                 if (param.value.size != 1)
                     ctx.status(400).result("query must not contain more than one involving parameter")
 
-                involvingUserId = param.value.get(0)
+                involvingUserId = param.value[0]
             }
         }
 
@@ -46,23 +50,27 @@ object ProcessesHandler {
      * Handles the request for all processes.
      */
     fun getAll(ctx: Context) {
-        val predicate = parseSelectionPredicate(ctx)
+        try {
+            val predicate = parseSelectionPredicate(ctx)
 
-        val processes = ProcessContainer.getAllProcesses(predicate)
+            val processes = processesContainer.getAllProcesses(predicate)
 
-        val pagingContainer = PagingHelper.getPagingContainer(1, 1)
-        val processesJsonArray = JsonHelper.toJsonArray(processes)
-        pagingContainer.put("processes", processesJsonArray)
+            val pagingContainer = PagingHelper.getPagingContainer(1, 1)
+            val processesJsonArray = JsonHelper.toJsonArray(processes)
+            pagingContainer.put("processes", processesJsonArray)
 
-        ctx.result(pagingContainer.toString())
-            .contentType("application/json")
+            ctx.result(pagingContainer.toString())
+                .contentType("application/json")
+        } catch (e: IllegalArgumentException) {
+        ctx.status(400).result("predicate parsing error: unknown or malformed status, group ID or user ID")
+        }
     }
 
     /**
      * Handles the request for a single process.
      */
     fun getOne(ctx: Context, processId: Int) {
-        val process = ProcessContainer.getProcess(processId)
+        val process = processesContainer.getProcess(processId)
 
         // Building json
         val processJsonObject = JsonHelper.toJsonObject(process)
@@ -90,7 +98,7 @@ object ProcessesHandler {
 
         val process = Process(starterId, processGroupId, processTemplateId, title, description, deadline)
 
-        val newId = ProcessContainer.createProcess(process)
+        val newId = processesContainer.createProcess(process)
         val newIdJsonObject = JSONObject()
         newIdJsonObject.put("newID", newId)
 
@@ -104,6 +112,6 @@ object ProcessesHandler {
      * Nevertheless the function is named delete, because of the http method used.
      */
     fun delete(ctx: Context, processId: Int) {
-        ProcessContainer.abortProcess(processId)
+        processesContainer.abortProcess(processId)
     }
 }

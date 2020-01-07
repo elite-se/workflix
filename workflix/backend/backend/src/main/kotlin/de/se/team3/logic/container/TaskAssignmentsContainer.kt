@@ -1,5 +1,6 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.TaskAssigmentsDAOInterface
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
@@ -9,6 +10,8 @@ import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterf
 import java.time.Instant
 
 object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
+
+    private val taskAssignmentsDAO: TaskAssigmentsDAOInterface = TaskAssignmentsDAO
 
     /**
      * Creates a new task assignment.
@@ -35,7 +38,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
         if (task.hasAssignment(taskAssignment.assigneeId))
             throw AlreadyExistsException("task assignment already exists")
 
-        val taskAssignmentId = TaskAssignmentsDAO.createTaskAssignment(taskAssignment)
+        val taskAssignmentId = taskAssignmentsDAO.createTaskAssignment(taskAssignment)
 
         // add task assignment to the task
         val taskAssignmentWithId = taskAssignment.copy(id = taskAssignmentId)
@@ -70,7 +73,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
 
         // close the assignment
         val closingTime = Instant.now()
-        val existed = TaskAssignmentsDAO.closeTaskAssignment(taskId, assigneeId, closingTime)
+        val existed = taskAssignmentsDAO.closeTaskAssignment(taskId, assigneeId, closingTime)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 
@@ -98,7 +101,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
         if (task.isClosed())
             throw AlreadyClosedException("task is already closed")
 
-        val existed = TaskAssignmentsDAO.deleteTaskAssignment(taskId, assigneeId)
+        val existed = taskAssignmentsDAO.deleteTaskAssignment(taskId, assigneeId)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 

@@ -30,6 +30,8 @@ data class ProcessTemplate(
 
     fun getProcessCount() = processCount
 
+    fun getRunningProcesses() = runningProcesses
+
     fun isDeleted() = deleted
 
     @get:JsonIgnore
@@ -44,7 +46,7 @@ data class ProcessTemplate(
     constructor(title: String, description: String, durationLimit: Int, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
             this(null, title, description, durationLimit, ownerId, Instant.now(), null, 0, 0, false, taskTemplates) {
 
-        checkProperties(ownerId, title, durationLimit, taskTemplates)
+        checkProperties()
     }
 
     /**
@@ -74,7 +76,26 @@ data class ProcessTemplate(
         if (id < 1)
             throw InvalidInputException("id must be positive")
 
-        checkProperties(ownerId, title, durationLimit, taskTemplates)
+        checkProperties()
+    }
+
+    /**
+     * Checks property constraints.
+     *
+     * @throws InvalidInputException Is thrown if title is empty, duration limit is not positive,
+     * the list of task templates is or contains a cycle.
+     */
+    private fun checkProperties() {
+        if (title.isEmpty())
+            throw InvalidInputException("title must not be empty")
+        if (durationLimit != null && durationLimit <= 0)
+            throw InvalidInputException("duration limit must be positive")
+        if (taskTemplates.isEmpty())
+            throw InvalidInputException("must contain at least one task template")
+        if (!ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
+            throw InvalidInputException("connection between task templates must be acyclic")
+        if (!UserContainer.hasUser(ownerId))
+            throw InvalidInputException("user specified as owner does not exist")
     }
 
     /**
@@ -117,6 +138,19 @@ data class ProcessTemplate(
     }
 
     /**
+     * Checks whether the given list of user role ids contains one that is designated as responsible
+     * by at least one of the task templates.
+     *
+     * @return True iff at least one task template designates one of the specified user roles
+     * as responsible.
+     */
+    @JsonIgnore
+    fun isOneResponsible(userRoleIds: List<Int>): Boolean {
+        val responsibleUserRoleIds = taskTemplates.values.map { it.responsibleUserRoleId }
+        return responsibleUserRoleIds.intersect(userRoleIds).isNotEmpty()
+    }
+
+    /**
      * Checks whether the specified user role is designated as responsible in a
      * task template of this process template.
      *
@@ -134,27 +168,5 @@ data class ProcessTemplate(
                 return true
 
         return false
-    }
-
-    companion object {
-
-        /**
-         * Checks property constraints.
-         *
-         * @throws InvalidInputException Is thrown if title is empty, duration limit is not positive,
-         * the list of task templates is or contains a cycle.
-         */
-        fun checkProperties(ownerId: String, title: String, durationLimit: Int?, taskTemplates: Map<Int, TaskTemplate>) {
-            if (title.isEmpty())
-                throw InvalidInputException("title must not be empty")
-            if (durationLimit != null && durationLimit <= 0)
-                throw InvalidInputException("duration limit must be positive")
-            if (taskTemplates.isEmpty())
-                throw InvalidInputException("must contain at least one task template")
-            if (!ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
-                throw InvalidInputException("connection between task templates must be acyclic")
-            if (!UserContainer.hasUser(ownerId))
-                throw InvalidInputException("user specified as owner does not exist")
-        }
     }
 }

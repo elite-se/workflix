@@ -13,14 +13,21 @@ type PropsType = {
   users: UserType[],
   activeItem: ?UserType,
   onItemSelect: ?UserType => void,
-  nullSelectionText?: string,
-  allowNullSelection?: boolean,
-  textPrefix?: string,
-  fill?: boolean,
+  nullSelectionText: string,
+  allowNullSelection: boolean,
+  textPrefix: string,
+  fill: boolean,
   intent?: Intent
 }
 
 class UserSelect extends React.Component<PropsType> {
+  static defaultProps = {
+    nullSelectionText: '(No selection)',
+    allowNullSelection: false,
+    textPrefix: '',
+    fill: false
+  }
+
   itemRenderer: ItemRenderer = (item: ?UserType, { handleClick, modifiers, query }) => {
     return <MenuItem
       active={modifiers.active}
@@ -54,13 +61,12 @@ class UserSelect extends React.Component<PropsType> {
               rightIcon='caret-down'
               fill
               intent={this.props.intent}
-              text={`${this.props.textPrefix || ''}
-              ${this.getNameOrNoSelectionText(activeItem)}`}/>
+              text={`${this.props.textPrefix}${this.getNameOrNoSelectionText(activeItem)}`}/>
     </CustomSelect>
   }
 
   getNameOrNoSelectionText (user: ?UserType): string {
-    return user?.name || this.props.nullSelectionText || '(No selection)'
+    return user?.name || this.props.nullSelectionText
   }
 }
 

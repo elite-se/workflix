@@ -61,8 +61,11 @@ fun main(args: Array<String>) {
     app.exception(NotAuthorizedException::class.java) { e, ctx ->
         ctx.status(401).result(e.message)
     }
+    app.exception(Exception::class.java) { e, ctx ->
+        ctx.status(500).result(e.message + "")
+    }
 
-    // authentification handling before every request (excluding login)
+    // authentication handling before every request (excluding login)
     app.before() { ctx ->
         if (ctx.path() != "/login") {
             AuthenticationHandler.authorizeRequest(ctx)
@@ -77,6 +80,7 @@ fun main(args: Array<String>) {
     app.delete("login") { ctx ->
         AuthenticationHandler.logout(ctx)
     }
+
 
     // users
     app.get("users") { ctx ->
