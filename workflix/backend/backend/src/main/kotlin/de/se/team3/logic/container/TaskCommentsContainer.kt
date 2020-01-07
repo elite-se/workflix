@@ -1,5 +1,6 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.TaskCommentsDAOInterface
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskComment
 import de.se.team3.logic.exceptions.NotFoundException
@@ -7,6 +8,8 @@ import de.se.team3.persistence.daos.TaskCommentsDAO
 import de.se.team3.webservice.containerInterfaces.TaskCommentsContainerInterface
 
 object TaskCommentsContainer : TaskCommentsContainerInterface {
+
+    private val taskCommentsDAO: TaskCommentsDAOInterface = TaskCommentsDAO
 
     // Maps the id of a task comment to the id of the task it belongs to.
     private val taskCommentsTaskIdCache = HashMap<Int, Int>()
@@ -20,7 +23,7 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
         val taskId = if (taskCommentsTaskIdCache.containsKey(taskCommentId)) {
             taskCommentsTaskIdCache.get(taskCommentId)!!
         } else {
-            TaskCommentsDAO.getTaskIdByTaskCommentId(taskCommentId)
+            taskCommentsDAO.getTaskIdByTaskCommentId(taskCommentId)
                 ?: throw NotFoundException("task comment does not exist")
         }
         return TasksContainer.getTask(taskId)
@@ -38,7 +41,7 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
         if (!UserContainer.hasUser(taskComment.creatorId!!))
             throw NotFoundException("the creator does not exist")
 
-        val newId = TaskCommentsDAO.createTaskComment(taskComment)
+        val newId = taskCommentsDAO.createTaskComment(taskComment)
         taskCommentsTaskIdCache.put(newId, taskComment.taskId!!)
 
         // update the task the comment belongs to
@@ -55,7 +58,7 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
     override fun updateTaskComment(taskComment: TaskComment) {
         val task = getTaskByTaskCommentId(taskComment.id!!)
 
-        val exists = TaskCommentsDAO.updateTaskComment(taskComment)
+        val exists = taskCommentsDAO.updateTaskComment(taskComment)
         if (!exists)
             throw NotFoundException("task comment not found")
 
@@ -71,7 +74,7 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
     override fun deleteTaskComment(taskCommentId: Int) {
         val task = getTaskByTaskCommentId(taskCommentId)
 
-        val existed = TaskCommentsDAO.deleteTaskComment(taskCommentId)
+        val existed = taskCommentsDAO.deleteTaskComment(taskCommentId)
         if (!existed)
             throw NotFoundException("task comment not found")
 

@@ -1,5 +1,6 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.UserRoleDAOInterface
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
@@ -7,6 +8,8 @@ import de.se.team3.persistence.daos.UserRoleDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 
 object UserRoleContainer : UserRoleContainerInterface {
+
+    private val userRoleDAO: UserRoleDAOInterface = UserRoleDAO
 
     // Each user role lays under its id
     private val userRoleCache = HashMap<Int, UserRole>()
@@ -18,7 +21,7 @@ object UserRoleContainer : UserRoleContainerInterface {
      * Ensures that all user roles are cached.
      */
     private fun fillCache() {
-        val userRoles = UserRoleDAO.getAllUserRoles()
+        val userRoles = userRoleDAO.getAllUserRoles()
         userRoles.forEach { userRole ->
             userRoleCache.put(userRole.id!!, userRole)
         }
@@ -47,7 +50,7 @@ object UserRoleContainer : UserRoleContainerInterface {
         return if (userRoleCache.containsKey(userRoleID)) {
             userRoleCache[userRoleID]!!
         } else {
-            val userRole = UserRoleDAO.getUserRole(userRoleID)
+            val userRole = userRoleDAO.getUserRole(userRoleID)
                 ?: throw NotFoundException("user role $userRoleID does not exist")
 
             userRoleCache[userRoleID] = userRole
@@ -62,7 +65,7 @@ object UserRoleContainer : UserRoleContainerInterface {
         if (userRoleCache.containsKey(userRoleId))
             return true
 
-        val userRole = UserRoleDAO.getUserRole(userRoleId)
+        val userRole = userRoleDAO.getUserRole(userRoleId)
         if (userRole != null) {
             userRoleCache.put(userRoleId, userRole)
             return true
@@ -77,7 +80,7 @@ object UserRoleContainer : UserRoleContainerInterface {
      * @return The generated id of the user role.
      */
     override fun createUserRole(userRole: UserRole): Int {
-        val newID = UserRoleDAO.createUserRole(userRole)
+        val newID = userRoleDAO.createUserRole(userRole)
         userRoleCache[newID] = userRole.copy(id = newID)
         return newID
     }
@@ -88,7 +91,7 @@ object UserRoleContainer : UserRoleContainerInterface {
     override fun updateUserRole(userRole: UserRole) {
         val cachedUserRole = getUserRole(userRole.id!!) // throws NotFoundException
 
-        UserRoleDAO.updateUserRole(userRole)
+        userRoleDAO.updateUserRole(userRole)
 
         cachedUserRole.setName(userRole.getName())
         cachedUserRole.setDescription(userRole.getDescription())
@@ -104,10 +107,10 @@ object UserRoleContainer : UserRoleContainerInterface {
     override fun deleteUserRole(userRoleID: Int) {
         val userRole = getUserRole(userRoleID)
 
-        if (!UserRoleDAO.deleteUserRole(userRoleID))
-            throw NotFoundException("user role $userRoleID does not exist")
         if (userRole.isUsedInActiveProcessTemplate())
             throw UnsatisfiedPreconditionException("user role is in use in an active process template")
+        if (!userRoleDAO.deleteUserRole(userRoleID))
+            throw NotFoundException("user role $userRoleID does not exist")
 
         userRole.delete()
     }
