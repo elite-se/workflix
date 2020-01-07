@@ -15,7 +15,7 @@ const UserSelect = MultiSelect.ofType<UserType>()
 
 type PropsType = {
   task: TaskType,
-  onTaskModified: (TaskType) => void,
+  onAssignmentsChanged: (TaskAssignmentType[]) => void,
   users: Map<string, UserType>
 }
 
@@ -43,7 +43,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     }
     new ProcessApi().addAssignee(task.id, item.id)
       .then(json => {
-        this.onAssignmentsChanged(task.assignments.concat({
+        this.props.onAssignmentsChanged(task.assignments.concat({
           id: json.newId,
           assigneeId: item.id,
           closed: false,
@@ -59,7 +59,7 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     const api = new ProcessApi()
     Promise.all(task.assignments.map(ass => api.removeAssignee(task.id, ass.assigneeId)))
       .then(() => {
-        this.onAssignmentsChanged([])
+        this.props.onAssignmentsChanged([])
       })
       .catch(toastifyError)
   }
@@ -69,33 +69,9 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
     const removedAssignee = tag.props.assignee
     new ProcessApi().removeAssignee(task.id, removedAssignee.id)
       .then(() => {
-        this.onAssignmentsChanged(task.assignments.filter(ass => ass.assigneeId !== removedAssignee.id))
+        this.props.onAssignmentsChanged(task.assignments.filter(ass => ass.assigneeId !== removedAssignee.id))
       })
       .catch(toastifyError)
-  }
-
-  onTagClick = (tag: AssigneeTagContent) => {
-    const task = this.props.task
-    const assignee = tag.props.assignee
-    const assignment = task.assignments.find(ass => ass.assigneeId === assignee.id)
-    if (!assignment || assignment.closed) { return undefined }
-    return () => {
-      new ProcessApi().markAsDone(task.id, assignee.id)
-        .then(() => {
-          this.onAssignmentsChanged(task.assignments.map(ass => ass.id === assignment.id ? {
-            ...ass,
-            closed: true
-          } : ass))
-        })
-        .catch(toastifyError)
-    }
-  }
-
-  onAssignmentsChanged (newAssignments: TaskAssignmentType[]) {
-    this.props.onTaskModified({
-      ...this.props.task,
-      assignments: newAssignments
-    })
   }
 
   itemPredicate = (query: string, item: UserType, index?: number, exactMatch?: boolean) => {
@@ -129,15 +105,11 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   tagProps = (tag: AssigneeTagContent) => {
     const assignment = this.props.task.assignments.find(ass => ass.assigneeId === tag.props.assignee.id)
     const done = assignment && assignment.closed
-    const propsDependingOnDone = done ? {
+    return done ? {
       intent: Intent.SUCCESS,
       icon: 'tick'
     } : {
       intent: Intent.PRIMARY
-    }
-    return {
-      ...propsDependingOnDone,
-      onClick: this.onTagClick(tag)
     }
   }
 

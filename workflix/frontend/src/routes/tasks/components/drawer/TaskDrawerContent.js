@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import { H4 } from '@blueprintjs/core'
 import type { TaskTemplateType, TaskType } from '../../../../modules/datatypes/Task'
 import type { UserType } from '../../../../modules/datatypes/User'
-import TaskAssignmentSelect from './assignments/TaskAssignmentSelect'
 import TaskComments from './comments/TaskComments'
+import Assignments from './assignments/Assignments'
 
 const StyledContainer = styled<{}, {}, 'div'>('div')`
   margin: 8px;
@@ -28,7 +28,7 @@ class TaskDrawerContent extends React.Component<PropsType> {
       <p>{taskTemplate ? taskTemplate.description : ''}</p>
 
       <H4>Assignee</H4>
-      <TaskAssignmentSelect task={task} onTaskModified={this.props.onTaskModified} users={this.props.users}/>
+      <Assignments task={task} onTaskModified={this.props.onTaskModified} users={this.props.users}/>
 
       <H4>Comments</H4>
       <TaskComments task={task} users={this.props.users} onTaskModified={this.props.onTaskModified}/>
