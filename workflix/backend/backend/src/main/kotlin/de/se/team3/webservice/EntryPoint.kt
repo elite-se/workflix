@@ -56,6 +56,9 @@ fun main(args: Array<String>) {
     app.exception(UnsatisfiedPreconditionException::class.java) { e, ctx ->
         ctx.status(404).result(e.message)
     }
+    app.exception(Exception::class.java) { e, ctx ->
+        ctx.status(500).result(e.message + "")
+    }
 
     // users
     app.get("users") { ctx ->
