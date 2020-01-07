@@ -95,6 +95,7 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
       this.setState({ duplicateLoading: false })
       navigate(`/process-templates/edit/${newId}`)
     } catch (error) {
+      toastifyError(error)
       this.setState({ duplicateLoading: false })
     }
   }

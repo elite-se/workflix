@@ -81,7 +81,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
     try {
       this.setState({ startLoading: true })
       const { newId } = await new ProcessApi().startProcess({
-        starterId: '58c120552c94decf6cf3b700', // todo: Add real starter id here
+        starterId: 'test', // todo: Add real starter id here
         title,
         description,
         deadline,
