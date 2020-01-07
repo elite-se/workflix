@@ -4,6 +4,7 @@ import de.se.team3.logic.container.ProcessContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
 import de.se.team3.logic.domain.ProcessStatus
+import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
 import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
@@ -14,6 +15,8 @@ import org.json.JSONObject
  * Handles requests due to the general properties of processes.
  */
 object ProcessesHandler {
+
+    private val processesContainer: ProcessContainerInterface = ProcessContainer
 
     /**
      * Parses the selection predicate that is specified via query parameters in the request url.
@@ -50,7 +53,7 @@ object ProcessesHandler {
         try {
             val predicate = parseSelectionPredicate(ctx)
 
-            val processes = ProcessContainer.getAllProcesses(predicate)
+            val processes = processesContainer.getAllProcesses(predicate)
 
             val pagingContainer = PagingHelper.getPagingContainer(1, 1)
             val processesJsonArray = JsonHelper.toJsonArray(processes)
@@ -67,7 +70,7 @@ object ProcessesHandler {
      * Handles the request for a single process.
      */
     fun getOne(ctx: Context, processId: Int) {
-        val process = ProcessContainer.getProcess(processId)
+        val process = processesContainer.getProcess(processId)
 
         // Building json
         val processJsonObject = JsonHelper.toJsonObject(process)
@@ -95,7 +98,7 @@ object ProcessesHandler {
 
         val process = Process(starterId, processGroupId, processTemplateId, title, description, deadline)
 
-        val newId = ProcessContainer.createProcess(process)
+        val newId = processesContainer.createProcess(process)
         val newIdJsonObject = JSONObject()
         newIdJsonObject.put("newID", newId)
 
@@ -109,6 +112,6 @@ object ProcessesHandler {
      * Nevertheless the function is named delete, because of the http method used.
      */
     fun delete(ctx: Context, processId: Int) {
-        ProcessContainer.abortProcess(processId)
+        processesContainer.abortProcess(processId)
     }
 }

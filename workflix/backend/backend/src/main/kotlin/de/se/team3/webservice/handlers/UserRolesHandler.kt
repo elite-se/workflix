@@ -2,6 +2,7 @@ package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.domain.UserRole
+import de.se.team3.webservice.containerInterfaces.UserRoleContainerInterface
 import io.javalin.http.Context
 import org.json.JSONArray
 import org.json.JSONObject
@@ -13,11 +14,13 @@ import org.json.JSONObject
  */
 object UserRolesHandler {
 
+    private val userRolesContainer: UserRoleContainerInterface = UserRoleContainer
+
     /**
      * Handles requests for all user roles.
      */
     fun getAll(ctx: Context) {
-        val roles = UserRoleContainer.getAllUserRoles()
+        val roles = userRolesContainer.getAllUserRoles()
 
         val rolesArray = JSONArray(roles.map { it.toJSON() })
         val groupsJSON = JSONObject().put("roles", rolesArray)
@@ -37,7 +40,7 @@ object UserRolesHandler {
         val description = userRoleJsonObject.getString("description")
 
         val userRole = UserRole(name, description)
-        val newId = UserRoleContainer.createUserRole(userRole)
+        val newId = userRolesContainer.createUserRole(userRole)
 
         val newIdObject = JSONObject()
         newIdObject.put("newId", newId)
@@ -56,13 +59,13 @@ object UserRolesHandler {
         val description = userRoleJsonObject.getString("description")
 
         val userRole = UserRole(userRoleID, name, description)
-        UserRoleContainer.updateUserRole(userRole)
+        userRolesContainer.updateUserRole(userRole)
     }
 
     /**
      * Handles requests for deleting a user role.
      */
     fun delete(ctx: Context, userRoleID: Int) {
-        UserRoleContainer.deleteUserRole(userRoleID)
+        userRolesContainer.deleteUserRole(userRoleID)
     }
 }

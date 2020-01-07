@@ -1,11 +1,14 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.UserRoleMembershipDAOInterface
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.UserRoleMembershipDAO
 import de.se.team3.webservice.containerInterfaces.UserRoleMembershipContainerInfterface
 
 object UserRoleMembershipContainer : UserRoleMembershipContainerInfterface {
+
+    private val userRoleMembershipDAO: UserRoleMembershipDAOInterface = UserRoleMembershipDAO
 
     /**
      * Creates the specified membership of a user in a user role.
@@ -22,7 +25,7 @@ object UserRoleMembershipContainer : UserRoleMembershipContainerInfterface {
         if (userRole.hasMember(user.id))
             throw AlreadyExistsException("the membership already exists")
 
-        UserRoleMembershipDAO.addUserToRole(userID, userRoleID)
+        userRoleMembershipDAO.addUserToRole(userID, userRoleID)
 
         userRole.addMember(user)
     }
@@ -40,7 +43,7 @@ object UserRoleMembershipContainer : UserRoleMembershipContainerInfterface {
         if (userRole.isDeleted())
             throw NotFoundException("user role does not exist")
 
-        val existed = UserRoleMembershipDAO.deleteUserFromRole(userID, userRoleID)
+        val existed = userRoleMembershipDAO.deleteUserFromRole(userID, userRoleID)
         if (!existed)
             throw NotFoundException("membership does not exist")
 

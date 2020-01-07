@@ -2,6 +2,7 @@ package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.TaskCommentsContainer
 import de.se.team3.logic.domain.TaskComment
+import de.se.team3.webservice.containerInterfaces.TaskCommentsContainerInterface
 import io.javalin.http.Context
 import org.json.JSONObject
 
@@ -11,6 +12,8 @@ import org.json.JSONObject
  * /tasks/comments/:taskCommentId
  */
 object TasksCommentsHandler {
+
+    private val taskCommentsContainer: TaskCommentsContainerInterface = TaskCommentsContainer
 
     /**
      * Handles requests for creating a new task comment.
@@ -22,7 +25,7 @@ object TasksCommentsHandler {
         val creatorId = taskCommentJsonObject.getString("creatorId")
         val commentContent = taskCommentJsonObject.getString("content")
 
-        val newId = TaskCommentsContainer.createTaskComment(TaskComment(taskId, creatorId, commentContent))
+        val newId = taskCommentsContainer.createTaskComment(TaskComment(taskId, creatorId, commentContent))
         val newIdJSONObject = JSONObject()
         newIdJSONObject.put("newId", newId)
 
@@ -39,13 +42,13 @@ object TasksCommentsHandler {
 
         val commentContent = taskCommentJsonObject.getString("content")
 
-        TaskCommentsContainer.updateTaskComment(TaskComment(taskCommentId, commentContent))
+        taskCommentsContainer.updateTaskComment(TaskComment(taskCommentId, commentContent))
     }
 
     /**
      * Handles requests for deleting a task comment.
      */
     fun delete(ctx: Context, taskCommentId: Int) {
-        TaskCommentsContainer.deleteTaskComment(taskCommentId)
+        taskCommentsContainer.deleteTaskComment(taskCommentId)
     }
 }

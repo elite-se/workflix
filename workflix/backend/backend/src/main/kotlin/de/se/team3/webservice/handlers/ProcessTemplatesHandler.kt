@@ -3,6 +3,7 @@ package de.se.team3.webservice.handlers
 import de.se.team3.logic.container.ProcessTemplatesContainer
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
+import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
 import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
@@ -16,11 +17,13 @@ import org.json.JSONObject
  */
 object ProcessTemplatesHandler {
 
+    private val processTemplatesContainer: ProcessTemplateContainerInterface = ProcessTemplatesContainer
+
     /**
      * Handles requests for all process templates.
      */
     fun getAll(ctx: Context) {
-        val processTemplates = ProcessTemplatesContainer.getAllProcessTemplates()
+        val processTemplates = processTemplatesContainer.getAllProcessTemplates()
 
         val pagingContainer = PagingHelper.getPagingContainer(1, 1)
         val processTemplatesJsonArray = JsonHelper.toJsonArray(processTemplates)
@@ -34,7 +37,7 @@ object ProcessTemplatesHandler {
      * Handles requests for a single process template.
      */
     fun getOne(ctx: Context, processTemplateId: Int) {
-        val processTemplate = ProcessTemplatesContainer.getProcessTemplate(processTemplateId)
+        val processTemplate = processTemplatesContainer.getProcessTemplate(processTemplateId)
 
         // Note that the property taskTemplates of the underlying domain object are excluded by annotation
         val processTemplateJsonObjectWithoutTasks = JsonHelper.toJsonObject(processTemplate)
@@ -125,7 +128,7 @@ object ProcessTemplatesHandler {
      */
     fun create(ctx: Context) {
         val processTemplate = makeProcessTemplate(null, ctx)
-        val newId = ProcessTemplatesContainer.createProcessTemplate(processTemplate)
+        val newId = processTemplatesContainer.createProcessTemplate(processTemplate)
 
         val newIdJsonObject = JSONObject()
         newIdJsonObject.put("newId", newId)
@@ -139,7 +142,7 @@ object ProcessTemplatesHandler {
      */
     fun update(ctx: Context, processTemplateId: Int) {
         val processTemplate = makeProcessTemplate(processTemplateId, ctx)
-        val newId = ProcessTemplatesContainer.updateProcessTemplate(processTemplate)
+        val newId = processTemplatesContainer.updateProcessTemplate(processTemplate)
 
         val newIdJsonObject = JSONObject()
         newIdJsonObject.put("newId", newId)
@@ -152,6 +155,6 @@ object ProcessTemplatesHandler {
      * Handles requests for deleting a process template.
      */
     fun delete(ctx: Context, processTemplateId: Int) {
-        ProcessTemplatesContainer.deleteProcessTemplate(processTemplateId)
+        processTemplatesContainer.deleteProcessTemplate(processTemplateId)
     }
 }

@@ -2,6 +2,7 @@ package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.ProcessGroupsMembershipContainer
 import de.se.team3.logic.domain.ProcessGroupMembership
+import de.se.team3.webservice.containerInterfaces.ProcessGroupsMembershipContainerInterface
 import io.javalin.http.Context
 
 /**
@@ -10,12 +11,14 @@ import io.javalin.http.Context
  */
 object ProcessGroupsMembersHandler {
 
+    private val processGroupsMembershipContainer: ProcessGroupsMembershipContainerInterface = ProcessGroupsMembershipContainer
+
     /**
      * Handles requests for creating a new process group membership.
      */
     fun create(ctx: Context, processGroupId: Int, memberId: String) {
         val processGroupMembership = ProcessGroupMembership(processGroupId, memberId)
-        ProcessGroupsMembershipContainer.createProcessGroupMembership(processGroupMembership)
+        processGroupsMembershipContainer.createProcessGroupMembership(processGroupMembership)
     }
 
     /**
@@ -23,6 +26,6 @@ object ProcessGroupsMembersHandler {
      */
     fun delete(ctx: Context, processGroupID: Int, memberId: String) {
         val processGroupMembership = ProcessGroupMembership(processGroupID, memberId)
-        ProcessGroupsMembershipContainer.deleteProcessGroupMembership(processGroupMembership)
+        processGroupsMembershipContainer.deleteProcessGroupMembership(processGroupMembership)
     }
 }
