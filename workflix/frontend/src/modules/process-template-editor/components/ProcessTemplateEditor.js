@@ -9,6 +9,7 @@ import AppToaster from '../../app/AppToaster'
 import TaskTemplateListEditor from './TaskTemplateListEditor'
 import type { IncompleteProcessTemplateType, IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
 import ButtonWithDialog from '../../common/components/ButtonWithDialog'
+import { toastifyError } from '../../common/toastifyError'
 
 type PropsType = {
   users: Map<string, UserType>,
@@ -90,6 +91,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       await ((this.props.onDelete && this.props.onDelete()) || Promise.resolve())
       this.setState({ deleteLoading: false })
     } catch (e) {
+      toastifyError(e)
       this.setState({ deleteLoading: false })
     }
   }

@@ -71,7 +71,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
   onStartClick = async () => {
     const { title, description, deadline, processGroup } = this.state
     const { template } = this.props
-    if (!title || !processGroup) {
+    if (!title || !processGroup || !deadline) {
       return AppToaster.show({
         icon: 'error',
         intent: 'danger',
@@ -92,6 +92,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
       navigate(`/process/${newId}`)
     } catch (e) {
       toastifyError(e)
+      this.setState({ startLoading: false })
     }
   }
 
@@ -109,7 +110,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
         <InputGroup large fill placeholder='Title...' intent={!title ? 'danger' : 'none'} value={title}
                     onChange={this.onTitleChange}/>
       </FormGroup>
-      <FormGroup label='Description' labelInfo='(required)'>
+      <FormGroup label='Description'>
         <AutoSizeTextArea className='bp3-fill' style={{ resize: 'none' }} placeholder='Description...'
                           value={description} multiline minRows={4} maxRows={12}
                           onChange={this.onDescriptionChange}/>
