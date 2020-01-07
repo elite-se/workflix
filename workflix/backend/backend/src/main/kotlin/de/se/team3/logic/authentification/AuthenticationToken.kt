@@ -1,11 +1,10 @@
 package de.se.team3.logic.authentification
 
 import de.se.team3.logic.domain.User
-import org.json.JSONObject
 import java.util.Base64
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-
+import org.json.JSONObject
 
 class AuthenticationToken(
     val token: String,
