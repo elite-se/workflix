@@ -8,5 +8,4 @@ object TaskTemplateContainer {
     fun getTaskTemplate(taskTemplateId: Int): TaskTemplate {
         return TaskTemplateDAO.getTaskTemplate(taskTemplateId)
     }
-
 }
