@@ -19,16 +19,6 @@ class AuthenticationToken(
     constructor(user: User) :
             this(generateToken(user.id), user)
 
-    /**
-     * Checks whether a token is valid for a user.
-     *
-     * @return true iff the token matches the generated token for the user
-     */
-    fun isValid(user: User, token: String): Boolean {
-        return token == generateToken(user.id)
-    }
-
-
     companion object {
         private const val key = "***REMOVED***"
 
