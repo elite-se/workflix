@@ -4,6 +4,7 @@ import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.ProcessGroupsHandler
 import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
@@ -31,10 +32,15 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    // exception handling
+    // webservice exceptions, i.d. exceptions thrown if something is wrong if the input format
     app.exception(NumberFormatException::class.java) { _, ctx ->
         ctx.status(400).result("invalid id format")
     }
+    app.exception(JSONException::class.java) { e, ctx ->
+        ctx.status(400).result("" + e.message)
+    }
+
+    // logical exceptions, i.d. exceptions thrown if a logical illegal request was made
     app.exception(InvalidInputException::class.java) { e, ctx ->
         ctx.status(400).result(e.message)
     }
@@ -47,8 +53,11 @@ fun main(args: Array<String>) {
     app.exception(AlreadyClosedException::class.java) { e, ctx ->
         ctx.status(409).result(e.message)
     }
-    app.exception(JSONException::class.java) { e, ctx ->
-        ctx.status(400).result("" + e.message)
+    app.exception(UnsatisfiedPreconditionException::class.java) { e, ctx ->
+        ctx.status(404).result(e.message)
+    }
+    app.exception(Exception::class.java) { e, ctx ->
+        ctx.status(500).result(e.message + "")
     }
 
     // users

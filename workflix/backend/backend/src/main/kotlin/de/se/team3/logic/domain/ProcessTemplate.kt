@@ -30,6 +30,8 @@ data class ProcessTemplate(
 
     fun getProcessCount() = processCount
 
+    fun getRunningProcesses() = runningProcesses
+
     fun isDeleted() = deleted
 
     @get:JsonIgnore
@@ -114,6 +116,39 @@ data class ProcessTemplate(
      */
     fun delete() {
         deleted = true
+    }
+
+    /**
+     * Checks whether the given list of user role ids contains one that is designated as responsible
+     * by at least one of the task templates.
+     *
+     * @return True iff at least one task template designates one of the specified user roles
+     * as responsible.
+     */
+    @JsonIgnore
+    fun isOneResponsible(userRoleIds: List<Int>): Boolean {
+        val responsibleUserRoleIds = taskTemplates.values.map { it.responsibleUserRoleId }
+        return responsibleUserRoleIds.intersect(userRoleIds).isNotEmpty()
+    }
+
+    /**
+     * Checks whether the specified user role is designated as responsible in a
+     * task template of this process template.
+     *
+     * @throws NullPointerException Is thrown if the id of the given user role is null.
+     *
+     * @return True if and only if the given user role is designated as responsible in
+     * a task template of this process template.
+     */
+    fun usesUserRole(userRole: UserRole): Boolean {
+        if (userRole.id == null)
+            throw NullPointerException("id of user role must not be null")
+
+        for ((key, taskTemplate) in taskTemplates)
+            if (taskTemplate.responsibleUserRoleId == userRole.id)
+                return true
+
+        return false
     }
 
     companion object {

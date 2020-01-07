@@ -1,20 +1,23 @@
 // @flow
 
 import React from 'react'
-import { Alert, Button, Drawer, H2 } from '@blueprintjs/core'
+import { Alert, Button, ButtonGroup, Drawer, H2, H4 } from '@blueprintjs/core'
 import type { UserRoleType, UserType } from '../../datatypes/User'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
 import type { FilledProcessTemplateType } from '../../api/ProcessApi'
 import AppToaster from '../../app/AppToaster'
 import TaskTemplateListEditor from './TaskTemplateListEditor'
 import type { IncompleteProcessTemplateType, IncompleteTaskTemplateType } from '../ProcessTemplateEditorTypes'
+import ButtonWithDialog from '../../common/components/ButtonWithDialog'
 
 type PropsType = {
   users: Map<string, UserType>,
   userRoles: Map<number, UserRoleType>,
   title: string,
   initialProcessTemplate: IncompleteProcessTemplateType,
-  onSave: FilledProcessTemplateType => Promise<void>
+  onSave: FilledProcessTemplateType => Promise<void>,
+  onDelete?: () => Promise<void>,
+  showDelete?: boolean
 }
 
 type StateType = {|
@@ -22,6 +25,7 @@ type StateType = {|
   highlightValidation: boolean,
   errorAlert: ?string,
   saveLoading: boolean,
+  deleteLoading: boolean,
   drawerOpened: boolean
 |}
 
@@ -31,6 +35,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
     highlightValidation: false,
     errorAlert: null,
     saveLoading: false,
+    deleteLoading: false,
     drawerOpened: false
   }
 
@@ -84,14 +89,28 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
     }
   }
 
+  onDeleteClick = async () => {
+    try {
+      this.setState({ deleteLoading: true })
+      await ((this.props.onDelete && this.props.onDelete()) || Promise.resolve())
+      this.setState({ deleteLoading: false })
+    } catch (e) {
+      this.setState({
+        errorAlert: e.message,
+        deleteLoading: false
+      })
+    }
+  }
+
   closeAlert = () => this.setState({ errorAlert: null })
   setDrawerOpened = (drawerOpened: boolean) => this.setState({ drawerOpened })
 
   render () {
     const {
-      tasks, title, description, durationLimit, owner, saveLoading, errorAlert, highlightValidation, drawerOpened
+      tasks, title, description, durationLimit, owner, saveLoading,
+      errorAlert, highlightValidation, drawerOpened, deleteLoading
     } = this.state
-    const { users, userRoles } = this.props
+    const { users, userRoles, showDelete } = this.props
     return <div style={{
       flex: 1,
       display: 'flex',
@@ -99,19 +118,20 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       marginRight: drawerOpened ? Drawer.SIZE_SMALL : '0',
       transition: 'margin-right 0.3s'
     }}>
-      <div style={{
-        display: 'flex',
-        flowDirection: 'row',
-        marginBottom: '10px',
-        justifyContent: 'start',
-        alignItems: 'center'
-      }}>
+      <ButtonGroup large style={{ marginBottom: '20px' }}>
         <Button icon='floppy-disk' text='Save' intent='primary' loading={saveLoading} onClick={this.onSaveClick}/>
+        {showDelete && <ButtonWithDialog intent='danger' icon='trash' text='Delete' loading={deleteLoading}
+                                         onClick={this.onDeleteClick}>
+          <H4>Delete Process Template?</H4>
+          <p>
+            Are you sure you want to delete this process template?
+          </p>
+        </ButtonWithDialog>}
         <H2 style={{
           display: 'inline',
           marginLeft: '40px'
         }}>{this.props.title}</H2>
-      </div>
+      </ButtonGroup>
       <ProcessDetailsEditor durationLimit={durationLimit} onDurationLimitChange={this.onDurationLimitChange}
                             onDescriptionChange={this.onDescriptionChange} description={description}
                             onTitleChange={this.onTitleChange} title={title} highlightValidation={highlightValidation}

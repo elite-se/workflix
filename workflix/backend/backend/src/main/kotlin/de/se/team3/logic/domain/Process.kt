@@ -68,23 +68,21 @@ class Process(
      * Returns the specified task.
      */
     fun getTask(taskId: Int): Task {
-        return tasks!!.map { it.value }.find { it.id == taskId }!!
+        return tasks.map { it.value }.find { it.id == taskId }!!
     }
 
     /**
-     * Returns all assignees of this process.
+     * Checks whether the specified user is assigned to an task of this process.
+     *
+     * @return True iff the specified user is assigned to at least on task of this process.
      */
-    @JsonIgnore
-    fun getAssignees(): List<User> { // TODO ineffizient?
-        val assignments = tasks.values.map { it.getAssignments() }
-        val assignmentsList = ArrayList<TaskAssignment>()
-        assignments.forEach {
-            if (it != null) {
-                assignmentsList.addAll(it)
-            }
-        }
-        val assigneeIDs = assignmentsList.map { it.assigneeId }
-        return assigneeIDs.map { id -> UserContainer.getUser(id) }
+    private fun hasAssignee(userId: String): Boolean {
+        for ((key, task) in tasks)
+            for (assignment in task.getAssignments()!!)
+                if (assignment.assigneeId == userId)
+                    return true
+
+        return false
     }
 
     /**
@@ -99,7 +97,7 @@ class Process(
     @JsonProperty("progress")
     fun getProgress(): Int {
         var estimatedDurationDone = 0.0
-        tasks?.forEach { _, task ->
+        tasks.forEach { _, task ->
             if (task.isClosed())
                 estimatedDurationDone += task.taskTemplate!!.estimatedDuration
         }
@@ -118,7 +116,7 @@ class Process(
             return false
 
         var closeable = true
-        tasks!!.forEach { (_, task) ->
+        tasks.forEach { (_, task) ->
             if (!task.isClosed())
                 closeable = false
         }
@@ -151,6 +149,32 @@ class Process(
         processTemplate.decreaseRunningProcesses()
     }
 
+    /**
+     * Checks whether the given process is relevant for the user.
+     *
+     * @return True iff the process is in a process group the specified user is a member of and
+     * one of the user's roles is designated as responsible for the process, or the user is
+     * assigned to one of the processes tasks.
+     */
+    @JsonIgnore
+    fun isRelevantFor(user: User): Boolean {
+        // all relevant information
+        val usersGroupIDs = user.getProcessGroupIds()
+        val usersRoleIDs = user.getUserRoleIds()
+
+        // user is in process's group and one of his/her roles is assigned to it
+        val inUsersGroups = usersGroupIDs.contains(this.processGroupId)
+        val designatedAsResponsible = processTemplate.isOneResponsible(usersRoleIDs)
+        if (inUsersGroups && designatedAsResponsible)
+            return true
+
+        // user is assigned to one of the processes tasks
+        if (hasAssignee(user.id))
+            return true
+
+        return false
+    }
+
     companion object {
 
         /**
@@ -174,7 +198,7 @@ class Process(
         fun createTasks(processTemplateId: Int): Map<Int, Task> {
             val tasks = HashMap<Int, Task>()
             val processTemplate = ProcessTemplatesContainer.getProcessTemplate(processTemplateId)
-            val taskTemplates = processTemplate.taskTemplates!!
+            val taskTemplates = processTemplate.taskTemplates
             for ((id, taskTemplate) in taskTemplates) {
                 val startedAt = if (taskTemplate.predecessors.size == 0) Instant.now() else null
                 val task = Task(id, startedAt)
