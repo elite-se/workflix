@@ -5,7 +5,7 @@ import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.InvalidInputException
 
 object LoginManager {
-    val tokensInUse = ArrayList<AuthentificationToken>()
+    val tokensInUse = ArrayList<AuthenticationToken>()
     // authorized user currently performing a request, or null if none is performed
     private var activeUser: User? = null
 
@@ -20,7 +20,7 @@ object LoginManager {
      * @throws InvalidInputException if there is no or more than one user with this email address, or the user
      * is already logged in.
      */
-    fun login(email: String, password: String): AuthentificationToken {
+    fun login(email: String, password: String): AuthenticationToken {
         val userList = UserContainer.getAllUsers().filter { it.email == email }
         // if there are more than two users with the same email address, something went terribly wrong during user creation
         if (userList.size < 1)
@@ -32,7 +32,7 @@ object LoginManager {
             throw InvalidInputException("This user is already logged in.")
         if (user.password != password)
             throw InvalidInputException("Wrong password.")
-        val token = AuthentificationToken(user)
+        val token = AuthenticationToken(user)
         tokensInUse.add(token)
         return token
     }
