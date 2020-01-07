@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Button, Card, FormGroup, H1, InputGroup, Spinner, Tooltip } from '@blueprintjs/core'
+import { Button, Card, FormGroup, H1, InputGroup, Tooltip } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import handleStringChange from '../../../modules/common/handleStringChange'
 import LoginApi from '../../../modules/api/LoginApi'
@@ -26,7 +26,7 @@ class Login extends React.Component<{ onLoggedInChanged: (boolean) => void}, Sta
 
   emailInputRef = React.createRef<HTMLInputElement>()
 
-  isButtonDisabled = () => this.state.loading || !this.state.email || !this.state.password
+  isButtonDisabled = () => !this.state.email || !this.state.password
   onEmailChange = handleStringChange(email => this.setState({ email }))
   onPasswordChange = handleStringChange(password => this.setState({ password }))
 
@@ -86,10 +86,8 @@ class Login extends React.Component<{ onLoggedInChanged: (boolean) => void}, Sta
                           onClick={this.toggleShowPassword}
                         /></Tooltip>}/>
           </FormGroup>
-          {this.state.loading
-            ? <Spinner/>
-            : <Button icon='unlock' intent={Intent.SUCCESS} text='Login' type='submit' large
-                      disabled={this.isButtonDisabled()}/>}
+          <Button icon='unlock' intent={Intent.SUCCESS} text='Login' type='submit' large
+                      disabled={this.isButtonDisabled()} loading={this.state.loading}/>
         </form>
       </Card>
     </CenterScreen>
