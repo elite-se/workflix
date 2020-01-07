@@ -3,4 +3,4 @@ package de.se.team3.logic.exceptions
 /**
  * Indicates that an unauthorized user has tried to .
  */
-class NotVerifiedException(override val message: String) : Exception(message)
+class NotAuthorizedException(override val message: String) : Exception(message)

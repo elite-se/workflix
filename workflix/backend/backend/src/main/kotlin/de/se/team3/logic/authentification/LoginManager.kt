@@ -3,6 +3,7 @@ package de.se.team3.logic.authentification
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.InvalidInputException
+import de.se.team3.logic.exceptions.NotAuthorizedException
 
 object LoginManager {
     val tokensInUse = ArrayList<AuthenticationToken>()
@@ -40,10 +41,12 @@ object LoginManager {
     /**
      * Logs a user out.
      *
-     * @param token bearer token of the user to be logged out
+     * @param bearerToken bearer token of the user to be logged out
      */
-    fun logout(token: String) {
-        tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
+    fun logout(bearerToken: String) {
+        val token = bearerToken.substringAfter(' ')
+        if (!tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token }))
+            throw NotAuthorizedException("This user is not logged in.")
     }
 
     fun getActiveUser(): User? {

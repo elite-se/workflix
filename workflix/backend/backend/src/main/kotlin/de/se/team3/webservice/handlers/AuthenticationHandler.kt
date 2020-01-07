@@ -3,7 +3,7 @@ package de.se.team3.webservice.handlers
 import de.se.team3.logic.authentification.AuthorizationManager
 import de.se.team3.logic.authentification.LoginManager
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.exceptions.NotVerifiedException
+import de.se.team3.logic.exceptions.NotAuthorizedException
 import io.javalin.http.Context
 import org.json.JSONObject
 
@@ -16,10 +16,10 @@ object AuthenticationHandler {
      */
     fun authorizeRequest(ctx: Context) {
         val bearerToken = ctx.header("Authorization")
-            ?: throw NotVerifiedException("Every request must be enriched by an authorization token.")
+            ?: throw NotAuthorizedException("Every request must be enriched by an authorization token.")
 
         if (!AuthorizationManager.authorizeRequest(bearerToken))
-            throw NotVerifiedException("You are not authorized to perform this request.")
+            throw NotAuthorizedException("You are not authorized to perform this request.")
     }
 
     /**
@@ -33,7 +33,7 @@ object AuthenticationHandler {
             ?: throw InvalidInputException("Every request must be enriched by an authorization token.")
 
         if (!AuthorizationManager.finishAuthorizedRequest(bearerToken))
-            throw NotVerifiedException("You were not authorized to perform this request. How did you do this?")
+            throw NotAuthorizedException("You were not authorized to perform this request. How did you do this?")
     }
 
     /**
@@ -59,8 +59,7 @@ object AuthenticationHandler {
     fun logout(ctx: Context) {
         val bearerToken = ctx.header("Authorization")
             ?: throw InvalidInputException("Every request must be enriched by an authorization token.")
-        val stringToken = bearerToken.substringAfter(' ')
 
-        LoginManager.logout(stringToken)
+        LoginManager.logout(bearerToken)
     }
 }

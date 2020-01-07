@@ -4,7 +4,7 @@ import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
-import de.se.team3.logic.exceptions.NotVerifiedException
+import de.se.team3.logic.exceptions.NotAuthorizedException
 import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.AuthenticationHandler
@@ -58,7 +58,7 @@ fun main(args: Array<String>) {
     app.exception(UnsatisfiedPreconditionException::class.java) { e, ctx ->
         ctx.status(404).result(e.message)
     }
-    app.exception(NotVerifiedException::class.java) { e, ctx ->
+    app.exception(NotAuthorizedException::class.java) { e, ctx ->
         ctx.status(401).result(e.message)
     }
 
@@ -83,7 +83,7 @@ fun main(args: Array<String>) {
         UserHandler.getAll(ctx)
     }
     app.get("users/:userId") { ctx ->
-        UserHandler.getOne(ctx, ctx.pathParam("userId").toString())
+        UserHandler.getOne(ctx, ctx.pathParam("userId"))
     }
     app.post("users") { ctx ->
         UserHandler.createFrom***REMOVED***(ctx)
