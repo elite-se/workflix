@@ -7,7 +7,7 @@ import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 
 object UserContainer : UserContainerInterface {
 
-    private val userContainer: UserContainerInterface = UserContainer
+    private val userDao: UserDaoInterface = UserDao
 
     // caches users using UserIDs
     private val userCache = HashMap<String, User>()
