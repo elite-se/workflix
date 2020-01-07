@@ -61,7 +61,22 @@ class Process(
         Instant.now(), // started at
         createTasks(processTemplateId)) {
 
-        checkProperties(starterId, title, processTemplate)
+        checkProperties()
+    }
+
+    /**
+     * Checks property constraints.
+     *
+     * @throws InvalidInputException Is thrown if the title is empty or if the underlying
+     * process template is already deleted.
+     */
+    private fun checkProperties() {
+        if (title.isEmpty())
+            throw InvalidInputException("title must not be empty")
+        if (processTemplate.isDeleted())
+            throw InvalidInputException("must not be based on a deleted process template")
+        if (!UserContainer.hasUser(starterId))
+            throw InvalidInputException("user specified as owner does not exist")
     }
 
     /**
@@ -178,21 +193,6 @@ class Process(
     companion object {
 
         /**
-         * Checks property constraints.
-         *
-         * @throws InvalidInputException Is thrown if the title is empty or if the underlying
-         * process template is already deleted.
-         */
-        fun checkProperties(starterId: String, title: String, processTemplate: ProcessTemplate) {
-            if (title.isEmpty())
-                throw InvalidInputException("title must not be empty")
-            if (processTemplate.isDeleted())
-                throw InvalidInputException("must not be based on a deleted process template")
-            if (!UserContainer.hasUser(starterId))
-                throw InvalidInputException("user specified as owner does not exist")
-        }
-
-        /**
          * Creates the tasks of the process by looping over the underlying task templates.
          */
         fun createTasks(processTemplateId: Int): Map<Int, Task> {
@@ -206,5 +206,7 @@ class Process(
             }
             return tasks
         }
+
     }
+
 }
