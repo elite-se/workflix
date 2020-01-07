@@ -47,7 +47,7 @@ class Task(
      */
     private fun arePredecessorsClosed(): Boolean {
         var unclosedFound = false
-        taskTemplate!!.predecessors.forEach { taskTemplate ->
+        taskTemplate!!.getPredecessors().forEach { taskTemplate ->
             val preTask = process!!.tasks.get(taskTemplate.id)
             if (preTask!!.status() != TaskStatus.CLOSED)
                 unclosedFound = true

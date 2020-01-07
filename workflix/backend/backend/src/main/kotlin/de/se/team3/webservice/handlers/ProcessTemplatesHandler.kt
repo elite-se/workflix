@@ -53,7 +53,7 @@ object ProcessTemplatesHandler {
             // Adds the predecessors to the current task template
             val predecessorJsonArray = JSONArray()
             taskTemplateObjectWithoutNeighbors.put("predecessors", predecessorJsonArray)
-            for (predecessor in taskTemplate.predecessors.toList())
+            for (predecessor in taskTemplate.getPredecessors())
                 predecessorJsonArray.put(predecessor.id)
         }
 
@@ -92,8 +92,7 @@ object ProcessTemplatesHandler {
             for (entry in predecessorsPerTask.get(id)!!) {
                 val predecessorId = entry as Int
                 val predecessor = taskTemplatesMap.get(predecessorId)!!
-                taskTemplate.predecessors.add(predecessor)
-                predecessor.successors.add(taskTemplate)
+                taskTemplate.addPredecessor(predecessor)
             }
         }
 

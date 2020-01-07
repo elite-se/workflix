@@ -200,7 +200,7 @@ class Process(
             val processTemplate = ProcessTemplatesContainer.getProcessTemplate(processTemplateId)
             val taskTemplates = processTemplate.taskTemplates
             for ((id, taskTemplate) in taskTemplates) {
-                val startedAt = if (taskTemplate.predecessors.size == 0) Instant.now() else null
+                val startedAt = if (taskTemplate.getPredecessors().size == 0) Instant.now() else null
                 val task = Task(id, startedAt)
                 tasks.put(id, task)
             }

@@ -19,9 +19,15 @@ class TaskTemplate(
 ) {
 
     @JsonIgnore
-    val successors = HashSet<TaskTemplate>()
+    private val successors = ArrayList<TaskTemplate>()
     @JsonIgnore
-    val predecessors = HashSet<TaskTemplate>()
+    private val predecessors = ArrayList<TaskTemplate>()
+
+    @JsonIgnore
+    fun getSuccessors() = successors.toList()
+
+    @JsonIgnore
+    fun getPredecessors() = predecessors.toList()
 
     init {
         if (necessaryClosings < 1)
@@ -33,4 +39,21 @@ class TaskTemplate(
         if (!UserRoleContainer.hasUserRole(responsibleUserRoleId))
             throw InvalidInputException("user role specified as responsible does not exist")
     }
+
+
+    /**
+     * Adds the given task as predecessor.
+     *
+     * Note that this method also registers this as successor by each predecessor.
+     *
+     * @throws InvalidInputException Is thrown if the given task template is already a predecessor of this.
+     */
+    fun addPredecessor(taskTemplate: TaskTemplate) {
+        if (predecessors.find { it.id == taskTemplate.id } != null)
+            throw InvalidInputException("given task template is already a predecessor of this")
+
+        predecessors.add(taskTemplate)
+        taskTemplate.successors.add(this)
+    }
+
 }

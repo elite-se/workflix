@@ -78,8 +78,7 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         for (row in successorsPerTaskResult) {
             val taskTemplate = taskTemplatesMap.get(row[TaskTemplateRelationshipsTable.predecessor])!!
             val successorTemplate = taskTemplatesMap.get(row[TaskTemplateRelationshipsTable.successor])!!
-            taskTemplate.successors.add(successorTemplate)
-            successorTemplate.predecessors.add(taskTemplate)
+            successorTemplate.addPredecessor(taskTemplate)
         }
 
         return taskTemplatesMap
