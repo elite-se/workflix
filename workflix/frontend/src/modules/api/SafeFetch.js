@@ -3,6 +3,7 @@
 import { getToken } from '../common/tokenStorage'
 
 const AUTH_HEADER = 'Authorization'
+const AUTH_TYPE = 'Bearer'
 
 type MyOptionsType = {
   ...$Diff<RequestOptions, { headers?: HeadersInit }>,
@@ -15,7 +16,7 @@ const addTokenHeader = (init?: MyOptionsType): MyOptionsType => {
     return init || {}
   }
   if (!init || !init.headers) {
-    return { ...init, headers: { [AUTH_HEADER]: token } }
+    return { ...init, headers: { [AUTH_HEADER]: `${AUTH_TYPE} ${token}` } }
   }
   const headers: { [key: string]: string } = init.headers
   return {
