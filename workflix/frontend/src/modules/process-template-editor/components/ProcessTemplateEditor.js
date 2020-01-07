@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Alert, Button, ButtonGroup, Drawer, H2, H4 } from '@blueprintjs/core'
+import { Button, ButtonGroup, Drawer, H2, H4 } from '@blueprintjs/core'
 import type { UserRoleType, UserType } from '../../datatypes/User'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
 import type { FilledProcessTemplateType } from '../../api/ProcessApi'
@@ -23,7 +23,6 @@ type PropsType = {
 type StateType = {|
   ...IncompleteProcessTemplateType,
   highlightValidation: boolean,
-  errorAlert: ?string,
   saveLoading: boolean,
   deleteLoading: boolean,
   drawerOpened: boolean
@@ -33,7 +32,6 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
   state = {
     ...this.props.initialProcessTemplate,
     highlightValidation: false,
-    errorAlert: null,
     saveLoading: false,
     deleteLoading: false,
     drawerOpened: false
@@ -82,10 +80,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       })
       this.setState({ saveLoading: false })
     } catch (e) {
-      this.setState({
-        errorAlert: e.message,
-        saveLoading: false
-      })
+      this.setState({ saveLoading: false })
     }
   }
 
@@ -95,20 +90,15 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       await ((this.props.onDelete && this.props.onDelete()) || Promise.resolve())
       this.setState({ deleteLoading: false })
     } catch (e) {
-      this.setState({
-        errorAlert: e.message,
-        deleteLoading: false
-      })
+      this.setState({ deleteLoading: false })
     }
   }
 
-  closeAlert = () => this.setState({ errorAlert: null })
   setDrawerOpened = (drawerOpened: boolean) => this.setState({ drawerOpened })
 
   render () {
     const {
-      tasks, title, description, durationLimit, owner, saveLoading,
-      errorAlert, highlightValidation, drawerOpened, deleteLoading
+      tasks, title, description, durationLimit, owner, saveLoading, highlightValidation, drawerOpened, deleteLoading
     } = this.state
     const { users, userRoles, showDelete } = this.props
     return <div style={{
@@ -138,9 +128,6 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
                             users={users} owner={owner} onOwnerChange={this.onOwnerChange}/>
       <TaskTemplateListEditor tasks={tasks} userRoles={userRoles} onTasksChange={this.onTasksChange}
                               highlightValidation={highlightValidation} setDrawerOpened={this.setDrawerOpened}/>
-      <Alert isOpen={!!errorAlert} intent='danger' icon='error' confirmButtonText='Ok' onClose={this.closeAlert}>
-        {errorAlert}
-      </Alert>
     </div>
   }
 }

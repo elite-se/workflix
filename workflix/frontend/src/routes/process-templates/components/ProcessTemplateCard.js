@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Alert, Button, ButtonGroup, Card, Colors, H3, H4, Icon, Popover } from '@blueprintjs/core'
+import { Button, ButtonGroup, Card, Colors, H3, H4, Icon, Popover } from '@blueprintjs/core'
 import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
 import { Link, navigate } from '@reach/router'
 import type { StyledComponent } from 'styled-components'
@@ -15,6 +15,7 @@ import ProcessApi from '../../../modules/api/ProcessApi'
 import StartProcessForm from './StartProcessForm'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import ScrollIntoViewOnMount from '../../../modules/common/components/ScrollIntoViewOnMount'
+import { toastifyError } from '../../../modules/common/toastifyError'
 
 const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
   margin: 5px;
@@ -60,11 +61,10 @@ type PropsType = {
   processGroups: Map<number, ProcessGroupType>
 }
 
-type StateType = { errorAlert: ?string, deleteLoading: boolean, duplicateLoading: boolean }
+type StateType = { deleteLoading: boolean, duplicateLoading: boolean }
 
 class ProcessTemplateCard extends React.Component<PropsType, StateType> {
   state = {
-    errorAlert: null,
     deleteLoading: false,
     duplicateLoading: false
   }
@@ -76,10 +76,8 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
       this.setState({ deleteLoading: false })
       this.props.refresh()
     } catch (error) {
-      this.setState({
-        errorAlert: error.message,
-        deleteLoading: false
-      })
+      toastifyError(error)
+      this.setState({ deleteLoading: false })
     }
   }
 
@@ -97,18 +95,13 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
       this.setState({ duplicateLoading: false })
       navigate(`/process-templates/edit/${newId}`)
     } catch (error) {
-      this.setState({
-        errorAlert: error.message,
-        duplicateLoading: false
-      })
+      this.setState({ duplicateLoading: false })
     }
   }
 
-  closeErrorAlert = () => this.setState({ errorAlert: null })
-
   render () {
     const { users, template, processGroups } = this.props
-    const { deleteLoading, duplicateLoading, errorAlert } = this.state
+    const { deleteLoading, duplicateLoading } = this.state
     const owner = users.get(template.ownerId)
     const graph = calcGraph<number, TaskTemplateType>(template.taskTemplates)
     const criticalLength = Math.max(...graph.map(task => task.endDate))
@@ -140,7 +133,6 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
                 Are you sure you want to delete this process template?
               </p>
             </ButtonWithDialog>
-            <Alert isOpen={errorAlert !== null} onClose={this.closeErrorAlert}>{errorAlert}</Alert>
           </CustomButtonGroup>
         </Item>
         <AllTheWay><ProcessChart mini tasks={graph}/></AllTheWay>
