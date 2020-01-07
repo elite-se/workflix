@@ -81,7 +81,6 @@ fun main(args: Array<String>) {
         AuthenticationHandler.logout(ctx)
     }
 
-
     // users
     app.get("users") { ctx ->
         UserHandler.getAll(ctx)
