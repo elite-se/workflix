@@ -2,7 +2,7 @@
 
 import React from 'react'
 import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
-import { Alert, Button, ButtonGroup, FormGroup, InputGroup } from '@blueprintjs/core'
+import { Button, ButtonGroup, FormGroup, InputGroup } from '@blueprintjs/core'
 import { DatePicker } from '@blueprintjs/datetime'
 import handleStringChange from '../../../modules/common/handleStringChange'
 import AutoSizeTextArea from '../../../modules/common/components/AutoSizeTextArea'
@@ -11,13 +11,13 @@ import AppToaster from '../../../modules/app/AppToaster'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import { navigate } from '@reach/router'
 import ProcessGroupSelect from './ProcessGroupSelect'
+import { toastifyError } from '../../../modules/common/toastifyError'
 import { getCurrentUserId } from '../../../modules/common/tokenStorage'
 
 type PropsType = { template: ProcessTemplateType, processGroups: Map<number, ProcessGroupType> }
 
 type StateType = {
-  title: string, description: string, deadline: Date, startLoading: boolean, processGroup: ?ProcessGroupType,
-  errorAlert: ?string
+  title: string, description: string, deadline: Date, startLoading: boolean, processGroup: ?ProcessGroupType
 }
 
 const jsDateFormatter = {
@@ -60,21 +60,19 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
     description: this.props.template.description,
     deadline: new Date(),
     startLoading: false,
-    processGroup: null,
-    errorAlert: null
+    processGroup: null
   }
 
   onTitleChange = handleStringChange(title => this.setState({ title }))
   onDescriptionChange = handleStringChange(description => this.setState({ description }))
   onDeadlineChange = (deadline: Date) => this.setState({ deadline })
   onDeadlineButton = (deadline: Date) => () => this.onDeadlineChange(deadline)
-  onCloseErrorAlert = () => this.setState({ errorAlert: null })
   onProcessGroupChange = (processGroup: ProcessGroupType) => this.setState({ processGroup })
 
   onStartClick = async () => {
     const { title, description, deadline, processGroup } = this.state
     const { template } = this.props
-    if (!title || !processGroup) {
+    if (!title || !processGroup || !deadline) {
       return AppToaster.show({
         icon: 'error',
         intent: 'danger',
@@ -93,16 +91,14 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
       })
       this.setState({ startLoading: false })
       navigate(`/process/${newId}`)
-    } catch (error) {
-      this.setState({
-        startLoading: false,
-        errorAlert: error.message
-      })
+    } catch (e) {
+      toastifyError(e)
+      this.setState({ startLoading: false })
     }
   }
 
   render () {
-    const { title, description, deadline, startLoading, errorAlert, processGroup } = this.state
+    const { title, description, deadline, startLoading, processGroup } = this.state
     const { processGroups } = this.props
     const shortcuts = getShortcuts()
     return <div style={{
@@ -115,7 +111,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
         <InputGroup large fill placeholder='Title...' intent={!title ? 'danger' : 'none'} value={title}
                     onChange={this.onTitleChange}/>
       </FormGroup>
-      <FormGroup label='Description' labelInfo='(required)'>
+      <FormGroup label='Description'>
         <AutoSizeTextArea className='bp3-fill' style={{ resize: 'none' }} placeholder='Description...'
                           value={description} multiline minRows={4} maxRows={12}
                           onChange={this.onDescriptionChange}/>
@@ -142,8 +138,6 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
         </div>
       </FormGroup>
       <Button icon='play' intent='success' text='Start Process' onClick={this.onStartClick} loading={startLoading}/>
-      <Alert isOpen={errorAlert !== null} intent='danger' icon='error'
-             onClose={this.onCloseErrorAlert}>{errorAlert}</Alert>
     </div>
   }
 }
