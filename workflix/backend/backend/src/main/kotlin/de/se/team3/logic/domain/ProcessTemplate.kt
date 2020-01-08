@@ -81,11 +81,11 @@ data class ProcessTemplate(
         description,
         durationLimit,
         owner,
-        ProcessTemplatesContainer.getProcessTemplate(id).createdAt,
-        ProcessTemplatesContainer.getProcessTemplate(id).formerVersionId,
-        ProcessTemplatesContainer.getProcessTemplate(id).processCount,
-        ProcessTemplatesContainer.getProcessTemplate(id).runningProcesses,
-        ProcessTemplatesContainer.getProcessTemplate(id).deleted,
+        Instant.now(),
+        null,
+        0,
+        0,
+        false,
         taskTemplates
     ) {
         if (id < 1)
