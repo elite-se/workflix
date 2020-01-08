@@ -3,16 +3,7 @@
 import type { ComponentType } from 'react'
 import React from 'react'
 import { Button, H2, Icon, Spinner, Text } from '@blueprintjs/core'
-import styled from 'styled-components'
-
-const CenterScreen = styled<{}, {}, 'div'>('div')`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`
+import CenterScreen from '../../common/CenterScreen'
 
 function withPromiseResolver<P1: {}, P2: {}> (
   promiseCreator: ($Diff<P1, P2>, (soft: boolean) => void) => Promise<P2>,
