@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { sortBy } from 'lodash'
+import { difference, sortBy } from 'lodash'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import TitledCard from '../TitledCard'
@@ -11,12 +11,15 @@ import { Button, ButtonGroup } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import ProcessGroupMultiSelect from '../../../../modules/common/components/ProcessGroupMultiselect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
+import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
 
 type PropsType = {|
   user: UserType,
   processGroups: Map<number, ProcessGroupType>,
   roles: Map<number, UserRoleType>,
-  onSetEditing: (boolean) => void
+  onSetEditing: (boolean) => void,
+  onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
 |}
 
 type StateType = {|
@@ -32,12 +35,36 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
 
   onSave = () => {
     this.setState({ loading: true })
-    Promise.resolve(null) // TODO do the real saving
+    Promise.all([
+      this.saveGroups(),
+      this.saveRoles()
+    ])
       .then(() => {
         this.setState({ loading: false })
         this.props.onSetEditing(false)
       })
       .catch(toastifyError)
+  }
+
+  saveGroups = () => {
+    const { user, processGroups } = this.props
+    const newGroups = this.state.selectedGroups.map(group => group.id)
+    const oldGroups = user.processGroupIds
+    const addedGroups = difference(newGroups, oldGroups)
+    const removedGroups = difference(oldGroups, newGroups)
+    return Promise.all([
+      addedGroups.map(id => processGroups.get(id)).filter(Boolean)
+        .map(group => new ProcessGroupsApi().addMembership(group.id, user.id)
+          .then(this.props.onGroupMembershipAdded(group, user))),
+      removedGroups.map(id => processGroups.get(id)).filter(Boolean)
+        .map(group => new ProcessGroupsApi().removeMembership(group.id, user.id)
+          .then(this.props.onGroupMembershipRemoved(group, user)))
+    ])
+  }
+
+  saveRoles = () => {
+    // TODO implement
+    return Promise.resolve(null)
   }
 
   onCancel = () => this.props.onSetEditing(false)
