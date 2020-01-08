@@ -45,8 +45,7 @@ object LoginManager {
      */
     fun logout(bearerToken: String) {
         val token = bearerToken.substringAfter(' ')
-        if (!tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token }))
-            throw NotAuthorizedException("This user is not logged in.")
+        !tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
     }
 
     fun getActiveUser(): User? {
