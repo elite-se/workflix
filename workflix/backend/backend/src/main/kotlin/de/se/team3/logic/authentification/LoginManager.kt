@@ -3,7 +3,6 @@ package de.se.team3.logic.authentification
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.exceptions.NotAuthorizedException
 
 object LoginManager {
     val tokensInUse = ArrayList<AuthenticationToken>()
