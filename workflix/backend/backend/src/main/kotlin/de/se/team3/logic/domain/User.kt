@@ -37,7 +37,6 @@ class User(
     /**
      * @return All user roles the user is a member of.
      */
-    @JsonIgnore
     fun getUserRoleIds(): List<Int> {
         return UserRoleContainer
             .getAllUserRoles()
@@ -48,7 +47,6 @@ class User(
     /**
      * @return All process groups the user is a member of.
      */
-    @JsonIgnore // avoids cyclomatic call with process groups
     fun getProcessGroupIds(): List<Int> {
         return ProcessGroupsContainer
             .getAllProcessGroups()
