@@ -13,7 +13,8 @@ type PropsType = {|
   allGroups: Map<number, ProcessGroupType>,
   selectedGroups: ProcessGroupType[],
   onSelectionChanged: (processGroups: ProcessGroupType[]) => void,
-  placeholder?: string
+  placeholder?: string,
+  autoWidth?: boolean
 |}
 
 class ProcessGroupMultiSelect extends React.Component<PropsType> {
@@ -66,7 +67,7 @@ class ProcessGroupMultiSelect extends React.Component<PropsType> {
       placeholder={this.props.placeholder}
       tagInputProps={{
         onRemove: this.onTagRemove,
-        inputProps: { style: { width: 'auto' } }
+        inputProps: this.props.autoWidth && { style: { width: 'auto' } }
       }}
       selectedItems={this.props.selectedGroups}
     />

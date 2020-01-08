@@ -24,6 +24,7 @@ class ProcessGroupFilter extends React.Component<PropsType> {
       placeholder='Filter process group…'
       selectedGroups={this.props.filters.processGroups || []}
       onSelectionChanged={this.onGroupsUpdated}
+      autoWidth
     />
   }
 }
