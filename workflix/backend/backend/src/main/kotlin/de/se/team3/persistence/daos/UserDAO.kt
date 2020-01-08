@@ -57,6 +57,7 @@ object UserDAO : UserDAOInterface {
             it.displayname to user.displayname
             it.email to user.email
             it.password to user.password
+            it.createdAt to user.createdAt
             it.deleted to false
         }
     }
