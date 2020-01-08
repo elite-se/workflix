@@ -19,7 +19,8 @@ export const parseDatesInComment = (comment: any) => ({
 
 export const parseDatesInAssignments = (ass: any) => ({
   ...ass,
-  createdAt: ass.createdAt && new Date(ass.createdAt)
+  createdAt: ass.createdAt && new Date(ass.createdAt),
+  doneAt: ass.doneAt && new Date(ass.doneAt)
 })
 
 export const parseDatesInProcessTemplate = (template: any) => ({

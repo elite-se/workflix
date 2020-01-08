@@ -1,8 +1,10 @@
-package de.se.team3.logic.authentification
+package de.se.team3.logic.authentication
 
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.InvalidInputException
+import de.se.team3.logic.exceptions.NotAuthorizedException
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 object LoginManager {
     val tokensInUse = ArrayList<AuthenticationToken>()
@@ -30,7 +32,7 @@ object LoginManager {
         val user = userList.first()
         if (tokensInUse.map { it.user }.contains(user))
             return tokensInUse.first { it.user == user }
-        if (user.password != password)
+        if (!BCryptPasswordEncoder().matches(password, user.password))
             throw InvalidInputException("Wrong password.")
         val token = AuthenticationToken(user)
         tokensInUse.add(token)

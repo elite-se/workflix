@@ -1,7 +1,7 @@
 package de.se.team3.webservice.handlers
 
-import de.se.team3.logic.authentification.AuthorizationManager
-import de.se.team3.logic.authentification.LoginManager
+import de.se.team3.logic.authentication.AuthorizationManager
+import de.se.team3.logic.authentication.LoginManager
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotAuthorizedException
 import io.javalin.http.Context
