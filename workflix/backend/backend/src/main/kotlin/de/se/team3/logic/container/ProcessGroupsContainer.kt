@@ -82,7 +82,7 @@ object ProcessGroupsContainer : ProcessGroupsContainerInterface {
 
         cachedProcessGroup.setTitle(processGroup.getTitle())
         cachedProcessGroup.setDescription(processGroup.getDescription())
-        cachedProcessGroup.setOwnerById(processGroup.getOwner().id)
+        cachedProcessGroup.setOwner(processGroup.getOwner())
     }
 
     /**

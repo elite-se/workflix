@@ -104,6 +104,13 @@ data class ProcessGroup(
     }
 
     /**
+     * Sets the owner.
+     */
+    fun setOwner(owner: User) {
+        this.owner = owner
+    }
+
+    /**
      * Checks whether the specified user is member of this process group.
      *
      * @return True if and only if the specified user is member of this process group.
