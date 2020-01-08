@@ -11,7 +11,7 @@ class Logout extends React.Component<{ onLoggedInChanged: (boolean) => void}> {
   componentDidMount () {
     removeToken()
     this.props.onLoggedInChanged(false)
-    navigate('/tasks')
+    navigate('/')
   }
 
   render () {

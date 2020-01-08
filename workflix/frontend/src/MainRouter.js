@@ -35,7 +35,7 @@ class MainRouter extends React.Component<{ onLoggedInChanged: (boolean) => void}
 
 export default (props: { onLoggedInChanged: (boolean) => void }) => (
   <Router>
-    <Redirect from='/' to='/tasks'/>
+    <Redirect from='/' to='/tasks' noThrow/>
     <MainRouter default onLoggedInChanged={props.onLoggedInChanged}/>
   </Router>
 )
