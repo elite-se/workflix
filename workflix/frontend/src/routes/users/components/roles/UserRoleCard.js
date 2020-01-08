@@ -21,7 +21,7 @@ class UserRoleCard extends React.Component<PropsType> {
     const roleUsers = sortBy(userRole.memberIds.map(id => users.get(id)).filter(Boolean),
       user => user.name)
     return <TitledCard key={userRole.id} title={<IconRow icon='badge' singleLine>{userRole.name}</IconRow>}>
-      <IconRow icon='person'>
+      <IconRow icon='person' multiLine>
         {listIfNeeded(roleUsers, user => user.id,
           user => <a onClick={this.onUserSelected(user)}>{user.name}</a>)}
       </IconRow>

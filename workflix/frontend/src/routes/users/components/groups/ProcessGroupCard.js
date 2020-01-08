@@ -22,7 +22,7 @@ class ProcessGroupCard extends React.Component<PropsType> {
     const groupUsers = sortBy(processGroup.membersIds.map(id => users.get(id)).filter(Boolean),
       user => user.name)
     return <TitledCard key={processGroup.id} title={<IconRow icon='office' singleLine>{processGroup.title}</IconRow>}>
-      <IconRow icon='person'>
+      <IconRow icon='person' multiLine>
         {listIfNeeded(groupUsers, user => user.id,
           user => <a onClick={this.onUserSelected(user)}>{user.name}</a>)}
       </IconRow>

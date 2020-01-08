@@ -14,7 +14,8 @@ type PropsType = {|
   selectedGroups: ProcessGroupType[],
   onSelectionChanged: (processGroups: ProcessGroupType[]) => void,
   placeholder?: string,
-  autoWidth?: boolean
+  autoWidth?: boolean,
+  fill?: boolean
 |}
 
 class ProcessGroupMultiSelect extends React.Component<PropsType> {
@@ -70,6 +71,7 @@ class ProcessGroupMultiSelect extends React.Component<PropsType> {
         inputProps: this.props.autoWidth && { style: { width: 'auto' } }
       }}
       selectedItems={this.props.selectedGroups}
+      fill={this.props.fill}
     />
   }
 }

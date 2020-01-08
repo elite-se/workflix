@@ -33,11 +33,11 @@ class UserCardRead extends React.Component<PropsType> {
     return <TitledCard key={user.id} title={user.name}>
         <IconRow icon='person'>{user.displayname}</IconRow>
         <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
-        <IconRow icon='office'>
+        <IconRow icon='office' multiLine>
           {listIfNeeded(usersGroups, group => group.id,
             group => <a onClick={this.onProcessGroupSelected(group)}>{group.title}</a>)}
         </IconRow>
-        <IconRow icon='badge'>
+        <IconRow icon='badge' multiLine>
           {listIfNeeded(usersRoles, role => role.id,
             role => <a onClick={this.onRoleSelected(role)}>{role.name}</a>)}
         </IconRow>

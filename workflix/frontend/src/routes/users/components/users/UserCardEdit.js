@@ -80,7 +80,7 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
         <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
         <IconRow icon='office'>
           <ProcessGroupMultiSelect allGroups={processGroups} selectedGroups={selectedGroups}
-                                   onSelectionChanged={this.onSelectedGroupsChanged}/>
+                                   onSelectionChanged={this.onSelectedGroupsChanged} fill/>
         </IconRow>
         <IconRow icon='badge'>
           {listIfNeeded(usersRoles, role => role.id,
