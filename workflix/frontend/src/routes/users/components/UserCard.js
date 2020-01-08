@@ -1,30 +1,18 @@
 // @flow
 
-import { Card, H3, UL } from '@blueprintjs/core'
+import { Card, H3 } from '@blueprintjs/core'
 import React from 'react'
 import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
-import { isEmpty, sortBy } from 'lodash'
+import { sortBy } from 'lodash'
 import IconRow from './IconRow'
+import listIfNeeded from '../listIfNeeded'
 
 type PropsType = {|
   user: UserType,
   processGroups: Map<number, ProcessGroupType>,
   roles: Map<number, UserRoleType>
 |}
-
-function listIfNeeded <T> (values: T[], keySupply: T => number, renderer: T => React$Node): React$Node {
-  if (isEmpty(values)) {
-    return '–'
-  } else if (values.length === 1) {
-    return renderer(values[0])
-  } else {
-    // eslint-disable-next-line react/jsx-pascal-case
-    return <UL style={{ listStylePosition: 'inside', padding: 0, margin: 0 }}>
-      {values.map(value => <li key={keySupply(value)}>{renderer(value)}</li>)}
-    </UL>
-  }
-}
 
 class UserCard extends React.Component<PropsType> {
   render () {
