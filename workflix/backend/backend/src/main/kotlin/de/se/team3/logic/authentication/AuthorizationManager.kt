@@ -1,4 +1,4 @@
-package de.se.team3.logic.authentification
+package de.se.team3.logic.authentication
 
 object AuthorizationManager {
 
