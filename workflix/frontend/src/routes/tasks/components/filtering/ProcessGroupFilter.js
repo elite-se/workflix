@@ -3,7 +3,7 @@
 import React from 'react'
 import type { FiltersType } from '../../../../modules/datatypes/Filters'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
-import ProcessGroupMultiSelect from '../../../../modules/common/components/ProcessGroupMultiselect'
+import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 
 type PropsType = {|
   filters: FiltersType,
@@ -18,13 +18,19 @@ class ProcessGroupFilter extends React.Component<PropsType> {
       processGroups
     })
 
+  getGroupTitle = (group: ProcessGroupType) => group.title
+  getGroupId = (group: ProcessGroupType) => group.id
+
   render () {
-    return <ProcessGroupMultiSelect
-      allGroups={this.props.processGroups}
-      placeholder='Filter process group…'
-      selectedGroups={this.props.filters.processGroups || []}
+    return <SimpleMultiSelect
+      items={Array.from(this.props.processGroups.values())}
+      selection={this.props.filters.processGroups || []}
       onSelectionChanged={this.onGroupsUpdated}
-      autoWidth
+      render={this.getGroupTitle}
+      toID={this.getGroupId}
+      multiSelectProps={{
+        placeholder: 'Filter process group…'
+      }}
     />
   }
 }

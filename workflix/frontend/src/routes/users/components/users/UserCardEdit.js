@@ -9,9 +9,9 @@ import IconRow from '../IconRow'
 import listIfNeeded from '../../listIfNeeded'
 import { Button, ButtonGroup } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
-import ProcessGroupMultiSelect from '../../../../modules/common/components/ProcessGroupMultiselect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
+import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 
 type PropsType = {|
   user: UserType,
@@ -79,8 +79,9 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
         <IconRow icon='person'>{user.displayname}</IconRow>
         <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
         <IconRow icon='office'>
-          <ProcessGroupMultiSelect allGroups={processGroups} selectedGroups={selectedGroups}
-                                   onSelectionChanged={this.onSelectedGroupsChanged} fill/>
+          <SimpleMultiSelect items={Array.from(processGroups.values())} selection={selectedGroups}
+                                   onSelectionChanged={this.onSelectedGroupsChanged} multiSelectProps={{ fill: true }}
+          toID={this.getGroupId} render={this.getGroupTitle}/>
         </IconRow>
         <IconRow icon='badge'>
           {listIfNeeded(usersRoles, role => role.id,
@@ -92,6 +93,9 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
       </ButtonGroup>
     </TitledCard>
   }
+
+  getGroupId = (group: ProcessGroupType) => group.id
+  getGroupTitle = (group: ProcessGroupType) => group.title
 }
 
 export default UserCardEdit
