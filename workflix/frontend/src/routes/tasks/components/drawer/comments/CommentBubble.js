@@ -4,6 +4,7 @@ import React from 'react'
 import type { TaskCommentType } from '../../../../../modules/datatypes/Task'
 import type { UserType } from '../../../../../modules/datatypes/User'
 import { TalkBubble } from './TalkBubble'
+import { getCurrentUserId } from '../../../../../modules/common/tokenStorage'
 
 type PropsType = {
   comment: TaskCommentType,
@@ -13,7 +14,7 @@ type PropsType = {
 class CommentBubble extends React.Component<PropsType> {
   alreadySeen = false
 
-  isOwnComment: boolean = this.props.comment.creatorId === ('58c120552c94decf6cf3b722') // TODO implement real check
+  isOwnComment: boolean = this.props.comment.creatorId === getCurrentUserId()
 
   render () {
     const comment = this.props.comment
