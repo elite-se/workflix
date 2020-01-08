@@ -14,7 +14,9 @@ type PropsType = {|
   onRoleSelected: (UserRoleType) => void,
   onProcessGroupSelected: (ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
-  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
+  onRoleMembershipAdded: (UserRoleType, UserType) => void,
+  onRoleMembershipRemoved: (UserRoleType, UserType) => void
 |}
 
 export default class UserCards extends React.Component<PropsType> {
@@ -28,11 +30,13 @@ export default class UserCards extends React.Component<PropsType> {
 
   getCardForUser = (user: UserType) => {
     const {
-      processGroups, roles, onProcessGroupSelected, onRoleSelected, onGroupMembershipAdded, onGroupMembershipRemoved
+      processGroups, roles, onProcessGroupSelected, onRoleSelected, onGroupMembershipAdded, onGroupMembershipRemoved,
+      onRoleMembershipAdded, onRoleMembershipRemoved
     } = this.props
     return <UserCard key={user.id} user={user} processGroups={processGroups} roles={roles}
                      onProcessGroupSelected={onProcessGroupSelected} onRoleSelected={onRoleSelected}
                      onGroupMembershipRemoved={onGroupMembershipRemoved} onGroupMembershipAdded={onGroupMembershipAdded}
+                     onRoleMembershipAdded={onRoleMembershipAdded} onRoleMembershipRemoved={onRoleMembershipRemoved}
     />
   }
 }

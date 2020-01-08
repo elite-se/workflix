@@ -13,7 +13,9 @@ type PropsType = {|
   onRoleSelected: (UserRoleType) => void,
   onProcessGroupSelected: (ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
-  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
+  onRoleMembershipAdded: (UserRoleType, UserType) => void,
+  onRoleMembershipRemoved: (UserRoleType, UserType) => void
 |}
 
 type StateType = {|
@@ -28,11 +30,12 @@ class UserCard extends React.Component<PropsType, StateType> {
   render () {
     const {
       user, processGroups, roles, onRoleSelected, onProcessGroupSelected, onGroupMembershipAdded,
-      onGroupMembershipRemoved
+      onGroupMembershipRemoved, onRoleMembershipAdded, onRoleMembershipRemoved
     } = this.props
     return this.state.editing
       ? <UserCardEdit user={user} processGroups={processGroups} roles={roles} onSetEditing={this.onSetEditing}
-      onGroupMembershipAdded={onGroupMembershipAdded} onGroupMembershipRemoved={onGroupMembershipRemoved}/>
+      onGroupMembershipAdded={onGroupMembershipAdded} onGroupMembershipRemoved={onGroupMembershipRemoved}
+      onRoleMembershipAdded={onRoleMembershipAdded} onRoleMembershipRemoved={onRoleMembershipRemoved}/>
       : <UserCardRead user={user} processGroups={processGroups} roles={roles} onSetEditing={this.onSetEditing}
                     onRoleSelected={onRoleSelected} onProcessGroupSelected={onProcessGroupSelected}/>
   }

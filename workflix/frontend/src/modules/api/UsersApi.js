@@ -36,6 +36,18 @@ class UsersApi {
       .then(roles => roles.map(parseDatesInUserRole))
       .then((roles: UserRoleType[]) => new Map<number, UserRoleType>(roles.map(role => [role.id, role])))
   }
+
+  addRoleMembership (roleId: number, memberId: string): Promise<Response> {
+    return safeFetch(`${BACKEND}/userRoles/${roleId}/members/${memberId}`, {
+      method: 'PUT'
+    })
+  }
+
+  removeRoleMembership (roleId: number, memberId: string): Promise<Response> {
+    return safeFetch(`${BACKEND}/userRoles/${roleId}/members/${memberId}`, {
+      method: 'DELETE'
+    })
+  }
 }
 
 export default UsersApi

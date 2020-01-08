@@ -75,6 +75,36 @@ class UserManagement extends React.Component<PropsType, StateType> {
     }))
   }
 
+  onRoleMembershipAdded = (role: UserRoleType, user: UserType) => {
+    this.setState(oldState => ({
+      roles: mapMap<number, UserRoleType>(oldState.roles, (_roleId, _role) =>
+        (_roleId !== role.id ? _role : {
+          ..._role,
+          memberIds: uniq([..._role.memberIds, user.id])
+        })),
+      users: mapMap<string, UserType>(oldState.users, (_userId, _user) =>
+        (_userId !== user.id ? _user : {
+          ..._user,
+          userRoleIds: uniq([..._user.userRoleIds, role.id])
+        }))
+    }))
+  }
+
+  onRoleMembershipRemoved = (role: UserRoleType, user: UserType) => {
+    this.setState(oldState => ({
+      roles: mapMap<number, UserRoleType>(oldState.roles, (_roleId, _role) =>
+        (_roleId !== role.id ? _role : {
+          ..._role,
+          memberIds: without(_role.memberIds, user.id)
+        })),
+      users: mapMap<string, UserType>(oldState.users, (_userId, _user) =>
+        (_userId !== user.id ? _user : {
+          ..._user,
+          userRoleIds: without(_user.userRoleIds, role.id)
+        }))
+    }))
+  }
+
   render () {
     const { processGroups, roles, users } = this.state
     switch (this.state.mode) {
@@ -82,7 +112,9 @@ class UserManagement extends React.Component<PropsType, StateType> {
         return <UserCards users={users} processGroups={processGroups} roles={roles}
                           onRoleSelected={this.onRoleSelected} onProcessGroupSelected={this.onProcessGroupSelected}
                           onGroupMembershipAdded={this.onGroupMembershipAdded}
-                          onGroupMembershipRemoved={this.onGroupMembershipRemoved}/>
+                          onGroupMembershipRemoved={this.onGroupMembershipRemoved}
+                          onRoleMembershipAdded={this.onRoleMembershipAdded}
+                          onRoleMembershipRemoved={this.onRoleMembershipRemoved}/>
       case 'ROLES':
         return <RoleCards roles={roles} users={users} onUserSelected={this.onUserSelected}/>
       case 'GROUPS':

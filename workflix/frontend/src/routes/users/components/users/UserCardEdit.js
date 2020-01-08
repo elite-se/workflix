@@ -1,17 +1,17 @@
 // @flow
 
 import React from 'react'
-import { difference, sortBy } from 'lodash'
+import { difference } from 'lodash'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import TitledCard from '../TitledCard'
 import IconRow from '../IconRow'
-import listIfNeeded from '../../listIfNeeded'
 import { Button, ButtonGroup } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
+import UsersApi from '../../../../modules/api/UsersApi'
 
 type PropsType = {|
   user: UserType,
@@ -19,17 +19,21 @@ type PropsType = {|
   roles: Map<number, UserRoleType>,
   onSetEditing: (boolean) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
-  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
+  onRoleMembershipAdded: (UserRoleType, UserType) => void,
+  onRoleMembershipRemoved: (UserRoleType, UserType) => void
 |}
 
 type StateType = {|
   selectedGroups: ProcessGroupType[],
+  selectedRoles: UserRoleType[],
   loading: boolean
 |}
 
 class UserCardEdit extends React.Component<PropsType, StateType> {
   state = {
     selectedGroups: this.props.user.processGroupIds.map(id => this.props.processGroups.get(id)).filter(Boolean),
+    selectedRoles: this.props.user.userRoleIds.map(id => this.props.roles.get(id)).filter(Boolean),
     loading: false
   }
 
@@ -66,30 +70,41 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
   }
 
   saveRoles = () => {
-    // TODO implement
-    return Promise.resolve(null)
+    const { user, roles } = this.props
+    const newRoles = this.state.selectedRoles.map(role => role.id)
+    const oldRoles = user.userRoleIds
+    const addedRoles = difference(newRoles, oldRoles)
+    const removedRoles = difference(oldRoles, newRoles)
+    return Promise.all([
+      Promise.all(addedRoles.map(id => roles.get(id)).filter(Boolean)
+        .map(role => new UsersApi().addRoleMembership(role.id, user.id)
+          .then(this.props.onRoleMembershipAdded(role, user)))),
+      Promise.all(removedRoles.map(id => roles.get(id)).filter(Boolean)
+        .map(role => new UsersApi().removeRoleMembership(role.id, user.id)
+          .then(this.props.onRoleMembershipRemoved(role, user))))
+    ])
   }
 
   onCancel = () => this.props.onSetEditing(false)
   onSelectedGroupsChanged = (selectedGroups: ProcessGroupType[]) => this.setState({ selectedGroups })
+  onSelectedRolesChanged = (selectedRoles: UserRoleType[]) => this.setState({ selectedRoles })
 
   render () {
     const { user, processGroups, roles } = this.props
-    const { loading, selectedGroups } = this.state
-    const usersRoles = sortBy(user.userRoleIds.map(id => roles.get(id)).filter(Boolean),
-      role => role.name)
+    const { loading, selectedGroups, selectedRoles } = this.state
     return <TitledCard key={user.id} title={user.name}>
-        <IconRow icon='person'>{user.displayname}</IconRow>
-        <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
-        <IconRow icon='office'>
-          <SimpleMultiSelect items={Array.from(processGroups.values())} selection={selectedGroups}
-                                   onSelectionChanged={this.onSelectedGroupsChanged} multiSelectProps={{ fill: true }}
-          toID={this.getGroupId} render={this.getGroupTitle}/>
-        </IconRow>
-        <IconRow icon='badge'>
-          {listIfNeeded(usersRoles, role => role.id,
-            role => role.name)}
-        </IconRow>
+      <IconRow icon='person'>{user.displayname}</IconRow>
+      <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
+      <IconRow icon='office'>
+        <SimpleMultiSelect items={Array.from(processGroups.values())} selection={selectedGroups}
+                           onSelectionChanged={this.onSelectedGroupsChanged} multiSelectProps={{ fill: true }}
+                           toID={this.getGroupId} render={this.getGroupTitle}/>
+      </IconRow>
+      <IconRow icon='badge'>
+        <SimpleMultiSelect items={Array.from(roles.values())} selection={selectedRoles}
+                           onSelectionChanged={this.onSelectedRolesChanged} multiSelectProps={{ fill: true }}
+                           toID={this.getRoleId} render={this.getRoleName}/>
+      </IconRow>
       <ButtonGroup fill style={{ marginTop: '5px' }}>
         <Button onClick={this.onSave} icon='floppy-disk' small text='Save' intent={Intent.PRIMARY} loading={loading}/>
         <Button onClick={this.onCancel} icon='undo' small text='Cancel' intent={Intent.DANGER} loading={loading}/>
@@ -99,6 +114,8 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
 
   getGroupId = (group: ProcessGroupType) => group.id
   getGroupTitle = (group: ProcessGroupType) => group.title
+  getRoleId = (role: UserRoleType) => role.id
+  getRoleName = (role: UserRoleType) => role.name
 }
 
 export default UserCardEdit
