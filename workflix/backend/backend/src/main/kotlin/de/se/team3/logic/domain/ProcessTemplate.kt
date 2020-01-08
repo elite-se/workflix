@@ -110,6 +110,16 @@ data class ProcessTemplate(
     }
 
     /**
+     * Checks whether the process template was used to create a process.
+     *
+     * @return True iff the process template was used to create at least one process.
+     */
+    @JsonIgnore
+    fun hasProcesses(): Boolean {
+        return processCount != 0
+    }
+
+    /**
      * Returns the sum of all the estimated durations of all task templates that
      * belongs to this process template.
      */
