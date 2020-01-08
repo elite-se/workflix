@@ -4,7 +4,8 @@ import { isEmpty } from 'lodash'
 import { UL } from '@blueprintjs/core'
 import React from 'react'
 
-export default function listIfNeeded <T> (values: T[], keySupply: T => number, renderer: T => React$Node): React$Node {
+export default function listIfNeeded <T>
+(values: T[], keySupply: T => number | string, renderer: T => React$Node): React$Node {
   if (isEmpty(values)) {
     return '–'
   } else if (values.length === 1) {

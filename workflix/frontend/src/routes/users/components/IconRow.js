@@ -14,9 +14,11 @@ const Item = styled<{}, {}, *>('div')`
   }
 `
 
-export default class IconRow extends React.Component<IIconProps & { children: React$Node }> {
+export default class IconRow extends React.Component<IIconProps & { children: React$Node, singleLine: boolean }> {
+  static defaultProps = { singleLine: false }
+
   render () {
-    return <Item>
+    return <Item style={{ alignItems: this.props.singleLine ? 'center' : 'flex-start' }}>
       <Icon {...this.props}/>
       <div>{this.props.children}</div>
     </Item>
