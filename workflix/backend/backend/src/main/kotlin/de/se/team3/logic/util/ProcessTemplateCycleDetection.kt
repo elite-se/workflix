@@ -45,7 +45,7 @@ object ProcessTemplateCycleDetection {
         statusMap.put(taskTemplate.id,
             ProcessTemplateCycleDetection.ProcessingStatus.InVisitation
         )
-        for (successor in taskTemplate.successors) {
+        for (successor in taskTemplate.getSuccessors()) {
             if (statusMap.get(successor.id) == ProcessTemplateCycleDetection.ProcessingStatus.NotVisited) {
                 val cycleDetected =
                     visitNode(

@@ -1,6 +1,8 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.ProcessTemplatesContainer
+import de.se.team3.logic.container.UserContainer
+import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
@@ -80,7 +82,8 @@ object ProcessTemplatesHandler {
             val estimatedDuration = taskTemplateJsonObject.getInt("estimatedDuration")
             val necessaryClosings = taskTemplateJsonObject.getInt("necessaryClosings")
 
-            val taskTemplate = TaskTemplate(id, responsibleUserRoleId, name, description, estimatedDuration, necessaryClosings)
+            val responsibleUserRole = UserRoleContainer.getUserRole(responsibleUserRoleId)
+            val taskTemplate = TaskTemplate(id, responsibleUserRole, name, description, estimatedDuration, necessaryClosings)
             taskTemplatesMap.put(taskTemplate.id, taskTemplate)
 
             val predecessorsJsonArray = taskTemplateJsonObject.getJSONArray("predecessors")
@@ -114,12 +117,13 @@ object ProcessTemplatesHandler {
         val durationLimit = processTemplateJsonObject.getInt("durationLimit")
         val ownerId = processTemplateJsonObject.getString("ownerId")
 
+        val owner = UserContainer.getUser(ownerId)
         val taskTemplates = parseTaskTemplates(processTemplateJsonObject.getJSONArray("taskTemplates")!!)
 
         if (processTemplateId == null)
-            return ProcessTemplate(title, description, durationLimit, ownerId, taskTemplates)
+            return ProcessTemplate(title, description, durationLimit, owner, taskTemplates)
 
-        return ProcessTemplate(processTemplateId, title, description, durationLimit, ownerId, taskTemplates)
+        return ProcessTemplate(processTemplateId, title, description, durationLimit, owner, taskTemplates)
     }
 
     /**

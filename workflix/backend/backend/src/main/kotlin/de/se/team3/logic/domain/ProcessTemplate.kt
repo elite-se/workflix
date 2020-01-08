@@ -17,7 +17,8 @@ data class ProcessTemplate(
     val title: String,
     val description: String,
     val durationLimit: Int,
-    val ownerId: String,
+    @JsonIgnore
+    val owner: User,
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
     val formerVersionId: Int?,
@@ -28,6 +29,8 @@ data class ProcessTemplate(
     val taskTemplates: Map<Int, TaskTemplate>
 ) {
 
+    val ownerId = owner.id
+
     fun getProcessCount() = processCount
 
     fun getRunningProcesses() = runningProcesses
@@ -35,17 +38,30 @@ data class ProcessTemplate(
     fun isDeleted() = deleted
 
     @get:JsonIgnore
-    val owner by lazy { UserContainer.getUser(ownerId) }
-
-    @get:JsonIgnore
-    val taskTemplatesList by lazy { taskTemplates!!.map { it.value } }
+    val taskTemplatesList by lazy { taskTemplates.map { it.value } }
 
     /**
      * Create-Constructor
      */
-    constructor(title: String, description: String, durationLimit: Int, ownerId: String, taskTemplates: Map<Int, TaskTemplate>) :
-            this(null, title, description, durationLimit, ownerId, Instant.now(), null, 0, 0, false, taskTemplates) {
-
+    constructor(
+        title: String,
+        description: String,
+        durationLimit: Int,
+        owner: User,
+        taskTemplates: Map<Int, TaskTemplate>
+    ) : this(
+        null,
+        title,
+        description,
+        durationLimit,
+        owner,
+        Instant.now(),
+        null,
+        0,
+        0,
+        false,
+        taskTemplates
+    ) {
         checkProperties()
     }
 
@@ -57,14 +73,14 @@ data class ProcessTemplate(
         title: String,
         description: String,
         durationLimit: Int,
-        ownerId: String,
+        owner: User,
         taskTemplates: Map<Int, TaskTemplate>
     ) : this(
         id,
         title,
         description,
         durationLimit,
-        ownerId,
+        owner,
         ProcessTemplatesContainer.getProcessTemplate(id).createdAt,
         ProcessTemplatesContainer.getProcessTemplate(id).formerVersionId,
         ProcessTemplatesContainer.getProcessTemplate(id).processCount,
@@ -72,7 +88,6 @@ data class ProcessTemplate(
         ProcessTemplatesContainer.getProcessTemplate(id).deleted,
         taskTemplates
     ) {
-
         if (id < 1)
             throw InvalidInputException("id must be positive")
 
@@ -83,19 +98,17 @@ data class ProcessTemplate(
      * Checks property constraints.
      *
      * @throws InvalidInputException Is thrown if title is empty, duration limit is not positive,
-     * the list of task templates is or contains a cycle.
+     * the list of task templates is empty or contains a cycle.
      */
     private fun checkProperties() {
         if (title.isEmpty())
             throw InvalidInputException("title must not be empty")
-        if (durationLimit != null && durationLimit <= 0)
+        if (durationLimit <= 0)
             throw InvalidInputException("duration limit must be positive")
         if (taskTemplates.isEmpty())
             throw InvalidInputException("must contain at least one task template")
         if (!ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
             throw InvalidInputException("connection between task templates must be acyclic")
-        if (!UserContainer.hasUser(ownerId))
-            throw InvalidInputException("user specified as owner does not exist")
     }
 
     /**

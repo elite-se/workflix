@@ -5,41 +5,48 @@ import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 
 /**
+ * Represents a task template.
  *
- * The attribute id is not null even if the task template is constructed while creation. This is because
- * in this situation there are dummy ids needed for the interconnection with other task templates.
+ * The attribute id is not null even in the case of creation. This is because in this case
+ * there are dummy ids needed for the interconnection with other task templates.
  */
 class TaskTemplate(
     val id: Int,
-    val responsibleUserRoleId: Int,
+    @JsonIgnore
+    val responsibleUserRole: UserRole,
     val name: String,
     val description: String,
     val estimatedDuration: Int,
     val necessaryClosings: Int
 ) {
 
-    @JsonIgnore
-    private val successors = ArrayList<TaskTemplate>()
-    @JsonIgnore
-    private val predecessors = ArrayList<TaskTemplate>()
+    val responsibleUserRoleId = responsibleUserRole.id!!
 
     @JsonIgnore
-    fun getSuccessors() = successors.toList()
+    private val successors = HashSet<TaskTemplate>()
+    @JsonIgnore
+    private val predecessors = HashSet<TaskTemplate>()
 
     @JsonIgnore
-    fun getPredecessors() = predecessors.toList()
+    fun getSuccessors() = successors
 
+    @JsonIgnore
+    fun getPredecessors() = predecessors
+
+    /**
+     * Checks property constraints.
+     *
+     * @throws InvalidInputException Is thrown if name is empty of if necessaryClosings or estimatedDuration
+     * ist not positive.
+     */
     init {
-        if (necessaryClosings < 1)
-            throw InvalidInputException("there must be at least one user who closes a task explicitly")
         if (name.isEmpty())
             throw InvalidInputException("name must not be empty")
+        if (necessaryClosings < 1)
+            throw InvalidInputException("there must be at least one user who closes a task explicitly")
         if (estimatedDuration < 1)
             throw InvalidInputException("estimated duration must be positive")
-        if (!UserRoleContainer.hasUserRole(responsibleUserRoleId))
-            throw InvalidInputException("user role specified as responsible does not exist")
     }
-
 
     /**
      * Adds the given task as predecessor.
