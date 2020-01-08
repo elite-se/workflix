@@ -14,6 +14,7 @@ class User(
     val name: String,
     val displayname: String,
     val email: String,
+    @JsonIgnore
     var password: String,
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant
