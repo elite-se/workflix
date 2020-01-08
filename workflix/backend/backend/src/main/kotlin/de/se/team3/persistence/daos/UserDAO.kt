@@ -3,8 +3,6 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.UserDAOInterface
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.UsersTable
-import java.util.Arrays
-import javax.crypto.spec.SecretKeySpec
 import kotlin.collections.ArrayList
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insert
@@ -12,7 +10,6 @@ import me.liuwj.ktorm.dsl.like
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 object UserDAO : UserDAOInterface {
 
