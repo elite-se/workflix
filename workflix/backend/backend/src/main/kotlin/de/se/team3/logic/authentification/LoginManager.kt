@@ -44,7 +44,7 @@ object LoginManager {
      */
     fun logout(bearerToken: String) {
         val token = bearerToken.substringAfter(' ')
-        !tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
+        tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
     }
 
     fun getActiveUser(): User? {
