@@ -18,8 +18,9 @@ export default class IconRow extends React.Component<IIconProps & { children: Re
   static defaultProps = { multiLine: true }
 
   render () {
+    const { children, multiLine, ...iconProps } = this.props
     return <Item style={{ alignItems: this.props.multiLine ? 'flex-start' : 'center' }}>
-      <Icon {...this.props}/>
+      <Icon {...iconProps}/>
       <div style={{ width: '100%' }}>{this.props.children}</div>
     </Item>
   }
