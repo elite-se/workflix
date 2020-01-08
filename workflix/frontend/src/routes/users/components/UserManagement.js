@@ -10,6 +10,7 @@ import UserCards from './users/UserCards'
 import ProcessGroupCards from './groups/ProcessGroupCards'
 import RoleCards from './roles/RoleCards'
 import { uniq, without } from 'lodash'
+import { mapMap } from '../../../modules/common/mapMap'
 
 type PropsType = {|
   initialUsers: Map<string, UserType>,
@@ -46,27 +47,31 @@ class UserManagement extends React.Component<PropsType, StateType> {
 
   onGroupMembershipAdded = (group: ProcessGroupType, user: UserType) => {
     this.setState(oldState => ({
-      processGroups: oldState.processGroups.set(group.id, {
-        ...group,
-        membersIds: uniq([...group.membersIds, user.id])
-      }),
-      users: oldState.users.set(user.id, {
-        ...user,
-        processGroupIds: uniq([...user.processGroupIds, group.id])
-      })
+      processGroups: mapMap<number, ProcessGroupType>(oldState.processGroups, (_groupId, _group) =>
+        (_groupId !== group.id ? _group : {
+          ..._group,
+          membersIds: uniq([..._group.membersIds, user.id])
+        })),
+      users: mapMap<string, UserType>(oldState.users, (_userId, _user) =>
+        (_userId !== user.id ? _user : {
+          ..._user,
+          processGroupIds: uniq([..._user.processGroupIds, group.id])
+        }))
     }))
   }
 
   onGroupMembershipRemoved = (group: ProcessGroupType, user: UserType) => {
     this.setState(oldState => ({
-      processGroups: oldState.processGroups.set(group.id, {
-        ...group,
-        membersIds: without(group.membersIds, user.id)
-      }),
-      users: oldState.users.set(user.id, {
-        ...user,
-        processGroupIds: without(user.processGroupIds, group.id)
-      })
+      processGroups: mapMap<number, ProcessGroupType>(oldState.processGroups, (_groupId, _group) =>
+        (_groupId !== group.id ? _group : {
+          ..._group,
+          membersIds: without(_group.membersIds, user.id)
+        })),
+      users: mapMap<string, UserType>(oldState.users, (_userId, _user) =>
+        (_userId !== user.id ? _user : {
+          ..._user,
+          processGroupIds: without(_user.processGroupIds, group.id)
+        }))
     }))
   }
 
@@ -82,8 +87,9 @@ class UserManagement extends React.Component<PropsType, StateType> {
         return <RoleCards roles={roles} users={users} onUserSelected={this.onUserSelected}/>
       case 'GROUPS':
         return <ProcessGroupCards processGroups={processGroups} users={users} onUserSelected={this.onUserSelected}/>
+      default:
+        return null
     }
-    return null
   }
 }
 
