@@ -1,6 +1,7 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessTemplateDAOInterface
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.logic.domain.User
@@ -35,19 +36,12 @@ import me.liuwj.ktorm.dsl.where
  */
 object ProcessTemplateDAO : ProcessTemplateDAOInterface {
 
+    private val usersContainer: UserContainer = UserContainer
+
     /**
      * Makes a process template from the given row and the given task templates.
      */
-    private fun makeProcessTemplate(row: QueryRowSet, taskTemplates: Map<Int, TaskTemplate>): ProcessTemplate {
-        val owner = User(
-            row[UsersTable.ID]!!,
-            row[UsersTable.name]!!,
-            row[UsersTable.displayname]!!,
-            row[UsersTable.email]!!,
-            row[UsersTable.password]!!,
-            row[UsersTable.createdAt]!!
-        )
-
+    private fun makeProcessTemplate(row: QueryRowSet, owner: User, taskTemplates: Map<Int, TaskTemplate>): ProcessTemplate {
         return ProcessTemplate(
             row[ProcessTemplatesView.id],
             row[ProcessTemplatesView.title]!!,
@@ -102,12 +96,12 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
     override fun getAllProcessTemplates(): List<ProcessTemplate> {
         val processTemplates = ArrayList<ProcessTemplate>()
         val result = ProcessTemplatesView
-            .innerJoin(UsersTable, on = UsersTable.ID eq ProcessTemplatesView.ownerId)
             .select()
 
         for (row in result) {
             val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
-            processTemplates.add(makeProcessTemplate(row, taskTemplates))
+            val owner = usersContainer.getUser(row[ProcessTemplatesView.ownerId]!!)
+            processTemplates.add(makeProcessTemplate(row, owner, taskTemplates))
         }
 
         return processTemplates.toList()
@@ -129,7 +123,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
             return null
 
         val taskTemplates = queryTaskTemplates(row[ProcessTemplatesView.id]!!)
-        return makeProcessTemplate(row, taskTemplates)
+        val owner = usersContainer.getUser(row[ProcessTemplatesView.ownerId]!!)
+        return makeProcessTemplate(row, owner, taskTemplates)
     }
 
     /**

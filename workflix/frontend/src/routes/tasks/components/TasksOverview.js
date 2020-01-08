@@ -11,6 +11,7 @@ import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import type { TaskType } from '../../../modules/datatypes/Task'
 import { Drawer } from '@blueprintjs/core'
+import { getCurrentUserId } from '../../../modules/common/tokenStorage'
 
 type PropsType = {|
   users: Map<string, UserType>,
@@ -23,7 +24,9 @@ type StateType = {|
 
 class TasksOverview extends React.Component<PropsType, StateType> {
   state = {
-    filters: {},
+    filters: {
+      involving: this.props.users.get(getCurrentUserId())
+    },
     drawerOpen: false
   }
 

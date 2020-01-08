@@ -96,7 +96,9 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
         var newId: Int?
         val currentId = processTemplate.id!!
 
-        if (processTemplate.getProcessCount() == 0) {
+        val currentProcessTemplate = getProcessTemplate(currentId)
+
+        if (!currentProcessTemplate.hasProcesses()) {
             val exists = processTemplatesDAO.updateProcessTemplate(processTemplate)
             if (!exists)
                 throw NotFoundException("process template not found")
