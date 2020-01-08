@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react'
-import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
+import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import { sortBy } from 'lodash'
-import IconRow from './IconRow'
-import listIfNeeded from '../listIfNeeded'
-import TitledCard from './TitledCard'
+import IconRow from '../IconRow'
+import listIfNeeded from '../../listIfNeeded'
+import TitledCard from '../TitledCard'
 
 type PropsType = {|
   userRole: UserRoleType,
