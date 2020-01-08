@@ -3,7 +3,6 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.TaskTemplateDAOInterface
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.persistence.meta.TaskTemplatesTable
-import de.se.team3.persistence.meta.UserRolesTable
 import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.iterator

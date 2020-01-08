@@ -1,7 +1,6 @@
 package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 
 /**
@@ -62,5 +61,4 @@ class TaskTemplate(
         predecessors.add(taskTemplate)
         taskTemplate.successors.add(this)
     }
-
 }

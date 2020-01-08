@@ -2,8 +2,6 @@ package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import de.se.team3.logic.container.ProcessTemplatesContainer
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.processTemplateUtil.ProcessTemplateCycleDetection
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
