@@ -5,6 +5,7 @@ import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 object UserContainer : UserContainerInterface {
 
@@ -25,6 +26,13 @@ object UserContainer : UserContainerInterface {
             userCache.put(user.id, user)
         }
         filled = true
+    }
+
+    /**
+     * Hashes passwords using the BCrypt algorithm.
+     */
+    private fun hash(password: String): String {
+        return BCryptPasswordEncoder().encode(password)
     }
 
     override fun getAllUsers(): List<User> {
@@ -65,7 +73,8 @@ object UserContainer : UserContainerInterface {
     }
 
     override fun create***REMOVED***User(email: String, password: String): User {
-        val user = userDAO.create***REMOVED***User(email, password)
+        val user = User.query***REMOVED***andCreateUser(email, hash(password))
+        UserDAO.createUser(user)
         userCache[user.id] = user
         return user
     }
