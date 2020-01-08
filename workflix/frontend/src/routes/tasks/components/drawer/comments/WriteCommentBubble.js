@@ -7,6 +7,7 @@ import ProcessApi from '../../../../../modules/api/ProcessApi'
 import type { TaskCommentType, TaskType } from '../../../../../modules/datatypes/Task'
 import AutoSizeTextArea from '../../../../../modules/common/components/AutoSizeTextArea'
 import { toastifyError } from '../../../../../modules/common/toastifyError'
+import { getCurrentUserId } from '../../../../../modules/common/tokenStorage'
 
 type PropsType = {|
   task: TaskType,
@@ -38,7 +39,7 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
   }
 
   doSend = () => {
-    const creatorId = '58c120552c94decf6cf3b722' // TODO set to ID of current user
+    const creatorId = getCurrentUserId()
     const content = this.state.text
     new ProcessApi().addComment(this.props.task.id, creatorId, content)
       .then(response => this.applyNewComment({

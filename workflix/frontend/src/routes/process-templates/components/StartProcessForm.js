@@ -12,6 +12,7 @@ import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import { navigate } from '@reach/router'
 import ProcessGroupSelect from './ProcessGroupSelect'
 import { toastifyError } from '../../../modules/common/toastifyError'
+import { getCurrentUserId } from '../../../modules/common/tokenStorage'
 
 type PropsType = { template: ProcessTemplateType, processGroups: Map<number, ProcessGroupType> }
 
@@ -81,7 +82,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
     try {
       this.setState({ startLoading: true })
       const { newId } = await new ProcessApi().startProcess({
-        starterId: 'test', // todo: Add real starter id here
+        starterId: getCurrentUserId(),
         title,
         description,
         deadline,

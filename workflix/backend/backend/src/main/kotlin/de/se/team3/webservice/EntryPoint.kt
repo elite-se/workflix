@@ -3,9 +3,11 @@ package de.se.team3.webservice
 import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
+import de.se.team3.logic.exceptions.NotAuthorizedException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.meta.ConnectionManager
+import de.se.team3.webservice.handlers.AuthenticationHandler
 import de.se.team3.webservice.handlers.ProcessGroupsHandler
 import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
@@ -56,8 +58,27 @@ fun main(args: Array<String>) {
     app.exception(UnsatisfiedPreconditionException::class.java) { e, ctx ->
         ctx.status(404).result(e.message)
     }
+    app.exception(NotAuthorizedException::class.java) { e, ctx ->
+        ctx.status(401).result(e.message)
+    }
     app.exception(Exception::class.java) { e, ctx ->
         ctx.status(500).result(e.message + "")
+    }
+
+    // authentication handling before every request (excluding login)
+    app.before() { ctx ->
+        if (ctx.path() != "/login") {
+            AuthenticationHandler.authorizeRequest(ctx)
+        }
+    }
+
+    // login
+    app.post("login") { ctx ->
+        AuthenticationHandler.login(ctx)
+    }
+    // logout
+    app.delete("login") { ctx ->
+        AuthenticationHandler.logout(ctx)
     }
 
     // users
@@ -65,7 +86,7 @@ fun main(args: Array<String>) {
         UserHandler.getAll(ctx)
     }
     app.get("users/:userId") { ctx ->
-        UserHandler.getOne(ctx, ctx.pathParam("userId").toString())
+        UserHandler.getOne(ctx, ctx.pathParam("userId"))
     }
     app.post("users") { ctx ->
         UserHandler.createFrom***REMOVED***(ctx)
@@ -170,5 +191,12 @@ fun main(args: Array<String>) {
     }
     app.delete("tasks/comments/:taskCommentId") { ctx ->
         TasksCommentsHandler.delete(ctx, ctx.pathParam("taskCommentId").toInt())
+    }
+
+    // necessary to reset the active user after every request
+    app.after() { ctx ->
+        if (ctx.path() != "/login") {
+            AuthenticationHandler.finishAuthorizedRequest(ctx)
+        }
     }
 }

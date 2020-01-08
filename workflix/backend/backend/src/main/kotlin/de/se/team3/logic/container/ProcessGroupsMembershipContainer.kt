@@ -1,5 +1,6 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.ProcessGroupsMembershipDAOInterface
 import de.se.team3.logic.domain.ProcessGroupMembership
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.NotFoundException
@@ -7,6 +8,8 @@ import de.se.team3.persistence.daos.ProcessGroupsMembershipDAO
 import de.se.team3.webservice.containerInterfaces.ProcessGroupsMembershipContainerInterface
 
 object ProcessGroupsMembershipContainer : ProcessGroupsMembershipContainerInterface {
+
+    private val processGroupsMembershipsDAO: ProcessGroupsMembershipDAOInterface = ProcessGroupsMembershipDAO
 
     /**
      * Creates the given process group membership.
@@ -28,7 +31,7 @@ object ProcessGroupsMembershipContainer : ProcessGroupsMembershipContainerInterf
         if (processGroup.hasMember(processGroupMembership.memberId))
             throw AlreadyExistsException("the membership already exists")
 
-        val newId = ProcessGroupsMembershipDAO.createProcessGroupMembership(processGroupMembership)
+        val newId = processGroupsMembershipsDAO.createProcessGroupMembership(processGroupMembership)
         processGroup.addMember(processGroupMembership.member)
         return newId
     }
@@ -48,7 +51,7 @@ object ProcessGroupsMembershipContainer : ProcessGroupsMembershipContainerInterf
         if (!processGroup.hasMember(processGroupMembership.memberId))
             throw NotFoundException("the membership does not exist")
 
-        ProcessGroupsMembershipDAO.deleteProcessGroupMembership(processGroupMembership)
+        processGroupsMembershipsDAO.deleteProcessGroupMembership(processGroupMembership)
         processGroup.removeMember(processGroupMembership.memberId)
     }
 }

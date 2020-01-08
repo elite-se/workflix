@@ -1,5 +1,6 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.ProcessTemplateDAOInterface
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.UserRole
 import de.se.team3.logic.exceptions.NotFoundException
@@ -7,6 +8,8 @@ import de.se.team3.persistence.daos.ProcessTemplateDAO
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
 
 object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
+
+    private val processTemplatesDAO: ProcessTemplateDAOInterface = ProcessTemplateDAO
 
     // The cached process templates lay under their id.
     private val processTemplatesCache = HashMap<Int, ProcessTemplate>()
@@ -18,7 +21,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
      * Ensures that all process templates are cached.
      */
     private fun fillCache() {
-        val processTemplates = ProcessTemplateDAO.getAllProcessTemplates()
+        val processTemplates = processTemplatesDAO.getAllProcessTemplates()
         processTemplates.forEach { processTemplate ->
             processTemplatesCache.put(processTemplate.id!!, processTemplate)
         }
@@ -44,7 +47,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
         return if (processTemplatesCache.containsKey(processTemplateId)) {
             processTemplatesCache.get(processTemplateId)!!
         } else {
-            val processTemplate = ProcessTemplateDAO.getProcessTemplate(processTemplateId)
+            val processTemplate = processTemplatesDAO.getProcessTemplate(processTemplateId)
                 ?: throw NotFoundException("process template not found")
 
             processTemplatesCache.put(processTemplateId, processTemplate)
@@ -79,7 +82,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
      * Creates the given process template.
      */
     override fun createProcessTemplate(processTemplate: ProcessTemplate): Int {
-        val newId = ProcessTemplateDAO.createProcessTemplate(processTemplate)
+        val newId = processTemplatesDAO.createProcessTemplate(processTemplate)
         processTemplatesCache.put(newId, ProcessTemplateDAO.getProcessTemplate(newId)!!)
         return newId
     }
@@ -94,7 +97,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
         val currentId = processTemplate.id!!
 
         if (processTemplate.getProcessCount() == 0) {
-            val exists = ProcessTemplateDAO.updateProcessTemplate(processTemplate)
+            val exists = processTemplatesDAO.updateProcessTemplate(processTemplate)
             if (!exists)
                 throw NotFoundException("process template not found")
 
@@ -108,10 +111,10 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
                 processTemplate.owner.id,
                 processTemplate.taskTemplates
             )
-            newId = ProcessTemplateDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
+            newId = processTemplatesDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
         }
 
-        processTemplatesCache[newId] = ProcessTemplateDAO.getProcessTemplate(newId)!!
+        processTemplatesCache[newId] = processTemplatesDAO.getProcessTemplate(newId)!!
         return newId
     }
 
@@ -123,7 +126,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
     override fun deleteProcessTemplate(processTemplateId: Int) {
         val processTemplate = getProcessTemplate(processTemplateId)
 
-        val existed = ProcessTemplateDAO.deleteProcessTemplate(processTemplateId)
+        val existed = processTemplatesDAO.deleteProcessTemplate(processTemplateId)
         if (!existed)
             throw NotFoundException("process template not found")
 
