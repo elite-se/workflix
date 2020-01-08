@@ -43,7 +43,10 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
         this.setState({ loading: false })
         this.props.onSetEditing(false)
       })
-      .catch(toastifyError)
+      .catch(err => {
+        toastifyError(err)
+        this.setState({ loading: false })
+      })
   }
 
   saveGroups = () => {
@@ -53,12 +56,12 @@ class UserCardEdit extends React.Component<PropsType, StateType> {
     const addedGroups = difference(newGroups, oldGroups)
     const removedGroups = difference(oldGroups, newGroups)
     return Promise.all([
-      addedGroups.map(id => processGroups.get(id)).filter(Boolean)
+      Promise.all(addedGroups.map(id => processGroups.get(id)).filter(Boolean)
         .map(group => new ProcessGroupsApi().addMembership(group.id, user.id)
-          .then(this.props.onGroupMembershipAdded(group, user))),
-      removedGroups.map(id => processGroups.get(id)).filter(Boolean)
+          .then(this.props.onGroupMembershipAdded(group, user)))),
+      Promise.all(removedGroups.map(id => processGroups.get(id)).filter(Boolean)
         .map(group => new ProcessGroupsApi().removeMembership(group.id, user.id)
-          .then(this.props.onGroupMembershipRemoved(group, user)))
+          .then(this.props.onGroupMembershipRemoved(group, user))))
     ])
   }
 
