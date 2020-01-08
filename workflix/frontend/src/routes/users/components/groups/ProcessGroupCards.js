@@ -10,6 +10,7 @@ import CardsContainer from '../CardsContainer'
 type PropsType = {|
   users: Map<string, UserType>,
   processGroups: Map<number, ProcessGroupType>,
+  selection: ?ProcessGroupType,
   onUserSelected: (UserType) => void
 |}
 

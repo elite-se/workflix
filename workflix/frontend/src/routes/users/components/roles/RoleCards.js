@@ -9,6 +9,7 @@ import CardsContainer from '../CardsContainer'
 type PropsType = {|
   users: Map<string, UserType>,
   roles: Map<number, UserRoleType>,
+  selection: ?UserRoleType,
   onUserSelected: (UserType) => void
 |}
 
