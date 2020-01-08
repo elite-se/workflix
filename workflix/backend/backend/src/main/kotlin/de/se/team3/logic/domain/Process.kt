@@ -14,9 +14,12 @@ import java.time.Instant
  */
 class Process(
     val id: Int?,
-    val starterId: String,
-    val processGroupId: Int,
-    val processTemplateId: Int,
+    @JsonIgnore
+    val starter: User,
+    @JsonIgnore
+    val processGroup: ProcessGroup,
+    @JsonIgnore
+    val processTemplate: ProcessTemplate,
     val title: String,
     val description: String,
     private var status: ProcessStatus,
@@ -29,37 +32,39 @@ class Process(
     val tasks: Map<Int, Task>
 ) {
 
+    fun getProcessGroupId() = processGroup.id!!
+
     fun getStatus() = status
 
     init {
         tasks.forEach { (_, task) -> task.process = this }
     }
 
-    @get:JsonIgnore
-    val starter by lazy { UserContainer.getUser(starterId) }
-    @get:JsonIgnore
-    val processTemplate by lazy { ProcessTemplatesContainer.getProcessTemplate(processTemplateId) }
+    val starterId = starter.id
+
+    val processTemplateId = processTemplate.id!!
 
     /**
      * Create-Constructor
      */
     constructor(
-        starterId: String,
-        processGroupId: Int,
-        processTemplateId: Int,
+        starter: User,
+        processGroup: ProcessGroup,
+        processTemplate: ProcessTemplate,
         title: String,
         description: String,
         deadline: Instant?
     ) : this (null,
-        starterId,
-        processGroupId,
-        processTemplateId,
+        starter,
+        processGroup,
+        processTemplate,
         title,
         description,
         ProcessStatus.RUNNING,
         deadline,
         Instant.now(), // started at
-        createTasks(processTemplateId)) {
+        createTasks(processTemplate)
+    ) {
 
         checkProperties()
     }
@@ -178,7 +183,7 @@ class Process(
         val usersRoleIDs = user.getUserRoleIds()
 
         // user is in process's group and one of his/her roles is assigned to it
-        val inUsersGroups = usersGroupIDs.contains(this.processGroupId)
+        val inUsersGroups = usersGroupIDs.contains(this.getProcessGroupId())
         val designatedAsResponsible = processTemplate.isOneResponsible(usersRoleIDs)
         if (inUsersGroups && designatedAsResponsible)
             return true
@@ -195,9 +200,8 @@ class Process(
         /**
          * Creates the tasks of the process by looping over the underlying task templates.
          */
-        fun createTasks(processTemplateId: Int): Map<Int, Task> {
+        fun createTasks(processTemplate: ProcessTemplate): Map<Int, Task> {
             val tasks = HashMap<Int, Task>()
-            val processTemplate = ProcessTemplatesContainer.getProcessTemplate(processTemplateId)
             val taskTemplates = processTemplate.taskTemplates
             for ((id, taskTemplate) in taskTemplates) {
                 val startedAt = if (taskTemplate.getPredecessors().size == 0) Instant.now() else null

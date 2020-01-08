@@ -1,6 +1,10 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
+import de.se.team3.logic.container.ProcessContainer
+import de.se.team3.logic.container.ProcessGroupsContainer
+import de.se.team3.logic.container.ProcessTemplatesContainer
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
@@ -10,6 +14,9 @@ import de.se.team3.persistence.meta.ProcessesTable
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TaskCommentsTable
 import de.se.team3.persistence.meta.TasksTable
+import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
+import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
+import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
 import me.liuwj.ktorm.dsl.QueryRowSet
@@ -27,15 +34,25 @@ import me.liuwj.ktorm.dsl.where
  */
 object ProcessDAO : ProcessDAOInterface {
 
+    private val processTemplatesContainer: ProcessTemplateContainerInterface = ProcessTemplatesContainer
+
+    private val processGroupsContainer: ProcessGroupsContainerInterface = ProcessGroupsContainer
+
+    private val usersContainer: UserContainerInterface = UserContainer
+
     /**
      * Makes a single process object from the given row.
      */
     private fun makeProcess(row: QueryRowSet, tasks: Map<Int, Task>): Process {
+        val starter = usersContainer.getUser(row[ProcessesTable.starterId]!!)
+        val processGroup = processGroupsContainer.getProcessGroup(row[ProcessesTable.groupId]!!)
+        val processTemplate = processTemplatesContainer.getProcessTemplate(row[ProcessesTable.processTemplateId]!!)
+
         return Process(
             row[ProcessesTable.id]!!,
-            row[ProcessesTable.starterId]!!,
-            row[ProcessesTable.groupId]!!,
-            row[ProcessesTable.processTemplateId]!!,
+            starter,
+            processGroup,
+            processTemplate,
             row[ProcessesTable.title]!!,
             row[ProcessesTable.description]!!,
             ProcessStatus.valueOf(row[ProcessesTable.status]!!),
@@ -176,7 +193,7 @@ object ProcessDAO : ProcessDAOInterface {
             val generatedProcessId = ProcessesTable.insertAndGenerateKey { row ->
                 row.processTemplateId to processTemplate.id
                 row.starterId to process.starter.id
-                row.groupId to process.processGroupId
+                row.groupId to process.getProcessGroupId()
                 row.title to process.title
                 row.description to process.description
                 row.status to process.getStatus().toString()
