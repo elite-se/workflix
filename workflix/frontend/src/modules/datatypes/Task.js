@@ -13,7 +13,7 @@ export type TaskAssignmentType = {|
   id: ?number,
   assigneeId: string,
   createdAt: ?Date,
-  doneAt: ?string,
+  doneAt: ?Date,
   closed: boolean
 |}
 
