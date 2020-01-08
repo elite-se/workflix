@@ -30,7 +30,7 @@ object LoginManager {
             throw InvalidInputException("There is more than one user with the same email address.")
         val user = userList.first()
         if (tokensInUse.map { it.user }.contains(user))
-            throw InvalidInputException("This user is already logged in.")
+            return tokensInUse.first { it.user == user }
         if (user.password != password)
             throw InvalidInputException("Wrong password.")
         val token = AuthenticationToken(user)
