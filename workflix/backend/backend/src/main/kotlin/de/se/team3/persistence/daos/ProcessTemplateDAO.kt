@@ -189,6 +189,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         } catch (e: Throwable) {
             transaction.rollback()
             throw e
+        } finally {
+            transaction.close()
         }
     }
 
@@ -244,6 +246,8 @@ object ProcessTemplateDAO : ProcessTemplateDAOInterface {
         } catch (e: Throwable) {
             transaction.rollback()
             throw e
+        } finally {
+            transaction.close()
         }
     }
 

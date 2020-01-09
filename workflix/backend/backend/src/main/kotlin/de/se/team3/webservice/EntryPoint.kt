@@ -64,14 +64,15 @@ fun main(args: Array<String>) {
     }
     app.exception(Exception::class.java) { e, ctx ->
         ctx.status(500).result(e.message + "")
+        throw e
     }
 
     // authentication handling before every request (excluding login)
-    app.before() { ctx ->
+    /*app.before() { ctx ->
         if (ctx.path() != "/login") {
             AuthenticationHandler.authorizeRequest(ctx)
         }
-    }
+    }*/
 
     // login
     app.post("login") { ctx ->
@@ -142,7 +143,7 @@ fun main(args: Array<String>) {
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
     app.post("processes") { ctx -> ProcessesHandler.create(ctx) }
-    app.delete("processes") { ctx ->
+    app.delete("processes/:processId") { ctx ->
         ProcessesHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
 
@@ -193,5 +194,5 @@ fun main(args: Array<String>) {
     app.delete("tasks/comments/:taskCommentId") { ctx ->
         TasksCommentsHandler.delete(ctx, ctx.pathParam("taskCommentId").toInt())
     }
-    
+
 }

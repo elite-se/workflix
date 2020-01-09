@@ -3,9 +3,11 @@ package de.se.team3.webservice.handlers
 import de.se.team3.logic.container.TaskAssignmentsContainer
 import de.se.team3.logic.container.TaskCommentsContainer
 import de.se.team3.logic.container.TasksContainer
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterface
 import de.se.team3.webservice.containerInterfaces.TasksContainerInterface
+import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import io.javalin.http.Context
 import org.json.JSONObject
 
@@ -19,6 +21,8 @@ object TasksAssignmentsHandler {
 
     private val tasksContainer: TasksContainerInterface = TasksContainer
 
+    private val usersContainer: UserContainerInterface = UserContainer
+
     /**
      * Handles requests for creating a new task assignment.
      */
@@ -28,7 +32,9 @@ object TasksAssignmentsHandler {
 
         val immediateClosing = taskAssignmentJsonObject.getBoolean("immediateClosing")
         val task = tasksContainer.getTask(taskId)
-        val taskAssignment = TaskAssignment(task, assigneeId, immediateClosing)
+        val assignee = usersContainer.getUser(assigneeId)
+
+        val taskAssignment = TaskAssignment(task, assignee, immediateClosing)
 
         val newId = taskAssignmentsContainer.createTaskAssignment(taskAssignment)
         val newIdJsonObject = JSONObject()
@@ -42,13 +48,23 @@ object TasksAssignmentsHandler {
      * Handles requests for closing a task assignment.
      */
     fun update(ctx: Context, taskId: Int, assigneeId: String) {
-        taskAssignmentsContainer.closeTaskAssignment(taskId, assigneeId)
+        val task = tasksContainer.getTask(taskId)
+        val assignee = usersContainer.getUser(assigneeId)
+
+        val taskAssignment = TaskAssignment(task, assignee, false)
+
+        taskAssignmentsContainer.closeTaskAssignment(taskAssignment)
     }
 
     /**
      * Handles requests for deleting a task assignment.
      */
     fun delete(ctx: Context, taskId: Int, assigneeId: String) {
-        taskAssignmentsContainer.deleteTaskAssignment(taskId, assigneeId)
+        val task = tasksContainer.getTask(taskId)
+        val assignee = usersContainer.getUser(assigneeId)
+
+        val taskAssignment = TaskAssignment(task, assignee, false)
+
+        taskAssignmentsContainer.deleteTaskAssignment(taskAssignment)
     }
 }

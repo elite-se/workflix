@@ -33,6 +33,10 @@ class Task(
         process!!.processTemplate.taskTemplates.get(taskTemplateId)
     }
 
+    init {
+        assignments.forEach { it.setTask(this) }
+    }
+
     /**
      * Create-Constructor
      */
@@ -107,8 +111,8 @@ class Task(
      *
      * @return True if there is a assignment to the specified assignee.
      */
-    fun hasAssignment(assigneeId: String): Boolean {
-        return assignments!!.find { it.assigneeId == assigneeId } != null
+    fun hasAssignment(taskAssignment: TaskAssignment): Boolean {
+        return assignments!!.find { it.assigneeId == taskAssignment.assigneeId } != null
     }
 
     /**
@@ -121,11 +125,15 @@ class Task(
     fun addTaskAssignment(taskAssignment: TaskAssignment) {
         if (taskAssignment.taskId != id)
             throw InvalidInputException("task id specified in the given task assignment must be equal to the id of this task")
-        if (hasAssignment(taskAssignment.assigneeId))
+
+        if (isClosed())
+            throw AlreadyClosedException("task is already closed")
+        if (taskAssignment.isClosed() && isBlocked())
+            throw NotFoundException("the assignment can only be closed if all predecessors have been closed")
+        if (hasAssignment(taskAssignment))
             throw AlreadyExistsException("task assignment already exists")
 
         assignments.add(taskAssignment)
-        taskAssignment.setTask(this)
     }
 
     /**
@@ -145,11 +153,15 @@ class Task(
     /**
      * Deletes the specified task assignment.
      *
+     * @throws AlreadyExistsException Is thrown if the specified task is already closed.
      * @throws AlreadyClosedException Is thrown if the specified assignment is already closed.
      * @throws NotFoundException Is thrown if a task assignment with the specified user does not
      * exist for this task.
      */
     fun deleteTaskAssignment(assigneeId: String) {
+        if (isClosed())
+            throw AlreadyClosedException("task is already closed")
+
         for (i in 0 until assignments!!.size) {
             val assignment = assignments.get(i)
             if (assignment.assigneeId == assigneeId) {

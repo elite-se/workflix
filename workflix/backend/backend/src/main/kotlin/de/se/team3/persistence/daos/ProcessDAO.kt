@@ -1,7 +1,6 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
-import de.se.team3.logic.container.ProcessContainer
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.ProcessTemplatesContainer
 import de.se.team3.logic.container.UserContainer
@@ -95,11 +94,12 @@ object ProcessDAO : ProcessDAOInterface {
             .where { TaskAssignmentsTable.taskId eq taskId }
 
         for (row in assigmentsResult) {
+            val assignee = usersContainer.getUser(row[TaskAssignmentsTable.assigneeId]!!)
             assignments.add(
                 TaskAssignment(
                     row[TaskAssignmentsTable.id]!!,
                     null,
-                    row[TaskAssignmentsTable.assigneeId]!!,
+                    assignee,
                     row[TaskAssignmentsTable.createdAt]!!,
                     row[TaskAssignmentsTable.doneAt]
                 ))
@@ -218,6 +218,8 @@ object ProcessDAO : ProcessDAOInterface {
         } catch (e: Throwable) {
             transaction.rollback()
             throw e
+        } finally {
+            transaction.close()
         }
     }
 

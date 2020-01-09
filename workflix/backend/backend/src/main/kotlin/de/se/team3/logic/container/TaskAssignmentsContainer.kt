@@ -5,6 +5,7 @@ import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.NotFoundException
+import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.daos.TaskAssignmentsDAO
 import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterface
 import java.time.Instant
@@ -33,9 +34,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
             throw AlreadyClosedException("task is already closed")
         if (taskAssignment.isClosed() && task.isBlocked())
             throw NotFoundException("the assignment can only be closed if all predecessors have been closed")
-        if (!UserContainer.hasUser(taskAssignment.assigneeId))
-            throw NotFoundException("the assignee does not exist")
-        if (task.hasAssignment(taskAssignment.assigneeId))
+        if (task.hasAssignment(taskAssignment))
             throw AlreadyExistsException("task assignment already exists")
 
         val taskAssignmentId = taskAssignmentsDAO.createTaskAssignment(taskAssignment)
@@ -56,28 +55,28 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      *
      * @throws AlreadyClosedException Is thrown if the specified assignment is already closed.
      * @throws NotFoundException Is thrown if the predecessors of the given task are not already closed.
-     * @throws AlreadyClosedException Is thrown if the given task is already closed.
+     * @throws UnsatisfiedPreconditionException Is thrown if the given task is already closed.
      * @throws NotFoundException Is thrown if the specified task assignment does not exist.
      */
-    override fun closeTaskAssignment(taskId: Int, assigneeId: String) {
-        val task = TasksContainer.getTask(taskId) // throws NotFound
+    override fun closeTaskAssignment(taskAssignment: TaskAssignment) {
+        val task = TasksContainer.getTask(taskAssignment.taskId) // throws NotFound
 
         // check preconditions
-        val taskAssignment = task.getTaskAssignment(assigneeId) // throws NotFound
-        if (taskAssignment.isClosed())
+        val currentTaskAssignment = task.getTaskAssignment(taskAssignment.assigneeId) // throws NotFound
+        if (currentTaskAssignment.isClosed())
             throw AlreadyClosedException("task assignment is already closed")
         if (task.isBlocked())
-            throw NotFoundException("the assignment can only be closed if all predecessors have been closed")
+            throw UnsatisfiedPreconditionException("the assignment can only be closed if all predecessors have been closed")
         if (task.isClosed())
             throw AlreadyClosedException("task is already closed")
 
         // close the assignment
         val closingTime = Instant.now()
-        val existed = taskAssignmentsDAO.closeTaskAssignment(taskId, assigneeId, closingTime)
+        val existed = taskAssignmentsDAO.closeTaskAssignment(taskAssignment.taskId, taskAssignment.assigneeId, closingTime)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 
-        taskAssignment.close(closingTime)
+        currentTaskAssignment.close(closingTime)
 
         ProcessContainer.mayCloseProcess(task.process!!.id!!)
     }
@@ -92,20 +91,20 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      * @throws AlreadyClosedException Is thrown if the specified task is already closed.
      * @throws NotFoundException Is thrown if the specified task assignment does not exist.
      */
-    override fun deleteTaskAssignment(taskId: Int, assigneeId: String) {
-        val task = TasksContainer.getTask(taskId)
+    override fun deleteTaskAssignment(taskAssignment: TaskAssignment) {
+        val task = TasksContainer.getTask(taskAssignment.taskId)
 
-        val taskAssignment = task.getTaskAssignment(assigneeId)
-        if (taskAssignment.isClosed())
+        val currentTaskAssignment = task.getTaskAssignment(taskAssignment.assigneeId)
+        if (currentTaskAssignment.isClosed())
             throw AlreadyClosedException("task assignment is already closed")
         if (task.isClosed())
             throw AlreadyClosedException("task is already closed")
 
-        val existed = taskAssignmentsDAO.deleteTaskAssignment(taskId, assigneeId)
+        val existed = taskAssignmentsDAO.deleteTaskAssignment(taskAssignment.taskId, taskAssignment.assigneeId)
         if (!existed)
             throw NotFoundException("task assignment does not exist")
 
         // delete task assignment from task
-        task.deleteTaskAssignment(assigneeId)
+        task.deleteTaskAssignment(taskAssignment.assigneeId)
     }
 }
