@@ -1,35 +1,34 @@
 // @flow
 
 import React from 'react'
-import type { UserType } from '../../../../modules/datatypes/User'
-import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
+import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import IconRow from '../IconRow'
 import TitledCard from '../TitledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
-import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
 import { EditableText, Elevation } from '@blueprintjs/core'
+import UsersApi from '../../../../modules/api/UsersApi'
 
 type PropsType = {|
-  processGroup: ProcessGroupType,
+  userRole: UserRoleType,
   users: Map<string, UserType>,
-  onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
-  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
-  onProcessGroupChanged: (ProcessGroupType) => void
+  onRoleMembershipAdded: (UserRoleType, UserType) => void,
+  onRoleMembershipRemoved: (UserRoleType, UserType) => void,
+  onRoleChanged: (UserRoleType) => void
 |}
 
-class ProcessGroupCardEdit extends React.Component<PropsType> {
+class UserRoleCardEdit extends React.Component<PropsType> {
   onUserAdded = (user: UserType) => {
-    const { processGroup } = this.props
-    new ProcessGroupsApi().addMembership(processGroup.id, user.id)
-      .then(this.props.onGroupMembershipAdded(processGroup, user))
+    const { userRole } = this.props
+    new UsersApi().addRoleMembership(userRole.id, user.id)
+      .then(this.props.onRoleMembershipAdded(userRole, user))
       .catch(toastifyError)
   }
 
   onUserRemoved = (user: UserType) => {
-    const { processGroup } = this.props
-    new ProcessGroupsApi().removeMembership(processGroup.id, user.id)
-      .then(this.props.onGroupMembershipRemoved(processGroup, user))
+    const { userRole } = this.props
+    new UsersApi().removeRoleMembership(userRole.id, user.id)
+      .then(this.props.onRoleMembershipRemoved(userRole, user))
       .catch(toastifyError)
   }
 
@@ -37,38 +36,38 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
     this.getSelectedUsers().forEach(user => this.onUserRemoved(user))
   }
 
-  patchAndPropagate = (updatedGroup: ProcessGroupType) => {
-    new ProcessGroupsApi().patchProcessGroup(updatedGroup)
-      .then(this.props.onProcessGroupChanged(updatedGroup))
+  patchAndPropagate = (updatedRole: UserRoleType) => {
+    new UsersApi().patchRole(updatedRole)
+      .then(this.props.onRoleChanged(updatedRole))
       .catch(toastifyError)
   }
 
-  onTitleChanged = (title: string) => {
+  onNameChanged = (name: string) => {
     this.patchAndPropagate({
-      ...this.props.processGroup,
-      title
+      ...this.props.userRole,
+      name
     })
   }
 
   onDescriptionChanged = (description: string) => {
     this.patchAndPropagate({
-      ...this.props.processGroup,
+      ...this.props.userRole,
       description
     })
   }
 
-  getSelectedUsers = () => this.props.processGroup.membersIds.map(id => this.props.users.get(id)).filter(Boolean)
+  getSelectedUsers = () => this.props.userRole.memberIds.map(id => this.props.users.get(id)).filter(Boolean)
 
   render () {
-    const { processGroup, users } = this.props
-    return <TitledCard key={processGroup.id} elevation={Elevation.FOUR} title={
-      <IconRow icon='office'>
-        <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'
+    const { userRole, users } = this.props
+    return <TitledCard key={userRole.id} elevation={Elevation.FOUR} title={
+      <IconRow icon='people'>
+        <EditableText onConfirm={this.onNameChanged} defaultValue={userRole.name} placeholder='Name'
                       alwaysRenderInput/>
       </IconRow>
     }>
       <IconRow icon='annotation' multiLine>
-        <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
+        <EditableText onConfirm={this.onDescriptionChanged} defaultValue={userRole.description}
                     placeholder='Description' multiline/>
       </IconRow>
       <IconRow icon='person' multiLine>
@@ -88,4 +87,4 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
   getUserName = (user: UserType) => user.name
 }
 
-export default ProcessGroupCardEdit
+export default UserRoleCardEdit
