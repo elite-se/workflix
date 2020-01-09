@@ -56,7 +56,7 @@ function withPromiseResolver<P1: {}, P2: {}> (
         } else if (props && softLoading) {
           return <>
             <WrappedComponent {...this.props} {...props}/>
-            <CenterScreen style={{ position: 'absolute', top: '0', right: '0', left: '0', bottom: '0' }}>
+            <CenterScreen style={{ position: 'fixed', top: '0', right: '0', left: '0', bottom: '0' }}>
               <Spinner/>
             </CenterScreen>
           </>
