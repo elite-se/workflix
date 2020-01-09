@@ -48,6 +48,7 @@ class ProcessList extends React.Component<PropsType> {
               <th>Id</th>
               <th>Title</th>
               <th>Started at</th>
+              <th>Deadline</th>
               <th>Progress</th>
               <th>Process Group</th>
               <th>Starter</th>
@@ -58,6 +59,7 @@ class ProcessList extends React.Component<PropsType> {
                   <td>{process.id}</td>
                   <td>{process.title}</td>
                   <td>{process.startedAt.toLocaleString()}</td>
+                  <td>{process.deadline.toLocaleString()}</td>
                   <td><ProcessProgress process={process}/></td>
                   <td>{processGroups.get(process.processGroupId)?.title || ''}</td>
                   <td>{users.get(process.starterId)?.name || ''}</td></tr>
