@@ -29,7 +29,8 @@ type PropsType = {
 class TaskSummaryCard extends React.Component<PropsType> {
   containerDiv: ?HTMLDivElement = null
 
-  onClick = () => {
+  onClick = (event: SyntheticMouseEvent<HTMLElement>) => {
+    event.preventDefault()
     this.props.onTaskSelected(this.props.task)
   }
 

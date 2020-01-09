@@ -10,6 +10,7 @@ import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import type { UserType } from '../../../modules/datatypes/User'
 import ProcessProgress from '../../../modules/common/components/ProcessProgress'
+import { Link } from '@reach/router'
 
 const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
   margin: 5px;
@@ -26,6 +27,17 @@ const TaskList = styled<{}, {}, 'div'>('div')`
   justify-content: flex-start;
   flex-direction: column;
   flex-grow: 1;
+`
+
+const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
+  color: black;
+  &:hover {
+    text-decoration: none;
+    color: black;
+  }
+  > * {
+    padding-bottom: 0;
+  }
 `
 
 type PropsType = {
@@ -45,7 +57,8 @@ class ProcessCard extends React.Component<PropsType> {
   render () {
     const process = this.props.process
     const isSelected = !!process.tasks.find(task => this.isSelected(task))
-    return <CardWithMargin interactive elevation={isSelected ? Elevation.FOUR : undefined}>
+    return <CustomLink to={`/processes/${process.id}`}>
+      <CardWithMargin interactive elevation={isSelected ? Elevation.FOUR : undefined}>
       <H3>{process.title} (#{process.id})</H3>
       <TaskList>
         {
@@ -61,6 +74,7 @@ class ProcessCard extends React.Component<PropsType> {
       </TaskList>
       <ProcessProgress process={process}/>
     </CardWithMargin>
+    </CustomLink>
   }
 }
 
