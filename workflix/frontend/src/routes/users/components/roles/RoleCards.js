@@ -9,7 +9,12 @@ import CardsContainer from '../CardsContainer'
 type PropsType = {|
   users: Map<string, UserType>,
   roles: Map<number, UserRoleType>,
-  onUserSelected: (UserType) => void
+  selection: ?UserRoleType,
+  onUserSelected: (UserType) => void,
+  onRoleSelected: (?UserRoleType) => void,
+  onRoleMembershipAdded: (UserRoleType, UserType) => void,
+  onRoleMembershipRemoved: (UserRoleType, UserType) => void,
+  onRoleChanged: (UserRoleType) => void
 |}
 
 export default class UserCards extends React.Component<PropsType> {
@@ -24,7 +29,7 @@ export default class UserCards extends React.Component<PropsType> {
   }
 
   getCardForRole = (role: UserRoleType) => {
-    const { users, onUserSelected } = this.props
-    return <UserRoleCard key={role.id} userRole={role} onUserSelected={onUserSelected} users={users}/>
+    const { selection, roles, ...cardProps } = this.props
+    return <UserRoleCard {...cardProps} key={role.id} userRole={role} selected={role === selection}/>
   }
 }

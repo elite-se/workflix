@@ -18,7 +18,7 @@ type StateType = {|
   filters: FiltersType
 |}
 
-class TasksOverview extends React.Component<PropsType, StateType> {
+class ProcessesOverview extends React.Component<PropsType, StateType> {
   state = {
     filters: {}
   }
@@ -50,4 +50,4 @@ const promiseCreator = () => Promise.all([
   processGroups
 }))
 
-export default withPromiseResolver<PropsType, *>(promiseCreator)(TasksOverview)
+export default withPromiseResolver<PropsType, *>(promiseCreator)(ProcessesOverview)

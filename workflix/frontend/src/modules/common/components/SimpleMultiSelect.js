@@ -2,14 +2,16 @@
 
 import React from 'react'
 import { IMultiSelectProps, ItemListPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select'
-import { MenuItem } from '@blueprintjs/core'
-import { filter, sortBy, uniq, without } from 'lodash'
+import { Button, MenuItem } from '@blueprintjs/core'
+import { filter, isEmpty, sortBy } from 'lodash'
 import highlightText from '../highlightText'
 
 type PropsType<T, IdType: number | string> = {|
   items: T[],
   selection: T[],
-  onSelectionChanged: (selection: T[]) => void,
+  onItemAdded: (T) => void,
+  onItemRemoved: (T) => void,
+  onItemsCleared: () => void,
   render: (T) => string,
   toID: (T) => IdType,
   multiSelectProps?: IMultiSelectProps
@@ -33,13 +35,13 @@ class SimpleMultiSelect<T, IdType: number | string> extends React.Component<Prop
   isSelected: (T => boolean) = item => this.props.selection.includes(item)
 
   onItemSelect = (item: T) =>
-    this.props.onSelectionChanged(
-      this.isSelected(item)
-        ? without(this.props.selection, item)
-        : uniq([...this.props.selection, item]))
+    this.isSelected(item)
+      ? this.props.onItemRemoved(item)
+      : this.props.onItemAdded(item)
 
   onTagRemove = (tag: string, index: number) => {
-    this.props.onSelectionChanged(this.props.selection.filter((_, idx) => idx !== index))
+    const item = this.props.selection[index]
+    item && this.props.onItemRemoved(item)
   }
 
   itemListPredicate: ItemListPredicate<T> = (query, items) => {
@@ -53,6 +55,8 @@ class SimpleMultiSelect<T, IdType: number | string> extends React.Component<Prop
 
   render () {
     const BlueprintProcessGroupMultiSelect = MultiSelect.ofType<T>()
+    const clearButton = !isEmpty(this.props.selection) &&
+      <Button icon='cross' minimal onClick={this.props.onItemsCleared}/>
     return <BlueprintProcessGroupMultiSelect
       {...this.props.multiSelectProps}
       itemListPredicate={this.itemListPredicate}
@@ -61,7 +65,7 @@ class SimpleMultiSelect<T, IdType: number | string> extends React.Component<Prop
       noResults={<MenuItem icon='disable' text='No results.' disabled/>}
       onItemSelect={this.onItemSelect}
       tagRenderer={this.props.render}
-      tagInputProps={{ onRemove: this.onTagRemove }}
+      tagInputProps={{ onRemove: this.onTagRemove, rightElement: clearButton }}
       selectedItems={this.props.selection}/>
   }
 }
