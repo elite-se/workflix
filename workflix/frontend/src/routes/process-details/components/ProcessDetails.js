@@ -15,7 +15,8 @@ type PropsType = {|
   users: Map<string, UserType>,
   userRoles: Map<number, UserRoleType>,
   process: ProcessType,
-  template: ProcessTemplateType
+  template: ProcessTemplateType,
+  update: (soft: boolean) => void
 |}
 
 type StateType = {
@@ -45,8 +46,12 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
   onAbortClick = () => {
   }
 
+  onTaskModified = () => {
+    this.props.update(true)
+  }
+
   render () {
-    const { process, template, userRoles } = this.props
+    const { process, template, userRoles, users } = this.props
     const { saveLoading, abortLoading, drawerOpened } = this.state
 
     return <div style={{
@@ -59,7 +64,7 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
       <ButtonGroup large style={{ marginBottom: '20px' }}>
         <Button icon='floppy-disk' text='Save' intent='primary' loading={saveLoading} onClick={this.onSaveClick}/>
         <ButtonWithDialog intent='danger' icon='ban-circle' text='Abort' loading={abortLoading}
-                           onClick={this.onAbortClick}>
+                          onClick={this.onAbortClick}>
           <H4>Abort Process?</H4>
           <p>
             Are you sure you want to abort this process?
@@ -70,13 +75,17 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
           marginLeft: '40px'
         }}>Process Details</H2>
       </ButtonGroup>
-      <TaskListViewer tasks={process.tasks} taskTemplates={template.taskTemplates} userRoles={userRoles}
+      <TaskListViewer tasks={process.tasks}
+                      users={users}
+                      taskTemplates={new Map(template.taskTemplates.map(template => [template.id, template]))}
+                      userRoles={userRoles}
+                      onTaskModified={this.onTaskModified}
                       setDrawerOpened={this.setDrawerOpened}/>
     </div>
   }
 }
 
-const promiseCreator = ({ id }: { id: number }) => Promise.all([
+const promiseCreator = ({ id }: { id: number }, update) => Promise.all([
   new UserApi().getUsers(),
   new UserApi().getUserRoles(),
   new ProcessApi().getProcess(id).then(process => Promise.all([
@@ -87,7 +96,8 @@ const promiseCreator = ({ id }: { id: number }) => Promise.all([
   users,
   userRoles,
   process,
-  template
+  template,
+  update
 }))
 
 export default withPromiseResolver<PropsType, *>(promiseCreator)(ProcessDetails)

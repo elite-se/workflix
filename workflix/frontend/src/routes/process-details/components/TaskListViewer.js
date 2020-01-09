@@ -7,17 +7,35 @@ import { calcGraph } from '../../../modules/process-template-editor/graph-utils'
 import TaskList from '../../../modules/process-template-editor/components/TaskList'
 import ProcessChart, { chartNodeFromProcessedNode } from '../../../modules/process-template-editor/components/ProcessChart'
 import onOpenRemoveOverlayClass from '../../../modules/common/onOpenRemoveOverlayClass'
-import type { UserRoleType } from '../../../modules/datatypes/User'
+import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
+import TaskDrawerContent from '../../tasks/components/drawer/TaskDrawerContent'
 
 type PropsType = {
+  users: Map<string, UserType>,
   userRoles: Map<number, UserRoleType>,
-  taskTemplates: TaskTemplateType[],
+  taskTemplates: Map<number, TaskTemplateType>,
   tasks: TaskType[],
-  setDrawerOpened: (drawerOpened: boolean) => void
+  setDrawerOpened: (drawerOpened: boolean) => void,
+  onTaskModified: () => void
 }
 
 type StateType = {
   selectedTaskId: ?number
+}
+
+const colorTranslation = {
+  BLOCKED: {
+    selected: Colors.GRAY4,
+    unselected: Colors.GRAY1
+  },
+  RUNNING: {
+    selected: Colors.ORANGE4,
+    unselected: Colors.ORANGE1
+  },
+  CLOSED: {
+    selected: Colors.GREEN4,
+    unselected: Colors.GREEN1
+  }
 }
 
 class TaskListViewer extends React.Component<PropsType, StateType> {
@@ -36,12 +54,11 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { taskTemplates, tasks } = this.props
+    const { taskTemplates, tasks, users, onTaskModified } = this.props
     const { selectedTaskId } = this.state
 
-    const task = taskTemplates.find(task => task.id === selectedTaskId)
     const preparedTasks = tasks.map(task => {
-      const template = taskTemplates.find(template => template.id === task.taskTemplateId)
+      const template = taskTemplates.get(task.taskTemplateId)
       if (!template) {
         return null
       }
@@ -56,24 +73,12 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
       }
     }).filter(Boolean)
     const processedNodes = calcGraph(preparedTasks)
-    const colorTranslation = {
-      BLOCKED: {
-        selected: Colors.GRAY4,
-        unselected: Colors.GRAY1
-      },
-      RUNNING: {
-        selected: Colors.GREEN4,
-        unselected: Colors.GREEN1
-      },
-      CLOSED: {
-        selected: Colors.ORANGE4,
-        unselected: Colors.ORANGE1
-      }
-    }
     const chartNodes = processedNodes.map(node => chartNodeFromProcessedNode(
       node,
       colorTranslation[node.data.status][node.id === selectedTaskId ? 'selected' : 'unselected']
     ))
+    const task = tasks.find(task => task.id === selectedTaskId)
+    const template = task && taskTemplates.get(task.taskTemplateId)
     return <FormGroup label='Tasks'>
       <div style={{
         display: 'flex',
@@ -85,8 +90,11 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
                   selectTaskId={this.selectTaskId}/>
         <ProcessChart tasks={chartNodes} selectedId={selectedTaskId} selectTaskId={this.selectTaskId}/>
       </div>
-      <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
-              onClose={this.unselectTask} style={{ overflow: 'auto' }} onOpening={onOpenRemoveOverlayClass}/>
+      <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={template?.name || ''}
+              onClose={this.unselectTask} style={{ overflow: 'auto' }} onOpening={onOpenRemoveOverlayClass}>
+        {task && <TaskDrawerContent task={task} taskTemplates={taskTemplates} onTaskModified={onTaskModified}
+                                    users={users}/>}
+      </Drawer>
     </FormGroup>
   }
 }
