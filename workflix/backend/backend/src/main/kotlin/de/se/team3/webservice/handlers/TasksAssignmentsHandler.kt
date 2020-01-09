@@ -1,8 +1,11 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.TaskAssignmentsContainer
+import de.se.team3.logic.container.TaskCommentsContainer
+import de.se.team3.logic.container.TasksContainer
 import de.se.team3.logic.domain.TaskAssignment
 import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterface
+import de.se.team3.webservice.containerInterfaces.TasksContainerInterface
 import io.javalin.http.Context
 import org.json.JSONObject
 
@@ -14,6 +17,8 @@ object TasksAssignmentsHandler {
 
     private val taskAssignmentsContainer: TaskAssignmentsContainerInterface = TaskAssignmentsContainer
 
+    private val tasksContainer: TasksContainerInterface = TasksContainer
+
     /**
      * Handles requests for creating a new task assignment.
      */
@@ -22,7 +27,8 @@ object TasksAssignmentsHandler {
         val taskAssignmentJsonObject = JSONObject(content)
 
         val immediateClosing = taskAssignmentJsonObject.getBoolean("immediateClosing")
-        val taskAssignment = TaskAssignment(taskId, assigneeId, immediateClosing)
+        val task = tasksContainer.getTask(taskId)
+        val taskAssignment = TaskAssignment(task, assigneeId, immediateClosing)
 
         val newId = taskAssignmentsContainer.createTaskAssignment(taskAssignment)
         val newIdJsonObject = JSONObject()

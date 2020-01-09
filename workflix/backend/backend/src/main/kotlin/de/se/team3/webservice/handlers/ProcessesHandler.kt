@@ -111,7 +111,7 @@ object ProcessesHandler {
         val starter = usersContainer.getUser(starterId)
         val processGroup = processGroupsContainer.getProcessGroup(processGroupId)
         val processTemplate = processTemplatesContainer.getProcessTemplate(processTemplateId)
-        val process = Process(starter, processGroupId, processTemplate, title, description, deadline)
+        val process = Process(starter, processGroup, processTemplate, title, description, deadline)
 
         val newId = processesContainer.createProcess(process)
         val newIdJsonObject = JSONObject()

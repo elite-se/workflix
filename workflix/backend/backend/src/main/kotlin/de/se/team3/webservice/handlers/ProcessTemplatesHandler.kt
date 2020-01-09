@@ -130,14 +130,20 @@ object ProcessTemplatesHandler {
      * Handles the request for creating a new process template.
      */
     fun create(ctx: Context) {
-        val processTemplate = makeProcessTemplate(null, ctx)
-        val newId = processTemplatesContainer.createProcessTemplate(processTemplate)
+        try {
+            val processTemplate = makeProcessTemplate(null, ctx)
+            val newId = processTemplatesContainer.createProcessTemplate(processTemplate)
 
-        val newIdJsonObject = JSONObject()
-        newIdJsonObject.put("newId", newId)
+            val newIdJsonObject = JSONObject()
+            newIdJsonObject.put("newId", newId)
 
-        ctx.result(newIdJsonObject.toString())
-            .contentType("application/json")
+            ctx.result(newIdJsonObject.toString())
+                .contentType("application/json")
+        } catch (e: Throwable) {
+            println("" + e.message)
+            e.printStackTrace()
+            throw e
+        }
     }
 
     /**

@@ -27,7 +27,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      * an assignment of the task specified in taskAssignment to the user specified in taskAssignment.
      */
     override fun createTaskAssignment(taskAssignment: TaskAssignment): Int {
-        val task = taskAssignment.task // throws not found exception
+        val task = taskAssignment.getTask() // throws not found exception
 
         if (task.isClosed())
             throw AlreadyClosedException("task is already closed")

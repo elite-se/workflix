@@ -98,7 +98,7 @@ object ProcessDAO : ProcessDAOInterface {
             assignments.add(
                 TaskAssignment(
                     row[TaskAssignmentsTable.id]!!,
-                    row[TaskAssignmentsTable.taskId]!!,
+                    null,
                     row[TaskAssignmentsTable.assigneeId]!!,
                     row[TaskAssignmentsTable.createdAt]!!,
                     row[TaskAssignmentsTable.doneAt]

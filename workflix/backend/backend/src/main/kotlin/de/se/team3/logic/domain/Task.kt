@@ -19,7 +19,7 @@ class Task(
     @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant?,
     private val comments: ArrayList<TaskComment>?,
-    private val assignments: ArrayList<TaskAssignment>?,
+    private val assignments: ArrayList<TaskAssignment>,
     @JsonIgnore
     var process: Process?
 ) {
@@ -37,7 +37,7 @@ class Task(
      * Create-Constructor
      */
     constructor(taskTemplateId: Int, startedAt: Instant?) :
-            this(null, taskTemplateId, startedAt, null, null, null) {
+            this(null, taskTemplateId, startedAt, null, ArrayList<TaskAssignment>(), null) {
     }
 
     /**
@@ -124,7 +124,8 @@ class Task(
         if (hasAssignment(taskAssignment.assigneeId))
             throw AlreadyExistsException("task assignment already exists")
 
-        assignments!!.add(taskAssignment)
+        assignments.add(taskAssignment)
+        taskAssignment.setTask(this)
     }
 
     /**

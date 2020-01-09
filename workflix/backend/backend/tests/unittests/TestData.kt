@@ -1,5 +1,7 @@
 package unittests
 
+import de.se.team3.logic.domain.Process
+import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskTemplate
@@ -26,8 +28,6 @@ object TestData {
         users.add(michaelMarkl)
 
         return users
-
-
     }
 
     fun getAccountant(): UserRole {
@@ -140,6 +140,34 @@ object TestData {
             false,
             getTaskTemplatesSet2()
         )
+    }
+
+    fun getTestProcessGroupExtorel(): ProcessGroup {
+        val members = ArrayList<User>()
+        members.add(marvinBrieger)
+        members.add(michaelMarkl)
+        members.add(erikPallas)
+        members.add(karlCustomerAdvisor)
+
+        return ProcessGroup(1, karlCustomerAdvisor, "Extorel", "Group Extorel", Instant.now(), false, members)
+    }
+
+    fun getTestProcessGroupFugger(): ProcessGroup {
+        val members = ArrayList<User>()
+        members.add(eliasKeis)
+        members.add(michaelMarkl)
+        members.add(erikPallas)
+        members.add(kunigundeCustomerAdvisor)
+
+        return ProcessGroup(2, kunigundeCustomerAdvisor, "Fugger", "Group Fugger", Instant.now(), false, members)
+    }
+
+    fun getProcess1(): Process {
+        val groupExtorel = getTestProcessGroupExtorel()
+        val starter = karlCustomerAdvisor
+        val processTemplate = getProcessTemplate1()
+
+        return Process(starter, groupExtorel, processTemplate, "Testprocess 1", "Desription", Instant.now())
     }
 
 }

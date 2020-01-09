@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.TasksContainer
 import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.webservice.util.InstantSerializer
+import java.lang.IllegalStateException
 import java.time.Instant
 
 /**
@@ -14,7 +15,7 @@ import java.time.Instant
 data class TaskAssignment(
     val id: Int?,
     @JsonIgnore
-    val taskId: Int,
+    private var task: Task?,
     val assigneeId: String,
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant,
@@ -22,25 +23,39 @@ data class TaskAssignment(
     private var doneAt: Instant?
 ) {
 
-    fun getDoneAt() = doneAt
+    fun getTask() = task!!
 
-    @get:JsonIgnore
-    val task by lazy { TasksContainer.getTask(taskId) }
+    @JsonIgnore
+    val taskId = task!!.id!!
+
+    fun getDoneAt() = doneAt
 
     /**
      * Create-Constructor
      */
     constructor(
-        taskId: Int,
+        task: Task,
         asigneeId: String,
         immediateClosing: Boolean
     ) : this(
         null,
-        taskId,
+        task,
         asigneeId,
         Instant.now(),
         if (immediateClosing) Instant.now() else null
     )
+
+    /**
+     * Sets the task.
+     *
+     * @throws IllegalStateException Is thrown if the task was already set before.
+     */
+    fun setTask(task: Task) {
+        if (this.task != null)
+            throw IllegalStateException("task is already set")
+
+        this.task = task
+    }
 
     /**
      * Checks whether the the task assignment is closed or not.
