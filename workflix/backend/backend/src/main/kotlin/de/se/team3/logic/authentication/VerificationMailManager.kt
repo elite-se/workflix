@@ -54,16 +54,17 @@ object VerificationMailManager {
 
         val from = Email("verification@workflix.com")
         val to = Email(toAddress)
-        val subject = "Sending with SendGrid is Fun"
+        val subject = "Please verify your account"
         val content = Content("text/html", """<h1 style="color: #5e9ca0;"><span style="color: #808080;">Thank you for using Workflix!<span style="color: #ffffff;"></span></span></h1>
-<p>In order to start working, you have to verify your account by entering your verification code.</p>
-<p>Your verification code is:</p>
+<p>In order to start working, you have to verify your account by entering your verification key.</p>
+<p>Your verification key is:</p>
 <h3 style="padding-left: 60px;"><span style="color: #808080;"><strong>$key</strong></span></h3>
-<p>This code will expire in several minutes.</p>
-<p>If your code has expired for any reason whatsoever, simply restart the registration process and a new code will be sent to you.</p>
+<p>This key will expire in several minutes.</p>
+<p>If your key has expired for any reason whatsoever, simply restart the registration process and a new key will be sent to you.</p>
 <p>&nbsp;</p>
 <p>Your Workflix Team</p>
 <p><strong>&nbsp;</strong></p>""")
+
         val mail = Mail(from, subject, to, content)
 
         val request = Request()

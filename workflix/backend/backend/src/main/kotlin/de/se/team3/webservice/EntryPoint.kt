@@ -92,7 +92,10 @@ fun main(args: Array<String>) {
         UserHandler.getOne(ctx, ctx.pathParam("userId"))
     }
     app.post("users") { ctx ->
-        UserHandler.createFrom***REMOVED***(ctx)
+        UserHandler.verifyCreateRequest(ctx)
+    }
+    app.post("users/:key") { ctx ->
+        UserHandler.createFrom***REMOVED***(ctx, ctx.pathParam("key"))
     }
 
     // process templates
