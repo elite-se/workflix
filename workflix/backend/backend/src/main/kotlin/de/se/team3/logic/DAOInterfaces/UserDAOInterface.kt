@@ -13,8 +13,6 @@ interface UserDAOInterface {
 
     fun createUser(user: User)
 
-    fun create***REMOVED***User(email: String, password: String): User
-
     fun updateUser(user: User)
 
     fun deleteUser(user: User): Boolean

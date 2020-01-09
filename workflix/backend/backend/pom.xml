@@ -18,6 +18,8 @@
         <main.class>de.se.team3.webservice.EntryPointKt</main.class>
         <ktlint.disabled>--disabled_rules=filename</ktlint.disabled>
         <ktorm.version>2.6</ktorm.version>
+        <spring-security.version>5.0.13.RELEASE</spring-security.version>
+        <spring.version>5.0.6.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -94,6 +96,11 @@
             <groupId>javax.xml.crypto</groupId>
             <artifactId>jsr105-api</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security.version}</version>
         </dependency>
     </dependencies>
 

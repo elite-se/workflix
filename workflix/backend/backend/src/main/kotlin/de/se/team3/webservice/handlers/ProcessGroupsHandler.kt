@@ -2,17 +2,20 @@ package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.domain.ProcessGroup
+import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
 import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context
 import org.json.JSONObject
 
 object ProcessGroupsHandler {
 
+    private val processGroupsContainer: ProcessGroupsContainerInterface = ProcessGroupsContainer
+
     /**
      * Handles requests for getting all process groups.
      */
     fun getAll(ctx: Context) {
-        val groups = ProcessGroupsContainer.getAllProcessGroups()
+        val groups = processGroupsContainer.getAllProcessGroups()
 
         val groupsArray = JsonHelper.toJsonArray(groups)
         val groupsJSON = JSONObject().put("groups", groupsArray)
@@ -33,7 +36,7 @@ object ProcessGroupsHandler {
         val ownerID = processGroupJsonObject.getString("ownerId")
 
         val processGroup = ProcessGroup(ownerID, title, description)
-        val newId = ProcessGroupsContainer.createProcessGroup(processGroup)
+        val newId = processGroupsContainer.createProcessGroup(processGroup)
 
         val newIdObject = JSONObject()
         newIdObject.put("newId", newId)
@@ -54,13 +57,13 @@ object ProcessGroupsHandler {
         val ownerID = processGroupJsonObject.getString("ownerId")
 
         val processGroup = ProcessGroup(processGroupId, ownerID, title, description)
-        ProcessGroupsContainer.updateProcessGroup(processGroup)
+        processGroupsContainer.updateProcessGroup(processGroup)
     }
 
     /**
      * Handles requests for deleting a process group.
      */
     fun delete(ctx: Context, processGroupId: Int) {
-        ProcessGroupsContainer.deleteProcessGroup(processGroupId)
+        processGroupsContainer.deleteProcessGroup(processGroupId)
     }
 }

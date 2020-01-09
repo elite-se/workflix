@@ -1,5 +1,6 @@
 package de.se.team3.logic.container
 
+import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
 import de.se.team3.logic.exceptions.NotFoundException
@@ -7,6 +8,8 @@ import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
 
 object ProcessContainer : ProcessContainerInterface {
+
+    private val processesDAO: ProcessDAOInterface = ProcessDAO
 
     // The cached processes lay under their id.
     private val processesCache = HashMap<Int, Process>()
@@ -18,7 +21,7 @@ object ProcessContainer : ProcessContainerInterface {
      * Ensures that all processes are cached.
      */
     private fun fillCache() {
-        val processes = ProcessDAO.getAllProcesses()
+        val processes = processesDAO.getAllProcesses()
         processes.forEach { process ->
             processesCache.put(process.id!!, process)
         }
@@ -57,7 +60,7 @@ object ProcessContainer : ProcessContainerInterface {
         return if (processesCache.containsKey(processId)) {
             processesCache.get(processId)!!
         } else {
-            val process = ProcessDAO.getProcess(processId)
+            val process = processesDAO.getProcess(processId)
                 ?: throw NotFoundException("process not found")
 
             processesCache.put(processId, process)
@@ -69,12 +72,12 @@ object ProcessContainer : ProcessContainerInterface {
      * Creates the given process.
      */
     override fun createProcess(process: Process): Int {
-        val newId = ProcessDAO.createProcess(process)
+        val newId = processesDAO.createProcess(process)
 
         // update process count and running processes of process template
         process.processTemplate.increaseProcessCounters()
 
-        processesCache.put(newId, ProcessDAO.getProcess(newId)!!)
+        processesCache.put(newId, processesDAO.getProcess(newId)!!)
         return newId
     }
 
@@ -88,7 +91,7 @@ object ProcessContainer : ProcessContainerInterface {
         if (!process.closeable())
             return
 
-        ProcessDAO.closeProcess(processId)
+        processesDAO.closeProcess(processId)
         process.close()
     }
 
@@ -100,7 +103,7 @@ object ProcessContainer : ProcessContainerInterface {
     override fun abortProcess(processId: Int) {
         val process = getProcess(processId)
 
-        val existed = ProcessDAO.abortProcess(processId)
+        val existed = processesDAO.abortProcess(processId)
         if (!existed)
             throw NotFoundException("process does not exist")
 

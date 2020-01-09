@@ -2,6 +2,7 @@ package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.TaskAssignmentsContainer
 import de.se.team3.logic.domain.TaskAssignment
+import de.se.team3.webservice.containerInterfaces.TaskAssignmentsContainerInterface
 import io.javalin.http.Context
 import org.json.JSONObject
 
@@ -10,6 +11,8 @@ import org.json.JSONObject
  * /tasks/:taskId/assignments/:assigneeId
  */
 object TasksAssignmentsHandler {
+
+    private val taskAssignmentsContainer: TaskAssignmentsContainerInterface = TaskAssignmentsContainer
 
     /**
      * Handles requests for creating a new task assignment.
@@ -21,7 +24,7 @@ object TasksAssignmentsHandler {
         val immediateClosing = taskAssignmentJsonObject.getBoolean("immediateClosing")
         val taskAssignment = TaskAssignment(taskId, assigneeId, immediateClosing)
 
-        val newId = TaskAssignmentsContainer.createTaskAssignment(taskAssignment)
+        val newId = taskAssignmentsContainer.createTaskAssignment(taskAssignment)
         val newIdJsonObject = JSONObject()
         newIdJsonObject.put("newId", newId)
 
@@ -33,13 +36,13 @@ object TasksAssignmentsHandler {
      * Handles requests for closing a task assignment.
      */
     fun update(ctx: Context, taskId: Int, assigneeId: String) {
-        TaskAssignmentsContainer.closeTaskAssignment(taskId, assigneeId)
+        taskAssignmentsContainer.closeTaskAssignment(taskId, assigneeId)
     }
 
     /**
      * Handles requests for deleting a task assignment.
      */
     fun delete(ctx: Context, taskId: Int, assigneeId: String) {
-        TaskAssignmentsContainer.deleteTaskAssignment(taskId, assigneeId)
+        taskAssignmentsContainer.deleteTaskAssignment(taskId, assigneeId)
     }
 }
