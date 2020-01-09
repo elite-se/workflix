@@ -6,7 +6,6 @@
     "@blueprintjs/core": "^3.22.0",
     "@blueprintjs/datetime": "^3.15.1",
     "@blueprintjs/select": "^3.11.2",
-    "@blueprintjs/table": "^3.8.2",
     "@integreat-app/eslint-config-babel": "^0.3.4",
     "@integreat-app/eslint-config-flow": "^0.3.2",
     "@integreat-app/eslint-config-jest": "^0.2.1",
