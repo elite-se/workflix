@@ -193,11 +193,5 @@ fun main(args: Array<String>) {
     app.delete("tasks/comments/:taskCommentId") { ctx ->
         TasksCommentsHandler.delete(ctx, ctx.pathParam("taskCommentId").toInt())
     }
-
-    // necessary to reset the active user after every request
-    app.after() { ctx ->
-        if (ctx.path() != "/login") {
-            AuthenticationHandler.finishAuthorizedRequest(ctx)
-        }
-    }
+    
 }
