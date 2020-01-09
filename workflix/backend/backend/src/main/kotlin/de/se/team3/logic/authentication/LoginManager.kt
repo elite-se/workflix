@@ -3,7 +3,6 @@ package de.se.team3.logic.authentication
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.exceptions.NotAuthorizedException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 object LoginManager {
@@ -31,7 +30,7 @@ object LoginManager {
             throw InvalidInputException("There is more than one user with the same email address.")
         val user = userList.first()
         if (tokensInUse.map { it.user }.contains(user))
-            throw InvalidInputException("This user is already logged in.")
+            return tokensInUse.first { it.user == user }
         if (!BCryptPasswordEncoder().matches(password, user.password))
             throw InvalidInputException("Wrong password.")
         val token = AuthenticationToken(user)
@@ -46,8 +45,7 @@ object LoginManager {
      */
     fun logout(bearerToken: String) {
         val token = bearerToken.substringAfter(' ')
-        if (!tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token }))
-            throw NotAuthorizedException("This user is not logged in.")
+        tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
     }
 
     fun getActiveUser(): User? {
