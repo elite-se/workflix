@@ -6,7 +6,7 @@ import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import UserCardRead from './UserCardRead'
 import UserCardEdit from './UserCardEdit'
 import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
-import OutsideClickHandler from 'react-outside-click-handler/esm/OutsideClickHandler'
+import OutsideClickHandler from 'react-outside-click-handler'
 
 type PropsType = {|
   user: UserType,
