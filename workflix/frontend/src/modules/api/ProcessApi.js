@@ -27,6 +27,12 @@ export type ProcessConfigType = {|
 |}
 
 class ProcessApi {
+  getProcess (id: number): Promise<ProcessType> {
+    return safeFetch(`${processesBackend}/${id}`)
+      .then(response => response.json())
+      .then(parseDatesInProcess)
+  }
+
   getProcesses (filters: FiltersType = {}): Promise<ProcessType[]> {
     // convert filters into URL parameters
     const url = new URL(processesBackend)
@@ -41,13 +47,7 @@ class ProcessApi {
     return safeFetch(url)
       .then(response => response.json())
       .then(result => result.processes)
-      .then(processes => Promise.all(
-        processes.map(proc =>
-          safeFetch(`${processesBackend}/${proc.id}`)
-            .then(response => response.json())
-        )
-      ))
-      .then(processes => processes.map(parseDatesInProcess))
+      .then(processes => Promise.all(processes.map(proc => this.getProcess(proc.id))))
   }
 
   startProcess (processConfig: ProcessConfigType): Promise<NewIdResultType> {
