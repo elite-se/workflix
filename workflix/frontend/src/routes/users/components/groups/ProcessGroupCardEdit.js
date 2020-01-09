@@ -63,7 +63,8 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
     const { processGroup, users } = this.props
     return <TitledCard key={processGroup.id} title={
       <IconRow icon='office'>
-        <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'/>
+        <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'
+                      alwaysRenderInput/>
       </IconRow>
     }>
       <IconRow icon='annotation' multiLine>
