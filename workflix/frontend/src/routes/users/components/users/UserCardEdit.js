@@ -9,7 +9,7 @@ import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import UsersApi from '../../../../modules/api/UsersApi'
-import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
+import { Elevation } from '@blueprintjs/core'
 
 type PropsType = {|
   user: UserType,
