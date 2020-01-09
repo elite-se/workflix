@@ -73,11 +73,14 @@ data class TaskAssignment(
     /**
      * Closes the task assignment if possible.
      *
+     * @throws AlreadyClosedException Is thrown if the process the assignment belongs to is already closed.
      * @throws AlreadyClosedException Is thrown if the task assignment is already closed.
      * @throws UnsatisfiedPreconditionException Is thrown if the predecessors of the given task are not already closed.
      * @throws AlreadyClosedException Is thrown if the given task is already closed.
      */
     fun close(closingTime: Instant) {
+        if (!task!!.process!!.isRunning())
+            throw AlreadyClosedException("the process the assignment belongs to is already closed")
         if (isClosed())
             throw AlreadyClosedException("task assignment is already closed")
         if (task!!.isBlocked())

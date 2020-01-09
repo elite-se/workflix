@@ -89,6 +89,15 @@ class Process(
     }
 
     /**
+     * Checks whether the process is running or not.
+     *
+     * @return True iff the process is running.
+     */
+    fun isRunning(): Boolean {
+        return status == ProcessStatus.RUNNING
+    }
+
+    /**
      * Checks whether the specified user is assigned to an task of this process.
      *
      * @return True iff the specified user is assigned to at least on task of this process.

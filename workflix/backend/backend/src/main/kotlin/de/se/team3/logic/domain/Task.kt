@@ -118,6 +118,7 @@ class Task(
     /**
      * Adds the given task assignment.
      *
+     * @throws AlreadyClosedException Is thrown if the process the task belongs to is not running.
      * @throws InvalidInputException Is thrown if the task id specified in the given task assignment
      * is not equal to the id of this task.
      * @throws AlreadyExistsException Is thrown if the task assignment already exists.
@@ -126,6 +127,8 @@ class Task(
         if (taskAssignment.taskId != id)
             throw InvalidInputException("task id specified in the given task assignment must be equal to the id of this task")
 
+        if (!process!!.isRunning())
+            throw AlreadyClosedException("ths process the task belongs to is not running")
         if (isClosed())
             throw AlreadyClosedException("task is already closed")
         if (taskAssignment.isClosed() && isBlocked())
@@ -153,12 +156,15 @@ class Task(
     /**
      * Deletes the specified task assignment.
      *
+     * @throws AlreadyClosedException Is thrown if the process the task belongs to is not running.
      * @throws AlreadyExistsException Is thrown if the specified task is already closed.
      * @throws AlreadyClosedException Is thrown if the specified assignment is already closed.
      * @throws NotFoundException Is thrown if a task assignment with the specified user does not
      * exist for this task.
      */
     fun deleteTaskAssignment(assigneeId: String) {
+        if (!process!!.isRunning())
+            throw AlreadyClosedException("the process the task belongs to is nut running")
         if (isClosed())
             throw AlreadyClosedException("task is already closed")
 

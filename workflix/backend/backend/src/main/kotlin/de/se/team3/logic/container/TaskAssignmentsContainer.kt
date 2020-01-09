@@ -20,8 +20,9 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      * Note that if the doneAt property of taskAssignment is set the method tries to close the task
      * assignment immediately.
      *
+     * @throws AlreadyClosedException Is thrown if the process the assignment is addressed to is not running.
      * @throws AlreadyClosedException Is thrown if the task is already closed.
-     * @throws NotFoundException Is thrown if the predecessors of the task specified in taskAssignment are
+     * @throws UnsatisfiedPreconditionException Is thrown if the predecessors of the task specified in taskAssignment are
      * not already closed and immediate closing is required.
      * @throws NotFoundException Is thrown if the user specified in taskAssignment does not exist.
      * @throws AlreadyExistsException Is thrown it hte task assignment already exists, i.d. there is already
@@ -30,10 +31,12 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
     override fun createTaskAssignment(taskAssignment: TaskAssignment): Int {
         val task = taskAssignment.getTask() // throws not found exception
 
+        if (!task.process!!.isRunning())
+            throw AlreadyClosedException("the process the assignment is addressed to is not running")
         if (task.isClosed())
             throw AlreadyClosedException("task is already closed")
         if (taskAssignment.isClosed() && task.isBlocked())
-            throw NotFoundException("the assignment can only be closed if all predecessors have been closed")
+            throw UnsatisfiedPreconditionException("the assignment can only be closed if all predecessors have been closed")
         if (task.hasAssignment(taskAssignment))
             throw AlreadyExistsException("task assignment already exists")
 
@@ -53,6 +56,7 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      * Note that a task assignment that belongs to a closed task could not be closed even
      * if the task assignment itself is not closed.
      *
+     * @throws AlreadyClosedException Is thrown if the process the assignment is addressed to is not running.
      * @throws AlreadyClosedException Is thrown if the specified assignment is already closed.
      * @throws NotFoundException Is thrown if the predecessors of the given task are not already closed.
      * @throws UnsatisfiedPreconditionException Is thrown if the given task is already closed.
@@ -62,6 +66,8 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
         val task = TasksContainer.getTask(taskAssignment.taskId) // throws NotFound
 
         // check preconditions
+        if (!task.process!!.isRunning())
+            throw AlreadyClosedException("the process the assignment is addressed to is not running")
         val currentTaskAssignment = task.getTaskAssignment(taskAssignment.assigneeId) // throws NotFound
         if (currentTaskAssignment.isClosed())
             throw AlreadyClosedException("task assignment is already closed")
@@ -87,6 +93,8 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
      * Note that a task assignment that belongs to a closed task could not be deleted even
      * if the task assignment itself is not closed.
      *
+     * @throws AlreadyClosedException Is thrown if the process the given assignment is addressed to
+     * is not running.
      * @throws AlreadyClosedException Is thrown if the specified task assignment is already closed.
      * @throws AlreadyClosedException Is thrown if the specified task is already closed.
      * @throws NotFoundException Is thrown if the specified task assignment does not exist.
@@ -94,6 +102,9 @@ object TaskAssignmentsContainer : TaskAssignmentsContainerInterface {
     override fun deleteTaskAssignment(taskAssignment: TaskAssignment) {
         val task = TasksContainer.getTask(taskAssignment.taskId)
 
+        // check preconditions
+        if (!task.process!!.isRunning())
+            throw AlreadyClosedException("the process the assignment is addressed to is not running")
         val currentTaskAssignment = task.getTaskAssignment(taskAssignment.assigneeId)
         if (currentTaskAssignment.isClosed())
             throw AlreadyClosedException("task assignment is already closed")
