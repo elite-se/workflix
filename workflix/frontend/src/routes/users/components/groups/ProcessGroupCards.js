@@ -12,7 +12,7 @@ type PropsType = {|
   processGroups: Map<number, ProcessGroupType>,
   selection: ?ProcessGroupType,
   onUserSelected: (UserType) => void,
-  onProcessGroupSelected: (ProcessGroupType) => void,
+  onProcessGroupSelected: (?ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
   onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
   onProcessGroupChanged: (ProcessGroupType) => void

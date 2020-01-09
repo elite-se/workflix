@@ -66,8 +66,10 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
         <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'/>
       </IconRow>
     }>
-      <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
+      <IconRow icon='annotation' multiLine>
+        <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
                     placeholder='Description' multiline/>
+      </IconRow>
       <IconRow icon='person' multiLine>
         <SimpleMultiSelect items={Array.from(users.values())} selection={this.getSelectedUsers()}
                            multiSelectProps={{
