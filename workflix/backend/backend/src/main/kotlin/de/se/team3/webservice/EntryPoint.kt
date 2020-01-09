@@ -7,16 +7,7 @@ import de.se.team3.logic.exceptions.NotAuthorizedException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.webservice.handlers.AuthenticationHandler
-import de.se.team3.webservice.handlers.ProcessGroupsHandler
-import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
-import de.se.team3.webservice.handlers.ProcessTemplatesHandler
-import de.se.team3.webservice.handlers.ProcessesHandler
-import de.se.team3.webservice.handlers.TasksAssignmentsHandler
-import de.se.team3.webservice.handlers.TasksCommentsHandler
-import de.se.team3.webservice.handlers.UserHandler
-import de.se.team3.webservice.handlers.UserRolesHandler
-import de.se.team3.webservice.handlers.UserRolesMembersHandler
+import de.se.team3.webservice.handlers.*
 import io.javalin.Javalin
 import java.lang.NumberFormatException
 import org.json.JSONException
@@ -67,7 +58,9 @@ fun main(args: Array<String>) {
 
     // authentication handling before every request (excluding login)
     app.before() { ctx ->
-        if (ctx.path() != "/login") {
+        if (ctx.method() == "OPTIONS") {
+            CORSHandler.optionsRequest(ctx)
+        } else if (ctx.path() != "/login") {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }
@@ -195,7 +188,7 @@ fun main(args: Array<String>) {
 
     // necessary to reset the active user after every request
     app.after() { ctx ->
-        if (ctx.path() != "/login") {
+        if (ctx.path() != "/login" && ctx.method() != "OPTIONS") {
             AuthenticationHandler.finishAuthorizedRequest(ctx)
         }
     }
