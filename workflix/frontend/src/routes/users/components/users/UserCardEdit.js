@@ -64,12 +64,14 @@ class UserCardEdit extends React.Component<PropsType> {
       <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
       <IconRow icon='office'>
         <SimpleMultiSelect items={Array.from(processGroups.values())} selection={selectedGroups}
-                           onSelectionChanged={this.onSelectedGroupsChanged} multiSelectProps={{ fill: true }}
+                           onSelectionChanged={this.onSelectedGroupsChanged}
+                           multiSelectProps={{ fill: true, popoverProps: { usePortal: false } }}
                            toID={this.getGroupId} render={this.getGroupTitle}/>
       </IconRow>
       <IconRow icon='badge'>
         <SimpleMultiSelect items={Array.from(roles.values())} selection={selectedRoles}
-                           onSelectionChanged={this.onSelectedRolesChanged} multiSelectProps={{ fill: true }}
+                           onSelectionChanged={this.onSelectedRolesChanged}
+                           multiSelectProps={{ fill: true, popoverProps: { usePortal: false } }}
                            toID={this.getRoleId} render={this.getRoleName}/>
       </IconRow>
     </TitledCard>

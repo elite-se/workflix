@@ -6,6 +6,7 @@ import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import UserCardRead from './UserCardRead'
 import UserCardEdit from './UserCardEdit'
 import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
+import OutsideClickHandler from 'react-outside-click-handler/esm/OutsideClickHandler'
 
 type PropsType = {|
   user: UserType,
@@ -21,23 +22,23 @@ type PropsType = {|
   onRoleMembershipRemoved: (UserRoleType, UserType) => void
 |}
 
-type StateType = {|
-  editing: boolean
-|}
+class UserCard extends React.Component<PropsType> {
+  onDeselection = () => {
+    this.props.onUserSelected(null)
+  }
 
-class UserCard extends React.Component<PropsType, StateType> {
   render () {
     const {
       user, processGroups, roles, onRoleSelected, onProcessGroupSelected, onGroupMembershipAdded,
       onGroupMembershipRemoved, onRoleMembershipAdded, onRoleMembershipRemoved, selected, onUserSelected
     } = this.props
     return selected
-      ? <ScrollIntoViewOnMount>
+      ? <OutsideClickHandler onOutsideClick={this.onDeselection}><ScrollIntoViewOnMount>
         <UserCardEdit user={user} processGroups={processGroups} roles={roles}
                       onGroupMembershipAdded={onGroupMembershipAdded}
                       onGroupMembershipRemoved={onGroupMembershipRemoved}
                       onRoleMembershipAdded={onRoleMembershipAdded} onRoleMembershipRemoved={onRoleMembershipRemoved}/>
-      </ScrollIntoViewOnMount>
+      </ScrollIntoViewOnMount></OutsideClickHandler>
       : <UserCardRead user={user} processGroups={processGroups} roles={roles} onUserSelected={onUserSelected}
                       onRoleSelected={onRoleSelected} onProcessGroupSelected={onProcessGroupSelected}/>
   }
