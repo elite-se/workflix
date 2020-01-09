@@ -11,6 +11,7 @@ import ButtonWithDialog from '../../../modules/common/components/ButtonWithDialo
 import TaskListViewer from './TaskListViewer'
 import { toastifyError } from '../../../modules/common/toastifyError'
 import { navigate } from '@reach/router'
+import ProcessDetailsEditor from './ProcessDetailsEditor'
 
 type PropsType = {|
   id: number,
@@ -40,6 +41,10 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
     drawerOpened: false
   }
 
+  onTitleChange = (title: string) => this.setState({ title })
+  onDescriptionChange = (description: string) => this.setState({ description })
+  onDeadlineChange = (deadline: Date) => this.setState({ deadline })
+
   setDrawerOpened = (drawerOpened: boolean) => this.setState({ drawerOpened })
 
   onSaveClick = () => {
@@ -63,7 +68,7 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
 
   render () {
     const { process, template, userRoles, users } = this.props
-    const { saveLoading, abortLoading, drawerOpened } = this.state
+    const { saveLoading, abortLoading, drawerOpened, title, description, deadline } = this.state
 
     return <div style={{
       flex: 1,
@@ -87,6 +92,9 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
           marginLeft: '40px'
         }}>Process Details</H2>
       </ButtonGroup>
+      <ProcessDetailsEditor onTitleChange={this.onTitleChange} title={title} process={process} deadline={deadline}
+                            onDeadlineChange={this.onDeadlineChange} onDescriptionChange={this.onDescriptionChange}
+                            description={description} users={users}/>
       <TaskListViewer tasks={process.tasks}
                       users={users}
                       taskTemplates={new Map(template.taskTemplates.map(template => [template.id, template]))}
