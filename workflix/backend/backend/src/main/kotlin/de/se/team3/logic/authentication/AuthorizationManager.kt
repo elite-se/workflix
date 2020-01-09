@@ -1,4 +1,4 @@
-package de.se.team3.logic.authentification
+package de.se.team3.logic.authentication
 
 object AuthorizationManager {
 
@@ -10,22 +10,7 @@ object AuthorizationManager {
      */
     fun authorizeRequest(bearerToken: String): Boolean {
         val stringToken = bearerToken.substringAfter(' ')
-        return if (tokenIsRegistered(stringToken)) {
-            LoginManager.setActiveUser(stringToken)
-            true
-        } else
-            false
-    }
-
-    /**
-     * Finishes a request if the request was authorized.
-     *
-     * @param bearerToken Token of the form "Bearer $token"
-     * @return true iff the request to be finished was authorized
-     */
-    fun finishAuthorizedRequest(bearerToken: String): Boolean {
-        val stringToken = bearerToken.substringAfter(' ')
-        return LoginManager.removeActiveUser(stringToken)
+        return tokenIsRegistered(stringToken)
     }
 
     /**

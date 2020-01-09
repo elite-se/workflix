@@ -3,11 +3,7 @@ package de.se.team3.webservice.util
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -31,10 +27,8 @@ object JsonHelper {
 
     fun getInstantFromString(value: String?): Instant? {
         return if (value == null) null else {
-            LocalDateTime.parse(
-                value,
-                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.GERMANY)
-            ).toInstant(ZoneOffset.UTC)
+            val formatter = DateTimeFormatter.ISO_INSTANT
+            Instant.from(formatter.parse(value))
         }
     }
 }
