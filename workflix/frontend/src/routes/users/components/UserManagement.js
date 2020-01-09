@@ -22,7 +22,10 @@ type StateType = {|
   mode: 'USERS' | 'GROUPS' | 'ROLES',
   users: Map<string, UserType>,
   processGroups: Map<number, ProcessGroupType>,
-  roles: Map<number, UserRoleType>
+  roles: Map<number, UserRoleType>,
+  selectedUserId: ?string,
+  selectedGroupId: ?number,
+  selectedRoleId: ?number
 |}
 
 class UserManagement extends React.Component<PropsType, StateType> {
@@ -30,19 +33,31 @@ class UserManagement extends React.Component<PropsType, StateType> {
     mode: 'USERS',
     users: this.props.initialUsers,
     processGroups: this.props.initialProcessGroups,
-    roles: this.props.initialRoles
+    roles: this.props.initialRoles,
+    selectedUserId: null,
+    selectedGroupId: null,
+    selectedRoleId: null
   }
 
-  onProcessGroupSelected = (group: ProcessGroupType) => {
-    this.setState({ mode: 'GROUPS' })
+  onProcessGroupSelected = (group: ?ProcessGroupType) => {
+    this.setState({
+      mode: 'GROUPS',
+      selectedGroupId: group && group.id
+    })
   }
 
-  onRoleSelected = (role: UserRoleType) => {
-    this.setState({ mode: 'ROLES' })
+  onRoleSelected = (role: ?UserRoleType) => {
+    this.setState({
+      mode: 'ROLES',
+      selectedRoleId: role && role.id
+    })
   }
 
-  onUserSelected = (user: UserType) => {
-    this.setState({ mode: 'USERS' })
+  onUserSelected = (user: ?UserType) => {
+    this.setState({
+      mode: 'USERS',
+      selectedUserId: user && user.id
+    })
   }
 
   onGroupMembershipAdded = (group: ProcessGroupType, user: UserType) => {
@@ -106,19 +121,25 @@ class UserManagement extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { processGroups, roles, users } = this.state
+    const { processGroups, roles, users, selectedUserId, selectedGroupId, selectedRoleId } = this.state
+    const selectedUser = (selectedUserId && users.get(selectedUserId)) || null
+    const selectedRole = (selectedRoleId && roles.get(selectedRoleId)) || null
+    const selectedGroup = (selectedGroupId && processGroups.get(selectedGroupId)) || null
     switch (this.state.mode) {
       case 'USERS':
-        return <UserCards users={users} processGroups={processGroups} roles={roles}
-                          onRoleSelected={this.onRoleSelected} onProcessGroupSelected={this.onProcessGroupSelected}
+        return <UserCards users={users} processGroups={processGroups} roles={roles} selection={selectedUser}
+                          onUserSelected={this.onUserSelected}
+                          onRoleSelected={this.onRoleSelected}
+                          onProcessGroupSelected={this.onProcessGroupSelected}
                           onGroupMembershipAdded={this.onGroupMembershipAdded}
                           onGroupMembershipRemoved={this.onGroupMembershipRemoved}
                           onRoleMembershipAdded={this.onRoleMembershipAdded}
                           onRoleMembershipRemoved={this.onRoleMembershipRemoved}/>
       case 'ROLES':
-        return <RoleCards roles={roles} users={users} onUserSelected={this.onUserSelected}/>
+        return <RoleCards roles={roles} users={users} onUserSelected={this.onUserSelected} selection={selectedRole}/>
       case 'GROUPS':
-        return <ProcessGroupCards processGroups={processGroups} users={users} onUserSelected={this.onUserSelected}/>
+        return <ProcessGroupCards processGroups={processGroups} users={users} onUserSelected={this.onUserSelected}
+                                  selection={selectedGroup}/>
       default:
         return null
     }
