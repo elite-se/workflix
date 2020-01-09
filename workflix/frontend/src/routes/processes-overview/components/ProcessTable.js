@@ -10,6 +10,7 @@ import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import type { FiltersType } from '../../../modules/datatypes/Filters'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import ProcessProgress from '../../../modules/common/components/ProcessProgress'
+import { navigate } from '@reach/router'
 
 const ProcessTableWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
@@ -26,6 +27,8 @@ type PropsType = {|
 |}
 
 class ProcessList extends React.Component<PropsType> {
+  navigateToProcess = (process: ProcessType) => () => navigate(`processes/${process.id}`)
+
   render () {
     const { processes, users, processGroups } = this.props
     return <div style={{
@@ -51,14 +54,13 @@ class ProcessList extends React.Component<PropsType> {
               </thead>
               <tbody>
               {processes.map(process => (
-                <tr key={process.id}>
+                <tr key={process.id} onClick={this.navigateToProcess(process)}>
                   <td>{process.id}</td>
                   <td>{process.title}</td>
                   <td>{process.startedAt.toLocaleString()}</td>
                   <td><ProcessProgress process={process}/></td>
                   <td>{processGroups.get(process.processGroupId)?.title || ''}</td>
-                  <td>{users.get(process.starterId)?.name || ''}</td>
-                </tr>
+                  <td>{users.get(process.starterId)?.name || ''}</td></tr>
               ))}
               </tbody>
             </HTMLTable>
