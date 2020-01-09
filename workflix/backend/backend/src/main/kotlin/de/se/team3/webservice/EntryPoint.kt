@@ -8,6 +8,7 @@ import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.AuthenticationHandler
+import de.se.team3.webservice.handlers.CORSHandler
 import de.se.team3.webservice.handlers.ProcessGroupsHandler
 import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
@@ -67,7 +68,9 @@ fun main(args: Array<String>) {
 
     // authentication handling before every request (excluding login)
     app.before() { ctx ->
-        if (ctx.path() != "/login") {
+        if (ctx.method() == "OPTIONS") {
+            CORSHandler.optionsRequest(ctx)
+        } else if (ctx.path() != "/login") {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }
@@ -195,7 +198,7 @@ fun main(args: Array<String>) {
 
     // necessary to reset the active user after every request
     app.after() { ctx ->
-        if (ctx.path() != "/login") {
+        if (ctx.path() != "/login" && ctx.method() != "OPTIONS") {
             AuthenticationHandler.finishAuthorizedRequest(ctx)
         }
     }
