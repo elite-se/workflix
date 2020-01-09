@@ -7,7 +7,7 @@ export type TaskCommentType = {
   createdAt: Date
 }
 
-export type TaskStateType = 'BLOCKED' | 'RUNNING' | 'CLOSED'
+export type TaskStatusType = 'BLOCKED' | 'RUNNING' | 'CLOSED'
 
 export type TaskAssignmentType = {|
   id: ?number,
@@ -30,7 +30,7 @@ export type TaskTemplateType = {|
 export type TaskType = {|
   id: number,
   taskTemplateId: number,
-  status: TaskStateType,
+  status: TaskStatusType,
   comments: TaskCommentType[],
   assignments: TaskAssignmentType[]
 |}
