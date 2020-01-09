@@ -11,6 +11,14 @@ import ProcessGroupCards from './groups/ProcessGroupCards'
 import RoleCards from './roles/RoleCards'
 import { uniq, without } from 'lodash'
 import { mapMap } from '../../../modules/common/mapMap'
+import { Tab, Tabs } from '@blueprintjs/core'
+import styled from 'styled-components'
+
+const CenteredTabs = styled(Tabs)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 
 type PropsType = {|
   initialUsers: Map<string, UserType>,
@@ -18,8 +26,10 @@ type PropsType = {|
   initialRoles: Map<number, UserRoleType>
 |}
 
+type ModeType = 'USERS' | 'GROUPS' | 'ROLES'
+
 type StateType = {|
-  mode: 'USERS' | 'GROUPS' | 'ROLES',
+  mode: ModeType,
   users: Map<string, UserType>,
   processGroups: Map<number, ProcessGroupType>,
   roles: Map<number, UserRoleType>,
@@ -59,6 +69,8 @@ class UserManagement extends React.Component<PropsType, StateType> {
       selectedUserId: user && user.id
     })
   }
+
+  onTabSelected = (newMode: ModeType) => this.setState({ mode: newMode })
 
   onGroupMembershipAdded = (group: ProcessGroupType, user: UserType) => {
     this.setState(oldState => ({
@@ -131,28 +143,28 @@ class UserManagement extends React.Component<PropsType, StateType> {
     const selectedUser = (selectedUserId && users.get(selectedUserId)) || null
     const selectedRole = (selectedRoleId && roles.get(selectedRoleId)) || null
     const selectedGroup = (selectedGroupId && processGroups.get(selectedGroupId)) || null
-    switch (this.state.mode) {
-      case 'USERS':
-        return <UserCards users={users} processGroups={processGroups} roles={roles} selection={selectedUser}
-                          onUserSelected={this.onUserSelected}
-                          onRoleSelected={this.onRoleSelected}
-                          onProcessGroupSelected={this.onProcessGroupSelected}
-                          onGroupMembershipAdded={this.onGroupMembershipAdded}
-                          onGroupMembershipRemoved={this.onGroupMembershipRemoved}
-                          onRoleMembershipAdded={this.onRoleMembershipAdded}
-                          onRoleMembershipRemoved={this.onRoleMembershipRemoved}/>
-      case 'ROLES':
-        return <RoleCards roles={roles} users={users} onUserSelected={this.onUserSelected} selection={selectedRole}/>
-      case 'GROUPS':
-        return <ProcessGroupCards processGroups={processGroups} users={users} onUserSelected={this.onUserSelected}
-                                  selection={selectedGroup}
+    const usersPanel = <UserCards users={users} processGroups={processGroups} roles={roles} selection={selectedUser}
+                                  onUserSelected={this.onUserSelected}
+                                  onRoleSelected={this.onRoleSelected}
                                   onProcessGroupSelected={this.onProcessGroupSelected}
                                   onGroupMembershipAdded={this.onGroupMembershipAdded}
                                   onGroupMembershipRemoved={this.onGroupMembershipRemoved}
-                                  onProcessGroupChanged={this.onProcessGroupChanged}/>
-      default:
-        return null
-    }
+                                  onRoleMembershipAdded={this.onRoleMembershipAdded}
+                                  onRoleMembershipRemoved={this.onRoleMembershipRemoved}/>
+    const rolesPanel = <RoleCards roles={roles} users={users} onUserSelected={this.onUserSelected}
+                                  selection={selectedRole}/>
+    const groupsPanel = <ProcessGroupCards processGroups={processGroups} users={users}
+                                           onUserSelected={this.onUserSelected}
+                                           selection={selectedGroup}
+                                           onProcessGroupSelected={this.onProcessGroupSelected}
+                                           onGroupMembershipAdded={this.onGroupMembershipAdded}
+                                           onGroupMembershipRemoved={this.onGroupMembershipRemoved}
+                                           onProcessGroupChanged={this.onProcessGroupChanged}/>
+    return <CenteredTabs selectedTabId={this.state.mode} onChange={this.onTabSelected} large>
+      <Tab id='USERS' title='Users' panel={usersPanel}/>
+      <Tab id='GROUPS' title='Process groups' panel={groupsPanel}/>
+      <Tab id='ROLES' title='Roles' panel={rolesPanel}/>
+    </CenteredTabs>
   }
 }
 
