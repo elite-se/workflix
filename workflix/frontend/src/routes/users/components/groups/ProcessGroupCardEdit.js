@@ -8,7 +8,7 @@ import TitledCard from '../TitledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
-import { EditableText } from '@blueprintjs/core'
+import { EditableText, Elevation } from '@blueprintjs/core'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
@@ -61,7 +61,7 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
 
   render () {
     const { processGroup, users } = this.props
-    return <TitledCard key={processGroup.id} title={
+    return <TitledCard key={processGroup.id} elevation={Elevation.FOUR} title={
       <IconRow icon='office'>
         <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'
                       alwaysRenderInput/>

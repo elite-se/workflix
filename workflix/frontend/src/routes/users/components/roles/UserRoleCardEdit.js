@@ -6,7 +6,7 @@ import IconRow from '../IconRow'
 import TitledCard from '../TitledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
-import { EditableText } from '@blueprintjs/core'
+import { EditableText, Elevation } from '@blueprintjs/core'
 import UsersApi from '../../../../modules/api/UsersApi'
 
 type PropsType = {|
@@ -60,7 +60,7 @@ class UserRoleCardEdit extends React.Component<PropsType> {
 
   render () {
     const { userRole, users } = this.props
-    return <TitledCard key={userRole.id} title={
+    return <TitledCard key={userRole.id} elevation={Elevation.FOUR} title={
       <IconRow icon='people'>
         <EditableText onConfirm={this.onNameChanged} defaultValue={userRole.name} placeholder='Name'
                       alwaysRenderInput/>
