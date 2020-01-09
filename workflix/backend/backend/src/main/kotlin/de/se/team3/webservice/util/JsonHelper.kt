@@ -31,10 +31,9 @@ object JsonHelper {
 
     fun getInstantFromString(value: String?): Instant? {
         return if (value == null) null else {
-            LocalDateTime.parse(
-                value,
-                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.GERMANY)
-            ).toInstant(ZoneOffset.UTC)
+            val formatter = DateTimeFormatter.ISO_INSTANT
+            LocalDateTime.parse(value, formatter)
+                .toInstant(ZoneOffset.UTC)
         }
     }
 }
