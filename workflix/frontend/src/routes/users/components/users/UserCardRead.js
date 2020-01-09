@@ -7,6 +7,7 @@ import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import TitledCard from '../TitledCard'
 import IconRow from '../IconRow'
 import listIfNeeded from '../../listIfNeeded'
+import stopPropagation from '../../../../modules/common/stopPropagation'
 
 type PropsType = {|
   user: UserType,
@@ -16,11 +17,6 @@ type PropsType = {|
   onRoleSelected: (UserRoleType) => void,
   onProcessGroupSelected: (ProcessGroupType) => void
 |}
-
-const stopPropagation = (handler: () => void) => (event: SyntheticEvent<HTMLElement>) => {
-  handler()
-  event.stopPropagation()
-}
 
 class UserCardRead extends React.Component<PropsType> {
   onProcessGroupSelected = (group: ProcessGroupType) => stopPropagation(() => this.props.onProcessGroupSelected(group))
