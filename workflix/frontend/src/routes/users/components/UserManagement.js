@@ -120,6 +120,12 @@ class UserManagement extends React.Component<PropsType, StateType> {
     }))
   }
 
+  onProcessGroupChanged = (processGroup: ProcessGroupType) => {
+    this.setState(oldState => ({
+      processGroups: mapMap(oldState.processGroups, (id, _group) => id === processGroup.id ? processGroup : _group)
+    }))
+  }
+
   render () {
     const { processGroups, roles, users, selectedUserId, selectedGroupId, selectedRoleId } = this.state
     const selectedUser = (selectedUserId && users.get(selectedUserId)) || null
@@ -142,7 +148,8 @@ class UserManagement extends React.Component<PropsType, StateType> {
                                   selection={selectedGroup}
                                   onProcessGroupSelected={this.onProcessGroupSelected}
                                   onGroupMembershipAdded={this.onGroupMembershipAdded}
-                                  onGroupMembershipRemoved={this.onGroupMembershipRemoved}/>
+                                  onGroupMembershipRemoved={this.onGroupMembershipRemoved}
+                                  onProcessGroupChanged={this.onProcessGroupChanged}/>
       default:
         return null
     }

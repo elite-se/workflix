@@ -8,12 +8,14 @@ import TitledCard from '../TitledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
+import { EditableText } from '@blueprintjs/core'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
   users: Map<string, UserType>,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
-  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
+  onProcessGroupChanged: (ProcessGroupType) => void
 |}
 
 class ProcessGroupCardEdit extends React.Component<PropsType> {
@@ -35,11 +37,37 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
     this.getSelectedUsers().forEach(user => this.onUserRemoved(user))
   }
 
+  patchAndPropagate = (updatedGroup: ProcessGroupType) => {
+    new ProcessGroupsApi().patchProcessGroup(updatedGroup)
+      .then(this.props.onProcessGroupChanged(updatedGroup))
+      .catch(toastifyError)
+  }
+
+  onTitleChanged = (title: string) => {
+    this.patchAndPropagate({
+      ...this.props.processGroup,
+      title
+    })
+  }
+
+  onDescriptionChanged = (description: string) => {
+    this.patchAndPropagate({
+      ...this.props.processGroup,
+      description
+    })
+  }
+
   getSelectedUsers = () => this.props.processGroup.membersIds.map(id => this.props.users.get(id)).filter(Boolean)
 
   render () {
     const { processGroup, users } = this.props
-    return <TitledCard key={processGroup.id} title={<IconRow icon='office'>{processGroup.title}</IconRow>}>
+    return <TitledCard key={processGroup.id} title={
+      <IconRow icon='office'>
+        <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'/>
+      </IconRow>
+    }>
+      <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
+                    placeholder='Description' multiline/>
       <IconRow icon='person' multiLine>
         <SimpleMultiSelect items={Array.from(users.values())} selection={this.getSelectedUsers()}
                            multiSelectProps={{

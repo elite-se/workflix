@@ -15,20 +15,22 @@ type PropsType = {|
   onUserSelected: (UserType) => void,
   onProcessGroupSelected: (ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
-  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
+  onProcessGroupChanged: (ProcessGroupType) => void
 |}
 
 class ProcessGroupCard extends React.Component<PropsType> {
   render () {
     const {
       processGroup, users, onUserSelected, selected, onProcessGroupSelected, onGroupMembershipAdded,
-      onGroupMembershipRemoved
+      onGroupMembershipRemoved, onProcessGroupChanged
     } = this.props
     return selected
       ? <OutsideClickHandler><ScrollIntoViewOnMount>
         <ProcessGroupCardEdit processGroup={processGroup} users={users}
                               onGroupMembershipAdded={onGroupMembershipAdded}
-                              onGroupMembershipRemoved={onGroupMembershipRemoved}/>
+                              onGroupMembershipRemoved={onGroupMembershipRemoved}
+                              onProcessGroupChanged={onProcessGroupChanged}/>
       </ScrollIntoViewOnMount></OutsideClickHandler>
       : <ProcessGroupCardRead processGroup={processGroup} users={users} onUserSelected={onUserSelected}
                               onProcessGroupSelected={onProcessGroupSelected}/>

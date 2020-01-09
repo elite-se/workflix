@@ -14,7 +14,8 @@ type PropsType = {|
   onUserSelected: (UserType) => void,
   onProcessGroupSelected: (ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
-  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
+  onProcessGroupChanged: (ProcessGroupType) => void
 |}
 
 export default class ProcessGroupCards extends React.Component<PropsType> {
