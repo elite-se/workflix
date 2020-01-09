@@ -18,17 +18,6 @@ object AuthorizationManager {
     }
 
     /**
-     * Finishes a request if the request was authorized.
-     *
-     * @param bearerToken Token of the form "Bearer $token"
-     * @return true iff the request to be finished was authorized
-     */
-    fun finishAuthorizedRequest(bearerToken: String): Boolean {
-        val stringToken = bearerToken.substringAfter(' ')
-        return LoginManager.removeActiveUser(stringToken)
-    }
-
-    /**
      * @param token token used as verification
      * @return true iff the given token is registered as in use
      */
