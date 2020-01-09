@@ -70,7 +70,12 @@ class UserManagement extends React.Component<PropsType, StateType> {
     })
   }
 
-  onTabSelected = (newMode: ModeType) => this.setState({ mode: newMode })
+  onTabSelected = (newMode: ModeType) => this.setState({
+    mode: newMode,
+    selectedUserId: null,
+    selectedGroupId: null,
+    selectedRoleId: null
+  })
 
   onGroupMembershipAdded = (group: ProcessGroupType, user: UserType) => {
     this.setState(oldState => ({
@@ -170,7 +175,7 @@ class UserManagement extends React.Component<PropsType, StateType> {
                                            onGroupMembershipAdded={this.onGroupMembershipAdded}
                                            onGroupMembershipRemoved={this.onGroupMembershipRemoved}
                                            onProcessGroupChanged={this.onProcessGroupChanged}/>
-    return <CenteredTabs selectedTabId={this.state.mode} onChange={this.onTabSelected} large>
+    return <CenteredTabs selectedTabId={this.state.mode} onChange={this.onTabSelected} large renderActiveTabPanelOnly>
       <Tab id='USERS' title='Users' panel={usersPanel}/>
       <Tab id='GROUPS' title='Process groups' panel={groupsPanel}/>
       <Tab id='ROLES' title='Roles' panel={rolesPanel}/>
