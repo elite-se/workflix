@@ -2,7 +2,7 @@
 
 import { times } from 'lodash'
 
-export type GraphDataType<T: number | ?number> = { id: number, predecessors: number[], estimatedDuration: T }
+export type GraphDataType<N: number | ?number> = { id: number, predecessors: number[], estimatedDuration: N }
 
 export type ProcessedNodeType<N: number | ?number, T: GraphDataType<N>> = {|
   data: T,
