@@ -39,24 +39,24 @@ class UserManagement extends React.Component<PropsType, StateType> {
     selectedRoleId: null
   }
 
-  onProcessGroupSelected = (group: ProcessGroupType) => {
+  onProcessGroupSelected = (group: ?ProcessGroupType) => {
     this.setState({
       mode: 'GROUPS',
-      selectedGroupId: group.id
+      selectedGroupId: group && group.id
     })
   }
 
-  onRoleSelected = (role: UserRoleType) => {
+  onRoleSelected = (role: ?UserRoleType) => {
     this.setState({
       mode: 'ROLES',
-      selectedRoleId: role.id
+      selectedRoleId: role && role.id
     })
   }
 
-  onUserSelected = (user: UserType) => {
+  onUserSelected = (user: ?UserType) => {
     this.setState({
       mode: 'USERS',
-      selectedUserId: user.id
+      selectedUserId: user && user.id
     })
   }
 

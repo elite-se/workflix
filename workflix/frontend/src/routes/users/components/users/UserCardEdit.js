@@ -11,7 +11,6 @@ import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import UsersApi from '../../../../modules/api/UsersApi'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
-import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
 
 type PropsType = {|
   user: UserType,
@@ -60,7 +59,7 @@ class UserCardEdit extends React.Component<PropsType> {
     const { user, processGroups, roles } = this.props
     const selectedGroups = this.props.user.processGroupIds.map(id => this.props.processGroups.get(id)).filter(Boolean)
     const selectedRoles = this.props.user.userRoleIds.map(id => this.props.roles.get(id)).filter(Boolean)
-    return <ScrollIntoViewOnMount><TitledCard key={user.id} title={user.name} elevation={Elevation.FOUR}>
+    return <TitledCard key={user.id} title={user.name} elevation={Elevation.FOUR}>
       <IconRow icon='person'>{user.displayname}</IconRow>
       <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
       <IconRow icon='office'>
@@ -73,7 +72,7 @@ class UserCardEdit extends React.Component<PropsType> {
                            onSelectionChanged={this.onSelectedRolesChanged} multiSelectProps={{ fill: true }}
                            toID={this.getRoleId} render={this.getRoleName}/>
       </IconRow>
-    </TitledCard></ScrollIntoViewOnMount>
+    </TitledCard>
   }
 
   getGroupId = (group: ProcessGroupType) => group.id
