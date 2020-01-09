@@ -12,6 +12,7 @@ import TaskListViewer from './TaskListViewer'
 import { toastifyError } from '../../../modules/common/toastifyError'
 import { navigate } from '@reach/router'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
+import AppToaster from '../../../modules/app/AppToaster'
 
 type PropsType = {|
   id: number,
@@ -47,7 +48,25 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
 
   setDrawerOpened = (drawerOpened: boolean) => this.setState({ drawerOpened })
 
-  onSaveClick = () => {
+  onSaveClick = async () => {
+    const { title, deadline, description } = this.state
+    if (!title || !deadline) {
+      AppToaster.show({
+        intent: 'danger',
+        icon: 'error',
+        message: 'Please fill in all required values.'
+      })
+      return
+    }
+    this.setState({ saveLoading: true })
+    try {
+      await new ProcessApi().patchProcess(this.props.process.id, title, description, deadline)
+      this.setState({ saveLoading: false })
+      navigate('/processes')
+    } catch (e) {
+      toastifyError(e)
+      this.setState({ saveLoading: false })
+    }
   }
 
   onAbortClick = async () => {

@@ -53,7 +53,10 @@ class ProcessApi {
   startProcess (processConfig: ProcessConfigType): Promise<NewIdResultType> {
     return safeFetch(`${processesBackend}`, {
       method: 'POST',
-      body: JSON.stringify({ ...processConfig, deadline: processConfig.deadline.toISOString() })
+      body: JSON.stringify({
+        ...processConfig,
+        deadline: processConfig.deadline.toISOString()
+      })
     })
       .then(response => response.json())
   }
@@ -138,6 +141,17 @@ class ProcessApi {
 
   abortProcess (processId: number): Promise<Response> {
     return safeFetch(`${processesBackend}/${processId}`, { method: 'DELETE' })
+  }
+
+  patchProcess (processId: number, title: string, description: string, deadline: Date): Promise<Response> {
+    return safeFetch(`${processesBackend}/${processId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        title,
+        description,
+        deadline: deadline.toISOString()
+      })
+    })
   }
 }
 
