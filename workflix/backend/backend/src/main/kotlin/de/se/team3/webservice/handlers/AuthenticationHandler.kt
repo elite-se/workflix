@@ -23,20 +23,6 @@ object AuthenticationHandler {
     }
 
     /**
-     * Finishes (authorized) requests.
-     * Its main functionality is to tell the LoginManager it has to reset the active user.
-     * If all is well, it runs through.
-     * Otherwise, an exception is thrown.
-     */
-    fun finishAuthorizedRequest(ctx: Context) {
-        val bearerToken = ctx.header("Authorization")
-            ?: throw InvalidInputException("Every request must be enriched by an authorization token.")
-
-        if (!AuthorizationManager.finishAuthorizedRequest(bearerToken))
-            throw NotAuthorizedException("You were not authorized to perform this request. How did you do this?")
-    }
-
-    /**
      * Logs a user in to the system.
      */
     fun login(ctx: Context) {
