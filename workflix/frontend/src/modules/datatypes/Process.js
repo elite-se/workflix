@@ -40,3 +40,9 @@ export type ProcessType = {|
   startedAt: Date,
   tasks: TaskType[]
 |}
+
+export const statusTranslation = {
+  ABORTED: 'aborted',
+  CLOSED: 'done',
+  RUNNING: 'running'
+}

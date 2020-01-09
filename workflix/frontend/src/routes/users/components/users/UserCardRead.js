@@ -7,22 +7,21 @@ import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import TitledCard from '../TitledCard'
 import IconRow from '../IconRow'
 import listIfNeeded from '../../listIfNeeded'
-import { Button, ButtonGroup } from '@blueprintjs/core'
+import stopPropagation from '../../../../modules/common/stopPropagation'
 
 type PropsType = {|
   user: UserType,
   processGroups: Map<number, ProcessGroupType>,
   roles: Map<number, UserRoleType>,
+  onUserSelected: (UserType) => void,
   onRoleSelected: (UserRoleType) => void,
-  onProcessGroupSelected: (ProcessGroupType) => void,
-  onSetEditing: (boolean) => void
+  onProcessGroupSelected: (ProcessGroupType) => void
 |}
 
 class UserCardRead extends React.Component<PropsType> {
-  onProcessGroupSelected = (group: ProcessGroupType) => () => this.props.onProcessGroupSelected(group)
-  onRoleSelected = (role: UserRoleType) => () => this.props.onRoleSelected(role)
-
-  onEdit = () => this.props.onSetEditing(true)
+  onProcessGroupSelected = (group: ProcessGroupType) => stopPropagation(() => this.props.onProcessGroupSelected(group))
+  onRoleSelected = (role: UserRoleType) => stopPropagation(() => this.props.onRoleSelected(role))
+  onClick = () => this.props.onUserSelected(this.props.user)
 
   render () {
     const { user, processGroups, roles } = this.props
@@ -30,7 +29,7 @@ class UserCardRead extends React.Component<PropsType> {
       group => group.title)
     const usersRoles = sortBy(user.userRoleIds.map(id => roles.get(id)).filter(Boolean),
       role => role.name)
-    return <TitledCard key={user.id} title={user.name}>
+    return <TitledCard key={user.id} title={user.name} onClick={this.onClick}>
         <IconRow icon='person'>{user.displayname}</IconRow>
         <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
         <IconRow icon='office' multiLine>
@@ -41,9 +40,6 @@ class UserCardRead extends React.Component<PropsType> {
           {listIfNeeded(usersRoles, role => role.id,
             role => <a onClick={this.onRoleSelected(role)}>{role.name}</a>)}
         </IconRow>
-      <ButtonGroup fill style={{ marginTop: '5px' }}>
-        <Button onClick={this.onEdit} icon='edit' small text='Edit'/>
-      </ButtonGroup>
     </TitledCard>
   }
 }

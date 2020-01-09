@@ -115,7 +115,7 @@ object ProcessesHandler {
 
         val newId = processesContainer.createProcess(process)
         val newIdJsonObject = JSONObject()
-        newIdJsonObject.put("newID", newId)
+        newIdJsonObject.put("newId", newId)
 
         ctx.result(newIdJsonObject.toString())
             .contentType("application/json")
