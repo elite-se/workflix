@@ -7,8 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 object LoginManager {
     val tokensInUse = ArrayList<AuthenticationToken>()
-    // authorized user currently performing a request, or null if none is performed
-    private var activeUser: User? = null
 
     /**
      * Logs a user in if email and password match the saved information.
@@ -16,7 +14,7 @@ object LoginManager {
      * @param email The users email address. Note that these email addresses are considered unique.
      * @param password user's password
      *
-     * @return User's authentification token if successful, null otherwise.
+     * @return User's authentication token if successful, null otherwise.
      *
      * @throws InvalidInputException if there is no or more than one user with this email address, or the user
      * is already logged in.
@@ -46,32 +44,5 @@ object LoginManager {
     fun logout(bearerToken: String) {
         val token = bearerToken.substringAfter(' ')
         tokensInUse.remove(tokensInUse.firstOrNull() { it.token == token })
-    }
-
-    fun getActiveUser(): User? {
-        return activeUser
-    }
-
-    /**
-     * Sets the owner of the token as the active user.
-     *
-     * @param token Token of the user to be set as active.
-     */
-    fun setActiveUser(token: String) {
-        activeUser = tokensInUse.firstOrNull { it.token == token }?.user
-    }
-
-    /**
-     * Resets the active user to null if the token is valid.
-     *
-     * @param token Token used for authorization
-     * @return true iff the token is valid
-     */
-    fun removeActiveUser(token: String): Boolean {
-        return if (tokensInUse.firstOrNull { it.token == token }?.user == activeUser) {
-            activeUser = null
-            true
-        } else
-            false
     }
 }
