@@ -5,6 +5,7 @@ import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'
 import { Card, H3, ProgressBar, Tooltip } from '@blueprintjs/core'
 import type { ProcessType } from '../../../modules/datatypes/Process'
+import { statusTranslation } from '../../../modules/datatypes/Process'
 import TaskSummaryCard from './TaskSummaryCard'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
@@ -37,12 +38,6 @@ type PropsType = {
   onTaskSelected: TaskType => void,
   users: Map<string, UserType>,
   taskTemplates: Map<number, TaskTemplateType>
-}
-
-const statusTranslation = {
-  ABORTED: 'aborted',
-  CLOSED: 'closed',
-  RUNNING: 'running'
 }
 
 const HUNDRED = 100
