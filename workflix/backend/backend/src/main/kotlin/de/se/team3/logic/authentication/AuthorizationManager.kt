@@ -10,11 +10,7 @@ object AuthorizationManager {
      */
     fun authorizeRequest(bearerToken: String): Boolean {
         val stringToken = bearerToken.substringAfter(' ')
-        return if (tokenIsRegistered(stringToken)) {
-            LoginManager.setActiveUser(stringToken)
-            true
-        } else
-            false
+        return tokenIsRegistered(stringToken)
     }
 
     /**
