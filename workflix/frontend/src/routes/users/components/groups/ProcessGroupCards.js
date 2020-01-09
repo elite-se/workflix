@@ -4,14 +4,17 @@ import React from 'react'
 import type { UserType } from '../../../../modules/datatypes/User'
 import { sortBy } from 'lodash'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
-import ProcessGroupCard from './ProcessGroupCard'
 import CardsContainer from '../CardsContainer'
+import ProcessGroupCard from './ProcessGroupCard'
 
 type PropsType = {|
   users: Map<string, UserType>,
   processGroups: Map<number, ProcessGroupType>,
   selection: ?ProcessGroupType,
-  onUserSelected: (UserType) => void
+  onUserSelected: (UserType) => void,
+  onProcessGroupSelected: (ProcessGroupType) => void,
+  onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
+  onGroupMembershipRemoved: (ProcessGroupType, UserType) => void
 |}
 
 export default class ProcessGroupCards extends React.Component<PropsType> {
@@ -26,7 +29,7 @@ export default class ProcessGroupCards extends React.Component<PropsType> {
   }
 
   getCardForGroup = (group: ProcessGroupType) => {
-    const { users, onUserSelected } = this.props
-    return <ProcessGroupCard key={group.id} processGroup={group} onUserSelected={onUserSelected} users={users}/>
+    const { selection, processGroups, ...cardProps } = this.props
+    return <ProcessGroupCard {...cardProps} key={group.id} processGroup={group} selected={selection === group}/>
   }
 }

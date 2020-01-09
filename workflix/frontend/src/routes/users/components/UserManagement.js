@@ -139,7 +139,10 @@ class UserManagement extends React.Component<PropsType, StateType> {
         return <RoleCards roles={roles} users={users} onUserSelected={this.onUserSelected} selection={selectedRole}/>
       case 'GROUPS':
         return <ProcessGroupCards processGroups={processGroups} users={users} onUserSelected={this.onUserSelected}
-                                  selection={selectedGroup}/>
+                                  selection={selectedGroup}
+                                  onProcessGroupSelected={this.onProcessGroupSelected}
+                                  onGroupMembershipAdded={this.onGroupMembershipAdded}
+                                  onGroupMembershipRemoved={this.onGroupMembershipRemoved}/>
       default:
         return null
     }
