@@ -81,6 +81,7 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
       })
       this.setState({ saveLoading: false })
     } catch (e) {
+      toastifyError(e)
       this.setState({ saveLoading: false })
     }
   }

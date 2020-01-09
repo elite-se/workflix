@@ -3,14 +3,13 @@
 import React from 'react'
 import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'
-import { Card, H3, ProgressBar, Tooltip } from '@blueprintjs/core'
+import { Card, H3 } from '@blueprintjs/core'
 import type { ProcessType } from '../../../modules/datatypes/Process'
-import { statusTranslation } from '../../../modules/datatypes/Process'
 import TaskSummaryCard from './TaskSummaryCard'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import type { UserType } from '../../../modules/datatypes/User'
-import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
+import ProcessProgress from '../../../modules/common/components/ProcessProgress'
 
 const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
   margin: 5px;
@@ -28,9 +27,6 @@ const TaskList = styled<{}, {}, 'div'>('div')`
   flex-direction: column;
   flex-grow: 1;
 `
-const ProcessProgress = styled(ProgressBar)`
-  margin-top: 10px;
-`
 
 type PropsType = {
   process: ProcessType,
@@ -40,8 +36,6 @@ type PropsType = {
   taskTemplates: Map<number, TaskTemplateType>
 }
 
-const HUNDRED = 100
-
 class ProcessCard extends React.Component<PropsType> {
   isSelected (task: TaskType): boolean {
     const selectedTask = this.props.selectedTask
@@ -50,12 +44,6 @@ class ProcessCard extends React.Component<PropsType> {
 
   render () {
     const process = this.props.process
-    const [progressIntent, progressValue] =
-      process.status === 'ABORTED'
-        ? [Intent.DANGER, 1]
-        : process.status === 'CLOSED'
-          ? [Intent.SUCCESS, 1]
-          : [Intent.PRIMARY, process.progress / HUNDRED]
     const isSelected = !!process.tasks.find(task => this.isSelected(task))
     return <CardWithMargin interactive elevation={isSelected ? Elevation.FOUR : undefined}>
       <H3>{process.title} (#{process.id})</H3>
@@ -71,9 +59,7 @@ class ProcessCard extends React.Component<PropsType> {
           ))
         }
       </TaskList>
-      <Tooltip content={`This process is ${statusTranslation[process.status]}.`} fill>
-        <ProcessProgress animate={false} intent={progressIntent} value={progressValue}/>
-      </Tooltip>
+      <ProcessProgress process={process}/>
     </CardWithMargin>
   }
 }

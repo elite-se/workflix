@@ -25,6 +25,7 @@ type StateType = {|
 class TasksOverview extends React.Component<PropsType, StateType> {
   state = {
     filters: {
+      status: ['RUNNING'],
       involving: this.props.users.get(getCurrentUserId())
     },
     drawerOpen: false
