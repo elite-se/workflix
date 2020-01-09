@@ -135,6 +135,10 @@ class ProcessApi {
       }
     ).then(response => response.json())
   }
+
+  abortProcess (processId: number): Promise<Response> {
+    return safeFetch(`${processesBackend}/${processId}`, { method: 'DELETE' })
+  }
 }
 
 export default ProcessApi

@@ -6,9 +6,11 @@ import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import ProcessApi from '../../../modules/api/ProcessApi'
 import type { ProcessTemplateType, ProcessType } from '../../../modules/datatypes/Process'
-import { Button, ButtonGroup, Drawer, H2, H4 } from '@blueprintjs/core'
+import { Button, ButtonGroup, Drawer, H2, H4, Tooltip } from '@blueprintjs/core'
 import ButtonWithDialog from '../../../modules/common/components/ButtonWithDialog'
 import TaskListViewer from './TaskListViewer'
+import { toastifyError } from '../../../modules/common/toastifyError'
+import { navigate } from '@reach/router'
 
 type PropsType = {|
   id: number,
@@ -43,7 +45,16 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
   onSaveClick = () => {
   }
 
-  onAbortClick = () => {
+  onAbortClick = async () => {
+    this.setState({ abortLoading: true })
+    try {
+      await new ProcessApi().abortProcess(this.props.process.id)
+      this.setState({ abortLoading: false })
+      navigate('/processes')
+    } catch (e) {
+      toastifyError(e)
+      this.setState({ abortLoading: false })
+    }
   }
 
   onTaskModified = () => {
@@ -54,6 +65,15 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
     const { process, template, userRoles, users } = this.props
     const { saveLoading, abortLoading, drawerOpened } = this.state
 
+    const abortButton = <ButtonWithDialog intent='danger' icon='ban-circle' text='Abort' loading={abortLoading}
+                                          disabled={process.status !== 'RUNNING'}
+                                          onClick={this.onAbortClick}>
+      <H4>Abort Process?</H4>
+      <p>
+        Are you sure you want to abort this process?
+      </p>
+    </ButtonWithDialog>
+
     return <div style={{
       flex: 1,
       display: 'flex',
@@ -63,13 +83,11 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
     }}>
       <ButtonGroup large style={{ marginBottom: '20px' }}>
         <Button icon='floppy-disk' text='Save' intent='primary' loading={saveLoading} onClick={this.onSaveClick}/>
-        <ButtonWithDialog intent='danger' icon='ban-circle' text='Abort' loading={abortLoading}
-                          onClick={this.onAbortClick}>
-          <H4>Abort Process?</H4>
-          <p>
-            Are you sure you want to abort this process?
-          </p>
-        </ButtonWithDialog>
+        {
+          process.status !== 'RUNNING'
+          ? <Tooltip content='Only running processes can be aborted.'>{abortButton}</Tooltip>
+          : abortButton
+        }
         <H2 style={{
           display: 'inline',
           marginLeft: '40px'
