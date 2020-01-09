@@ -68,11 +68,11 @@ fun main(args: Array<String>) {
     }
 
     // authentication handling before every request (excluding login)
-    /*app.before() { ctx ->
+    app.before() { ctx ->
         if (ctx.path() != "/login") {
             AuthenticationHandler.authorizeRequest(ctx)
         }
-    }*/
+    }
 
     // login
     app.post("login") { ctx ->
