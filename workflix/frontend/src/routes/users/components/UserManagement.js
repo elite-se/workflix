@@ -17,7 +17,11 @@ import styled from 'styled-components'
 const CenteredTabs = styled(Tabs)`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  > .bp3-tab-list {
+    align-self: center;
+  }
+  flex-grow: 1;
 `
 
 type PropsType = {|

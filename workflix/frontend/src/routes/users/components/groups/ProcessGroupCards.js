@@ -19,8 +19,10 @@ type PropsType = {|
 |}
 
 export default class ProcessGroupCards extends React.Component<PropsType> {
+  onCreate = () => {}
+
   render () {
-    return <CardsContainer title='Process groups'>{
+    return <CardsContainer onCreate={this.onCreate}>{
       this.getSortedGroups().map<React$Node>(this.getCardForGroup)
     }</CardsContainer>
   }
