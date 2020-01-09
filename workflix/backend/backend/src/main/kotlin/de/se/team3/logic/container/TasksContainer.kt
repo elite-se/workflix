@@ -6,7 +6,7 @@ import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.TasksDAO
 import de.se.team3.webservice.containerInterfaces.TasksContainerInterface
 
-object TasksContainer: TasksContainerInterface {
+object TasksContainer : TasksContainerInterface {
 
     private val tasksDAO: TasksDAOInterface = TasksDAO
 

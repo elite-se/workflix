@@ -8,7 +8,6 @@ import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.webservice.handlers.AuthenticationHandler
-import de.se.team3.webservice.handlers.CORSHandler
 import de.se.team3.webservice.handlers.ProcessGroupsHandler
 import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
 import de.se.team3.webservice.handlers.ProcessTemplatesHandler
@@ -194,5 +193,4 @@ fun main(args: Array<String>) {
     app.delete("tasks/comments/:taskCommentId") { ctx ->
         TasksCommentsHandler.delete(ctx, ctx.pathParam("taskCommentId").toInt())
     }
-
 }

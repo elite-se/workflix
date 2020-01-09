@@ -1,13 +1,11 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.ProcessGroupDAOInterface
-import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupsMembersTable
 import de.se.team3.persistence.meta.ProcessGroupsTable
-import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.and
@@ -17,7 +15,6 @@ import me.liuwj.ktorm.dsl.notEq
 import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.dsl.where
-import me.liuwj.ktorm.entity.findOne
 
 // TODO(test) the entire class
 

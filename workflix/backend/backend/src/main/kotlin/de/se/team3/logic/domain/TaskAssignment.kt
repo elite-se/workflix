@@ -3,9 +3,7 @@ package de.se.team3.logic.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import de.se.team3.logic.container.TasksContainer
 import de.se.team3.logic.exceptions.AlreadyClosedException
-import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
 import de.se.team3.webservice.util.InstantSerializer
 import java.lang.IllegalStateException

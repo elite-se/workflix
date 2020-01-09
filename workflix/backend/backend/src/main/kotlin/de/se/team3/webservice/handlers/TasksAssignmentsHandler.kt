@@ -1,7 +1,6 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.TaskAssignmentsContainer
-import de.se.team3.logic.container.TaskCommentsContainer
 import de.se.team3.logic.container.TasksContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.TaskAssignment
