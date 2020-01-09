@@ -85,7 +85,7 @@ object UsersMock: UserDAOInterface {
         usersData.put(user.id, usersRow)
     }
 
-    override fun create***REMOVED***User(email: String, password: String): User {
+    fun create***REMOVED***User(email: String, password: String): User {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

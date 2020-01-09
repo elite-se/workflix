@@ -1,5 +1,7 @@
 package unittests
 
+import domainmocks.ProcessTemplatesMocks
+import domainmocks.UsersAndRolesMocks
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -9,19 +11,19 @@ class ProcessTemplateTest {
 
     @Test
     fun testEstimatedDurationSum() {
-        val processTemplate1 = TestData.getProcessTemplate1()
+        val processTemplate1 = ProcessTemplatesMocks.getProcessTemplate1()
         assertEquals(10, processTemplate1.getEstimatedDurationSum())
 
-        val processTemplate2 = TestData.getProcessTemplate2()
+        val processTemplate2 = ProcessTemplatesMocks.getProcessTemplate2()
         assertEquals(20, processTemplate2.getEstimatedDurationSum())
     }
 
     @Test
     fun testUsesUserRole() {
-        val processTemplate = TestData.getProcessTemplate1()
-        val accountant = TestData.getAccountant()
-        val investmentManager = TestData.getInvestmentManager()
-        val unusedUser = TestData.getUnusedUserRole()
+        val processTemplate = ProcessTemplatesMocks.getProcessTemplate1()
+        val accountant = UsersAndRolesMocks.getAccountant()
+        val investmentManager = UsersAndRolesMocks.getInvestmentManager()
+        val unusedUser = UsersAndRolesMocks.getUnusedUserRole()
 
         assertTrue { processTemplate.usesUserRole(accountant) }
         assertTrue { processTemplate.usesUserRole(investmentManager) }
@@ -30,7 +32,7 @@ class ProcessTemplateTest {
 
     @Test
     fun testIsOneResponsible() {
-        val processTemplate = TestData.getProcessTemplate1()
+        val processTemplate = ProcessTemplatesMocks.getProcessTemplate1()
 
         val responsibles1 = ArrayList<Int>()
         responsibles1.add(1)

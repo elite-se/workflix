@@ -2,6 +2,8 @@ package unittests
 
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.logic.domain.processTemplateUtil.ProcessTemplateCycleDetection
+import domainmocks.ProcessTemplatesMocks
+import domainmocks.UsersAndRolesMocks
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -9,7 +11,7 @@ class CycleDetectionTest {
 
     @Test
     fun testCycleDetectionUnconnectedTaskTemplates() {
-        val accountantRole = TestData.getAccountant()
+        val accountantRole = UsersAndRolesMocks.getAccountant()
 
         val taskTemplates = HashMap<Int, TaskTemplate>()
         val taskTemplate1 = TaskTemplate(1, accountantRole, "TaskTemplate1", "Description", 1, 1)
@@ -24,21 +26,21 @@ class CycleDetectionTest {
 
     @Test
     fun testCycleDetectionAcyclic1() {
-        val taskTemplates = TestData.getTaskTemplatesSet1()
+        val taskTemplates = ProcessTemplatesMocks.getTaskTemplatesSet1()
 
         assertEquals(true, ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
     }
 
     @Test
     fun testCycleDetectionAcyclic2() {
-        val taskTemplates = TestData.getTaskTemplatesSet2()
+        val taskTemplates = ProcessTemplatesMocks.getTaskTemplatesSet2()
 
         assertEquals(true, ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
     }
 
     @Test
     fun testCycleDetectionSingleLoop() {
-        val accountantRole = TestData.getAccountant()
+        val accountantRole = UsersAndRolesMocks.getAccountant()
 
         val taskTemplates = HashMap<Int, TaskTemplate>()
         val taskTemplate1 = TaskTemplate(1, accountantRole, "TaskTemplate1", "Description", 1, 1)
@@ -51,7 +53,7 @@ class CycleDetectionTest {
 
     @Test
     fun testCycleDetectionGreaterLoop() {
-        val accountantRole = TestData.getAccountant()
+        val accountantRole = UsersAndRolesMocks.getAccountant()
 
         val taskTemplates = HashMap<Int, TaskTemplate>()
         val taskTemplate1 = TaskTemplate(1, accountantRole, "TaskTemplate1", "Description", 1, 1)
