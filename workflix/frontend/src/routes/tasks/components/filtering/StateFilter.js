@@ -5,6 +5,7 @@ import { Button, Icon, Menu, MenuItem, Popover } from '@blueprintjs/core'
 import { Position } from '@blueprintjs/core/lib/cjs/common/position'
 import styled from 'styled-components'
 import type { ProcessStatusType } from '../../../../modules/datatypes/Process'
+import { statusTranslation } from '../../../../modules/datatypes/Process'
 import { difference, isEmpty } from 'lodash'
 import type { FiltersType } from '../../../../modules/datatypes/Filters'
 
@@ -25,15 +26,15 @@ const IconWithMargin = styled(Icon)`
 const statusRepresentation: Map<ProcessStatusType, StatusRepresentationType> =
   new Map<ProcessStatusType, StatusRepresentationType>([
     ['RUNNING', {
-      label: 'running',
+      label: statusTranslation.RUNNING,
       icon: 'circle'
     }],
     ['ABORTED', {
-      label: 'aborted',
+      label: statusTranslation.ABORTED,
       icon: 'delete'
     }],
     ['CLOSED', {
-      label: 'done',
+      label: statusTranslation.CLOSED,
       icon: 'confirm'
     }]
   ])
