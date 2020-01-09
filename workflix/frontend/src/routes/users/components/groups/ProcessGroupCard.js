@@ -5,7 +5,7 @@ import type { UserType } from '../../../../modules/datatypes/User'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import ProcessGroupCardRead from './ProcessGroupCardRead'
 import ProcessGroupCardEdit from './ProcessGroupCardEdit'
-import OutsideClickHandler from 'react-outside-click-handler/esm/OutsideClickHandler'
+import OutsideClickHandler from 'react-outside-click-handler'
 import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
 
 type PropsType = {|
