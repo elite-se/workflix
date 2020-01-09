@@ -58,19 +58,20 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
     const processedNodes = calcGraph(preparedTasks)
     const colorTranslation = {
       BLOCKED: {
-        selected: Colors.Gray4,
-        unselected: Colors.Gray1
+        selected: Colors.GRAY4,
+        unselected: Colors.GRAY1
       },
       RUNNING: {
-        selected: Colors.Green4,
-        unselected: Colors.Green1
+        selected: Colors.GREEN4,
+        unselected: Colors.GREEN1
       },
       CLOSED: {
-        selected: Colors.Orange4,
-        unselected: Colors.Orange1
+        selected: Colors.ORANGE4,
+        unselected: Colors.ORANGE1
       }
     }
-    const chartNodes = processedNodes.map(node => chartNodeFromProcessedNode(node,
+    const chartNodes = processedNodes.map(node => chartNodeFromProcessedNode(
+      node,
       colorTranslation[node.data.status][node.id === selectedTaskId ? 'selected' : 'unselected']
     ))
     return <FormGroup label='Tasks'>
