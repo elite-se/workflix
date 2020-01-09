@@ -1,7 +1,9 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.UserDAOInterface
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
+import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.persistence.meta.UsersTable
 import kotlin.collections.ArrayList
 import me.liuwj.ktorm.dsl.eq
@@ -79,5 +81,13 @@ object UserDAO : UserDAOInterface {
             it.deleted to true
             where { it.ID like user.id }
         } != 0
+    }
+}
+
+fun main() {
+    ConnectionManager.connect()
+    UsersTable.update {
+        it.password to UserContainer.hash("password123")
+        where { it.email like "mail@marvinbrieger.de"}
     }
 }
