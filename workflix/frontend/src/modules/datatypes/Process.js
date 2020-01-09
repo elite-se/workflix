@@ -34,6 +34,7 @@ export type ProcessType = {|
   title: string,
   description: string,
   processTemplateId: number,
+  processGroupId: number,
   starterId: string,
   status: ProcessStatusType,
   progress: number,
