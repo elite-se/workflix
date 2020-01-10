@@ -4,9 +4,9 @@ import React from 'react'
 import { Card, H1 } from '@blueprintjs/core'
 import CenterScreen from '../../../modules/common/components/CenterScreen'
 import LoginContent from './LoginContent'
-import RegistrationContent from './RegistrationContent'
+import VerifyMailContent from './VerifyMailContent'
 
-type ModeType = 'login' | 'verifyEmail' | 'register'
+type ModeType = 'login' | 'verifyMail' | 'register'
 
 type StateType = {
   email: string,
@@ -21,7 +21,8 @@ class Login extends React.Component<{ onLoggedInChanged: (boolean) => void }, St
 
   onEmailChange = (email: string) => this.setState({ email })
   onLoggedIn = () => this.props.onLoggedInChanged(true)
-  onGoToRegister = () => this.setState({ mode: 'verifyEmail' })
+  onGoToVerifyMail = () => this.setState({ mode: 'verifyMail' })
+  onGoToRegister = () => this.setState({ mode: 'register' })
   onGoToLogin = () => this.setState({ mode: 'login' })
 
   render () {
@@ -36,11 +37,13 @@ class Login extends React.Component<{ onLoggedInChanged: (boolean) => void }, St
   renderContent = () => {
     const { email, mode } = this.state
     switch (mode) {
-      case 'verifyEmail':
-        return <RegistrationContent email={email} onEmailChange={this.onEmailChange} onGoToLogin={this.onGoToLogin}/>
+      case 'verifyMail':
+        return <VerifyMailContent email={email} onEmailChange={this.onEmailChange} onGoToLogin={this.onGoToLogin}
+        onGoToRegister={this.onGoToRegister}/>
+      case 'register': return 'TROLOLO'
       default:
         return <LoginContent email={email} onEmailChange={this.onEmailChange} onLoggedIn={this.onLoggedIn}
-                             onGoToRegister={this.onGoToRegister}/>
+                             onGoToVerifyMail={this.onGoToVerifyMail}/>
     }
   }
 }

@@ -5,9 +5,11 @@ import { safeFetch } from './SafeFetch'
 import { BACKEND } from './common'
 import { parseDatesInUserRole } from './parseDates'
 
+const usersBackend = `${BACKEND}/users`
+
 class UsersApi {
   getUsers (): Promise<Map<string, UserType>> {
-    return safeFetch(`${BACKEND}/users`)
+    return safeFetch(usersBackend)
       .then(response => response.json())
       .then(result => result.users)
       .then((usersArray: UserType[]) => new Map<string, UserType>(usersArray.map(user => [user.id, user])))
@@ -37,6 +39,13 @@ class UsersApi {
     return safeFetch(`${BACKEND}/userRoles/${role.id}`, {
       method: 'PATCH',
       body: JSON.stringify(role)
+    })
+  }
+
+  sendVerificationMail (email: string): Promise<Response> {
+    return safeFetch(usersBackend, {
+      method: 'POST',
+      body: JSON.stringify({ email })
     })
   }
 }
