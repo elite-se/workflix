@@ -90,7 +90,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
         processGroupId: processGroup.id
       })
       this.setState({ startLoading: false })
-      navigate(`/process/${newId}`)
+      navigate(`/processes/${newId}`)
     } catch (e) {
       toastifyError(e)
       this.setState({ startLoading: false })

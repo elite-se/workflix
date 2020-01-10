@@ -32,6 +32,13 @@ class UsersApi {
       method: 'DELETE'
     })
   }
+
+  patchRole (role: UserRoleType): Promise<Response> {
+    return safeFetch(`${BACKEND}/userRoles/${role.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(role)
+    })
+  }
 }
 
 export default UsersApi

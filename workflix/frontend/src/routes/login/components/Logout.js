@@ -4,7 +4,7 @@ import React from 'react'
 import LoginApi from '../../../modules/api/LoginApi'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import { removeToken } from '../../../modules/common/tokenStorage'
-import CenterScreen from '../../../modules/common/CenterScreen'
+import CenterScreen from '../../../modules/common/components/CenterScreen'
 import { navigate } from '@reach/router'
 
 class Logout extends React.Component<{ onLoggedInChanged: (boolean) => void}> {
