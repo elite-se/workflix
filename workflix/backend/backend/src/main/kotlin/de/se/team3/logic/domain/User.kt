@@ -63,9 +63,6 @@ class User(
          * with this address can be found or the user does already exist.
          */
         fun query***REMOVED***andCreateUser(email: String, password: String): User {
-            // checks whether email is a (syntactically) valid e-mail address
-            if (!email.matches(Regex("""^\w+@\w+..{2,3}(.{2,3})?$""")))
-                throw InvalidInputException("The e-mail address given is not of a valid format.")
             val user = UserQuerying.searchFor***REMOVED***User(email)
                 ?: throw InvalidInputException("No user with this e-mail address exists.")
             // checks whether the user already exists
@@ -81,9 +78,6 @@ class User(
          * to the system may result in conflicting IDs. The likelihood of this, however, is fairly small.
          */
         fun createNewUser(name: String, displayname: String, email: String, password: String): User {
-            // checks whether email is a (syntactically) valid e-mail address
-            if (!email.matches(Regex("""^\w+@\w+..{2,3}(.{2,3})?$""")))
-                throw java.lang.IllegalArgumentException("The e-mail address given is not of a valid format.")
             var generatedID: String
             do {
                 val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
