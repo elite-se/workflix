@@ -58,6 +58,11 @@ class TaskTemplateEditor extends React.Component<PropsType> {
     estimatedDuration: value > 0 ? value : null
   })
 
+  onNecessaryClosingsChange = (value: number) => this.props.onChange({
+    ...this.props.task,
+    necessaryClosings: value >= 1 ? Math.floor(value) : 1
+  })
+
   onDescriptionChange = handleStringChange(description => this.props.onChange({
     ...this.props.task,
     description
@@ -102,6 +107,11 @@ class TaskTemplateEditor extends React.Component<PropsType> {
         <NumericInput placeholder='Duration...' value={task.estimatedDuration || ''}
                       intent={highlightValidation && (!task.estimatedDuration || task.estimatedDuration <= 0) ? 'danger' : 'none'}
                       fill onValueChange={this.onDurationChange} min={0.1} stepSize={0.1}/>
+      </FormGroup>
+      <FormGroup label='Necessary users' labelInfo='(required, positive)'>
+        <NumericInput placeholder='Necessary users...' value={task.necessaryClosings}
+                      intent={highlightValidation && (task.necessaryClosings <= 0) ? 'danger' : 'none'}
+                      fill onValueChange={this.onNecessaryClosingsChange} min={1} stepSize={1}/>
       </FormGroup>
       <FormGroup label='Predecessor Tasks'>
         <PredecessorSelect allTasks={allTasks} onChange={onChange} possiblePreds={possiblePreds} task={task}/>
