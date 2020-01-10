@@ -6,6 +6,7 @@ import { Card, Colors, Icon } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { Elevation as ELEVATION } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { UserType } from '../../../modules/datatypes/User'
+import { getCurrentUserId } from '../../../modules/common/tokenStorage'
 
 const SCROLL_DELAY_MS = 300
 
@@ -24,6 +25,7 @@ type PropsType = {
   selected: boolean,
   onTaskSelected: (TaskType) => void,
   users: Map<string, UserType>,
+  processGroupId: number,
   taskTemplates: Map<number, TaskTemplateType>
 }
 
@@ -39,22 +41,36 @@ class TaskSummaryCard extends React.Component<PropsType> {
     this.containerDiv = elem
   }
 
+  isSuggestedTask (taskTemplate: TaskTemplateType): boolean {
+    const activeUser = this.props.users.get(getCurrentUserId())
+    if (!activeUser) {
+      return false
+    }
+    return activeUser.userRoleIds.includes(taskTemplate.responsibleUserRoleId) &&
+      activeUser.processGroupIds.includes(this.props.processGroupId)
+  }
+
   render () {
-    const task = this.props.task
-    const taskTemplate = this.props.taskTemplates.get(task.taskTemplateId)
+    const { task, taskTemplates, users } = this.props
+    const template = taskTemplates.get(task.taskTemplateId)
+    if (!template) {
+      return <div>Something went wrong.</div>
+    }
     return <div ref={this.ref}><FinishedTaskStyling status={task.status}>
       <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
             onClick={this.onClick}>
-        <span><b>{taskTemplate ? taskTemplate.name : ''}</b></span><br/>
-        <small>{task.assignments.length === 0 ? 'no assignees'
+        <span><b>{template.name}</b></span><br/>
+        <small>{task.assignments.length === 0 ? 'No assignees'
           : <span>{
             task.assignments.map(assignee => {
-              const user = this.props.users.get(assignee.assigneeId)
+              const user = users.get(assignee.assigneeId)
               return user && <span key={assignee.assigneeId} className='comma'>
-                {user.name}{assignee.closed && <Icon icon={'small-tick'}/>}
+                {user.name}{assignee.closed && <Icon icon='small-tick'/>}
               </span>
             })
-          }</span>}</small>
+          }</span>}<br/>
+          {task.assignments.length < template.necessaryClosings && this.isSuggestedTask(template) && <b>Assign now!</b>}
+        </small>
       </Card>
     </FinishedTaskStyling></div>
   }

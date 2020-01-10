@@ -3,12 +3,12 @@
 import { Colors, Drawer, FormGroup } from '@blueprintjs/core'
 import React from 'react'
 import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
-import { calcGraph } from '../../../modules/process-template-editor/graph-utils'
 import TaskList from '../../../modules/process-template-editor/components/TaskList'
 import ProcessChart, { chartNodeFromProcessedNode } from '../../../modules/process-template-editor/components/ProcessChart'
 import onOpenRemoveOverlayClass from '../../../modules/common/onOpenRemoveOverlayClass'
 import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import TaskDrawerContent from '../../tasks/components/drawer/TaskDrawerContent'
+import calcTasksGraph from '../../../modules/process-template-editor/calcTasksGraph'
 
 type PropsType = {
   users: Map<string, UserType>,
@@ -56,26 +56,10 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
   render () {
     const { taskTemplates, tasks, users, onTaskModified } = this.props
     const { selectedTaskId } = this.state
-
-    const preparedTasks = tasks.map(task => {
-      const template = taskTemplates.get(task.taskTemplateId)
-      if (!template) {
-        return null
-      }
-      const predecessors = template.predecessors
-        .map(pred => tasks.find(pTask => pTask.taskTemplateId === pred))
-        .filter(Boolean).map(pred => pred.id)
-      return {
-        ...task,
-        name: template.name,
-        estimatedDuration: template.estimatedDuration,
-        predecessors
-      }
-    }).filter(Boolean)
-    const processedNodes = calcGraph(preparedTasks)
+    const processedNodes = calcTasksGraph(tasks, taskTemplates)
     const chartNodes = processedNodes.map(node => chartNodeFromProcessedNode(
       node,
-      colorTranslation[node.data.status][node.id === selectedTaskId ? 'selected' : 'unselected']
+      colorTranslation[node.data.task.status][node.id === selectedTaskId ? 'selected' : 'unselected']
     ))
     const task = tasks.find(task => task.id === selectedTaskId)
     const template = task && taskTemplates.get(task.taskTemplateId)

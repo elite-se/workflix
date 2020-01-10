@@ -3,7 +3,7 @@
 import React from 'react'
 import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'
-import { Card, H3 } from '@blueprintjs/core'
+import { Button, Card, Collapse, H3 } from '@blueprintjs/core'
 import type { ProcessType } from '../../../modules/datatypes/Process'
 import TaskSummaryCard from './TaskSummaryCard'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
@@ -11,6 +11,8 @@ import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task
 import type { UserType } from '../../../modules/datatypes/User'
 import ProcessProgress from '../../../modules/common/components/ProcessProgress'
 import { Link } from '@reach/router'
+import calcTasksGraph from '../../../modules/process-template-editor/calcTasksGraph'
+import stopPropagation from '../../../modules/common/stopPropagation'
 
 const CustomCard: StyledComponent<{}, {}, *> = styled(Card)`
   width: 250px;
@@ -49,32 +51,70 @@ type PropsType = {
   taskTemplates: Map<number, TaskTemplateType>
 }
 
-class ProcessCard extends React.Component<PropsType> {
+type StateType = {
+  expandDone: boolean,
+  expandBlocked: boolean
+}
+
+class ProcessCard extends React.Component<PropsType, StateType> {
+  state = {
+    expandDone: false,
+    expandBlocked: false
+  }
+
   isSelected (task: TaskType): boolean {
     const selectedTask = this.props.selectedTask
     return selectedTask != null && task.id === selectedTask.id
   }
 
+  switchExpandDone = stopPropagation(() => this.setState(state => ({ expandDone: !state.expandDone })))
+  switchExpandBlocked = stopPropagation(() => this.setState(state => ({ expandBlocked: !state.expandBlocked })))
+
+  renderNodes (nodes: *): React$Node {
+    const { onTaskSelected, users, process, taskTemplates } = this.props
+    return nodes.map(node => <TaskSummaryCard key={node.id} task={node.data.task}
+                                              selected={this.isSelected(node.data.task)}
+                                              processGroupId={process.processGroupId}
+                                              onTaskSelected={onTaskSelected} users={users}
+                                              taskTemplates={taskTemplates}/>)
+  }
+
   render () {
-    const process = this.props.process
+    const { process, taskTemplates } = this.props
+    const { expandDone, expandBlocked } = this.state
     const isSelected = !!process.tasks.find(task => this.isSelected(task))
+    const processedNodes = calcTasksGraph(process.tasks, taskTemplates)
+    const closedNodes = processedNodes.filter(task => task.data.task.status === 'CLOSED')
+    const runningNodes = processedNodes.filter(task => task.data.task.status === 'RUNNING')
+    const blockedNodes = processedNodes.filter(task => task.data.task.status === 'BLOCKED')
     return <CustomLink to={`/processes/${process.id}`}>
       <CustomCard interactive elevation={isSelected ? Elevation.FOUR : undefined}>
-      <H3>{process.title} (#{process.id})</H3>
-      <TaskList>
-        {
-          process.tasks.map(task => (
-            <TaskSummaryCard key={task.id}
-                             task={task}
-                             selected={this.isSelected(task)}
-                             onTaskSelected={this.props.onTaskSelected}
-                             users={this.props.users}
-                             taskTemplates={this.props.taskTemplates}/>
-          ))
-        }
-      </TaskList>
-      <ProcessProgress process={process}/>
-    </CustomCard>
+        <H3>{process.title} (#{process.id})</H3>
+        <TaskList>
+          {
+            closedNodes.length > 0 && <>
+              <Button minimal fill onClick={this.switchExpandDone}>
+                {expandDone ? 'Collapse' : 'Expand'} {closedNodes.length} finished {closedNodes.length > 1 ? 'Tasks' : 'Task'}
+              </Button>
+              <Collapse isOpen={expandDone}>
+                {this.renderNodes(closedNodes)}
+              </Collapse>
+            </>
+          }
+          {this.renderNodes(runningNodes)}
+          {
+            blockedNodes.length > 0 && <>
+              <Button minimal fill onClick={this.switchExpandBlocked}>
+                {expandBlocked ? 'Collapse' : 'Expand'} {blockedNodes.length} blocked {blockedNodes.length > 1 ? 'Tasks' : 'Task'}
+              </Button>
+              <Collapse isOpen={expandBlocked}>
+                {this.renderNodes(blockedNodes)}
+              </Collapse>
+            </>
+          }
+        </TaskList>
+        <ProcessProgress process={process}/>
+      </CustomCard>
     </CustomLink>
   }
 }
