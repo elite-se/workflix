@@ -4,8 +4,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
+import FlipMove from 'react-flip-move'
 
-const Container = styled<{}, {}, 'div'>('div')`
+const Container = styled(FlipMove)`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -34,7 +35,7 @@ class CardsContainer extends React.Component<PropsType, {| creating: boolean |}>
       {this.props.onCreate &&
       <Button icon='add' text='Create new' style={{ alignSelf: 'flex-start', margin: '5px' }}
               intent={Intent.SUCCESS} onClick={this.onCreate} loading={this.state.creating}/>}
-      <Container>{this.props.children}</Container>
+      <Container appearAnimation='fade'>{this.props.children}</Container>
     </div>
   }
 }
