@@ -70,9 +70,9 @@ fun main(args: Array<String>) {
     app.before() { ctx ->
         if (ctx.method() == "OPTIONS") {
             CORSHandler.optionsRequest(ctx)
-        } else if (ctx.path() != "/login"
-            && !(ctx.path() == "/users" && ctx.method() == "POST")
-            && !(ctx.path().matches(Regex("""/users/\w\w\w\w\w\w\w\w""")) && ctx.method() == "POST")) {
+        } else if (ctx.path() != "/login" &&
+            !(ctx.path() == "/users" && ctx.method() == "POST") &&
+            !(ctx.path().matches(Regex("""/users/\w{8}""")) && ctx.method() == "POST")) {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }

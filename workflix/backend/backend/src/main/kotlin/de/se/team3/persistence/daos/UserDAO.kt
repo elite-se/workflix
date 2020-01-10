@@ -88,6 +88,6 @@ fun main() {
     ConnectionManager.connect()
     UsersTable.update {
         it.password to UserContainer.hash("password123")
-        where { it.email like "mail@marvinbrieger.de"}
+        where { it.email like "mail@marvinbrieger.de" }
     }
 }

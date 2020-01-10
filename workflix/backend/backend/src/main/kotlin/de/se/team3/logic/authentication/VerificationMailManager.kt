@@ -2,7 +2,6 @@ package de.se.team3.logic.authentication
 
 import com.sendgrid.Method
 import com.sendgrid.Request
-import com.sendgrid.Response
 import com.sendgrid.SendGrid
 import com.sendgrid.helpers.mail.Mail
 import com.sendgrid.helpers.mail.objects.Content
@@ -10,17 +9,16 @@ import com.sendgrid.helpers.mail.objects.Email
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
-import java.io.IOException
 
 object VerificationMailManager {
 
-    //maps each mail address to its generated key
-    //if the server resets, the key expires
-    //TODO more secure expiring method
+    // maps each mail address to its generated key
+    // if the server resets, the key expires
+    // TODO more secure expiring method
     private val keyMap = HashMap<String, String>()
 
-    //API KEY necessary for mailing via SendGrid
-    //TODO store somewhere safe
+    // API KEY necessary for mailing via SendGrid
+    // TODO store somewhere safe
     private const val sendGridApiKey = "***REMOVED***"
 
     /**
@@ -43,7 +41,11 @@ object VerificationMailManager {
     }
 
     fun isValidForUser(mail: String, key: String): Boolean {
-        return keyMap[mail] == key
+        return if (keyMap[mail] == key) {
+            keyMap.remove(mail, key)
+            true
+        } else
+            false
     }
 
     /**
