@@ -12,6 +12,7 @@ import TaskDrawer from './drawer/TaskDrawer'
 import type { FiltersType } from '../../../modules/datatypes/Filters'
 import { Colors } from '@blueprintjs/core'
 import { isEmpty } from 'lodash'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
@@ -24,6 +25,7 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
 type PropsType = {|
   filters: FiltersType,
   processes: Array<ProcessType>,
+  processGroups: Map<number, ProcessGroupType>,
   taskTemplates: Map<number, TaskTemplateType>,
   users: Map<string, UserType>,
   onTaskSelected: ?TaskType => void,
@@ -59,7 +61,7 @@ class ProcessList extends React.Component<PropsType, StateType> {
       .find(task => task.id === this.state.selectedTaskId)
 
   render () {
-    const { processes, users, userRoles, taskTemplates } = this.props
+    const { processes, users, userRoles, taskTemplates, processGroups } = this.props
     const selectedTask = this.findSelectedTask()
     return <div style={{
       maxWidth: '100%',
@@ -78,6 +80,7 @@ class ProcessList extends React.Component<PropsType, StateType> {
               <ProcessCard
                 key={process.id}
                 process={process}
+                processGroups={processGroups}
                 selectedTask={selectedTask}
                 onTaskSelected={this.onTaskSelected}
                 users={users}

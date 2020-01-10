@@ -52,7 +52,8 @@ class TasksOverview extends React.Component<PropsType, StateType> {
       transition: 'padding-right 0.3s'
     }}>
       <Filters onFiltersChanged={this.onFiltersChanged} filters={filters} users={users} processGroups={processGroups}/>
-      <ProcessList filters={filters} userRoles={userRoles} users={users} onTaskSelected={this.onTaskSelected}/>
+      <ProcessList filters={filters} userRoles={userRoles} users={users} processGroups={processGroups}
+                   onTaskSelected={this.onTaskSelected}/>
     </div>
   }
 }
