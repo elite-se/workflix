@@ -6,28 +6,33 @@ import ProcessApi from '../../../modules/api/ProcessApi'
 import ProcessCard from './ProcessCard'
 import styled from 'styled-components'
 import type { TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
-import type { UserType } from '../../../modules/datatypes/User'
+import type { UserRoleType, UserType } from '../../../modules/datatypes/User'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import TaskDrawer from './drawer/TaskDrawer'
 import type { FiltersType } from '../../../modules/datatypes/Filters'
 import { Colors } from '@blueprintjs/core'
 import { isEmpty } from 'lodash'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
 const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   display: flex;
   flex: 1;
   justify-content: center;
   flex-direction: row;
+  align-items: flex-start;
 `
 
 type PropsType = {|
   filters: FiltersType,
   processes: Array<ProcessType>,
+  processGroups: Map<number, ProcessGroupType>,
   taskTemplates: Map<number, TaskTemplateType>,
   users: Map<string, UserType>,
   onTaskSelected: ?TaskType => void,
-  refresh: (soft: boolean) => void
+  refresh: (soft: boolean) => void,
+  userRoles: Map<number, UserRoleType>
 |}
+
 type StateType = {|
   selectedTaskId: ?number
 |}
@@ -56,35 +61,39 @@ class ProcessList extends React.Component<PropsType, StateType> {
       .find(task => task.id === this.state.selectedTaskId)
 
   render () {
+    const { processes, users, userRoles, taskTemplates, processGroups } = this.props
     const selectedTask = this.findSelectedTask()
     return <div style={{
       maxWidth: '100%',
       overflowX: 'auto',
-      display: 'flex'
+      display: 'flex',
+      flex: 1
     }}>
       <ProcessListWrapper>
         {
-          isEmpty(this.props.processes)
+          isEmpty(processes)
             ? <span style={{
               color: Colors.GRAY2,
               alignItem: 'stretch'
             }}>There are no processes matching the filters.</span>
-            : this.props.processes.map(process => (
+            : processes.map(process => (
               <ProcessCard
                 key={process.id}
                 process={process}
+                processGroups={processGroups}
                 selectedTask={selectedTask}
                 onTaskSelected={this.onTaskSelected}
-                users={this.props.users}
-                taskTemplates={this.props.taskTemplates}/>)
+                users={users}
+                taskTemplates={taskTemplates}/>)
             )
         }</ProcessListWrapper>
       <TaskDrawer
         selectedTask={selectedTask}
         onClose={this.onDrawerClosed}
         onTaskModified={this.onTaskModified}
-        users={this.props.users}
-        taskTemplates={this.props.taskTemplates}/>
+        users={users}
+        userRoles={userRoles}
+        taskTemplates={taskTemplates}/>
     </div>
   }
 }

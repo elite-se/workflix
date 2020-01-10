@@ -6,7 +6,7 @@ interface TaskAssignmentsContainerInterface {
 
     fun createTaskAssignment(taskAssignment: TaskAssignment): Int
 
-    fun closeTaskAssignment(taskId: Int, assigneeId: String)
+    fun closeTaskAssignment(taskAssignment: TaskAssignment)
 
-    fun deleteTaskAssignment(taskId: Int, assigneeId: String)
+    fun deleteTaskAssignment(taskAssignment: TaskAssignment)
 }

@@ -19,7 +19,7 @@ class Task(
     @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant?,
     private val comments: ArrayList<TaskComment>?,
-    private val assignments: ArrayList<TaskAssignment>?,
+    private val assignments: ArrayList<TaskAssignment>,
     @JsonIgnore
     var process: Process?
 ) {
@@ -33,11 +33,15 @@ class Task(
         process!!.processTemplate.taskTemplates.get(taskTemplateId)
     }
 
+    init {
+        assignments.forEach { it.setTask(this) }
+    }
+
     /**
      * Create-Constructor
      */
     constructor(taskTemplateId: Int, startedAt: Instant?) :
-            this(null, taskTemplateId, startedAt, null, null, null) {
+            this(null, taskTemplateId, startedAt, null, ArrayList<TaskAssignment>(), null) {
     }
 
     /**
@@ -47,7 +51,7 @@ class Task(
      */
     private fun arePredecessorsClosed(): Boolean {
         var unclosedFound = false
-        taskTemplate!!.predecessors.forEach { taskTemplate ->
+        taskTemplate!!.getPredecessors().forEach { taskTemplate ->
             val preTask = process!!.tasks.get(taskTemplate.id)
             if (preTask!!.status() != TaskStatus.CLOSED)
                 unclosedFound = true
@@ -107,13 +111,14 @@ class Task(
      *
      * @return True if there is a assignment to the specified assignee.
      */
-    fun hasAssignment(assigneeId: String): Boolean {
-        return assignments!!.find { it.assigneeId == assigneeId } != null
+    fun hasAssignment(taskAssignment: TaskAssignment): Boolean {
+        return assignments!!.find { it.assigneeId == taskAssignment.assigneeId } != null
     }
 
     /**
      * Adds the given task assignment.
      *
+     * @throws AlreadyClosedException Is thrown if the process the task belongs to is not running.
      * @throws InvalidInputException Is thrown if the task id specified in the given task assignment
      * is not equal to the id of this task.
      * @throws AlreadyExistsException Is thrown if the task assignment already exists.
@@ -121,10 +126,17 @@ class Task(
     fun addTaskAssignment(taskAssignment: TaskAssignment) {
         if (taskAssignment.taskId != id)
             throw InvalidInputException("task id specified in the given task assignment must be equal to the id of this task")
-        if (hasAssignment(taskAssignment.assigneeId))
+
+        if (!process!!.isRunning())
+            throw AlreadyClosedException("ths process the task belongs to is not running")
+        if (isClosed())
+            throw AlreadyClosedException("task is already closed")
+        if (taskAssignment.isClosed() && isBlocked())
+            throw NotFoundException("the assignment can only be closed if all predecessors have been closed")
+        if (hasAssignment(taskAssignment))
             throw AlreadyExistsException("task assignment already exists")
 
-        assignments!!.add(taskAssignment)
+        assignments.add(taskAssignment)
     }
 
     /**
@@ -144,11 +156,18 @@ class Task(
     /**
      * Deletes the specified task assignment.
      *
+     * @throws AlreadyClosedException Is thrown if the process the task belongs to is not running.
+     * @throws AlreadyExistsException Is thrown if the specified task is already closed.
      * @throws AlreadyClosedException Is thrown if the specified assignment is already closed.
      * @throws NotFoundException Is thrown if a task assignment with the specified user does not
      * exist for this task.
      */
     fun deleteTaskAssignment(assigneeId: String) {
+        if (!process!!.isRunning())
+            throw AlreadyClosedException("the process the task belongs to is nut running")
+        if (isClosed())
+            throw AlreadyClosedException("task is already closed")
+
         for (i in 0 until assignments!!.size) {
             val assignment = assignments.get(i)
             if (assignment.assigneeId == assigneeId) {

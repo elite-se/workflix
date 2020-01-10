@@ -9,7 +9,7 @@ import Login from './routes/login/components/Login'
 
 const RouterWrapper = styled<{}, {}, 'div'>('div')`
   &, & > * {
-    margin: 5px;
+    margin: 5px 5px 0;
     display: flex;
     flex: 1;
     justify-content: center;

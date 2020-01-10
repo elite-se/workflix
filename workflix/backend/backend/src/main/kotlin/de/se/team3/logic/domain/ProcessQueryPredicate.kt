@@ -50,7 +50,7 @@ data class ProcessQueryPredicate(
             true
 
         if (statuses.containsOrEmpty(process.getStatus()) &&
-            processGroupIds.containsOrEmpty(process.processGroupId) &&
+            processGroupIds.containsOrEmpty(process.getProcessGroupId()) &&
             relevantForInvolving)
             return true
 

@@ -6,7 +6,7 @@ import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import handleStringChange from '../../../modules/common/handleStringChange'
 import LoginApi from '../../../modules/api/LoginApi'
 import { storeToken } from '../../../modules/common/tokenStorage'
-import CenterScreen from '../../../modules/common/CenterScreen'
+import CenterScreen from '../../../modules/common/components/CenterScreen'
 import { toastifyError } from '../../../modules/common/toastifyError'
 
 type StateType = {

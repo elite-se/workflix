@@ -3,7 +3,7 @@
 import type { ComponentType } from 'react'
 import React from 'react'
 import { Button, H2, Icon, Spinner, Text } from '@blueprintjs/core'
-import CenterScreen from '../../common/CenterScreen'
+import CenterScreen from '../../common/components/CenterScreen'
 
 function withPromiseResolver<P1: {}, P2: {}> (
   promiseCreator: ($Diff<P1, P2>, (soft: boolean) => void) => Promise<P2>,
@@ -56,7 +56,7 @@ function withPromiseResolver<P1: {}, P2: {}> (
         } else if (props && softLoading) {
           return <>
             <WrappedComponent {...this.props} {...props}/>
-            <CenterScreen style={{ position: 'absolute', top: '0', right: '0', left: '0', bottom: '0' }}>
+            <CenterScreen style={{ position: 'fixed', top: '0', right: '0', left: '0', bottom: '0' }}>
               <Spinner/>
             </CenterScreen>
           </>
