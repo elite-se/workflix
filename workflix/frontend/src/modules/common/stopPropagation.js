@@ -4,5 +4,6 @@ export default function stopPropagation (handler: () => void): (SyntheticEvent<H
   return event => {
     handler()
     event.stopPropagation()
+    event.preventDefault()
   }
 }

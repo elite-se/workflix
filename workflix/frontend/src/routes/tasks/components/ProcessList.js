@@ -18,6 +18,7 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   flex: 1;
   justify-content: center;
   flex-direction: row;
+  align-items: flex-start;
 `
 
 type PropsType = {|
@@ -60,7 +61,8 @@ class ProcessList extends React.Component<PropsType, StateType> {
     return <div style={{
       maxWidth: '100%',
       overflowX: 'auto',
-      display: 'flex'
+      display: 'flex',
+      flex: 1
     }}>
       <ProcessListWrapper>
         {
