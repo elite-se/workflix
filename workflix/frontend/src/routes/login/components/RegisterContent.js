@@ -62,6 +62,7 @@ class RegisterContent extends React.Component<PropsType, StateType> {
   render () {
     const { password, password2, code, loading } = this.state
     const { onGoToLogin, onGoToVerifyMail, email } = this.props
+    const passwordsMatch = password === password2
     return <form onSubmit={this.onFormSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
       <Callout intent={Intent.PRIMARY} title='Import your QPlix account'
                style={{ maxWidth: '400px', wordWrap: 'break-word' }}>
@@ -76,9 +77,10 @@ class RegisterContent extends React.Component<PropsType, StateType> {
       <FormGroup label='Password' labelFor='password'>
         <PasswordInput password={password} onPasswordChange={this.onPasswordChange}/>
       </FormGroup>
-      <FormGroup label='Repeat password' labelFor='password2'>
+      <FormGroup label='Repeat password' labelFor='password2'
+                 helperText={passwordsMatch ? undefined : 'Passwords must not differ'}>
         <PasswordInput id='password2' placeholder='Repeat password' password={password2}
-                       onPasswordChange={this.onPassword2Change}/>
+                       onPasswordChange={this.onPassword2Change} intent={passwordsMatch ? undefined : Intent.DANGER}/>
       </FormGroup>
       <Button icon='new-person' intent={Intent.SUCCESS} text='Import account' type='submit' large
               disabled={this.isSubmitDisabled()} loading={loading}/>
