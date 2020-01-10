@@ -72,9 +72,7 @@ fun main(args: Array<String>) {
         if (ctx.method() == "OPTIONS") {
             CORSHandler.optionsRequest(ctx)
         } else if (ctx.path() != "/login") {
-            if (ctx.path() != "/login") {
-                AuthenticationHandler.authorizeRequest(ctx)
-            }
+            AuthenticationHandler.authorizeRequest(ctx)
         }
     }
 
