@@ -10,6 +10,7 @@ import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
 import { Button, EditableText, Elevation, H3 } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
+import stopPropagation from '../../../../modules/common/stopPropagation'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
@@ -61,7 +62,7 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
     })
   }
 
-  onDelete = () => {
+  onDelete = stopPropagation(() => {
     this.setState({ deleting: true })
     new ProcessGroupsApi().deleteProcessGroup(this.props.processGroup.id)
       .then(() => {
@@ -72,7 +73,7 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
         this.setState({ deleting: false })
         toastifyError(err)
       })
-  }
+  })
 
   getSelectedUsers = () => this.props.processGroup.membersIds.map(id => this.props.users.get(id)).filter(Boolean)
 

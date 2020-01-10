@@ -9,6 +9,7 @@ import { toastifyError } from '../../../../modules/common/toastifyError'
 import { Button, EditableText, Elevation, H3 } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import UserRoleApi from '../../../../modules/api/UserRoleApi'
+import stopPropagation from '../../../../modules/common/stopPropagation'
 
 type PropsType = {|
   userRole: UserRoleType,
@@ -60,7 +61,7 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
     })
   }
 
-  onDelete = () => {
+  onDelete = stopPropagation(() => {
     this.setState({ deleting: true })
     new UserRoleApi().deleteUserRole(this.props.userRole.id)
       .then(() => {
@@ -71,7 +72,7 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
         this.setState({ deleting: false })
         toastifyError(err)
       })
-  }
+  })
 
   getSelectedUsers = () => this.props.userRole.memberIds.map(id => this.props.users.get(id)).filter(Boolean)
 
