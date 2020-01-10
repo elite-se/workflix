@@ -2,7 +2,7 @@
 
 import React from 'react'
 import type { TaskStatusType, TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
-import { Card, Colors } from '@blueprintjs/core'
+import { Card, Colors, Icon } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { Elevation as ELEVATION } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { UserType } from '../../../modules/datatypes/User'
@@ -11,11 +11,12 @@ const SCROLL_DELAY_MS = 300
 
 const FinishedTaskStyling = styled<{ status: TaskStatusType }, {}, 'div'>('div')`
   margin: 3px 0;
-  ${props => props.status !== 'BLOCKED' && `
   & > * {
+    ${props => props.status !== 'BLOCKED' && `
     border: 1px solid ${props.status === 'CLOSED' ? Colors.GREEN4 : Colors.ORANGE4};
+    `}
+    padding: 15px;
   }
-`}
 `
 
 type PropsType = {
@@ -49,8 +50,8 @@ class TaskSummaryCard extends React.Component<PropsType> {
           : <span>{
             task.assignments.map(assignee => {
               const user = this.props.users.get(assignee.assigneeId)
-              return <span key={assignee.assigneeId} className='comma'>
-                {user ? user.name : assignee.assigneeId}
+              return user && <span key={assignee.assigneeId} className='comma'>
+                {user.name}{assignee.closed && <Icon icon={'small-tick'}/>}
               </span>
             })
           }</span>}</small>

@@ -12,10 +12,10 @@ import type { UserType } from '../../../modules/datatypes/User'
 import ProcessProgress from '../../../modules/common/components/ProcessProgress'
 import { Link } from '@reach/router'
 
-const CardWithMargin: StyledComponent<{}, {}, *> = styled(Card)`
-  margin: 5px;
+const CustomCard: StyledComponent<{}, {}, *> = styled(Card)`
   width: 250px;
   background: #FAFAFA;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -31,6 +31,7 @@ const TaskList = styled<{}, {}, 'div'>('div')`
 
 const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
   color: black;
+  margin: 5px;
   &:hover {
     text-decoration: none;
     color: black;
@@ -58,7 +59,7 @@ class ProcessCard extends React.Component<PropsType> {
     const process = this.props.process
     const isSelected = !!process.tasks.find(task => this.isSelected(task))
     return <CustomLink to={`/processes/${process.id}`}>
-      <CardWithMargin interactive elevation={isSelected ? Elevation.FOUR : undefined}>
+      <CustomCard interactive elevation={isSelected ? Elevation.FOUR : undefined}>
       <H3>{process.title} (#{process.id})</H3>
       <TaskList>
         {
@@ -73,7 +74,7 @@ class ProcessCard extends React.Component<PropsType> {
         }
       </TaskList>
       <ProcessProgress process={process}/>
-    </CardWithMargin>
+    </CustomCard>
     </CustomLink>
   }
 }

@@ -18,6 +18,7 @@ const ProcessListWrapper = styled<{}, {}, 'div'>('div')`
   flex: 1;
   justify-content: center;
   flex-direction: row;
+  align-items: flex-start;
 `
 
 type PropsType = {|
