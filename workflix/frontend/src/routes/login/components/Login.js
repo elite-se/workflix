@@ -5,6 +5,7 @@ import { Card, H1 } from '@blueprintjs/core'
 import CenterScreen from '../../../modules/common/components/CenterScreen'
 import LoginContent from './LoginContent'
 import VerifyMailContent from './VerifyMailContent'
+import RegisterContent from './RegisterContent'
 
 type ModeType = 'login' | 'verifyMail' | 'register'
 
@@ -40,7 +41,8 @@ class Login extends React.Component<{ onLoggedInChanged: (boolean) => void }, St
       case 'verifyMail':
         return <VerifyMailContent email={email} onEmailChange={this.onEmailChange} onGoToLogin={this.onGoToLogin}
         onGoToRegister={this.onGoToRegister}/>
-      case 'register': return 'TROLOLO'
+      case 'register': return <RegisterContent email={email} onGoToLogin={this.onGoToLogin}
+                                               onGoToVerifyMail={this.onGoToVerifyMail}/>
       default:
         return <LoginContent email={email} onEmailChange={this.onEmailChange} onLoggedIn={this.onLoggedIn}
                              onGoToVerifyMail={this.onGoToVerifyMail}/>

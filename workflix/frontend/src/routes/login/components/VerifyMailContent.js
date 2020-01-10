@@ -54,10 +54,11 @@ class VerifyMailContent extends React.Component<PropsType, StateType> {
       </Callout>
       <FormGroup label='Email' labelFor='email' style={{ marginTop: '10px' }}>
         <InputGroup id='email' placeholder='Email' required large leftIcon='person'
-                    onChange={this.onEmailChange} inputRef={this.emailInputRef} value={email}/>
+                    onChange={this.onEmailChange} inputRef={this.emailInputRef} value={email}
+                    disabled={loading}/>
       </FormGroup>
       <Button icon='envelope' intent={Intent.PRIMARY} text='Verify email address' type='submit' large
-              disabled={!email} loading={loading} role='submit'/>
+              disabled={!email} loading={loading}/>
       <Button icon='unlock' text='I already have an account' minimal style={{ marginTop: '5px' }}
               onClick={onGoToLogin} disabled={loading}/>
     </form>
