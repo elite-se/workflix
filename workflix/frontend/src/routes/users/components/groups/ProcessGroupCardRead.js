@@ -26,9 +26,9 @@ class ProcessGroupCardRead extends React.Component<PropsType> {
       user => user.name)
     return <TitledCard key={processGroup.id} title={<IconRow icon='office'>{processGroup.title}</IconRow>}
                        onClick={this.onClick}>
-      <IconRow icon='annotation' multiLine>
+      {processGroup.description && <IconRow icon='annotation' multiLine>
         <span style={{ whiteSpace: 'pre-wrap' }}>{processGroup.description}</span>
-      </IconRow>
+      </IconRow>}
       <IconRow icon='person' multiLine>
         {listIfNeeded(groupUsers, user => user.id,
           user => <a onClick={this.onUserSelected(user)}>{user.name}</a>)}

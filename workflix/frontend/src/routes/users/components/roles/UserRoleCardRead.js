@@ -25,9 +25,9 @@ class UserRoleCardRead extends React.Component<PropsType> {
       user => user.name)
     return <TitledCard key={userRole.id} title={<IconRow icon='people' singleLine>{userRole.name}</IconRow>}
                        onClick={this.onClick}>
-      <IconRow icon='annotation' multiLine>
+      {userRole.description && <IconRow icon='annotation' multiLine>
         <span style={{ whiteSpace: 'pre-wrap' }}>{userRole.description}</span>
-      </IconRow>
+      </IconRow>}
       <IconRow icon='person' multiLine>
         {listIfNeeded(roleUsers, user => user.id,
           user => <a onClick={this.onUserSelected(user)}>{user.name}</a>)}
