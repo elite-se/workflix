@@ -6,10 +6,10 @@ import me.liuwj.ktorm.support.postgresql.PostgreSqlDialect
 object ConnectionManager {
 
     fun connect() {
-        val server = "localhost" // "***REMOVED***"
-        val database = "postgres" // "***REMOVED***"
-        val user = "postgres" // "***REMOVED***"
-        val password = "Iv\\Z[4x,QY0(" // "***REMOVED***"
+        val server = "***REMOVED***"
+        val database = "***REMOVED***"
+        val user = "***REMOVED***"
+        val password = "***REMOVED***"
         Database.connect(
             "jdbc:postgresql://" + server + "/" + database + "?user=" + user + "&password=" + password,
             driver = "org.postgresql.Driver",
