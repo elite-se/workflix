@@ -54,7 +54,7 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { taskTemplates, tasks, users, onTaskModified } = this.props
+    const { taskTemplates, tasks, users, onTaskModified, userRoles } = this.props
     const { selectedTaskId } = this.state
     const processedNodes = calcTasksGraph(tasks, taskTemplates)
     const chartNodes = processedNodes.map(node => chartNodeFromProcessedNode(
@@ -77,7 +77,7 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
       <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={template?.name || ''}
               onClose={this.unselectTask} style={{ overflow: 'auto' }} onOpening={onOpenRemoveOverlayClass}>
         {task && <TaskDrawerContent task={task} taskTemplates={taskTemplates} onTaskModified={onTaskModified}
-                                    users={users}/>}
+                                    users={users} userRoles={userRoles}/>}
       </Drawer>
     </FormGroup>
   }

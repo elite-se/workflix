@@ -28,6 +28,7 @@ const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
     padding-bottom: 0;
   }
 `
+
 const Item: StyledComponent<{}, {}, *> = styled('div')`
   display: flex;
   flex-direction: row;
