@@ -3,10 +3,10 @@
 import React from 'react'
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import IconRow from '../IconRow'
-import TitledCard from '../TitledCard'
+import StyledCard from '../StyledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
-import { EditableText, Elevation } from '@blueprintjs/core'
+import { EditableText, Elevation, H3 } from '@blueprintjs/core'
 import UsersApi from '../../../../modules/api/UsersApi'
 
 type PropsType = {|
@@ -60,15 +60,14 @@ class UserRoleCardEdit extends React.Component<PropsType> {
 
   render () {
     const { userRole, users } = this.props
-    return <TitledCard key={userRole.id} elevation={Elevation.FOUR} title={
-      <IconRow icon='people'>
+    return <StyledCard key={userRole.id} elevation={Elevation.FOUR} interactive>
+      <IconRow icon='people'><H3>
         <EditableText onConfirm={this.onNameChanged} defaultValue={userRole.name} placeholder='Name'
                       alwaysRenderInput/>
-      </IconRow>
-    }>
+      </H3></IconRow>
       <IconRow icon='annotation' multiLine>
         <EditableText onConfirm={this.onDescriptionChanged} defaultValue={userRole.description}
-                    placeholder='Description' multiline/>
+                      placeholder='Description' multiline/>
       </IconRow>
       <IconRow icon='person' multiLine>
         <SimpleMultiSelect items={Array.from(users.values())} selection={this.getSelectedUsers()}
@@ -80,7 +79,7 @@ class UserRoleCardEdit extends React.Component<PropsType> {
                            onItemAdded={this.onUserAdded} onItemRemoved={this.onUserRemoved}
                            onItemsCleared={this.onUsersCleared}/>
       </IconRow>
-    </TitledCard>
+    </StyledCard>
   }
 
   getUserId = (user: UserType) => user.id

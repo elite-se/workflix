@@ -4,11 +4,11 @@ import React from 'react'
 import type { UserType } from '../../../../modules/datatypes/User'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import IconRow from '../IconRow'
-import TitledCard from '../TitledCard'
+import TitledCard from '../StyledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
-import { EditableText, Elevation } from '@blueprintjs/core'
+import { EditableText, Elevation, H3 } from '@blueprintjs/core'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
@@ -61,12 +61,11 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
 
   render () {
     const { processGroup, users } = this.props
-    return <TitledCard key={processGroup.id} elevation={Elevation.FOUR} title={
-      <IconRow icon='office'>
+    return <TitledCard key={processGroup.id} elevation={Elevation.FOUR} interactive>
+      <IconRow icon='office'><H3>
         <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'
                       alwaysRenderInput/>
-      </IconRow>
-    }>
+      </H3></IconRow>
       <IconRow icon='annotation' multiLine>
         <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
                     placeholder='Description' multiline/>
