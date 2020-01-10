@@ -41,6 +41,8 @@ class TasksOverview extends React.Component<PropsType, StateType> {
   render () {
     return <div style={{
       maxWidth: '100%',
+      display: 'flex',
+      flexDirection: 'column',
       boxSizing: 'border-box',
       flex: 1,
       paddingRight: this.state.drawerOpen ? Drawer.SIZE_SMALL : '0',
