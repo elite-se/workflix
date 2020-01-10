@@ -25,7 +25,7 @@ class UserRoleCardRead extends React.Component<PropsType> {
     const roleUsers = sortBy(userRole.memberIds.map(id => users.get(id)).filter(Boolean),
       user => user.name)
     return <StyledCard key={userRole.id} onClick={this.onClick} interactive>
-      <IconRow icon='people' singleLine><H3>{userRole.name}</H3></IconRow>
+      <IconRow icon='people'><H3>{userRole.name}</H3></IconRow>
       {userRole.description && <IconRow icon='annotation' multiLine>
         <span style={{ whiteSpace: 'pre-wrap' }}>{userRole.description}</span>
       </IconRow>}
