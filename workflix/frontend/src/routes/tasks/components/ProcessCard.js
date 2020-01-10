@@ -3,7 +3,7 @@
 import React from 'react'
 import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'
-import { Button, Card, Collapse, H3 } from '@blueprintjs/core'
+import { Button, Card, Collapse, H4, Icon } from '@blueprintjs/core'
 import type { ProcessType } from '../../../modules/datatypes/Process'
 import TaskSummaryCard from './TaskSummaryCard'
 import { Elevation } from '@blueprintjs/core/lib/cjs/common/elevation'
@@ -13,9 +13,10 @@ import ProcessProgress from '../../../modules/common/components/ProcessProgress'
 import { Link } from '@reach/router'
 import calcTasksGraph from '../../../modules/process-template-editor/calcTasksGraph'
 import stopPropagation from '../../../modules/common/stopPropagation'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 
 const CustomCard: StyledComponent<{}, {}, *> = styled(Card)`
-  width: 250px;
+  width: 275px;
   background: #FAFAFA;
   padding: 15px;
   display: flex;
@@ -29,6 +30,16 @@ const TaskList = styled<{}, {}, 'div'>('div')`
   justify-content: flex-start;
   flex-direction: column;
   flex-grow: 1;
+  margin-top: 10px;
+`
+
+const Item: StyledComponent<{}, {}, *> = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  & > * {
+    padding: 5px;
+  }
 `
 
 const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
@@ -48,6 +59,7 @@ type PropsType = {
   selectedTask: ?TaskType,
   onTaskSelected: TaskType => void,
   users: Map<string, UserType>,
+  processGroups: Map<number, ProcessGroupType>,
   taskTemplates: Map<number, TaskTemplateType>
 }
 
@@ -82,8 +94,9 @@ class ProcessCard extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { process, taskTemplates } = this.props
+    const { process, taskTemplates, processGroups } = this.props
     const { expandDone, expandBlocked } = this.state
+    const processGroup = processGroups.get(process.processGroupId)
     const isSelected = !!process.tasks.find(task => this.isSelected(task))
     const processedNodes = calcTasksGraph(process.tasks, taskTemplates)
     const closedNodes = processedNodes.filter(task => task.data.task.status === 'CLOSED')
@@ -96,12 +109,14 @@ class ProcessCard extends React.Component<PropsType, StateType> {
     const collapseBlocked = blockedNodes.slice(DISPLAY_TASKS)
     return <CustomLink to={`/processes/${process.id}`}>
       <CustomCard interactive elevation={isSelected ? Elevation.FOUR : undefined}>
-        <H3>{process.title} (#{process.id})</H3>
+        <H4>{`#${process.id}: ${process.title}`}</H4>
+        <Item><Icon icon='office'/>Process group: {processGroup?.title}</Item>
+        <Item><Icon icon='stopwatch'/>Deadline: {process.deadline.toLocaleString()}</Item>
         <TaskList>
           {
             collapseClosed.length > 0 && <>
               <Button minimal fill onClick={this.switchExpandDone}>
-                {expandDone ? 'Collapse' : 'Expand'} {collapseClosed.length} finished {collapseClosed.length > 1 ? 'Tasks' : 'Task'}
+                {expandDone ? 'Collapse' : 'Expand'} {collapseClosed.length} finished {collapseClosed.length > 1 ? 'tasks' : 'task'}
               </Button>
               <Collapse isOpen={expandDone}>
                 {this.renderNodes(collapseClosed)}
@@ -112,7 +127,7 @@ class ProcessCard extends React.Component<PropsType, StateType> {
           {
             collapseBlocked.length > 0 && <>
               <Button minimal fill onClick={this.switchExpandBlocked}>
-                {expandBlocked ? 'Collapse' : 'Expand'} {collapseBlocked.length} blocked {collapseBlocked.length > 1 ? 'Tasks' : 'Task'}
+                {expandBlocked ? 'Collapse' : 'Expand'} {collapseBlocked.length} blocked {collapseBlocked.length > 1 ? 'tasks' : 'task'}
               </Button>
               <Collapse isOpen={expandBlocked}>
                 {this.renderNodes(collapseBlocked)}
