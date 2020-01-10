@@ -5,6 +5,8 @@ import { Button, Callout, FormGroup, InputGroup } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import handleStringChange from '../../../modules/common/handleStringChange'
 import PasswordInput from './PasswordInput'
+import { toastifyError } from '../../../modules/common/toastifyError'
+import UsersApi from '../../../modules/api/UsersApi'
 
 type PropsType = {|
   email: string,
@@ -36,10 +38,23 @@ class RegisterContent extends React.Component<PropsType, StateType> {
   }
 
   importAccount () {
-
+    const { password, code } = this.state
+    const { email, onGoToLogin } = this.props
+    this.setState({ loading: true })
+    new UsersApi().createUser(email, password, code)
+      .then(() => {
+        this.setState({ loading: false })
+        onGoToLogin()
+      })
+      .catch(err => {
+        this.setState({ loading: false })
+        toastifyError(err)
+      })
   }
 
-  isButtonDisabled = () => !this.state.password || !this.state.password2 || !this.state.code
+  isSubmitDisabled = () => !this.state.password || !this.state.password2 || !this.state.code ||
+    this.state.password !== this.state.password2
+
   onPasswordChange = (password: string) => this.setState({ password })
   onPassword2Change = (password2: string) => this.setState({ password2 })
   onCodeChange = handleStringChange((code: string) => this.setState({ code }))
@@ -66,7 +81,7 @@ class RegisterContent extends React.Component<PropsType, StateType> {
                        onPasswordChange={this.onPassword2Change}/>
       </FormGroup>
       <Button icon='new-person' intent={Intent.SUCCESS} text='Import account' type='submit' large
-              disabled={this.isButtonDisabled()} loading={loading}/>
+              disabled={this.isSubmitDisabled()} loading={loading}/>
       <Button icon='fast-backward' text='Change email address' minimal style={{ marginTop: '5px' }}
               onClick={onGoToVerifyMail} disabled={loading}/>
       <Button icon='unlock' text='I already have an account' minimal style={{ marginTop: '5px' }}

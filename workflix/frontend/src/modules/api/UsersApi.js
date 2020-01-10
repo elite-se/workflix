@@ -48,6 +48,13 @@ class UsersApi {
       body: JSON.stringify({ email })
     })
   }
+
+  createUser (email: string, password: string, verificationCode: string): Promise<Response> {
+    return safeFetch(`${usersBackend}/${verificationCode}`, {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    })
+  }
 }
 
 export default UsersApi
