@@ -13,12 +13,15 @@ import { toastifyError } from '../../../modules/common/toastifyError'
 import { navigate } from '@reach/router'
 import ProcessDetailsEditor from './ProcessDetailsEditor'
 import AppToaster from '../../../modules/app/AppToaster'
+import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
+import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
 
 type PropsType = {|
   id: number,
   users: Map<string, UserType>,
   userRoles: Map<number, UserRoleType>,
   process: ProcessType,
+  processGroups: Map<number, ProcessGroupType>,
   template: ProcessTemplateType,
   update: (soft: boolean) => void
 |}
@@ -86,7 +89,7 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { process, template, userRoles, users } = this.props
+    const { process, template, userRoles, users, processGroups } = this.props
     const { saveLoading, abortLoading, drawerOpened, title, description, deadline } = this.state
 
     return <div style={{
@@ -113,7 +116,7 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
       </ButtonGroup>
       <ProcessDetailsEditor onTitleChange={this.onTitleChange} title={title} process={process} deadline={deadline}
                             onDeadlineChange={this.onDeadlineChange} onDescriptionChange={this.onDescriptionChange}
-                            description={description} users={users}/>
+                            description={description} users={users} processGroups={processGroups} template={template}/>
       <TaskListViewer tasks={process.tasks}
                       users={users}
                       taskTemplates={new Map(template.taskTemplates.map(template => [template.id, template]))}
@@ -127,13 +130,15 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
 const promiseCreator = ({ id }: { id: number }, update) => Promise.all([
   new UserApi().getUsers(),
   new UserApi().getUserRoles(),
+  new ProcessGroupsApi().getProcessGroups(),
   new ProcessApi().getProcess(id).then(process => Promise.all([
     Promise.resolve(process),
     new ProcessApi().getProcessTemplate(process.processTemplateId)
   ]))
-]).then(([users, userRoles, [process, template]]) => ({
+]).then(([users, userRoles, processGroups, [process, template]]) => ({
   users,
   userRoles,
+  processGroups,
   process,
   template,
   update
