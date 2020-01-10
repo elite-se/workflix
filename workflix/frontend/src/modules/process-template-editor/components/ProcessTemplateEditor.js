@@ -3,7 +3,7 @@
 import React from 'react'
 import { Button, ButtonGroup, Drawer, H2, H4 } from '@blueprintjs/core'
 import type { UserRoleType, UserType } from '../../datatypes/User'
-import ProcessDetailsEditor from './ProcessDetailsEditor'
+import ProcessTemplateDetailsEditor from './ProcessTemplateDetailsEditor'
 import type { FilledProcessTemplateType } from '../../api/ProcessApi'
 import AppToaster from '../../app/AppToaster'
 import TaskTemplateListEditor from './TaskTemplateListEditor'
@@ -125,10 +125,10 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
           marginLeft: '40px'
         }}>{this.props.title}</H2>
       </ButtonGroup>
-      <ProcessDetailsEditor durationLimit={durationLimit} onDurationLimitChange={this.onDurationLimitChange}
-                            onDescriptionChange={this.onDescriptionChange} description={description}
-                            onTitleChange={this.onTitleChange} title={title} highlightValidation={highlightValidation}
-                            users={users} owner={owner} onOwnerChange={this.onOwnerChange}/>
+      <ProcessTemplateDetailsEditor durationLimit={durationLimit} onDurationLimitChange={this.onDurationLimitChange}
+                                    onDescriptionChange={this.onDescriptionChange} description={description}
+                                    onTitleChange={this.onTitleChange} title={title} onOwnerChange={this.onOwnerChange}
+                                    highlightValidation={highlightValidation} users={users} owner={owner}/>
       <TaskTemplateListEditor tasks={tasks} userRoles={userRoles} onTasksChange={this.onTasksChange}
                               highlightValidation={highlightValidation} setDrawerOpened={this.setDrawerOpened}/>
     </div>

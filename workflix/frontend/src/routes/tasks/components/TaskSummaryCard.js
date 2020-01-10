@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import type { TaskStateType, TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
+import type { TaskStatusType, TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
 import { Card, Colors } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { Elevation as ELEVATION } from '@blueprintjs/core/lib/cjs/common/elevation'
@@ -9,7 +9,7 @@ import type { UserType } from '../../../modules/datatypes/User'
 
 const SCROLL_DELAY_MS = 300
 
-const FinishedTaskStyling = styled<{ status: TaskStateType }, {}, 'div'>('div')`
+const FinishedTaskStyling = styled<{ status: TaskStatusType }, {}, 'div'>('div')`
   margin: 3px 0;
   ${props => props.status !== 'BLOCKED' && `
   & > * {
@@ -29,7 +29,8 @@ type PropsType = {
 class TaskSummaryCard extends React.Component<PropsType> {
   containerDiv: ?HTMLDivElement = null
 
-  onClick = () => {
+  onClick = (event: SyntheticMouseEvent<HTMLElement>) => {
+    event.preventDefault()
     this.props.onTaskSelected(this.props.task)
   }
 

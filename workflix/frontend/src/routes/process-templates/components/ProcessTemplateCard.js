@@ -8,7 +8,7 @@ import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'
 import type { UserType } from '../../../modules/datatypes/User'
 import { calcGraph } from '../../../modules/process-template-editor/graph-utils'
-import ProcessChart from '../../../modules/process-template-editor/components/ProcessChart'
+import ProcessChart, { chartNodeFromProcessedNode } from '../../../modules/process-template-editor/components/ProcessChart'
 import type { TaskTemplateType } from '../../../modules/datatypes/Task'
 import ButtonWithDialog from '../../../modules/common/components/ButtonWithDialog'
 import ProcessApi from '../../../modules/api/ProcessApi'
@@ -105,6 +105,7 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
     const { deleteLoading, duplicateLoading } = this.state
     const owner = users.get(template.ownerId)
     const graph = calcGraph<number, TaskTemplateType>(template.taskTemplates)
+    const chartNodes = graph.map(node => chartNodeFromProcessedNode(node, Colors.BLUE1))
     const criticalLength = Math.max(...graph.map(task => task.endDate))
     return <CustomLink to={`./edit/${template.id}`}>
       <Card style={{
@@ -136,7 +137,7 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
             </ButtonWithDialog>
           </CustomButtonGroup>
         </Item>
-        <AllTheWay><ProcessChart mini tasks={graph}/></AllTheWay>
+        <AllTheWay><ProcessChart mini tasks={chartNodes}/></AllTheWay>
       </Card>
     </CustomLink>
   }

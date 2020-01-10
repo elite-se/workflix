@@ -3,6 +3,7 @@
 export const parseDatesInProcess = (process: any) => ({
   ...process,
   startedAt: process.startedAt && new Date(process.startedAt),
+  deadline: process.deadline && new Date(process.deadline),
   tasks: process.tasks.map(parseDatesInTask)
 })
 

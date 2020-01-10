@@ -39,6 +39,7 @@ export type ProcessType = {|
   status: ProcessStatusType,
   progress: number,
   startedAt: Date,
+  deadline: Date,
   tasks: TaskType[]
 |}
 

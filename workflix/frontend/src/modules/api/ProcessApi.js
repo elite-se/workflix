@@ -27,6 +27,12 @@ export type ProcessConfigType = {|
 |}
 
 class ProcessApi {
+  getProcess (id: number): Promise<ProcessType> {
+    return safeFetch(`${processesBackend}/${id}`)
+      .then(response => response.json())
+      .then(parseDatesInProcess)
+  }
+
   getProcesses (filters: FiltersType = {}): Promise<ProcessType[]> {
     // convert filters into URL parameters
     const url = new URL(processesBackend)
@@ -41,19 +47,16 @@ class ProcessApi {
     return safeFetch(url)
       .then(response => response.json())
       .then(result => result.processes)
-      .then(processes => Promise.all(
-        processes.map(proc =>
-          safeFetch(`${processesBackend}/${proc.id}`)
-            .then(response => response.json())
-        )
-      ))
-      .then(processes => processes.map(parseDatesInProcess))
+      .then(processes => Promise.all(processes.map(proc => this.getProcess(proc.id))))
   }
 
   startProcess (processConfig: ProcessConfigType): Promise<NewIdResultType> {
     return safeFetch(`${processesBackend}`, {
       method: 'POST',
-      body: JSON.stringify({ ...processConfig, deadline: processConfig.deadline.toISOString() })
+      body: JSON.stringify({
+        ...processConfig,
+        deadline: processConfig.deadline.toISOString()
+      })
     })
       .then(response => response.json())
   }
@@ -134,6 +137,21 @@ class ProcessApi {
         })
       }
     ).then(response => response.json())
+  }
+
+  abortProcess (processId: number): Promise<Response> {
+    return safeFetch(`${processesBackend}/${processId}`, { method: 'DELETE' })
+  }
+
+  patchProcess (processId: number, title: string, description: string, deadline: Date): Promise<Response> {
+    return safeFetch(`${processesBackend}/${processId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        title,
+        description,
+        deadline: deadline.toISOString()
+      })
+    })
   }
 }
 

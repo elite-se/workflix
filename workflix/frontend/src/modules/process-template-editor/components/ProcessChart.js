@@ -5,9 +5,28 @@ import React from 'react'
 import { Colors } from '@blueprintjs/core'
 import type { ProcessedNodeType } from '../graph-utils'
 
+export type ChartNodeType = {
+  id: number,
+  predecessors: number[],
+  color: string,
+  critical: boolean,
+  startDate: number,
+  estimatedDuration: number,
+  endDate: number
+}
+
+export const chartNodeFromProcessedNode = (node: ProcessedNodeType<*, *>, color: string): ChartNodeType => ({
+  id: node.id,
+  predecessors: node.data.predecessors,
+  color,
+  critical: node.critical,
+  startDate: node.startDate,
+  estimatedDuration: node.estimatedDuration,
+  endDate: node.endDate
+})
+
 type PropsType = {
-  tasks: ProcessedNodeType<*, *>[], /* sorted by calculated startDate */
-  selectedId?: ?number,
+  tasks: ChartNodeType[], /* sorted by calculated startDate */
   selectTaskId?: (id: number) => void,
   mini?: boolean
 }
@@ -44,7 +63,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
   }
 
   renderSvg (): Node {
-    const { tasks, selectedId, mini } = this.props
+    const { tasks, mini } = this.props
     const { width } = this.state
     if (tasks.length === 0 || !width) {
       return null
@@ -76,7 +95,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
                 height={ITEM_HEIGHT * miniFactor} width={width} fill={Colors.LIGHT_GRAY4}/>
         )),
         ...tasks.flatMap((node, index) =>
-          node.data.predecessors
+          node.predecessors
             .map(id => tasks.findIndex(x => x.id === id))
             .map(predIndex => {
               const pred = tasks[predIndex]
@@ -108,7 +127,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
                 x={node.startDate} y={index * itemHeight + (itemHeight - NODE_HEIGHT) / 2}
                 width={node.estimatedDuration} height={NODE_HEIGHT}
                 rx={NODE_HEIGHT / 2 / scale} ry={NODE_HEIGHT / 2}
-                fill={node.id === selectedId ? Colors.BLUE4 : Colors.BLUE1}/>
+                fill={node.color}/>
         ))
       ]}
     </svg>
