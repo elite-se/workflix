@@ -14,11 +14,26 @@ const Container = styled<{}, {}, 'div'>('div')`
   max-width: 100%;
 `
 
-class CardsContainer extends React.Component<{ onCreate?: () => void, children: React$Node }> {
+type PropsType = {|
+  onCreate?: () => Promise<*>,
+  children: React$Node
+|}
+
+class CardsContainer extends React.Component<PropsType, {| creating: boolean |}> {
+  state = { creating: false }
+
+  onCreate = () => {
+    const onCreate = this.props.onCreate
+    if (!onCreate) { return }
+    this.setState({ creating: true })
+    onCreate().finally(() => this.setState({ creating: false }))
+  }
+
   render () {
     return <div style={{ maxWidth: '100%' }}>
-      {this.props.onCreate && <Button icon='add' text='Create new' style={{ alignSelf: 'flex-start', margin: '5px' }}
-                                      intent={Intent.SUCCESS} onClick={this.props.onCreate}/>}
+      {this.props.onCreate &&
+      <Button icon='add' text='Create new' style={{ alignSelf: 'flex-start', margin: '5px' }}
+              intent={Intent.SUCCESS} onClick={this.onCreate} loading={this.state.creating}/>}
       <Container>{this.props.children}</Container>
     </div>
   }

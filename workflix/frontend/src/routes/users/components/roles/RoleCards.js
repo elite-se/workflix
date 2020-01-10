@@ -5,6 +5,8 @@ import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import { sortBy } from 'lodash'
 import UserRoleCard from './UserRoleCard'
 import CardsContainer from '../CardsContainer'
+import { toastifyError } from '../../../../modules/common/toastifyError'
+import UsersApi from '../../../../modules/api/UsersApi'
 
 type PropsType = {|
   users: Map<string, UserType>,
@@ -14,11 +16,30 @@ type PropsType = {|
   onRoleSelected: (?UserRoleType) => void,
   onRoleMembershipAdded: (UserRoleType, UserType) => void,
   onRoleMembershipRemoved: (UserRoleType, UserType) => void,
-  onRoleChanged: (UserRoleType) => void
+  onRoleChanged: (UserRoleType) => void,
+  onRoleAdded: (UserRoleType) => void
 |}
 
 export default class UserCards extends React.Component<PropsType> {
-  onCreate = () => {}
+  onCreate = () => {
+    this.props.onRoleSelected(null)
+    const newRoleSkeleton = {
+      name: 'New role',
+      description: '',
+      createdAt: new Date(),
+      memberIds: []
+    }
+    return new UsersApi().addUserRole(newRoleSkeleton)
+      .then(({ newId }) => {
+        const newRole = {
+          ...newRoleSkeleton,
+          id: newId
+        }
+        this.props.onRoleAdded(newRole)
+        this.props.onRoleSelected(newRole)
+      })
+      .catch(toastifyError)
+  }
 
   render () {
     return <CardsContainer onCreate={this.onCreate}>{
@@ -31,7 +52,7 @@ export default class UserCards extends React.Component<PropsType> {
   }
 
   getCardForRole = (role: UserRoleType) => {
-    const { selection, roles, ...cardProps } = this.props
+    const { selection, roles, onRoleAdded, ...cardProps } = this.props
     return <UserRoleCard {...cardProps} key={role.id} userRole={role} selected={role === selection}/>
   }
 }

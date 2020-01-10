@@ -32,7 +32,7 @@ export default class ProcessGroupCards extends React.Component<PropsType> {
       createdAt: new Date(),
       membersIds: []
     }
-    new ProcessGroupsApi().addProcessGroup(newGroupSkeleton)
+    return new ProcessGroupsApi().addProcessGroup(newGroupSkeleton)
       .then(({ newId }) => {
         const newGroup = {
           ...newGroupSkeleton,

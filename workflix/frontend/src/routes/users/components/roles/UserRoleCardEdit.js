@@ -37,7 +37,7 @@ class UserRoleCardEdit extends React.Component<PropsType> {
   }
 
   patchAndPropagate = (updatedRole: UserRoleType) => {
-    new UsersApi().patchRole(updatedRole)
+    new UsersApi().patchUserRole(updatedRole)
       .then(this.props.onRoleChanged(updatedRole))
       .catch(toastifyError)
   }

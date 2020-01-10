@@ -159,6 +159,12 @@ class UserManagement extends React.Component<PropsType, StateType> {
     }))
   }
 
+  onRoleAdded = (role: UserRoleType) => {
+    this.setState(oldState => ({
+      roles: new Map(oldState.roles).set(role.id, role)
+    }))
+  }
+
   render () {
     const { processGroups, roles, users, selectedUserId, selectedGroupId, selectedRoleId } = this.state
     const selectedUser = (selectedUserId && users.get(selectedUserId)) || null
@@ -177,7 +183,8 @@ class UserManagement extends React.Component<PropsType, StateType> {
                                   onRoleSelected={this.onRoleSelected}
                                   onRoleMembershipAdded={this.onRoleMembershipAdded}
                                   onRoleMembershipRemoved={this.onRoleMembershipRemoved}
-                                  onRoleChanged={this.onRoleChanged}/>
+                                  onRoleChanged={this.onRoleChanged}
+                                  onRoleAdded={this.onRoleAdded}/>
     const groupsPanel = <ProcessGroupCards processGroups={processGroups} users={users}
                                            onUserSelected={this.onUserSelected}
                                            selection={selectedGroup}
