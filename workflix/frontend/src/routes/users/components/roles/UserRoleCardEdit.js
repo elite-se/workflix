@@ -67,7 +67,10 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
         this.setState({ deleting: false })
         this.props.onRoleDeleted(this.props.userRole)
       })
-      .catch(toastifyError)
+      .catch(err => {
+        this.setState({ deleting: false })
+        toastifyError(err)
+      })
   }
 
   getSelectedUsers = () => this.props.userRole.memberIds.map(id => this.props.users.get(id)).filter(Boolean)

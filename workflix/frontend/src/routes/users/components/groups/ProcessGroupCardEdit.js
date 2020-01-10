@@ -64,9 +64,14 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
   onDelete = () => {
     this.setState({ deleting: true })
     new ProcessGroupsApi().deleteProcessGroup(this.props.processGroup.id)
-      .then(() => this.props.onProcessGroupDeleted(this.props.processGroup))
-      .catch(toastifyError)
-      .finally(() => this.setState({ deleting: false }))
+      .then(() => {
+        this.setState({ deleting: false })
+        this.props.onProcessGroupDeleted(this.props.processGroup)
+      })
+      .catch(err => {
+        this.setState({ deleting: false })
+        toastifyError(err)
+      })
   }
 
   getSelectedUsers = () => this.props.processGroup.membersIds.map(id => this.props.users.get(id)).filter(Boolean)
