@@ -13,6 +13,7 @@ import { uniq, without } from 'lodash'
 import { mapMap } from '../../../modules/common/mapMap'
 import { Tab, Tabs } from '@blueprintjs/core'
 import styled from 'styled-components'
+import UserRoleApi from '../../../modules/api/UserRoleApi'
 
 const CenteredTabs = styled(Tabs)`
   display: flex;
@@ -218,7 +219,7 @@ class UserManagement extends React.Component<PropsType, StateType> {
 const promiseCreator = () => Promise.all([
   new UsersApi().getUsers(),
   new ProcessGroupsApi().getProcessGroups(),
-  new UsersApi().getUserRoles()
+  new UserRoleApi().getUserRoles()
 ])
   .then(([users, processGroups, roles]) => ({
     initialUsers: users,

@@ -6,7 +6,7 @@ import { sortBy } from 'lodash'
 import UserRoleCard from './UserRoleCard'
 import CardsContainer from '../CardsContainer'
 import { toastifyError } from '../../../../modules/common/toastifyError'
-import UsersApi from '../../../../modules/api/UsersApi'
+import UserRoleApi from '../../../../modules/api/UserRoleApi'
 
 type PropsType = {|
   users: Map<string, UserType>,
@@ -30,7 +30,7 @@ export default class UserCards extends React.Component<PropsType> {
       createdAt: new Date(),
       memberIds: []
     }
-    return new UsersApi().addUserRole(newRoleSkeleton)
+    return new UserRoleApi().addUserRole(newRoleSkeleton)
       .then(({ newId }) => {
         const newRole = {
           ...newRoleSkeleton,

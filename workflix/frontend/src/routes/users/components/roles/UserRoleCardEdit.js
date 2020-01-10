@@ -7,8 +7,8 @@ import StyledCard from '../StyledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import { Button, EditableText, Elevation, H3 } from '@blueprintjs/core'
-import UsersApi from '../../../../modules/api/UsersApi'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
+import UserRoleApi from '../../../../modules/api/UserRoleApi'
 
 type PropsType = {|
   userRole: UserRoleType,
@@ -24,14 +24,14 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
 
   onUserAdded = (user: UserType) => {
     const { userRole } = this.props
-    new UsersApi().addRoleMembership(userRole.id, user.id)
+    new UserRoleApi().addRoleMembership(userRole.id, user.id)
       .then(this.props.onRoleMembershipAdded(userRole, user))
       .catch(toastifyError)
   }
 
   onUserRemoved = (user: UserType) => {
     const { userRole } = this.props
-    new UsersApi().removeRoleMembership(userRole.id, user.id)
+    new UserRoleApi().removeRoleMembership(userRole.id, user.id)
       .then(this.props.onRoleMembershipRemoved(userRole, user))
       .catch(toastifyError)
   }
@@ -41,7 +41,7 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
   }
 
   patchAndPropagate = (updatedRole: UserRoleType) => {
-    new UsersApi().patchUserRole(updatedRole)
+    new UserRoleApi().patchUserRole(updatedRole)
       .then(this.props.onRoleChanged(updatedRole))
       .catch(toastifyError)
   }
@@ -62,7 +62,7 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
 
   onDelete = () => {
     this.setState({ deleting: true })
-    new UsersApi().deleteUserRole(this.props.userRole.id)
+    new UserRoleApi().deleteUserRole(this.props.userRole.id)
       .then(() => {
         this.setState({ deleting: false })
         this.props.onRoleDeleted(this.props.userRole)
