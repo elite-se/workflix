@@ -4,17 +4,17 @@ import type { TaskTemplateType, TaskType } from './Task'
 
 export type ProcessStatusType = 'RUNNING' | 'CLOSED' | 'ABORTED'
 
-export type ProcessTemplateMasterDataType = {|
+export type ProcessTemplateMasterDataType = {
   id: number,
   title: string,
   description: string,
-  durationLimit: ?number,
+  durationLimit: number,
   createdAt: Date,
   processCount: number,
   runningProcesses: number,
   deleted: boolean,
   ownerId: string
-|}
+}
 
 export type ProcessTemplateType = {|
   id: number,
