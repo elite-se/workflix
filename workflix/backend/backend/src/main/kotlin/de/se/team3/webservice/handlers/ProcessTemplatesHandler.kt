@@ -1,6 +1,8 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.ProcessTemplatesContainer
+import de.se.team3.logic.container.UserContainer
+import de.se.team3.logic.container.UserRoleContainer
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
@@ -53,7 +55,7 @@ object ProcessTemplatesHandler {
             // Adds the predecessors to the current task template
             val predecessorJsonArray = JSONArray()
             taskTemplateObjectWithoutNeighbors.put("predecessors", predecessorJsonArray)
-            for (predecessor in taskTemplate.predecessors.toList())
+            for (predecessor in taskTemplate.getPredecessors())
                 predecessorJsonArray.put(predecessor.id)
         }
 
@@ -80,7 +82,8 @@ object ProcessTemplatesHandler {
             val estimatedDuration = taskTemplateJsonObject.getInt("estimatedDuration")
             val necessaryClosings = taskTemplateJsonObject.getInt("necessaryClosings")
 
-            val taskTemplate = TaskTemplate(id, responsibleUserRoleId, name, description, estimatedDuration, necessaryClosings)
+            val responsibleUserRole = UserRoleContainer.getUserRole(responsibleUserRoleId)
+            val taskTemplate = TaskTemplate(id, responsibleUserRole, name, description, estimatedDuration, necessaryClosings)
             taskTemplatesMap.put(taskTemplate.id, taskTemplate)
 
             val predecessorsJsonArray = taskTemplateJsonObject.getJSONArray("predecessors")
@@ -92,8 +95,7 @@ object ProcessTemplatesHandler {
             for (entry in predecessorsPerTask.get(id)!!) {
                 val predecessorId = entry as Int
                 val predecessor = taskTemplatesMap.get(predecessorId)!!
-                taskTemplate.predecessors.add(predecessor)
-                predecessor.successors.add(taskTemplate)
+                taskTemplate.addPredecessor(predecessor)
             }
         }
 
@@ -115,26 +117,33 @@ object ProcessTemplatesHandler {
         val durationLimit = processTemplateJsonObject.getInt("durationLimit")
         val ownerId = processTemplateJsonObject.getString("ownerId")
 
+        val owner = UserContainer.getUser(ownerId)
         val taskTemplates = parseTaskTemplates(processTemplateJsonObject.getJSONArray("taskTemplates")!!)
 
         if (processTemplateId == null)
-            return ProcessTemplate(title, description, durationLimit, ownerId, taskTemplates)
+            return ProcessTemplate(title, description, durationLimit, owner, taskTemplates)
 
-        return ProcessTemplate(processTemplateId, title, description, durationLimit, ownerId, taskTemplates)
+        return ProcessTemplate(processTemplateId, title, description, durationLimit, owner, taskTemplates)
     }
 
     /**
      * Handles the request for creating a new process template.
      */
     fun create(ctx: Context) {
-        val processTemplate = makeProcessTemplate(null, ctx)
-        val newId = processTemplatesContainer.createProcessTemplate(processTemplate)
+        try {
+            val processTemplate = makeProcessTemplate(null, ctx)
+            val newId = processTemplatesContainer.createProcessTemplate(processTemplate)
 
-        val newIdJsonObject = JSONObject()
-        newIdJsonObject.put("newId", newId)
+            val newIdJsonObject = JSONObject()
+            newIdJsonObject.put("newId", newId)
 
-        ctx.result(newIdJsonObject.toString())
-            .contentType("application/json")
+            ctx.result(newIdJsonObject.toString())
+                .contentType("application/json")
+        } catch (e: Throwable) {
+            println("" + e.message)
+            e.printStackTrace()
+            throw e
+        }
     }
 
     /**

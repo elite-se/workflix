@@ -64,6 +64,7 @@ fun main(args: Array<String>) {
     }
     app.exception(Exception::class.java) { e, ctx ->
         ctx.status(500).result(e.message + "")
+        throw e
     }
 
     // authentication handling before every request (excluding login)
@@ -144,7 +145,7 @@ fun main(args: Array<String>) {
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
     app.post("processes") { ctx -> ProcessesHandler.create(ctx) }
-    app.delete("processes") { ctx ->
+    app.delete("processes/:processId") { ctx ->
         ProcessesHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
 

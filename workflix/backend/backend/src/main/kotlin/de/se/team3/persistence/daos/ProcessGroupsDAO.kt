@@ -6,6 +6,8 @@ import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
 import de.se.team3.persistence.meta.ProcessGroupsMembersTable
 import de.se.team3.persistence.meta.ProcessGroupsTable
+import de.se.team3.webservice.containerInterfaces.UserContainerInterface
+import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.dsl.and
 import me.liuwj.ktorm.dsl.eq
 import me.liuwj.ktorm.dsl.insertAndGenerateKey
@@ -17,6 +19,24 @@ import me.liuwj.ktorm.dsl.where
 // TODO(test) the entire class
 
 object ProcessGroupsDAO : ProcessGroupDAOInterface {
+
+    private val usersContainer: UserContainerInterface = UserContainer
+
+    /**
+     * Makes a process group form the given row and members.
+     */
+    private fun makeProcessGroup(row: QueryRowSet, members: MutableList<User>): ProcessGroup {
+        val owner = usersContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
+        return ProcessGroup(
+            row[ProcessGroupsTable.id]!!,
+            owner,
+            row[ProcessGroupsTable.title]!!,
+            row[ProcessGroupsTable.description]!!,
+            row[ProcessGroupsTable.createdAt]!!,
+            row[ProcessGroupsTable.deleted]!!,
+            members
+        )
+    }
 
     /**
      * Returns a list of all process groups.
@@ -34,20 +54,10 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
 
             val members = ArrayList<User>()
             for (memberRow in groupMembersResult) {
-                members.add(UserContainer.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
+                members.add(usersContainer.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
             }
 
-            val owner = UserContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
-
-            processGroups.add(ProcessGroup(
-                row[ProcessGroupsTable.id]!!,
-                owner,
-                row[ProcessGroupsTable.title]!!,
-                row[ProcessGroupsTable.description]!!,
-                row[ProcessGroupsTable.createdAt]!!,
-                row[ProcessGroupsTable.deleted]!!,
-                members
-            ))
+            processGroups.add(makeProcessGroup(row, members))
         }
 
         return processGroups
@@ -72,15 +82,7 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
             members.add(UserContainer.getUser(memberRow[ProcessGroupsMembersTable.memberId]!!))
         }
 
-        val owner = UserContainer.getUser(row[ProcessGroupsTable.ownerId]!!)
-
-        return ProcessGroup(row[ProcessGroupsTable.id]!!,
-                            owner,
-                            row[ProcessGroupsTable.title]!!,
-                            row[ProcessGroupsTable.description]!!,
-                            row[ProcessGroupsTable.createdAt]!!,
-                            row[ProcessGroupsTable.deleted]!!,
-                            members)
+        return makeProcessGroup(row, members)
     }
 
     /**
