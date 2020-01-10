@@ -12,7 +12,7 @@ type PropsType = {|
   email: string,
   onEmailChange: (string) => void,
   onLoggedIn: () => void,
-  onRegister: () => void
+  onGoToRegister: () => void
 |}
 
 type StateType = {|
@@ -91,8 +91,8 @@ class LoginContent extends React.Component<PropsType, StateType> {
       </FormGroup>
       <Button icon='unlock' intent={Intent.SUCCESS} text='Login' type='submit' large
               disabled={this.isButtonDisabled()} loading={loading}/>
-      <Button icon='new-person' text='I have no account/password' minimal style={{ marginTop: '5px' }}
-              onClick={this.props.onRegister} disabled={loading}/>
+      <Button icon='new-person' text='Import my ***REMOVED*** account' minimal style={{ marginTop: '5px' }}
+              onClick={this.props.onGoToRegister} disabled={loading}/>
     </form>
   }
 
