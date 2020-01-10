@@ -11,7 +11,7 @@ import UsersApi from '../../../modules/api/UsersApi'
 type PropsType = {|
   email: string,
   onGoToVerifyMail: () => void,
-  onGoToLogin: () => void
+  onGoToLogin: (boolean) => void
 |}
 
 type StateType = {|
@@ -44,7 +44,7 @@ class RegisterContent extends React.Component<PropsType, StateType> {
     new UsersApi().createUser(email, password, code)
       .then(() => {
         this.setState({ loading: false })
-        onGoToLogin()
+        onGoToLogin(true)
       })
       .catch(err => {
         this.setState({ loading: false })
