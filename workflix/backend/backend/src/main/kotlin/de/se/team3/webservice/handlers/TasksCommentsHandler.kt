@@ -1,8 +1,12 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.TaskCommentsContainer
+import de.se.team3.logic.container.TasksContainer
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.TaskComment
 import de.se.team3.webservice.containerInterfaces.TaskCommentsContainerInterface
+import de.se.team3.webservice.containerInterfaces.TasksContainerInterface
+import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import io.javalin.http.Context
 import org.json.JSONObject
 
@@ -15,6 +19,10 @@ object TasksCommentsHandler {
 
     private val taskCommentsContainer: TaskCommentsContainerInterface = TaskCommentsContainer
 
+    private val tasksContainer: TasksContainerInterface = TasksContainer
+
+    private val usersContainer: UserContainerInterface = UserContainer
+
     /**
      * Handles requests for creating a new task comment.
      */
@@ -25,7 +33,10 @@ object TasksCommentsHandler {
         val creatorId = taskCommentJsonObject.getString("creatorId")
         val commentContent = taskCommentJsonObject.getString("content")
 
-        val newId = taskCommentsContainer.createTaskComment(TaskComment(taskId, creatorId, commentContent))
+        val task = tasksContainer.getTask(taskId)
+        val creator = usersContainer.getUser(creatorId)
+
+        val newId = taskCommentsContainer.createTaskComment(TaskComment(task, creator, commentContent))
         val newIdJSONObject = JSONObject()
         newIdJSONObject.put("newId", newId)
 
@@ -42,7 +53,10 @@ object TasksCommentsHandler {
 
         val commentContent = taskCommentJsonObject.getString("content")
 
-        taskCommentsContainer.updateTaskComment(TaskComment(taskCommentId, commentContent))
+        val task = taskCommentsContainer.getTaskByTaskCommentId(taskCommentId)
+        val creator = taskCommentsContainer.getCreatorByTaskCommentId(taskCommentId)
+
+        taskCommentsContainer.updateTaskComment(TaskComment(taskCommentId, task, creator, commentContent))
     }
 
     /**

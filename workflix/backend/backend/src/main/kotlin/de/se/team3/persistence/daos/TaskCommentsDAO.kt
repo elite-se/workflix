@@ -18,7 +18,7 @@ import me.liuwj.ktorm.dsl.where
 object TaskCommentsDAO : TaskCommentsDAOInterface {
 
     /**
-     * Returns the id of the task the given comment belongs to.
+     * Returns the id of the task the specified comment belongs to.
      */
     override fun getTaskIdByTaskCommentId(taskCommentId: Int): Int? {
         val result = TaskCommentsTable.select()
@@ -29,6 +29,21 @@ object TaskCommentsDAO : TaskCommentsDAOInterface {
             return null
 
         return row[TaskCommentsTable.taskId]
+    }
+
+    /**
+     * Returns the id of the user the specified comment was created by.
+     */
+    override fun getCreatorIdByTaskCommentId(taskCommentId: Int): String? {
+        val result = TaskCommentsTable
+            .select()
+            .where { TaskCommentsTable.id eq taskCommentId }
+
+        val row = result.rowSet
+        if (!row.next())
+            return null
+
+        return row[TaskCommentsTable.creatorId]
     }
 
     /**

@@ -3,6 +3,7 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.ProcessTemplatesContainer
+import de.se.team3.logic.container.TasksContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
@@ -15,6 +16,7 @@ import de.se.team3.persistence.meta.TaskCommentsTable
 import de.se.team3.persistence.meta.TasksTable
 import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
+import de.se.team3.webservice.containerInterfaces.TasksContainerInterface
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
@@ -36,6 +38,8 @@ object ProcessDAO : ProcessDAOInterface {
     private val processTemplatesContainer: ProcessTemplateContainerInterface = ProcessTemplatesContainer
 
     private val processGroupsContainer: ProcessGroupsContainerInterface = ProcessGroupsContainer
+
+    private val tasksContainer: TasksContainerInterface = TasksContainer
 
     private val usersContainer: UserContainerInterface = UserContainer
 
@@ -72,15 +76,17 @@ object ProcessDAO : ProcessDAOInterface {
                         (TaskCommentsTable.deleted notEq true)
             }
 
-        for (row in commentsResult)
+        for (row in commentsResult) {
+            val creator = usersContainer.getUser(row[TaskCommentsTable.creatorId]!!)
             comments.add(
                 TaskComment(
                     row[TaskCommentsTable.id]!!,
-                    row[TaskCommentsTable.taskId]!!,
-                    row[TaskCommentsTable.creatorId]!!,
+                    null,
+                    creator,
                     row[TaskCommentsTable.content]!!,
                     row[TaskCommentsTable.createdAt]!!
                 ))
+        }
 
         return comments
     }
