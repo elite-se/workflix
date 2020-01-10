@@ -56,6 +56,8 @@ type StateType = {
   expandBlocked: boolean
 }
 
+const DISPLAY_TASKS = 2
+
 class ProcessCard extends React.Component<PropsType, StateType> {
   state = {
     expandDone: false,
@@ -87,28 +89,33 @@ class ProcessCard extends React.Component<PropsType, StateType> {
     const closedNodes = processedNodes.filter(task => task.data.task.status === 'CLOSED')
     const runningNodes = processedNodes.filter(task => task.data.task.status === 'RUNNING')
     const blockedNodes = processedNodes.filter(task => task.data.task.status === 'BLOCKED')
+    const nonCollapsing = closedNodes.slice(closedNodes.length - DISPLAY_TASKS)
+      .concat(runningNodes)
+      .concat(blockedNodes.slice(0, DISPLAY_TASKS))
+    const collapseClosed = closedNodes.slice(0, closedNodes.length - DISPLAY_TASKS)
+    const collapseBlocked = blockedNodes.slice(DISPLAY_TASKS)
     return <CustomLink to={`/processes/${process.id}`}>
       <CustomCard interactive elevation={isSelected ? Elevation.FOUR : undefined}>
         <H3>{process.title} (#{process.id})</H3>
         <TaskList>
           {
-            closedNodes.length > 0 && <>
+            collapseClosed.length > 0 && <>
               <Button minimal fill onClick={this.switchExpandDone}>
-                {expandDone ? 'Collapse' : 'Expand'} {closedNodes.length} finished {closedNodes.length > 1 ? 'Tasks' : 'Task'}
+                {expandDone ? 'Collapse' : 'Expand'} {collapseClosed.length} finished {collapseClosed.length > 1 ? 'Tasks' : 'Task'}
               </Button>
               <Collapse isOpen={expandDone}>
-                {this.renderNodes(closedNodes)}
+                {this.renderNodes(collapseClosed)}
               </Collapse>
             </>
           }
-          {this.renderNodes(runningNodes)}
+          {this.renderNodes(nonCollapsing)}
           {
-            blockedNodes.length > 0 && <>
+            collapseBlocked.length > 0 && <>
               <Button minimal fill onClick={this.switchExpandBlocked}>
-                {expandBlocked ? 'Collapse' : 'Expand'} {blockedNodes.length} blocked {blockedNodes.length > 1 ? 'Tasks' : 'Task'}
+                {expandBlocked ? 'Collapse' : 'Expand'} {collapseBlocked.length} blocked {collapseBlocked.length > 1 ? 'Tasks' : 'Task'}
               </Button>
               <Collapse isOpen={expandBlocked}>
-                {this.renderNodes(blockedNodes)}
+                {this.renderNodes(collapseBlocked)}
               </Collapse>
             </>
           }
