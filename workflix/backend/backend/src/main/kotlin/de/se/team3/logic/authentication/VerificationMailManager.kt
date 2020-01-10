@@ -40,7 +40,27 @@ object VerificationMailManager {
         sendVerificationMail(mail, key)
     }
 
+    /**
+     * Checks whether a given key is valid for a user and if it is, invalidates it.
+     *
+     * @param mail email address of the user to be verified
+     * @param key verification key to be validated
+     *
+     * @return true iff the key was valid
+     */
     fun isValidForUser(mail: String, key: String): Boolean {
+        return invalidateVerificationKey(mail, key)
+    }
+
+    /**
+     * Invalidates a verification key for a user.
+     *
+     * @param mail email address of the user
+     * @param key verification key to be invalidated
+     *
+     * @return true iff invalidation was successful, i.e. the key was registered for the given email address.
+     */
+    private fun invalidateVerificationKey(mail: String, key: String): Boolean {
         return if (keyMap[mail] == key) {
             keyMap.remove(mail, key)
             true
