@@ -1,9 +1,7 @@
 package de.se.team3.persistence.daos
 
 import de.se.team3.logic.DAOInterfaces.UserDAOInterface
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.User
-import de.se.team3.persistence.meta.ConnectionManager
 import de.se.team3.persistence.meta.UsersTable
 import kotlin.collections.ArrayList
 import me.liuwj.ktorm.dsl.eq
