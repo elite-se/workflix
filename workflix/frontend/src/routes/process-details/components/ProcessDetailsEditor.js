@@ -90,7 +90,7 @@ class ProcessDetailsEditor extends React.Component<PropsType> {
           </FormGroup>
         </Third>
         <Third>
-          <FormGroup label='Details'>{/* todo: Add some details of the process here. */}
+          <FormGroup label='Details'>
             <Item><Icon icon='time'/><span>{`Started at ${process.startedAt.toLocaleString()}`}</span></Item>
             {starter && <Item>
               <Icon icon='user'/><span>{`Started by ${starter.name} (${starter.displayname})`}</span>
