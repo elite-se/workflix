@@ -1,12 +1,13 @@
 // @flow
 
 import React from 'react'
-import { Button, FormGroup, InputGroup, Tooltip } from '@blueprintjs/core'
+import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
 import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import LoginApi from '../../../modules/api/LoginApi'
 import { storeToken } from '../../../modules/common/tokenStorage'
 import { toastifyError } from '../../../modules/common/toastifyError'
 import handleStringChange from '../../../modules/common/handleStringChange'
+import PasswordInput from './PasswordInput'
 
 type PropsType = {|
   email: string,
@@ -17,15 +18,13 @@ type PropsType = {|
 
 type StateType = {|
   password: string,
-  loading: boolean,
-  showPassword: boolean
+  loading: boolean
 |}
 
 class LoginContent extends React.Component<PropsType, StateType> {
   state = {
     password: '',
-    loading: false,
-    showPassword: false
+    loading: false
   }
 
   emailInputRef = React.createRef<HTMLInputElement>()
@@ -59,14 +58,10 @@ class LoginContent extends React.Component<PropsType, StateType> {
   onEmailChange = handleStringChange(this.props.onEmailChange)
 
   isButtonDisabled = () => !this.props.email || !this.state.password
-  onPasswordChange = handleStringChange(password => this.setState({ password }))
-
-  toggleShowPassword = () => {
-    this.setState(oldState => ({ showPassword: !oldState.showPassword }))
-  }
+  onPasswordChange = (password: string) => this.setState({ password })
 
   render () {
-    const { showPassword, password, loading } = this.state
+    const { password, loading } = this.state
     return <form
       onSubmit={this.onFormSubmit}
       style={{
@@ -78,16 +73,7 @@ class LoginContent extends React.Component<PropsType, StateType> {
                     onChange={this.onEmailChange} inputRef={this.emailInputRef} value={this.props.email}/>
       </FormGroup>
       <FormGroup label='Password' labelFor='password'>
-        <InputGroup id='password' placeholder='Password' required large
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={this.onPasswordChange} value={password}
-                    leftIcon='key'
-                    rightElement={<Tooltip content={`${showPassword ? 'Hide' : 'Show'} password`}><Button
-                      minimal large
-                      icon={showPassword ? 'eye-open' : 'eye-off'}
-                      intent={Intent.WARNING}
-                      onClick={this.toggleShowPassword}
-                    /></Tooltip>}/>
+        <PasswordInput password={password} onPasswordChange={this.onPasswordChange}/>
       </FormGroup>
       <Button icon='unlock' intent={Intent.SUCCESS} text='Login' type='submit' large
               disabled={this.isButtonDisabled()} loading={loading}/>
