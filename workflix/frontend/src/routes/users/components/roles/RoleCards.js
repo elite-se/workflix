@@ -17,7 +17,8 @@ type PropsType = {|
   onRoleMembershipAdded: (UserRoleType, UserType) => void,
   onRoleMembershipRemoved: (UserRoleType, UserType) => void,
   onRoleChanged: (UserRoleType) => void,
-  onRoleAdded: (UserRoleType) => void
+  onRoleAdded: (UserRoleType) => void,
+  onRoleDeleted: (UserRoleType) => void
 |}
 
 export default class UserCards extends React.Component<PropsType> {

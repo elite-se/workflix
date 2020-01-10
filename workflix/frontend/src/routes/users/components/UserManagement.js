@@ -153,6 +153,12 @@ class UserManagement extends React.Component<PropsType, StateType> {
     }))
   }
 
+  onProcessGroupDeleted = (processGroup: ProcessGroupType) => {
+    this.setState(oldState => ({
+      processGroups: new Map(Array.from(oldState.processGroups.entries()).filter(([id, _]) => id !== processGroup.id))
+    }))
+  }
+
   onRoleChanged = (role: UserRoleType) => {
     this.setState(oldState => ({
       roles: mapMap(oldState.roles, (id, _role) => id === role.id ? role : _role)
@@ -162,6 +168,12 @@ class UserManagement extends React.Component<PropsType, StateType> {
   onRoleAdded = (role: UserRoleType) => {
     this.setState(oldState => ({
       roles: new Map(oldState.roles).set(role.id, role)
+    }))
+  }
+
+  onRoleDeleted = (role: UserRoleType) => {
+    this.setState(oldState => ({
+      roles: new Map(Array.from(oldState.roles.entries()).filter(([id, _]) => id !== role.id))
     }))
   }
 
@@ -184,7 +196,8 @@ class UserManagement extends React.Component<PropsType, StateType> {
                                   onRoleMembershipAdded={this.onRoleMembershipAdded}
                                   onRoleMembershipRemoved={this.onRoleMembershipRemoved}
                                   onRoleChanged={this.onRoleChanged}
-                                  onRoleAdded={this.onRoleAdded}/>
+                                  onRoleAdded={this.onRoleAdded}
+                                  onRoleDeleted={this.onRoleDeleted}/>
     const groupsPanel = <ProcessGroupCards processGroups={processGroups} users={users}
                                            onUserSelected={this.onUserSelected}
                                            selection={selectedGroup}
@@ -192,7 +205,8 @@ class UserManagement extends React.Component<PropsType, StateType> {
                                            onGroupMembershipAdded={this.onGroupMembershipAdded}
                                            onGroupMembershipRemoved={this.onGroupMembershipRemoved}
                                            onProcessGroupChanged={this.onProcessGroupChanged}
-                                           onProcessGroupAdded={this.onProcessGroupAdded}/>
+                                           onProcessGroupAdded={this.onProcessGroupAdded}
+                                           onProcessGroupDeleted={this.onProcessGroupDeleted}/>
     return <CenteredTabs selectedTabId={this.state.mode} onChange={this.onTabSelected} large renderActiveTabPanelOnly>
       <Tab id='USERS' title='Users' panel={usersPanel}/>
       <Tab id='GROUPS' title='Process groups' panel={groupsPanel}/>

@@ -33,6 +33,12 @@ class ProcessGroupsApi {
     })
   }
 
+  deleteProcessGroup (processGroupId: number): Promise<Response> {
+    return safeFetch(`${processGroupsBackend}/${processGroupId}`, {
+      method: 'DELETE'
+    })
+  }
+
   addMembership (groupId: number, memberId: string): Promise<Response> {
     return safeFetch(`${processGroupsBackend}/${groupId}/members/${memberId}`, {
       method: 'PUT'

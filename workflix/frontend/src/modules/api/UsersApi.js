@@ -51,6 +51,12 @@ class UsersApi {
       body: JSON.stringify(role)
     })
   }
+
+  deleteUserRole (roleId: number): Promise<Response> {
+    return safeFetch(`${userRolesBackend}/${roleId}`, {
+      method: 'DELETE'
+    })
+  }
 }
 
 export default UsersApi

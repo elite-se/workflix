@@ -14,7 +14,8 @@ type PropsType = {|
   onRoleSelected: (?UserRoleType) => void,
   onRoleMembershipAdded: (UserRoleType, UserType) => void,
   onRoleMembershipRemoved: (UserRoleType, UserType) => void,
-  onRoleChanged: (UserRoleType) => void
+  onRoleChanged: (UserRoleType) => void,
+  onRoleDeleted: (UserRoleType) => void
 |}
 
 class UserRoleCard extends React.Component<PropsType> {
@@ -23,12 +24,13 @@ class UserRoleCard extends React.Component<PropsType> {
   render () {
     const {
       userRole, users, onUserSelected, onRoleSelected, onRoleMembershipRemoved, onRoleMembershipAdded, onRoleChanged,
-      selected
+      selected, onRoleDeleted
     } = this.props
     return selected
       ? <EditCardWrapper onDeselect={this.onDeselection}>
         <UserRoleCardEdit onRoleMembershipRemoved={onRoleMembershipRemoved} users={users} userRole={userRole}
-                          onRoleMembershipAdded={onRoleMembershipAdded} onRoleChanged={onRoleChanged}/>
+                          onRoleMembershipAdded={onRoleMembershipAdded} onRoleChanged={onRoleChanged}
+                          onRoleDeleted={onRoleDeleted}/>
       </EditCardWrapper>
       : <UserRoleCardRead userRole={userRole} users={users} onUserSelected={onUserSelected}
                           onRoleSelected={onRoleSelected}/>

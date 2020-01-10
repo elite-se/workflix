@@ -8,17 +8,21 @@ import TitledCard from '../StyledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
-import { EditableText, Elevation, H3 } from '@blueprintjs/core'
+import { Button, EditableText, Elevation, H3 } from '@blueprintjs/core'
+import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
   users: Map<string, UserType>,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
   onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
-  onProcessGroupChanged: (ProcessGroupType) => void
+  onProcessGroupChanged: (ProcessGroupType) => void,
+  onProcessGroupDeleted: (ProcessGroupType) => void
 |}
 
-class ProcessGroupCardEdit extends React.Component<PropsType> {
+class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolean }> {
+  state = { deleting: false }
+
   onUserAdded = (user: UserType) => {
     const { processGroup } = this.props
     new ProcessGroupsApi().addMembership(processGroup.id, user.id)
@@ -57,6 +61,14 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
     })
   }
 
+  onDelete = () => {
+    this.setState({ deleting: true })
+    new ProcessGroupsApi().deleteProcessGroup(this.props.processGroup.id)
+      .then(() => this.props.onProcessGroupDeleted(this.props.processGroup))
+      .catch(toastifyError)
+      .finally(() => this.setState({ deleting: false }))
+  }
+
   getSelectedUsers = () => this.props.processGroup.membersIds.map(id => this.props.users.get(id)).filter(Boolean)
 
   render () {
@@ -68,7 +80,7 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
       </H3></IconRow>
       <IconRow icon='annotation' multiLine>
         <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
-                    placeholder='Description' multiline/>
+                      placeholder='Description' multiline/>
       </IconRow>
       <IconRow icon='person' multiLine>
         <SimpleMultiSelect items={Array.from(users.values())} selection={this.getSelectedUsers()}
@@ -80,6 +92,8 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
                            onItemAdded={this.onUserAdded} onItemRemoved={this.onUserRemoved}
                            onItemsCleared={this.onUsersCleared}/>
       </IconRow>
+      <Button icon='trash' intent={Intent.DANGER} style={{ marginTop: 'auto' }} onClick={this.onDelete}
+              loading={this.state.deleting} fill small text='Delete'/>
     </TitledCard>
   }
 

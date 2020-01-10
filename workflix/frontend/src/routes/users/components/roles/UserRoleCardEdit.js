@@ -6,18 +6,22 @@ import IconRow from '../IconRow'
 import StyledCard from '../StyledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
-import { EditableText, Elevation, H3 } from '@blueprintjs/core'
+import { Button, EditableText, Elevation, H3 } from '@blueprintjs/core'
 import UsersApi from '../../../../modules/api/UsersApi'
+import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 
 type PropsType = {|
   userRole: UserRoleType,
   users: Map<string, UserType>,
   onRoleMembershipAdded: (UserRoleType, UserType) => void,
   onRoleMembershipRemoved: (UserRoleType, UserType) => void,
-  onRoleChanged: (UserRoleType) => void
+  onRoleChanged: (UserRoleType) => void,
+  onRoleDeleted: (UserRoleType) => void
 |}
 
-class UserRoleCardEdit extends React.Component<PropsType> {
+class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }> {
+  state = { deleting: false }
+
   onUserAdded = (user: UserType) => {
     const { userRole } = this.props
     new UsersApi().addRoleMembership(userRole.id, user.id)
@@ -56,6 +60,16 @@ class UserRoleCardEdit extends React.Component<PropsType> {
     })
   }
 
+  onDelete = () => {
+    this.setState({ deleting: true })
+    new UsersApi().deleteUserRole(this.props.userRole.id)
+      .then(() => {
+        this.setState({ deleting: false })
+        this.props.onRoleDeleted(this.props.userRole)
+      })
+      .catch(toastifyError)
+  }
+
   getSelectedUsers = () => this.props.userRole.memberIds.map(id => this.props.users.get(id)).filter(Boolean)
 
   render () {
@@ -79,6 +93,8 @@ class UserRoleCardEdit extends React.Component<PropsType> {
                            onItemAdded={this.onUserAdded} onItemRemoved={this.onUserRemoved}
                            onItemsCleared={this.onUsersCleared}/>
       </IconRow>
+      <Button icon='trash' intent={Intent.DANGER} style={{ marginTop: 'auto' }} onClick={this.onDelete}
+              loading={this.state.deleting} fill small text='Delete'/>
     </StyledCard>
   }
 
