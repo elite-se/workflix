@@ -7,6 +7,7 @@ import com.sendgrid.SendGrid
 import com.sendgrid.helpers.mail.Mail
 import com.sendgrid.helpers.mail.objects.Content
 import com.sendgrid.helpers.mail.objects.Email
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import java.io.IOException
@@ -30,6 +31,8 @@ object VerificationMailManager {
     fun initVerification(mail: String) {
         if (UserQuerying.searchFor***REMOVED***User(mail) == null)
             throw InvalidInputException("There is no user with this email address.")
+        if (UserContainer.getAllUsers().map { it.email }.contains(mail))
+            throw InvalidInputException("This user already exists.")
         val charPool: List<Char> = ('A'..'Z') + ('0'..'9')
         val key = (1..8)
             .map { kotlin.random.Random.nextInt(0, charPool.size) }
@@ -68,16 +71,9 @@ object VerificationMailManager {
         val mail = Mail(from, subject, to, content)
 
         val request = Request()
-        try {
-            request.setMethod(Method.POST)
-            request.setEndpoint("mail/send")
-            request.setBody(mail.build())
-            val response: Response = sendgrid.api(request)
-            println(response.statusCode)
-            println(response.body)
-            println(response.headers)
-        } catch (ex: IOException) {
-            throw ex
-        }
+        request.setMethod(Method.POST)
+        request.setEndpoint("mail/send")
+        request.setBody(mail.build())
+        sendgrid.api(request)
     }
 }

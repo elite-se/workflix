@@ -66,11 +66,13 @@ fun main(args: Array<String>) {
         ctx.status(500).result(e.message + "")
     }
 
-    // authentication handling before every request (excluding login)
+    // authentication handling before every request (excluding login and creation of new users)
     app.before() { ctx ->
         if (ctx.method() == "OPTIONS") {
             CORSHandler.optionsRequest(ctx)
-        } else if (ctx.path() != "/login") {
+        } else if (ctx.path() != "/login"
+            && !(ctx.path() == "/users" && ctx.method() == "POST")
+            && !(ctx.path().matches(Regex("""/users/\w\w\w\w\w\w\w\w""")) && ctx.method() == "POST")) {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }
