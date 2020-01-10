@@ -27,6 +27,13 @@ class ProcessGroupsApi {
       method: 'DELETE'
     })
   }
+
+  patchProcessGroup (processGroup: ProcessGroupType): Promise<Response> {
+    return safeFetch(`${processGroupsBackend}/${processGroup.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(processGroup)
+    })
+  }
 }
 
 export default ProcessGroupsApi

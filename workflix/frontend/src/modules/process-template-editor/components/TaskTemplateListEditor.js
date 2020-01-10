@@ -2,7 +2,7 @@
 
 import { Colors, Drawer, FormGroup } from '@blueprintjs/core'
 import TaskList from './TaskList'
-import ProcessChart from './ProcessChart'
+import ProcessChart, { chartNodeFromProcessedNode } from './ProcessChart'
 import React from 'react'
 import { calcGraph } from '../graph-utils'
 import onOpenRemoveOverlayClass from '../../common/onOpenRemoveOverlayClass'
@@ -104,6 +104,9 @@ class TaskTemplateListEditor extends React.Component<PropsType, StateType> {
 
     const task = tasks.find(task => task.id === selectedTaskId)
     const processedNodes = calcGraph(tasks)
+    const chartNodes = processedNodes.map(
+      node => chartNodeFromProcessedNode(node, node.id === selectedTaskId ? Colors.BLUE4 : Colors.BLUE1)
+    )
     return <FormGroup label='Task Templates' labelInfo='(at least one required)'>
       <div style={{
         display: 'flex',
@@ -114,7 +117,7 @@ class TaskTemplateListEditor extends React.Component<PropsType, StateType> {
         <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes.map(node => node.data)}
                   createTask={this.createTask} selectTaskId={this.selectTaskId}
                   highlightAdd={highlightValidation && tasks.length === 0}/>
-        <ProcessChart tasks={processedNodes} selectedId={selectedTaskId} selectTaskId={this.selectTaskId}/>
+        <ProcessChart tasks={chartNodes} selectedId={selectedTaskId} selectTaskId={this.selectTaskId}/>
       </div>
       <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
               onClose={this.unselectTask} style={{ overflow: 'auto' }} onOpening={onOpenRemoveOverlayClass}>

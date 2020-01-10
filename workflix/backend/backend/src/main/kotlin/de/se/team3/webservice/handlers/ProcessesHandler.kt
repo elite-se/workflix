@@ -1,10 +1,16 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.ProcessContainer
+import de.se.team3.logic.container.ProcessGroupsContainer
+import de.se.team3.logic.container.ProcessTemplatesContainer
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
 import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
+import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
+import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
+import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
@@ -17,6 +23,12 @@ import org.json.JSONObject
 object ProcessesHandler {
 
     private val processesContainer: ProcessContainerInterface = ProcessContainer
+
+    private val usersContainer: UserContainerInterface = UserContainer
+
+    private val processGroupsContainer: ProcessGroupsContainerInterface = ProcessGroupsContainer
+
+    private val processTemplatesContainer: ProcessTemplateContainerInterface = ProcessTemplatesContainer
 
     /**
      * Parses the selection predicate that is specified via query parameters in the request url.
@@ -96,11 +108,14 @@ object ProcessesHandler {
         val description = processJsonObject.getString("description")
         val deadline = JsonHelper.getInstantFromString(processJsonObject.getString("deadline"))
 
-        val process = Process(starterId, processGroupId, processTemplateId, title, description, deadline)
+        val starter = usersContainer.getUser(starterId)
+        val processGroup = processGroupsContainer.getProcessGroup(processGroupId)
+        val processTemplate = processTemplatesContainer.getProcessTemplate(processTemplateId)
+        val process = Process(starter, processGroup, processTemplate, title, description, deadline)
 
         val newId = processesContainer.createProcess(process)
         val newIdJsonObject = JSONObject()
-        newIdJsonObject.put("newID", newId)
+        newIdJsonObject.put("newId", newId)
 
         ctx.result(newIdJsonObject.toString())
             .contentType("application/json")

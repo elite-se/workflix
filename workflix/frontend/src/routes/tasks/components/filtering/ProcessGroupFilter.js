@@ -4,6 +4,7 @@ import React from 'react'
 import type { FiltersType } from '../../../../modules/datatypes/Filters'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
+import { uniq, without } from 'lodash'
 
 type PropsType = {|
   filters: FiltersType,
@@ -12,11 +13,26 @@ type PropsType = {|
 |}
 
 class ProcessGroupFilter extends React.Component<PropsType> {
-  onGroupsUpdated = (processGroups: ProcessGroupType[]) =>
+  onGroupAdded = (process: ProcessGroupType) => {
     this.props.onFiltersChanged({
       ...this.props.filters,
-      processGroups
+      processGroups: uniq([...(this.props.filters.processGroups || []), process])
     })
+  }
+
+  onGroupRemoved = (process: ProcessGroupType) => {
+    this.props.onFiltersChanged({
+      ...this.props.filters,
+      processGroups: without(this.props.filters.processGroups, process)
+    })
+  }
+
+  onGroupsCleared = () => {
+    this.props.onFiltersChanged({
+      ...this.props.filters,
+      processGroups: []
+    })
+  }
 
   getGroupTitle = (group: ProcessGroupType) => group.title
   getGroupId = (group: ProcessGroupType) => group.id
@@ -25,13 +41,12 @@ class ProcessGroupFilter extends React.Component<PropsType> {
     return <SimpleMultiSelect
       items={Array.from(this.props.processGroups.values())}
       selection={this.props.filters.processGroups || []}
-      onSelectionChanged={this.onGroupsUpdated}
       render={this.getGroupTitle}
       toID={this.getGroupId}
       multiSelectProps={{
         placeholder: 'Filter process group…'
       }}
-    />
+     onItemAdded={this.onGroupAdded} onItemRemoved={this.onGroupRemoved} onItemsCleared={this.onGroupsCleared}/>
   }
 }
 

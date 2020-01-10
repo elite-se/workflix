@@ -27,7 +27,7 @@ type PropsType = {
   highlightValidation: boolean
 }
 
-class ProcessDetailsEditor extends React.Component<PropsType> {
+class ProcessTemplateDetailsEditor extends React.Component<PropsType> {
   render () {
     const {
       onTitleChange,
@@ -81,4 +81,4 @@ class ProcessDetailsEditor extends React.Component<PropsType> {
   }
 }
 
-export default ProcessDetailsEditor
+export default ProcessTemplateDetailsEditor

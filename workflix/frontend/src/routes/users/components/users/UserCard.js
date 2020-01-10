@@ -5,39 +5,42 @@ import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGrou
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import UserCardRead from './UserCardRead'
 import UserCardEdit from './UserCardEdit'
+import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
+import OutsideClickHandler from 'react-outside-click-handler'
 
 type PropsType = {|
   user: UserType,
   processGroups: Map<number, ProcessGroupType>,
   roles: Map<number, UserRoleType>,
-  onRoleSelected: (UserRoleType) => void,
-  onProcessGroupSelected: (ProcessGroupType) => void,
+  selected: boolean,
+  onUserSelected: (?UserType) => void,
+  onRoleSelected: (?UserRoleType) => void,
+  onProcessGroupSelected: (?ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
   onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
   onRoleMembershipAdded: (UserRoleType, UserType) => void,
   onRoleMembershipRemoved: (UserRoleType, UserType) => void
 |}
 
-type StateType = {|
-  editing: boolean
-|}
-
-class UserCard extends React.Component<PropsType, StateType> {
-  state = { editing: false }
-
-  onSetEditing = (editing: boolean) => this.setState({ editing })
+class UserCard extends React.Component<PropsType> {
+  onDeselection = () => {
+    this.props.onUserSelected(null)
+  }
 
   render () {
     const {
       user, processGroups, roles, onRoleSelected, onProcessGroupSelected, onGroupMembershipAdded,
-      onGroupMembershipRemoved, onRoleMembershipAdded, onRoleMembershipRemoved
+      onGroupMembershipRemoved, onRoleMembershipAdded, onRoleMembershipRemoved, selected, onUserSelected
     } = this.props
-    return this.state.editing
-      ? <UserCardEdit user={user} processGroups={processGroups} roles={roles} onSetEditing={this.onSetEditing}
-      onGroupMembershipAdded={onGroupMembershipAdded} onGroupMembershipRemoved={onGroupMembershipRemoved}
-      onRoleMembershipAdded={onRoleMembershipAdded} onRoleMembershipRemoved={onRoleMembershipRemoved}/>
-      : <UserCardRead user={user} processGroups={processGroups} roles={roles} onSetEditing={this.onSetEditing}
-                    onRoleSelected={onRoleSelected} onProcessGroupSelected={onProcessGroupSelected}/>
+    return selected
+      ? <OutsideClickHandler onOutsideClick={this.onDeselection}><ScrollIntoViewOnMount>
+        <UserCardEdit user={user} processGroups={processGroups} roles={roles}
+                      onGroupMembershipAdded={onGroupMembershipAdded}
+                      onGroupMembershipRemoved={onGroupMembershipRemoved}
+                      onRoleMembershipAdded={onRoleMembershipAdded} onRoleMembershipRemoved={onRoleMembershipRemoved}/>
+      </ScrollIntoViewOnMount></OutsideClickHandler>
+      : <UserCardRead user={user} processGroups={processGroups} roles={roles} onUserSelected={onUserSelected}
+                      onRoleSelected={onRoleSelected} onProcessGroupSelected={onProcessGroupSelected}/>
   }
 }
 

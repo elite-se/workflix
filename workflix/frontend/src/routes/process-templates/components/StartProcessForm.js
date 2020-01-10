@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
+import type { ProcessTemplateMasterDataType } from '../../../modules/datatypes/Process'
 import { Button, ButtonGroup, FormGroup, InputGroup } from '@blueprintjs/core'
 import { DatePicker } from '@blueprintjs/datetime'
 import handleStringChange from '../../../modules/common/handleStringChange'
@@ -14,7 +14,9 @@ import ProcessGroupSelect from './ProcessGroupSelect'
 import { toastifyError } from '../../../modules/common/toastifyError'
 import { getCurrentUserId } from '../../../modules/common/tokenStorage'
 
-type PropsType = { template: ProcessTemplateType, processGroups: Map<number, ProcessGroupType> }
+type PropsType = {
+  template: ProcessTemplateMasterDataType, processGroups: Map<number, ProcessGroupType>, noPadding?: boolean
+}
 
 type StateType = {
   title: string, description: string, deadline: Date, startLoading: boolean, processGroup: ?ProcessGroupType
@@ -63,6 +65,16 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
     processGroup: null
   }
 
+  componentDidUpdate (prevProps: PropsType): * {
+    const template = this.props.template
+    if (prevProps.template !== template) {
+      this.setState({
+        title: template.title,
+        description: template.description
+      })
+    }
+  }
+
   onTitleChange = handleStringChange(title => this.setState({ title }))
   onDescriptionChange = handleStringChange(description => this.setState({ description }))
   onDeadlineChange = (deadline: Date) => this.setState({ deadline })
@@ -90,7 +102,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
         processGroupId: processGroup.id
       })
       this.setState({ startLoading: false })
-      navigate(`/process/${newId}`)
+      navigate(`/processes/${newId}`)
     } catch (e) {
       toastifyError(e)
       this.setState({ startLoading: false })
@@ -99,12 +111,13 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
 
   render () {
     const { title, description, deadline, startLoading, processGroup } = this.state
-    const { processGroups } = this.props
+    const { processGroups, noPadding } = this.props
     const shortcuts = getShortcuts()
     return <div style={{
-      padding: '20px',
-      width: '500px',
+      padding: noPadding ? '0px' : '20px',
+      width: '460px',
       display: 'flex',
+      boxSizing: 'border-box',
       flexDirection: 'column'
     }}>
       <FormGroup label='Title' labelInfo='(required)'>

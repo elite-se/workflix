@@ -2,7 +2,6 @@ package de.se.team3.logic.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.AlreadyExistsException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.exceptions.NotFoundException
@@ -38,24 +37,43 @@ data class ProcessGroup(
     /**
      * Create-Constructor
      */
-    constructor(ownerID: String, title: String, description: String) :
-            this(null, UserContainer.getUser(ownerID), title, description, Instant.now(), false, ArrayList<User>()) {
-
+    constructor(
+        owner: User,
+        title: String,
+        description: String
+    ) : this(
+        null,
+        owner,
+        title,
+        description,
+        Instant.now(),
+        false,
+        ArrayList<User>()
+    ) {
         setTitle(title)
-        setOwnerById(ownerID)
     }
 
     /**
      * Update-Constructor
      */
-    constructor(id: Int, ownerId: String, title: String, description: String) :
-            this (id, UserContainer.getUser(ownerId), title, description, Instant.now(), false, ArrayList<User>()) {
-
+    constructor(
+        id: Int,
+        owner: User,
+        title: String,
+        description: String
+    ) : this (
+        id,
+        owner,
+        title,
+        description,
+        Instant.now(),
+        false,
+        ArrayList<User>()
+    ) {
         if (id < 1)
             throw InvalidInputException("id must be positive")
 
         setTitle(title)
-        setOwnerById(ownerId)
     }
 
     /**
@@ -85,15 +103,10 @@ data class ProcessGroup(
     }
 
     /**
-     * Sets the owner by the given id.
-     *
-     * @throws InvalidInputException Is thrown if ownerId is not a valid user id.
+     * Sets the owner.
      */
-    fun setOwnerById(ownerId: String) {
-        if (ownerId.length != 24)
-            throw InvalidInputException("invalid user id")
-
-        owner = UserContainer.getUser(ownerId)
+    fun setOwner(owner: User) {
+        this.owner = owner
     }
 
     /**

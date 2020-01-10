@@ -15,9 +15,12 @@ object TaskTemplateDAO : TaskTemplateDAOInterface {
      * Makes a single task template from the given row.
      */
     fun makeTaskTemplate(row: QueryRowSet): TaskTemplate {
+        val responsibleUserRoleId = row[TaskTemplatesTable.responsibleUserRoleId]!!
+        val userRole = UserRoleDAO.getUserRole(responsibleUserRoleId)
+
         return TaskTemplate(
             row[TaskTemplatesTable.id]!!,
-            row[TaskTemplatesTable.responsibleUserRoleId]!!,
+            userRole!!,
             row[TaskTemplatesTable.name]!!,
             row[TaskTemplatesTable.description]!!,
             row[TaskTemplatesTable.estimatedDuration]!!,

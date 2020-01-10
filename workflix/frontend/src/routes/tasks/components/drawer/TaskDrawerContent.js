@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react'
+import type { StyledComponent } from 'styled-components'
 import styled from 'styled-components'
-import { H4 } from '@blueprintjs/core'
+import { FormGroup, Icon } from '@blueprintjs/core'
 import type { TaskTemplateType, TaskType } from '../../../../modules/datatypes/Task'
-import type { UserType } from '../../../../modules/datatypes/User'
+import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import TaskComments from './comments/TaskComments'
 import Assignments from './assignments/Assignments'
 
@@ -13,30 +14,49 @@ const StyledContainer = styled<{}, {}, 'div'>('div')`
   display: flex;
   flex-direction: column;
 `
-const H4WithMargin = styled(H4)`
-  margin-top: 10px;
-`
 
+const Item: StyledComponent<{}, {}, *> = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  & > * {
+    padding: 5px;
+  }
+`
 type PropsType = {
   task: TaskType,
   taskTemplates: Map<number, TaskTemplateType>,
   onTaskModified: (TaskType) => void,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  userRoles: Map<number, UserRoleType>
 }
 
 class TaskDrawerContent extends React.Component<PropsType> {
   render () {
-    const task = this.props.task
-    const taskTemplate = this.props.taskTemplates.get(task.taskTemplateId)
+    const { task, taskTemplates, userRoles, onTaskModified, users } = this.props
+    const taskTemplate = taskTemplates.get(task.taskTemplateId)
+    if (!taskTemplate) {
+      return <div>Something went wrong.</div>
+    }
+    const userRole = userRoles.get(taskTemplate.responsibleUserRoleId)
+    if (!userRole) {
+      return <div>Something went wrong.</div>
+    }
     return <StyledContainer>
-      <H4WithMargin>Description</H4WithMargin>
-      <p>{taskTemplate ? taskTemplate.description : ''}</p>
-
-      <H4WithMargin>Assignee</H4WithMargin>
-      <Assignments task={task} onTaskModified={this.props.onTaskModified} users={this.props.users}/>
-
-      <H4WithMargin>Comments</H4WithMargin>
-      <TaskComments task={task} users={this.props.users} onTaskModified={this.props.onTaskModified}/>
+      <FormGroup label='Description'>
+        <div style={{ padding: '10px' }}>{taskTemplate.description}</div>
+      </FormGroup>
+      <FormGroup label='Details'>
+        <Item><Icon icon='people'/>Preferred user role: {userRole.name}</Item>
+        <Item><Icon icon='stopwatch'/>Estimated duration: {taskTemplate.estimatedDuration}</Item>
+        <Item><Icon icon='numerical'/>Necessary Users: {taskTemplate.necessaryClosings}</Item>
+      </FormGroup>
+      <FormGroup label='Assignees'>
+        <Assignments task={task} onTaskModified={onTaskModified} users={users}/>
+      </FormGroup>
+      <FormGroup label='Comments'>
+        <TaskComments task={task} users={users} onTaskModified={onTaskModified}/>
+      </FormGroup>
     </StyledContainer>
   }
 }

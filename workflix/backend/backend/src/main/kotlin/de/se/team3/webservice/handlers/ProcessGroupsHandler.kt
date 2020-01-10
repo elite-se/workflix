@@ -1,8 +1,10 @@
 package de.se.team3.webservice.handlers
 
 import de.se.team3.logic.container.ProcessGroupsContainer
+import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
+import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context
 import org.json.JSONObject
@@ -10,6 +12,8 @@ import org.json.JSONObject
 object ProcessGroupsHandler {
 
     private val processGroupsContainer: ProcessGroupsContainerInterface = ProcessGroupsContainer
+
+    private val usersContainer: UserContainerInterface = UserContainer
 
     /**
      * Handles requests for getting all process groups.
@@ -35,7 +39,8 @@ object ProcessGroupsHandler {
         val description = processGroupJsonObject.getString("description")
         val ownerID = processGroupJsonObject.getString("ownerId")
 
-        val processGroup = ProcessGroup(ownerID, title, description)
+        val owner = usersContainer.getUser(ownerID)
+        val processGroup = ProcessGroup(owner, title, description)
         val newId = processGroupsContainer.createProcessGroup(processGroup)
 
         val newIdObject = JSONObject()
@@ -56,7 +61,8 @@ object ProcessGroupsHandler {
         val description = processGroupJsonObject.getString("description")
         val ownerID = processGroupJsonObject.getString("ownerId")
 
-        val processGroup = ProcessGroup(processGroupId, ownerID, title, description)
+        val owner = usersContainer.getUser(ownerID)
+        val processGroup = ProcessGroup(processGroupId, owner, title, description)
         processGroupsContainer.updateProcessGroup(processGroup)
     }
 
