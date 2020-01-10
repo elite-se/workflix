@@ -1,6 +1,7 @@
 // @flow
 
 import { safeFetch } from './SafeFetch'
+import type { NewIdResultType } from './common'
 import { BACKEND } from './common'
 import type { ProcessGroupType } from '../datatypes/ProcessGroup'
 import { parseDatesInProcessGroup } from './parseDates'
@@ -16,6 +17,22 @@ class ProcessGroupsApi {
       .then(procGroups => new Map(procGroups.map(group => [group.id, group])))
   }
 
+  addProcessGroup (processGroup: ({ title: string, description: string, ownerId: string })): Promise<NewIdResultType> {
+    return safeFetch(processGroupsBackend, {
+      method: 'POST',
+      body: JSON.stringify(processGroup)
+    })
+      .then(response => response.json())
+  }
+
+  patchProcessGroup (processGroup: ProcessGroupType): Promise<Response> {
+    const { id, title, description, ownerId } = processGroup
+    return safeFetch(`${processGroupsBackend}/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ title, description, ownerId })
+    })
+  }
+
   addMembership (groupId: number, memberId: string): Promise<Response> {
     return safeFetch(`${processGroupsBackend}/${groupId}/members/${memberId}`, {
       method: 'PUT'
@@ -25,13 +42,6 @@ class ProcessGroupsApi {
   removeMembership (groupId: number, memberId: string): Promise<Response> {
     return safeFetch(`${processGroupsBackend}/${groupId}/members/${memberId}`, {
       method: 'DELETE'
-    })
-  }
-
-  patchProcessGroup (processGroup: ProcessGroupType): Promise<Response> {
-    return safeFetch(`${processGroupsBackend}/${processGroup.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(processGroup)
     })
   }
 }

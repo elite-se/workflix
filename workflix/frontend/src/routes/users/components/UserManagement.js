@@ -147,6 +147,12 @@ class UserManagement extends React.Component<PropsType, StateType> {
     }))
   }
 
+  onProcessGroupAdded = (processGroup: ProcessGroupType) => {
+    this.setState(oldState => ({
+      processGroups: new Map(oldState.processGroups).set(processGroup.id, processGroup)
+    }))
+  }
+
   onRoleChanged = (role: UserRoleType) => {
     this.setState(oldState => ({
       roles: mapMap(oldState.roles, (id, _role) => id === role.id ? role : _role)
@@ -178,7 +184,8 @@ class UserManagement extends React.Component<PropsType, StateType> {
                                            onProcessGroupSelected={this.onProcessGroupSelected}
                                            onGroupMembershipAdded={this.onGroupMembershipAdded}
                                            onGroupMembershipRemoved={this.onGroupMembershipRemoved}
-                                           onProcessGroupChanged={this.onProcessGroupChanged}/>
+                                           onProcessGroupChanged={this.onProcessGroupChanged}
+                                           onProcessGroupAdded={this.onProcessGroupAdded}/>
     return <CenteredTabs selectedTabId={this.state.mode} onChange={this.onTabSelected} large renderActiveTabPanelOnly>
       <Tab id='USERS' title='Users' panel={usersPanel}/>
       <Tab id='GROUPS' title='Process groups' panel={groupsPanel}/>

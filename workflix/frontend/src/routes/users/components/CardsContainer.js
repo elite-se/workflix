@@ -14,10 +14,11 @@ const Container = styled<{}, {}, 'div'>('div')`
   max-width: 100%;
 `
 
-class CardsContainer extends React.Component<{ onCreate: () => void, children: React$Node }> {
+class CardsContainer extends React.Component<{ onCreate?: () => void, children: React$Node }> {
   render () {
     return <div style={{ maxWidth: '100%' }}>
-      <Button icon='add' text='Create new' style={{ alignSelf: 'flex-start', margin: '5px' }} intent={Intent.SUCCESS}/>
+      {this.props.onCreate && <Button icon='add' text='Create new' style={{ alignSelf: 'flex-start', margin: '5px' }}
+                                      intent={Intent.SUCCESS} onClick={this.props.onCreate}/>}
       <Container>{this.props.children}</Container>
     </div>
   }
