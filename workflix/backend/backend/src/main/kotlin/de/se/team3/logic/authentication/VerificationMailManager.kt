@@ -65,7 +65,7 @@ object VerificationMailManager {
 <p>Your verification key is:</p>
 <h3 style="padding-left: 60px;"><span style="color: #808080;"><strong>$key</strong></span></h3>
 <p>This key will expire in several minutes.</p>
-<p>If your key has expired for any reason whatsoever, simply restart the registration process and a new key will be sent to you.</p>
+<p>If your key has expired, simply restart the registration process and a new key will be sent to you.</p>
 <p>&nbsp;</p>
 <p>Your Workflix Team</p>
 <p><strong>&nbsp;</strong></p>""")
