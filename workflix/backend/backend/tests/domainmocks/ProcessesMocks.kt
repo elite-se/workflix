@@ -21,7 +21,7 @@ object ProcessesMocks {
         for ((key, task) in tasksWithoutIds)
             tasksWithIds.put(key, Task(key, key, task.startedAt, ArrayList<TaskComment>(), ArrayList<TaskAssignment>(), null))
 
-        return Process(1, starter, groupExtorel, processTemplate, "Testprocess 1", "Description", ProcessStatus.RUNNING, null, Instant.now(), tasksWithIds)
+        return Process(1, starter, groupExtorel, processTemplate, "Testprocess 1", "Description", ProcessStatus.RUNNING, Instant.now(), Instant.now(), tasksWithIds)
     }
 
 }

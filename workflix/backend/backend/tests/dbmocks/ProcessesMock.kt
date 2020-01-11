@@ -4,6 +4,10 @@ import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.domain.Process
 
 object ProcessesMock: ProcessDAOInterface {
+    override fun updateProcess(process: Process): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getAllProcesses(): List<Process> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

@@ -25,10 +25,8 @@ object JsonHelper {
         return mapper.readValue(content, valueType)
     }
 
-    fun getInstantFromString(value: String?): Instant? {
-        return if (value == null) null else {
-            val formatter = DateTimeFormatter.ISO_INSTANT
-            Instant.from(formatter.parse(value))
-        }
+    fun getInstantFromString(value: String): Instant {
+        val formatter = DateTimeFormatter.ISO_INSTANT
+        return Instant.from(formatter.parse(value))
     }
 }

@@ -14,7 +14,6 @@ import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import de.se.team3.webservice.util.JsonHelper
 import de.se.team3.webservice.util.PagingHelper
 import io.javalin.http.Context
-import java.lang.IllegalArgumentException
 import org.json.JSONObject
 
 /**
@@ -119,6 +118,20 @@ object ProcessesHandler {
 
         ctx.result(newIdJsonObject.toString())
             .contentType("application/json")
+    }
+
+    /**
+     * Handles requests for updating a process.
+     */
+    fun update(ctx: Context, processId: Int) {
+        val content = ctx.body()
+        val processJsonObject = JSONObject(content)
+
+        val title = processJsonObject.getString("title")
+        val description = processJsonObject.getString("description")
+        val deadline = JsonHelper.getInstantFromString(processJsonObject.getString("deadline"))
+
+        processesContainer.updateProcess(processId, title, description, deadline)
     }
 
     /**

@@ -2,6 +2,7 @@ package de.se.team3.webservice.containerInterfaces
 
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
+import java.time.Instant
 
 interface ProcessContainerInterface {
 
@@ -12,6 +13,8 @@ interface ProcessContainerInterface {
     fun getProcess(processId: Int): Process
 
     fun createProcess(process: Process): Int
+
+    fun updateProcess(processId: Int, title: String, description: String, deadline: Instant)
 
     fun abortProcess(processId: Int)
 }

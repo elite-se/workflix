@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    // webservice exceptions, i.d. exceptions thrown if something is wrong if the input format
+    // webservice exceptions, i.e. exceptions thrown if something is wrong if the input format
     app.exception(NumberFormatException::class.java) { _, ctx ->
         ctx.status(400).result("invalid id format")
     }
@@ -151,6 +151,9 @@ fun main(args: Array<String>) {
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
     app.post("processes") { ctx -> ProcessesHandler.create(ctx) }
+    app.patch("processes/:processId") { ctx ->
+        ProcessesHandler.update(ctx, ctx.pathParam("processId").toInt())
+    }
     app.delete("processes/:processId") { ctx ->
         ProcessesHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }
