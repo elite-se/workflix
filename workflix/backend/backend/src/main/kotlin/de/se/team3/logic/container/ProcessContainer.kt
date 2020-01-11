@@ -89,7 +89,7 @@ object ProcessContainer : ProcessContainerInterface {
      */
     override fun updateProcess(processId: Int, title: String, description: String, deadline: Instant?) {
         val cachedProcess = getProcess(processId)
-        //helper process to properly call the DAO
+        // helper process to properly call the DAO
         val updatedProcess = Process(cachedProcess.id,
             cachedProcess.starter,
             cachedProcess.processGroup,

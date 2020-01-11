@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    // webservice exceptions, i.d. exceptions thrown if something is wrong if the input format
+    // webservice exceptions, i.e. exceptions thrown if something is wrong if the input format
     app.exception(NumberFormatException::class.java) { _, ctx ->
         ctx.status(400).result("invalid id format")
     }
