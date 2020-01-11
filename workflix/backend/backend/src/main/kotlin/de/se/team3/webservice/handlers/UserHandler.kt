@@ -3,6 +3,7 @@ package de.se.team3.webservice.handlers
 import de.se.team3.logic.authentication.VerificationMailManager
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
+import de.se.team3.webservice.managerInterfaces.VerificationMailManagerInterface
 import de.se.team3.webservice.util.JsonHelper
 import io.javalin.http.Context
 import org.json.JSONObject
@@ -10,6 +11,8 @@ import org.json.JSONObject
 object UserHandler {
 
     private val usersContainer: UserContainerInterface = UserContainer
+
+    private val verificationMailManager: VerificationMailManagerInterface = VerificationMailManager
 
     fun getAll(ctx: Context) {
         val users = usersContainer.getAllUsers()
@@ -34,7 +37,7 @@ object UserHandler {
         val contentJSON = JSONObject(content)
 
         val email = contentJSON.getString("email")
-        VerificationMailManager.initVerification(email)
+        verificationMailManager.initVerification(email)
     }
 
     fun createFrom***REMOVED***(ctx: Context, key: String) {
@@ -44,7 +47,7 @@ object UserHandler {
         val email = contentJSON.getString("email")
         val password = contentJSON.getString("password")
 
-        if (VerificationMailManager.isValidForUser(email, key)) {
+        if (VerificationMailManager.verifyAndInvalidateVerificationKey(email, key)) {
             val user = usersContainer.create***REMOVED***User(email, password)
             val resultJSON = JSONObject().put("newId", user.id)
 

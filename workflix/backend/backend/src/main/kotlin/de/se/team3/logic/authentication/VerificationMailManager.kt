@@ -9,8 +9,9 @@ import com.sendgrid.helpers.mail.objects.Email
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
+import de.se.team3.webservice.managerInterfaces.VerificationMailManagerInterface
 
-object VerificationMailManager {
+object VerificationMailManager: VerificationMailManagerInterface {
 
     // maps each mail address to its generated key
     // if the server resets, the key expires
@@ -26,7 +27,7 @@ object VerificationMailManager {
      *
      * @param mail email address of the user trying to sign up
      */
-    fun initVerification(mail: String) {
+    override fun initVerification(mail: String) {
         if (UserQuerying.searchFor***REMOVED***User(mail) == null)
             throw InvalidInputException("There is no user with this email address.")
         if (UserContainer.getAllUsers().map { it.email }.contains(mail))
@@ -48,19 +49,7 @@ object VerificationMailManager {
      *
      * @return true iff the key was valid
      */
-    fun isValidForUser(mail: String, key: String): Boolean {
-        return invalidateVerificationKey(mail, key)
-    }
-
-    /**
-     * Invalidates a verification key for a user.
-     *
-     * @param mail email address of the user
-     * @param key verification key to be invalidated
-     *
-     * @return true iff invalidation was successful, i.e. the key was registered for the given email address.
-     */
-    private fun invalidateVerificationKey(mail: String, key: String): Boolean {
+    override fun verifyAndInvalidateVerificationKey(mail: String, key: String): Boolean {
         return if (keyMap[mail] == key) {
             keyMap.remove(mail, key)
             true
