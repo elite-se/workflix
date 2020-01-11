@@ -72,7 +72,7 @@ class Process(
      * @throws InvalidInputException Is thrown if the title is empty or if the underlying
      * process template is already deleted.
      */
-    private fun checkProperties() {
+    fun checkProperties() {
         if (title.isEmpty())
             throw InvalidInputException("title must not be empty")
         if (processTemplate.isDeleted())

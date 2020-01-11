@@ -100,6 +100,8 @@ object ProcessContainer : ProcessContainerInterface {
             deadline,
             cachedProcess.startedAt,
             cachedProcess.tasks)
+        updatedProcess.checkProperties()
+
 
         val exists = processesDAO.updateProcess(updatedProcess)
         if (!exists)
