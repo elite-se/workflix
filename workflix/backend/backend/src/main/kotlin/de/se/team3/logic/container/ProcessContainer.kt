@@ -102,7 +102,6 @@ object ProcessContainer : ProcessContainerInterface {
             cachedProcess.tasks)
         updatedProcess.checkProperties()
 
-
         val exists = processesDAO.updateProcess(updatedProcess)
         if (!exists)
             throw NotFoundException("Process does not exist.")
