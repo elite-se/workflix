@@ -11,7 +11,7 @@ import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.webservice.managerInterfaces.VerificationMailManagerInterface
 
-object VerificationMailManager: VerificationMailManagerInterface {
+object VerificationMailManager : VerificationMailManagerInterface {
 
     // maps each mail address to its generated key
     // if the server resets, the key expires
