@@ -97,16 +97,13 @@ object ProcessContainer : ProcessContainerInterface {
 
         // helper process to properly call the DAO
         val updatedProcess = Process(
-            cachedProcess.id,
+            cachedProcess.id!!,
             cachedProcess.starter,
             cachedProcess.processGroup,
             cachedProcess.processTemplate,
             title,
             description,
-            cachedProcess.getStatus(),
-            deadline,
-            cachedProcess.startedAt,
-            cachedProcess.tasks
+            deadline
         )
 
         val exists = processesDAO.updateProcess(updatedProcess)
