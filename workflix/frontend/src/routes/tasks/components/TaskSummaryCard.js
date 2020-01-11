@@ -61,7 +61,7 @@ class TaskSummaryCard extends React.Component<PropsType> {
     const intent = task.status === 'CLOSED' ? Intent.SUCCESS : task.status === 'RUNNING' ? Intent.WARNING : Intent.NONE
     const tooltip = task.status === 'CLOSED' ? 'This task is already done.'
       : task.status === 'BLOCKED' ? 'This task depends on preceding tasks that are not yet done.'
-        : task.status === 'RUNNING' ? `This task is waiting for being done.${shouldAssign ? ' Assign now!' : ''}`
+        : task.status === 'RUNNING' ? `This task is waiting to be done.${shouldAssign ? ' Assign now!' : ''}`
           : null
     return <div ref={this.ref}>
       <Tooltip intent={intent} content={tooltip} disabled={!tooltip} targetTagName='div'>
