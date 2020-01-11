@@ -53,6 +53,9 @@ const AllTheWay: StyledComponent<{}, {}, *> = styled('div')`
   margin-top: 10px;
   padding: 10px;
   background-color: ${Colors.LIGHT_GRAY4};
+  .bp3-dark & {
+    background-color: ${Colors.DARK_GRAY3};
+  } 
 `
 
 const preventDefault = (event: SyntheticMouseEvent<HTMLElement>) => event.preventDefault()
