@@ -19,7 +19,6 @@ import de.se.team3.webservice.handlers.UserHandler
 import de.se.team3.webservice.handlers.UserRolesHandler
 import de.se.team3.webservice.handlers.UserRolesMembersHandler
 import io.javalin.Javalin
-import java.lang.NumberFormatException
 import org.json.JSONException
 
 const val ENV_PORT = "PORT"
@@ -67,11 +66,13 @@ fun main(args: Array<String>) {
         throw e
     }
 
-    // authentication handling before every request (excluding login)
+    // authentication handling before every request (excluding login and creation of new users)
     app.before() { ctx ->
         if (ctx.method() == "OPTIONS") {
             CORSHandler.optionsRequest(ctx)
-        } else if (ctx.path() != "/login") {
+        } else if (ctx.path() != "/login" &&
+            !(ctx.path() == "/users" && ctx.method() == "POST") &&
+            !(ctx.path().matches(Regex("""/users/\w{8}""")) && ctx.method() == "POST")) {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }
@@ -92,8 +93,13 @@ fun main(args: Array<String>) {
     app.get("users/:userId") { ctx ->
         UserHandler.getOne(ctx, ctx.pathParam("userId"))
     }
-    app.post("users") { ctx ->
-        UserHandler.createFrom***REMOVED***(ctx)
+    app.put("users/:key") { ctx ->
+        UserHandler.createFrom***REMOVED***(ctx, ctx.pathParam("key"))
+    }
+
+    // new user verification
+    app.post("userCreationRequest") { ctx ->
+        UserHandler.verifyCreateRequest(ctx)
     }
 
     // process templates
