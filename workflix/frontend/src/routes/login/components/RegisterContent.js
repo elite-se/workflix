@@ -7,11 +7,12 @@ import handleStringChange from '../../../modules/common/handleStringChange'
 import PasswordInput from './PasswordInput'
 import { toastifyError } from '../../../modules/common/toastifyError'
 import UsersApi from '../../../modules/api/UsersApi'
+import discardEvent from '../../../modules/common/discardEvent'
 
 type PropsType = {|
   email: string,
   onGoToVerifyMail: () => void,
-  onGoToLogin: (boolean) => void
+  onGoToLogin: (showSuccess?: boolean) => void
 |}
 
 type StateType = {|
@@ -87,7 +88,7 @@ class RegisterContent extends React.Component<PropsType, StateType> {
       <Button icon='fast-backward' text='Change email address' minimal style={{ marginTop: '5px' }}
               onClick={onGoToVerifyMail} disabled={loading}/>
       <Button icon='unlock' text='I already have an account' minimal style={{ marginTop: '5px' }}
-              onClick={onGoToLogin} disabled={loading}/>
+              onClick={discardEvent(onGoToLogin)} disabled={loading}/>
     </form>
   }
 

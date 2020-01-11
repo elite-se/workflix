@@ -6,6 +6,7 @@ import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 import handleStringChange from '../../../modules/common/handleStringChange'
 import UsersApi from '../../../modules/api/UsersApi'
 import { toastifyError } from '../../../modules/common/toastifyError'
+import discardEvent from '../../../modules/common/discardEvent'
 
 type PropsType = {|
   email: string,
@@ -60,7 +61,7 @@ class VerifyMailContent extends React.Component<PropsType, StateType> {
       <Button icon='envelope' intent={Intent.PRIMARY} text='Verify email address' type='submit' large
               disabled={!email} loading={loading}/>
       <Button icon='unlock' text='I already have an account' minimal style={{ marginTop: '5px' }}
-              onClick={onGoToLogin} disabled={loading}/>
+              onClick={discardEvent(onGoToLogin)} disabled={loading}/>
     </form>
   }
 
