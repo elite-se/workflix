@@ -45,6 +45,7 @@ class ProcessList extends React.Component<PropsType> {
             }}>There are no processes matching the filters.</span>
             : <HTMLTable bordered striped interactive style={{ width: '100%' }}>
               <thead>
+              <tr>
               <th>Id</th>
               <th>Title</th>
               <th>Started at</th>
@@ -52,6 +53,7 @@ class ProcessList extends React.Component<PropsType> {
               <th>Progress</th>
               <th>Process Group</th>
               <th>Starter</th>
+              </tr>
               </thead>
               <tbody>
               {processes.map(process => (
