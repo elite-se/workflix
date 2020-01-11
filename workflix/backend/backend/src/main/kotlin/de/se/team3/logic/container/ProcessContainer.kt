@@ -3,6 +3,7 @@ package de.se.team3.logic.container
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
+import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
@@ -85,12 +86,18 @@ object ProcessContainer : ProcessContainerInterface {
     /**
      * Updates the given process.
      *
+     * @throws AlreadyClosedException Is thrown if the specified process is not running anymore.
      * @throws NotFoundException Is thrown if the given process does not exist.
      */
-    override fun updateProcess(processId: Int, title: String, description: String, deadline: Instant?) {
+    override fun updateProcess(processId: Int, title: String, description: String, deadline: Instant) {
         val cachedProcess = getProcess(processId)
+
+        if (!cachedProcess.isRunning())
+            throw AlreadyClosedException("the process is not running anymore")
+
         // helper process to properly call the DAO
-        val updatedProcess = Process(cachedProcess.id,
+        val updatedProcess = Process(
+            cachedProcess.id,
             cachedProcess.starter,
             cachedProcess.processGroup,
             cachedProcess.processTemplate,
@@ -99,16 +106,16 @@ object ProcessContainer : ProcessContainerInterface {
             cachedProcess.getStatus(),
             deadline,
             cachedProcess.startedAt,
-            cachedProcess.tasks)
-        updatedProcess.checkProperties()
+            cachedProcess.tasks
+        )
 
         val exists = processesDAO.updateProcess(updatedProcess)
         if (!exists)
             throw NotFoundException("Process does not exist.")
 
-        cachedProcess.title = title
-        cachedProcess.description = description
-        cachedProcess.deadline = deadline
+        cachedProcess.setTitle(title)
+        cachedProcess.setDescription(description)
+        cachedProcess.setDeadline(deadline)
     }
 
     /**

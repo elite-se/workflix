@@ -55,7 +55,7 @@ object ProcessDAO : ProcessDAOInterface {
             row[ProcessesTable.title]!!,
             row[ProcessesTable.description]!!,
             ProcessStatus.valueOf(row[ProcessesTable.status]!!),
-            row[ProcessesTable.deadline],
+            row[ProcessesTable.deadline]!!,
             row[ProcessesTable.startedAt]!!,
             tasks
         )
@@ -194,10 +194,10 @@ object ProcessDAO : ProcessDAOInterface {
                 row.processTemplateId to processTemplate.id
                 row.starterId to process.starter.id
                 row.groupId to process.getProcessGroupId()
-                row.title to process.title
-                row.description to process.description
+                row.title to process.getTitle()
+                row.description to process.getDescription()
                 row.status to process.getStatus().toString()
-                row.deadline to process.deadline
+                row.deadline to process.getDeadline()
                 row.startedAt to process.startedAt
             }
 
@@ -223,14 +223,20 @@ object ProcessDAO : ProcessDAOInterface {
         }
     }
 
+    /**
+     * Updates the given process.
+     *
+     * @return True iff the given process exists.
+     */
     override fun updateProcess(process: Process): Boolean {
         val affectedRows = ProcessesTable.update { row ->
-            row.title to process.title
-            row.description to process.description
-            row.deadline to process.deadline
+            row.title to process.getTitle()
+            row.description to process.getDescription()
+            row.deadline to process.getDeadline()
 
             where {
-                (row.id eq process.id!!)
+                (row.id eq process.id!!) and
+                        (row.status eq ProcessStatus.RUNNING.toString())
             }
         }
         return affectedRows != 0

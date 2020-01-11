@@ -14,7 +14,7 @@ interface ProcessContainerInterface {
 
     fun createProcess(process: Process): Int
 
-    fun updateProcess(processId: Int, title: String, description: String, deadline: Instant?)
+    fun updateProcess(processId: Int, title: String, description: String, deadline: Instant)
 
     fun abortProcess(processId: Int)
 }
