@@ -71,7 +71,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
         if (!filled)
             fillCache()
 
-        for ((key, processTemplate) in processTemplatesCache)
+        for ((_, processTemplate) in processTemplatesCache)
             if (!processTemplate.isDeleted() && processTemplate.usesUserRole(userRole))
                 return true
 
@@ -93,7 +93,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
      * @throws NotFoundException Is thrown if the given process template does not exist.
      */
     override fun updateProcessTemplate(processTemplate: ProcessTemplate): Int {
-        var newId: Int?
+        val newId: Int?
         val currentId = processTemplate.id!!
 
         val currentProcessTemplate = getProcessTemplate(currentId)
@@ -106,7 +106,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
             newId = currentId
         } else {
             // copying necessary because of the creation timestamp
-            val newProcessTemplate = ProcessTemplate(
+            val newProcessTemplate = ProcessTemplate( //TODO is this necessary?
                 processTemplate.title,
                 processTemplate.description,
                 processTemplate.durationLimit,
@@ -114,6 +114,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
                 processTemplate.taskTemplates
             )
             newId = processTemplatesDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
+            processTemplatesDAO.deleteProcessTemplate(currentId)
         }
 
         processTemplatesCache[newId] = processTemplatesDAO.getProcessTemplate(newId)!!
