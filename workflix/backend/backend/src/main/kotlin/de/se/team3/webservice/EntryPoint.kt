@@ -19,7 +19,6 @@ import de.se.team3.webservice.handlers.UserHandler
 import de.se.team3.webservice.handlers.UserRolesHandler
 import de.se.team3.webservice.handlers.UserRolesMembersHandler
 import io.javalin.Javalin
-import java.lang.NumberFormatException
 import org.json.JSONException
 
 const val ENV_PORT = "PORT"
@@ -94,11 +93,13 @@ fun main(args: Array<String>) {
     app.get("users/:userId") { ctx ->
         UserHandler.getOne(ctx, ctx.pathParam("userId"))
     }
-    app.post("users") { ctx ->
-        UserHandler.verifyCreateRequest(ctx)
-    }
-    app.post("users/:key") { ctx ->
+    app.put("users/:key") { ctx ->
         UserHandler.createFrom***REMOVED***(ctx, ctx.pathParam("key"))
+    }
+
+    // new user verification
+    app.post("userCreationRequest") { ctx ->
+        UserHandler.verifyCreateRequest(ctx)
     }
 
     // process templates
