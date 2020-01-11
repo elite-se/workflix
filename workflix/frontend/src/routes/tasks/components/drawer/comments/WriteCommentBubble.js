@@ -2,12 +2,13 @@
 
 import React from 'react'
 import { TalkBubble } from './TalkBubble'
-import { Button } from '@blueprintjs/core'
+import { Button, Tooltip } from '@blueprintjs/core'
 import ProcessApi from '../../../../../modules/api/ProcessApi'
 import type { TaskCommentType, TaskType } from '../../../../../modules/datatypes/Task'
 import AutoSizeTextArea from '../../../../../modules/common/components/AutoSizeTextArea'
 import { toastifyError } from '../../../../../modules/common/toastifyError'
 import { getCurrentUserId } from '../../../../../modules/common/tokenStorage'
+import parseEmojis from '../../../../../modules/common/parseEmojis'
 
 type PropsType = {|
   task: TaskType,
@@ -40,7 +41,7 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
 
   doSend = () => {
     const creatorId = getCurrentUserId()
-    const content = this.state.text
+    const content = parseEmojis(this.state.text)
     new ProcessApi().addComment(this.props.task.id, creatorId, content)
       .then(response => this.applyNewComment({
         id: response.newId,
@@ -63,26 +64,36 @@ class WriteCommentBubble extends React.Component<PropsType, StateType> {
   }
 
   render () {
+    const text = this.state.text
+    const emojiText = text && parseEmojis(text)
     return <TalkBubble floatEnd
                        onKeyDown={this.onKeyPress}
                        style={{
                          display: 'flex',
                          flexDirection: 'column'
                        }}>
-      <AutoSizeTextArea
-        style={{
-          resize: 'none',
-          border: 'none',
-          outline: 'none',
-          boxShadow: 'none',
-          width: '100%'
-        }}
-        placeholder='Type to add a comment …'
-        rows={1}
-        onChange={this.onTextChange}
-        value={this.state.text}
-      />
-      {this.state.text &&
+      <Tooltip isOpen={emojiText && emojiText !== text}
+               content={<span style={{
+                 display: 'block',
+                 whiteSpace: 'break-spaces',
+                 wordWrap: 'break-word',
+                 maxWidth: '300px'
+               }}>{emojiText}</span>}>
+        <AutoSizeTextArea
+          style={{
+            resize: 'none',
+            border: 'none',
+            outline: 'none',
+            boxShadow: 'none',
+            width: '100%'
+          }}
+          placeholder='Type to add a comment …'
+          rows={1}
+          onChange={this.onTextChange}
+          value={text}
+        />
+      </Tooltip>
+      {text &&
       <Button
         rightIcon='direction-right'
         style={{ alignSelf: 'flex-end' }}
