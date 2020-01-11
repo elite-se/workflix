@@ -23,7 +23,9 @@ type PropsType = {|
 
 export default class UserCards extends React.Component<PropsType> {
   render () {
-    return <CardsContainer title='Users'>{this.getSortedUsers().map<React$Node>(this.getCardForUser)}</CardsContainer>
+    return <CardsContainer>
+      {this.getSortedUsers().map<React$Node>(this.getCardForUser)}
+    </CardsContainer>
   }
 
   getSortedUsers (): UserType[] {

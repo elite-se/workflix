@@ -7,5 +7,5 @@ export type ProcessGroupType = {
   ownerId: string,
   createdAt: Date,
   membersIds: string[],
-  deleted: boolean
+  deleted?: boolean
 }

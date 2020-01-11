@@ -13,11 +13,16 @@ import { uniq, without } from 'lodash'
 import { mapMap } from '../../../modules/common/mapMap'
 import { Tab, Tabs } from '@blueprintjs/core'
 import styled from 'styled-components'
+import UserRoleApi from '../../../modules/api/UserRoleApi'
 
 const CenteredTabs = styled(Tabs)`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  > .bp3-tab-list {
+    align-self: center;
+  }
+  flex-grow: 1;
 `
 
 type PropsType = {|
@@ -143,9 +148,33 @@ class UserManagement extends React.Component<PropsType, StateType> {
     }))
   }
 
+  onProcessGroupAdded = (processGroup: ProcessGroupType) => {
+    this.setState(oldState => ({
+      processGroups: new Map(oldState.processGroups).set(processGroup.id, processGroup)
+    }))
+  }
+
+  onProcessGroupDeleted = (processGroup: ProcessGroupType) => {
+    this.setState(oldState => ({
+      processGroups: new Map(Array.from(oldState.processGroups.entries()).filter(([id, _]) => id !== processGroup.id))
+    }))
+  }
+
   onRoleChanged = (role: UserRoleType) => {
     this.setState(oldState => ({
       roles: mapMap(oldState.roles, (id, _role) => id === role.id ? role : _role)
+    }))
+  }
+
+  onRoleAdded = (role: UserRoleType) => {
+    this.setState(oldState => ({
+      roles: new Map(oldState.roles).set(role.id, role)
+    }))
+  }
+
+  onRoleDeleted = (role: UserRoleType) => {
+    this.setState(oldState => ({
+      roles: new Map(Array.from(oldState.roles.entries()).filter(([id, _]) => id !== role.id))
     }))
   }
 
@@ -167,14 +196,18 @@ class UserManagement extends React.Component<PropsType, StateType> {
                                   onRoleSelected={this.onRoleSelected}
                                   onRoleMembershipAdded={this.onRoleMembershipAdded}
                                   onRoleMembershipRemoved={this.onRoleMembershipRemoved}
-                                  onRoleChanged={this.onRoleChanged}/>
+                                  onRoleChanged={this.onRoleChanged}
+                                  onRoleAdded={this.onRoleAdded}
+                                  onRoleDeleted={this.onRoleDeleted}/>
     const groupsPanel = <ProcessGroupCards processGroups={processGroups} users={users}
                                            onUserSelected={this.onUserSelected}
                                            selection={selectedGroup}
                                            onProcessGroupSelected={this.onProcessGroupSelected}
                                            onGroupMembershipAdded={this.onGroupMembershipAdded}
                                            onGroupMembershipRemoved={this.onGroupMembershipRemoved}
-                                           onProcessGroupChanged={this.onProcessGroupChanged}/>
+                                           onProcessGroupChanged={this.onProcessGroupChanged}
+                                           onProcessGroupAdded={this.onProcessGroupAdded}
+                                           onProcessGroupDeleted={this.onProcessGroupDeleted}/>
     return <CenteredTabs selectedTabId={this.state.mode} onChange={this.onTabSelected} large renderActiveTabPanelOnly>
       <Tab id='USERS' title='Users' panel={usersPanel}/>
       <Tab id='GROUPS' title='Process groups' panel={groupsPanel}/>
@@ -186,7 +219,7 @@ class UserManagement extends React.Component<PropsType, StateType> {
 const promiseCreator = () => Promise.all([
   new UsersApi().getUsers(),
   new ProcessGroupsApi().getProcessGroups(false),
-  new UsersApi().getUserRoles()
+  new UserRoleApi().getUserRoles()
 ])
   .then(([users, processGroups, roles]) => ({
     initialUsers: users,

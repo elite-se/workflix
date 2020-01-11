@@ -8,7 +8,6 @@ import { IIconProps } from '@blueprintjs/core/lib/cjs/components/icon/icon'
 const Item = styled<{}, {}, *>('div')`
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
   & > * {
     padding: 5px;
   }

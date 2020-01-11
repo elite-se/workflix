@@ -10,6 +10,7 @@ import type { FilledProcessTemplateType } from '../../../modules/api/ProcessApi'
 import ProcessApi from '../../../modules/api/ProcessApi'
 import { navigate } from '@reach/router'
 import type { IncompleteProcessTemplateType } from '../../../modules/process-template-editor/ProcessTemplateEditorTypes'
+import UserRoleApi from '../../../modules/api/UserRoleApi'
 
 type PropsType = {
   users: Map<string, UserType>,
@@ -45,7 +46,7 @@ class EditProcessTemplate extends React.Component<PropsType> {
 
 const promiseCreator = ({ id }: { id: number }) => Promise.all([
   new UserApi().getUsers(),
-  new UserApi().getUserRoles(),
+  new UserRoleApi().getUserRoles(),
   new ProcessApi().getProcessTemplate(id)
 ]).then(([users, userRoles, initialProcessTemplate]) => ({
   users,
