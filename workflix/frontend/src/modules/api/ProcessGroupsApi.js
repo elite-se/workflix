@@ -8,11 +8,12 @@ import { parseDatesInProcessGroup } from './parseDates'
 const processGroupsBackend = `${BACKEND}/processGroups`
 
 class ProcessGroupsApi {
-  getProcessGroups (): Promise<Map<number, ProcessGroupType>> {
+  getProcessGroups (includeDeleted?: boolean = true): Promise<Map<number, ProcessGroupType>> {
     return safeFetch(processGroupsBackend)
       .then(response => response.json())
       .then(json => json.groups)
       .then(groups => groups.map(parseDatesInProcessGroup))
+      .then(groups => includeDeleted ? groups : groups.filter(group => !group.deleted))
       .then(procGroups => new Map(procGroups.map(group => [group.id, group])))
   }
 

@@ -185,7 +185,7 @@ class UserManagement extends React.Component<PropsType, StateType> {
 
 const promiseCreator = () => Promise.all([
   new UsersApi().getUsers(),
-  new ProcessGroupsApi().getProcessGroups(),
+  new ProcessGroupsApi().getProcessGroups(false),
   new UsersApi().getUserRoles()
 ])
   .then(([users, processGroups, roles]) => ({
