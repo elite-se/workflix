@@ -15,5 +15,4 @@ interface TaskCommentsContainerInterface {
     fun updateTaskComment(taskComment: TaskComment)
 
     fun deleteTaskComment(taskCommentId: Int)
-
 }

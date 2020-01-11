@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
 import java.lang.IllegalStateException
-import java.lang.NullPointerException
 import java.time.Instant
 
 /**
@@ -67,5 +66,4 @@ data class TaskComment(
 
         this.content = content
     }
-
 }

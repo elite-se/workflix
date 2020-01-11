@@ -3,6 +3,7 @@ package unittests
 import de.se.team3.logic.domain.ProcessStatus
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskAssignment
+import de.se.team3.logic.domain.TaskComment
 import domainmocks.ProcessesMocks
 import domainmocks.UsersAndRolesMocks
 import org.junit.Test
@@ -278,6 +279,55 @@ class TaskTest {
         process.abort()
 
         assertFails { taskAssignment.close(Instant.now()) }
+    }
+
+    /**
+     * Tests simple adding and deletion of task comments.
+     */
+    @Test
+    fun testComments() {
+        val process = ProcessesMocks.getSimpleProcess()
+
+        val task1 = process.getTask(1)
+        val task2 = process.getTask(2)
+
+        val comment1 = TaskComment(1, task1, UsersAndRolesMocks.marvinBrieger, "Hallo Welt", Instant.now())
+        task1.addTaskComment(comment1)
+
+        assertDoesNotThrow { task1.getTaskComment(comment1.id!!) }
+        assertFails { task1.getTaskComment(2) }
+
+        assertDoesNotThrow { task1.deleteTaskComment(comment1.id!!) }
+        assertFails { task1.deleteTaskComment(comment1.id!!) }
+
+        val comment2 = TaskComment(2, task2, UsersAndRolesMocks.marvinBrieger, "Hallo hallo", Instant.now())
+        val comment3 = TaskComment(3, task2, UsersAndRolesMocks.marvinBrieger, "Hallo 123", Instant.now())
+        task2.addTaskComment(comment2)
+        task2.addTaskComment(comment3)
+    }
+
+    /**
+     * Adding a comment should fail if the process is already closed.
+     */
+    @Test
+    fun testCommentsOnClosedProcess() {
+        val process = ProcessesMocks.getSimpleProcess()
+
+        val task1 = process.getTask(1)
+        val task2 = process.getTask(2)
+
+        val comment = TaskComment(1, task1, UsersAndRolesMocks.erikPallas, "Commentary", Instant.now())
+        task1.addTaskComment(comment)
+
+        val taskAssignment1 = TaskAssignment(task1, UsersAndRolesMocks.marvinBrieger, true)
+        task1.addTaskAssignment(taskAssignment1)
+        val taskAssignment2 = TaskAssignment(task2, UsersAndRolesMocks.eliasKeis, true)
+        task2.addTaskAssignment(taskAssignment2)
+
+        process.close()
+
+        assertFails { task1.deleteTaskComment(comment.id!!) }
+        assertFails { task2.addTaskComment(comment) }
     }
 
 
