@@ -23,6 +23,9 @@ const ListItem = styled<{}, {}, 'div'>('div')`
   &:nth-child(2n + 1) {
     background-color: ${Colors.LIGHT_GRAY4};
   }
+  .bp3-dark &:nth-child(2n + 1) {
+    background-color: ${Colors.DARK_GRAY4};
+  }
   display: flex;
   justify-content: stretch;
   padding-right: 20px;
