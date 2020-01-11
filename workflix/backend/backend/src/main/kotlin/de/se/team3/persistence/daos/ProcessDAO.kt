@@ -4,11 +4,7 @@ import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.ProcessTemplatesContainer
 import de.se.team3.logic.container.UserContainer
-import de.se.team3.logic.domain.Process
-import de.se.team3.logic.domain.ProcessStatus
-import de.se.team3.logic.domain.Task
-import de.se.team3.logic.domain.TaskAssignment
-import de.se.team3.logic.domain.TaskComment
+import de.se.team3.logic.domain.*
 import de.se.team3.persistence.meta.ProcessesTable
 import de.se.team3.persistence.meta.TaskAssignmentsTable
 import de.se.team3.persistence.meta.TaskCommentsTable
@@ -18,15 +14,7 @@ import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterf
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
-import me.liuwj.ktorm.dsl.QueryRowSet
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.batchInsert
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.insertAndGenerateKey
-import me.liuwj.ktorm.dsl.notEq
-import me.liuwj.ktorm.dsl.select
-import me.liuwj.ktorm.dsl.update
-import me.liuwj.ktorm.dsl.where
+import me.liuwj.ktorm.dsl.*
 
 /**
  * DAO for processes.
@@ -221,6 +209,19 @@ object ProcessDAO : ProcessDAOInterface {
         } finally {
             transaction.close()
         }
+    }
+
+    override fun updateProcess(process: Process): Boolean {
+        val affectedRows = ProcessesTable.update { row ->
+            row.title to process.title
+            row.description to process.description
+            row.deadline to process.deadline
+
+            where {
+                (row.id eq process.id!!)
+            }
+        }
+        return affectedRows != 0
     }
 
     /**

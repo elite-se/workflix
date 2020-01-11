@@ -51,7 +51,7 @@ object ProcessGroupsHandler {
     }
 
     /**
-     * Handles requests for updating an process group.
+     * Handles requests for updating a process group.
      */
     fun update(ctx: Context, processGroupId: Int) {
         val content = ctx.body()

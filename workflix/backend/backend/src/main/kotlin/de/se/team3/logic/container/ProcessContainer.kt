@@ -6,6 +6,7 @@ import de.se.team3.logic.domain.ProcessQueryPredicate
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
+import java.time.Instant
 
 object ProcessContainer : ProcessContainerInterface {
 
@@ -79,6 +80,34 @@ object ProcessContainer : ProcessContainerInterface {
 
         processesCache.put(newId, processesDAO.getProcess(newId)!!)
         return newId
+    }
+
+    /**
+     * Updates the given process.
+     *
+     * @throws NotFoundException Is thrown if the given process does not exist.
+     */
+    override fun updateProcess(processId: Int, title: String, description: String, deadline: Instant?) {
+        val cachedProcess = getProcess(processId)
+        //helper process to properly call the DAO
+        val updatedProcess = Process(cachedProcess.id,
+            cachedProcess.starter,
+            cachedProcess.processGroup,
+            cachedProcess.processTemplate,
+            title,
+            description,
+            cachedProcess.getStatus(),
+            deadline,
+            cachedProcess.startedAt,
+            cachedProcess.tasks)
+
+        val exists = processesDAO.updateProcess(updatedProcess)
+        if (!exists)
+            throw NotFoundException("Process does not exist.")
+
+        cachedProcess.title = title
+        cachedProcess.description = description
+        cachedProcess.deadline = deadline
     }
 
     /**

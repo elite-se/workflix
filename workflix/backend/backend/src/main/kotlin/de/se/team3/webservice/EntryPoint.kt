@@ -1,25 +1,9 @@
 package de.se.team3.webservice
 
-import de.se.team3.logic.exceptions.AlreadyClosedException
-import de.se.team3.logic.exceptions.AlreadyExistsException
-import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.exceptions.NotAuthorizedException
-import de.se.team3.logic.exceptions.NotFoundException
-import de.se.team3.logic.exceptions.UnsatisfiedPreconditionException
+import de.se.team3.logic.exceptions.*
 import de.se.team3.persistence.meta.ConnectionManager
-import de.se.team3.webservice.handlers.AuthenticationHandler
-import de.se.team3.webservice.handlers.CORSHandler
-import de.se.team3.webservice.handlers.ProcessGroupsHandler
-import de.se.team3.webservice.handlers.ProcessGroupsMembersHandler
-import de.se.team3.webservice.handlers.ProcessTemplatesHandler
-import de.se.team3.webservice.handlers.ProcessesHandler
-import de.se.team3.webservice.handlers.TasksAssignmentsHandler
-import de.se.team3.webservice.handlers.TasksCommentsHandler
-import de.se.team3.webservice.handlers.UserHandler
-import de.se.team3.webservice.handlers.UserRolesHandler
-import de.se.team3.webservice.handlers.UserRolesMembersHandler
+import de.se.team3.webservice.handlers.*
 import io.javalin.Javalin
-import java.lang.NumberFormatException
 import org.json.JSONException
 
 const val ENV_PORT = "PORT"
@@ -145,6 +129,9 @@ fun main(args: Array<String>) {
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
     app.post("processes") { ctx -> ProcessesHandler.create(ctx) }
+    app.patch("processes/:processId") { ctx ->
+        ProcessesHandler.update(ctx, ctx.pathParam("processId").toInt())
+    }
     app.delete("processes/:processId") { ctx ->
         ProcessesHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }

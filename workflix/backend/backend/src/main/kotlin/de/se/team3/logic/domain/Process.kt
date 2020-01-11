@@ -18,18 +18,17 @@ class Process(
     val processGroup: ProcessGroup,
     @JsonIgnore
     val processTemplate: ProcessTemplate,
-    val title: String,
-    val description: String,
+    var title: String,
+    var description: String,
     private var status: ProcessStatus,
     @JsonSerialize(using = InstantSerializer::class)
-    val deadline: Instant?,
+    var deadline: Instant?,
     @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant,
     @JsonIgnore
     // the tasks lies under the id of the corresponding task template
     val tasks: Map<Int, Task>
 ) {
-
     fun getProcessGroupId() = processGroup.id!!
 
     fun getStatus() = status
