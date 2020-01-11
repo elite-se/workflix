@@ -105,6 +105,13 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
 
             newId = currentId
         } else {
+            // constraint checking
+            ProcessTemplate(processTemplate.title,
+                processTemplate.description,
+                processTemplate.durationLimit,
+                processTemplate.owner,
+                processTemplate.taskTemplates
+            )
             // copying necessary because of the creation timestamp
             newId = processTemplatesDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
             processTemplatesDAO.deleteProcessTemplate(currentId)
