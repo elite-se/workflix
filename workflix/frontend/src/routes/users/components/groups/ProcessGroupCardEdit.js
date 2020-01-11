@@ -4,21 +4,26 @@ import React from 'react'
 import type { UserType } from '../../../../modules/datatypes/User'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import IconRow from '../IconRow'
-import TitledCard from '../TitledCard'
+import TitledCard from '../StyledCard'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
-import { EditableText, Elevation } from '@blueprintjs/core'
+import { Button, EditableText, Elevation, H3 } from '@blueprintjs/core'
+import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
+import stopPropagation from '../../../../modules/common/stopPropagation'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
   users: Map<string, UserType>,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
   onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
-  onProcessGroupChanged: (ProcessGroupType) => void
+  onProcessGroupChanged: (ProcessGroupType) => void,
+  onProcessGroupDeleted: (ProcessGroupType) => void
 |}
 
-class ProcessGroupCardEdit extends React.Component<PropsType> {
+class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolean }> {
+  state = { deleting: false }
+
   onUserAdded = (user: UserType) => {
     const { processGroup } = this.props
     new ProcessGroupsApi().addMembership(processGroup.id, user.id)
@@ -57,19 +62,31 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
     })
   }
 
+  onDelete = stopPropagation(() => {
+    this.setState({ deleting: true })
+    new ProcessGroupsApi().deleteProcessGroup(this.props.processGroup.id)
+      .then(() => {
+        this.setState({ deleting: false })
+        this.props.onProcessGroupDeleted(this.props.processGroup)
+      })
+      .catch(err => {
+        this.setState({ deleting: false })
+        toastifyError(err)
+      })
+  })
+
   getSelectedUsers = () => this.props.processGroup.membersIds.map(id => this.props.users.get(id)).filter(Boolean)
 
   render () {
     const { processGroup, users } = this.props
-    return <TitledCard key={processGroup.id} elevation={Elevation.FOUR} title={
-      <IconRow icon='office'>
+    return <TitledCard key={processGroup.id} elevation={Elevation.FOUR} interactive>
+      <IconRow icon='office'><H3>
         <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'
                       alwaysRenderInput/>
-      </IconRow>
-    }>
+      </H3></IconRow>
       <IconRow icon='annotation' multiLine>
         <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
-                    placeholder='Description' multiline/>
+                      placeholder='Description' multiline/>
       </IconRow>
       <IconRow icon='person' multiLine>
         <SimpleMultiSelect items={Array.from(users.values())} selection={this.getSelectedUsers()}
@@ -81,6 +98,8 @@ class ProcessGroupCardEdit extends React.Component<PropsType> {
                            onItemAdded={this.onUserAdded} onItemRemoved={this.onUserRemoved}
                            onItemsCleared={this.onUsersCleared}/>
       </IconRow>
+      <Button icon='trash' intent={Intent.DANGER} style={{ marginTop: 'auto' }} onClick={this.onDelete}
+              loading={this.state.deleting} fill small text='Delete'/>
     </TitledCard>
   }
 

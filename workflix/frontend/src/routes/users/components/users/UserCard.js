@@ -5,8 +5,7 @@ import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGrou
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import UserCardRead from './UserCardRead'
 import UserCardEdit from './UserCardEdit'
-import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
-import OutsideClickHandler from 'react-outside-click-handler'
+import EditCardWrapper from '../EditCardWrapper'
 
 type PropsType = {|
   user: UserType,
@@ -33,12 +32,12 @@ class UserCard extends React.Component<PropsType> {
       onGroupMembershipRemoved, onRoleMembershipAdded, onRoleMembershipRemoved, selected, onUserSelected
     } = this.props
     return selected
-      ? <OutsideClickHandler onOutsideClick={this.onDeselection}><ScrollIntoViewOnMount>
+      ? <EditCardWrapper onDeselect={this.onDeselection}>
         <UserCardEdit user={user} processGroups={processGroups} roles={roles}
                       onGroupMembershipAdded={onGroupMembershipAdded}
                       onGroupMembershipRemoved={onGroupMembershipRemoved}
                       onRoleMembershipAdded={onRoleMembershipAdded} onRoleMembershipRemoved={onRoleMembershipRemoved}/>
-      </ScrollIntoViewOnMount></OutsideClickHandler>
+      </EditCardWrapper>
       : <UserCardRead user={user} processGroups={processGroups} roles={roles} onUserSelected={onUserSelected}
                       onRoleSelected={onRoleSelected} onProcessGroupSelected={onProcessGroupSelected}/>
   }

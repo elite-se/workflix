@@ -4,8 +4,7 @@ import React from 'react'
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
 import UserRoleCardRead from './UserRoleCardRead'
 import UserRoleCardEdit from './UserRoleCardEdit'
-import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
-import OutsideClickHandler from 'react-outside-click-handler'
+import EditCardWrapper from '../EditCardWrapper'
 
 type PropsType = {|
   userRole: UserRoleType,
@@ -15,7 +14,8 @@ type PropsType = {|
   onRoleSelected: (?UserRoleType) => void,
   onRoleMembershipAdded: (UserRoleType, UserType) => void,
   onRoleMembershipRemoved: (UserRoleType, UserType) => void,
-  onRoleChanged: (UserRoleType) => void
+  onRoleChanged: (UserRoleType) => void,
+  onRoleDeleted: (UserRoleType) => void
 |}
 
 class UserRoleCard extends React.Component<PropsType> {
@@ -24,13 +24,14 @@ class UserRoleCard extends React.Component<PropsType> {
   render () {
     const {
       userRole, users, onUserSelected, onRoleSelected, onRoleMembershipRemoved, onRoleMembershipAdded, onRoleChanged,
-      selected
+      selected, onRoleDeleted
     } = this.props
     return selected
-      ? <OutsideClickHandler onOutsideClick={this.onDeselection}><ScrollIntoViewOnMount>
+      ? <EditCardWrapper onDeselect={this.onDeselection}>
         <UserRoleCardEdit onRoleMembershipRemoved={onRoleMembershipRemoved} users={users} userRole={userRole}
-                          onRoleMembershipAdded={onRoleMembershipAdded} onRoleChanged={onRoleChanged}/>
-      </ScrollIntoViewOnMount></OutsideClickHandler>
+                          onRoleMembershipAdded={onRoleMembershipAdded} onRoleChanged={onRoleChanged}
+                          onRoleDeleted={onRoleDeleted}/>
+      </EditCardWrapper>
       : <UserRoleCardRead userRole={userRole} users={users} onUserSelected={onUserSelected}
                           onRoleSelected={onRoleSelected}/>
   }

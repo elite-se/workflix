@@ -3,13 +3,13 @@
 import React from 'react'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
-import TitledCard from '../TitledCard'
+import StyledCard from '../StyledCard'
 import IconRow from '../IconRow'
 import { toastifyError } from '../../../../modules/common/toastifyError'
 import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
 import SimpleMultiSelect from '../../../../modules/common/components/SimpleMultiSelect'
-import UsersApi from '../../../../modules/api/UsersApi'
-import { Elevation } from '@blueprintjs/core'
+import { Elevation, H3 } from '@blueprintjs/core'
+import UserRoleApi from '../../../../modules/api/UserRoleApi'
 
 type PropsType = {|
   user: UserType,
@@ -40,14 +40,14 @@ class UserCardEdit extends React.Component<PropsType> {
 
   onRoleAdded = (role: UserRoleType) => {
     const { user } = this.props
-    new UsersApi().addRoleMembership(role.id, user.id)
+    new UserRoleApi().addRoleMembership(role.id, user.id)
       .then(this.props.onRoleMembershipAdded(role, user))
       .catch(toastifyError)
   }
 
   onRoleRemoved = (role: UserRoleType) => {
     const { user } = this.props
-    new UsersApi().removeRoleMembership(role.id, user.id)
+    new UserRoleApi().removeRoleMembership(role.id, user.id)
       .then(this.props.onRoleMembershipRemoved(role, user))
       .catch(toastifyError)
   }
@@ -59,7 +59,8 @@ class UserCardEdit extends React.Component<PropsType> {
 
   render () {
     const { user, processGroups, roles } = this.props
-    return <TitledCard key={user.id} title={user.name} elevation={Elevation.FOUR}>
+    return <StyledCard key={user.id} elevation={Elevation.FOUR} interactive>
+      <H3>{user.name}</H3>
       <IconRow icon='person'>{user.displayname}</IconRow>
       <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
       <IconRow icon='office'>
@@ -82,7 +83,7 @@ class UserCardEdit extends React.Component<PropsType> {
                            onItemAdded={this.onRoleAdded} onItemRemoved={this.onRoleRemoved}
                            onItemsCleared={this.onRolesCleared}/>
       </IconRow>
-    </TitledCard>
+    </StyledCard>
   }
 
   getGroupId = (group: ProcessGroupType) => group.id

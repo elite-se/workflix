@@ -12,6 +12,7 @@ import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import type { TaskType } from '../../../modules/datatypes/Task'
 import { Drawer } from '@blueprintjs/core'
 import { getCurrentUserId } from '../../../modules/common/tokenStorage'
+import UserRoleApi from '../../../modules/api/UserRoleApi'
 
 type PropsType = {|
   users: Map<string, UserType>,
@@ -60,7 +61,7 @@ class TasksOverview extends React.Component<PropsType, StateType> {
 
 const promiseCreator = () => Promise.all([
   new UserApi().getUsers(),
-  new UserApi().getUserRoles(),
+  new UserRoleApi().getUserRoles(),
   new ProcessGroupsApi().getProcessGroups()
 ]).then(([users, userRoles, processGroups]) => ({
   users,

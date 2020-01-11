@@ -5,8 +5,7 @@ import type { UserType } from '../../../../modules/datatypes/User'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import ProcessGroupCardRead from './ProcessGroupCardRead'
 import ProcessGroupCardEdit from './ProcessGroupCardEdit'
-import OutsideClickHandler from 'react-outside-click-handler'
-import ScrollIntoViewOnMount from '../../../../modules/common/components/ScrollIntoViewOnMount'
+import EditCardWrapper from '../EditCardWrapper'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
@@ -16,7 +15,8 @@ type PropsType = {|
   onProcessGroupSelected: (?ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
   onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
-  onProcessGroupChanged: (ProcessGroupType) => void
+  onProcessGroupChanged: (ProcessGroupType) => void,
+  onProcessGroupDeleted: (ProcessGroupType) => void
 |}
 
 class ProcessGroupCard extends React.Component<PropsType> {
@@ -25,15 +25,16 @@ class ProcessGroupCard extends React.Component<PropsType> {
   render () {
     const {
       processGroup, users, onUserSelected, selected, onProcessGroupSelected, onGroupMembershipAdded,
-      onGroupMembershipRemoved, onProcessGroupChanged
+      onGroupMembershipRemoved, onProcessGroupChanged, onProcessGroupDeleted
     } = this.props
     return selected
-      ? <OutsideClickHandler onOutsideClick={this.onDeselection}><ScrollIntoViewOnMount>
+      ? <EditCardWrapper onDeselect={this.onDeselection}>
         <ProcessGroupCardEdit processGroup={processGroup} users={users}
                               onGroupMembershipAdded={onGroupMembershipAdded}
                               onGroupMembershipRemoved={onGroupMembershipRemoved}
-                              onProcessGroupChanged={onProcessGroupChanged}/>
-      </ScrollIntoViewOnMount></OutsideClickHandler>
+                              onProcessGroupChanged={onProcessGroupChanged}
+                              onProcessGroupDeleted={onProcessGroupDeleted}/>
+      </EditCardWrapper>
       : <ProcessGroupCardRead processGroup={processGroup} users={users} onUserSelected={onUserSelected}
                               onProcessGroupSelected={onProcessGroupSelected}/>
   }

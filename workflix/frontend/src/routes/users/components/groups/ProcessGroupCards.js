@@ -6,6 +6,9 @@ import { sortBy } from 'lodash'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import CardsContainer from '../CardsContainer'
 import ProcessGroupCard from './ProcessGroupCard'
+import { getCurrentUserId } from '../../../../modules/common/tokenStorage'
+import ProcessGroupsApi from '../../../../modules/api/ProcessGroupsApi'
+import { toastifyError } from '../../../../modules/common/toastifyError'
 
 type PropsType = {|
   users: Map<string, UserType>,
@@ -15,12 +18,35 @@ type PropsType = {|
   onProcessGroupSelected: (?ProcessGroupType) => void,
   onGroupMembershipAdded: (ProcessGroupType, UserType) => void,
   onGroupMembershipRemoved: (ProcessGroupType, UserType) => void,
-  onProcessGroupChanged: (ProcessGroupType) => void
+  onProcessGroupChanged: (ProcessGroupType) => void,
+  onProcessGroupAdded: (ProcessGroupType) => void,
+  onProcessGroupDeleted: (ProcessGroupType) => void
 |}
 
 export default class ProcessGroupCards extends React.Component<PropsType> {
+  onCreate = () => {
+    this.props.onProcessGroupSelected(null)
+    const newGroupSkeleton = {
+      title: 'New process group',
+      description: '',
+      ownerId: getCurrentUserId(),
+      createdAt: new Date(),
+      membersIds: []
+    }
+    return new ProcessGroupsApi().addProcessGroup(newGroupSkeleton)
+      .then(({ newId }) => {
+        const newGroup = {
+          ...newGroupSkeleton,
+          id: newId
+        }
+        this.props.onProcessGroupAdded(newGroup)
+        this.props.onProcessGroupSelected(newGroup)
+      })
+      .catch(toastifyError)
+  }
+
   render () {
-    return <CardsContainer title='Process groups'>{
+    return <CardsContainer onCreate={this.onCreate}>{
       this.getSortedGroups().map<React$Node>(this.getCardForGroup)
     }</CardsContainer>
   }
@@ -30,7 +56,7 @@ export default class ProcessGroupCards extends React.Component<PropsType> {
   }
 
   getCardForGroup = (group: ProcessGroupType) => {
-    const { selection, processGroups, ...cardProps } = this.props
+    const { selection, processGroups, onProcessGroupAdded, ...cardProps } = this.props
     return <ProcessGroupCard {...cardProps} key={group.id} processGroup={group} selected={selection === group}/>
   }
 }
