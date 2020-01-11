@@ -106,13 +106,6 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
             newId = currentId
         } else {
             // copying necessary because of the creation timestamp
-            val newProcessTemplate = ProcessTemplate( //TODO is this necessary?
-                processTemplate.title,
-                processTemplate.description,
-                processTemplate.durationLimit,
-                processTemplate.owner,
-                processTemplate.taskTemplates
-            )
             newId = processTemplatesDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
             processTemplatesDAO.deleteProcessTemplate(currentId)
         }
