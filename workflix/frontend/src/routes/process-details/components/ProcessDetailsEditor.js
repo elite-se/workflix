@@ -98,7 +98,7 @@ class ProcessDetailsEditor extends React.Component<PropsType> {
             {processGroup && <Item>
               <Icon icon='office'/><span>{`Process group: ${processGroup.title}`}</span>
             </Item>}
-            {processGroup && <Item>
+            {template && <Item>
               <Icon icon='gantt-chart'/><span>{`From process template: ${template.title}`}</span>
             </Item>}
           </FormGroup>
