@@ -5,6 +5,7 @@ import { safeFetch } from './SafeFetch'
 import { BACKEND } from './common'
 
 const usersBackend = `${BACKEND}/users`
+const usersCreationRequestBackend = `${BACKEND}/userCreationRequest`
 
 class UsersApi {
   getUsers (): Promise<Map<string, UserType>> {
@@ -15,7 +16,7 @@ class UsersApi {
   }
 
   sendVerificationMail (email: string): Promise<Response> {
-    return safeFetch(usersBackend, {
+    return safeFetch(usersCreationRequestBackend, {
       method: 'POST',
       body: JSON.stringify({ email })
     })
@@ -23,7 +24,7 @@ class UsersApi {
 
   createUser (email: string, password: string, verificationCode: string): Promise<Response> {
     return safeFetch(`${usersBackend}/${verificationCode}`, {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify({ email, password })
     })
   }
