@@ -1,27 +1,32 @@
 package unittests
 
-import dbmocks.ProcessTemplatesMock
 import de.se.team3.logic.domain.TaskAssignment
-import domainmocks.ProcessTemplatesMocks
 import domainmocks.ProcessesMocks
 import domainmocks.UsersAndRolesMocks
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class ProcessTest {
 
+    /**
+     * Process should have progress 0 if there is no task assignment.
+     */
     @Test
     fun testGetProgress0() {
-        val process = ProcessesMocks.getProcess1()
+        val process = ProcessesMocks.getProcessExtorel()
 
         assertEquals(0, process.getProgress())
     }
 
+    /**
+     * Process should have progress 30 if the two tasks are closed.
+     */
     @Test
     fun testGetProgress30() {
-        val process = ProcessesMocks.getProcess1()
+        val process = ProcessesMocks.getProcessExtorel()
 
         val task1 = process.tasks.get(1)!!
         val taskAssignment1 = TaskAssignment(task1, UsersAndRolesMocks.marvinBrieger, true)
@@ -34,9 +39,12 @@ class ProcessTest {
         assertEquals(30, process.getProgress())
     }
 
+    /**
+     * Process should have progress 70 if four tasks are closed.
+     */
     @Test
     fun testGetProgress70() {
-        val process = ProcessesMocks.getProcess1()
+        val process = ProcessesMocks.getProcessExtorel()
 
         val task1 = process.tasks.get(1)!!
         val taskAssignment1 = TaskAssignment(task1, UsersAndRolesMocks.michaelMarkl, true)
@@ -57,9 +65,12 @@ class ProcessTest {
         assertEquals(70, process.getProgress())
     }
 
+    /**
+     * Process should have progress 100 if all tasks are closed.
+     */
     @Test
     fun testGetProgress100() {
-        val process = ProcessesMocks.getProcess1()
+        val process = ProcessesMocks.getProcessExtorel()
 
         for ((id, task) in process.tasks) {
             val taskAssignment = TaskAssignment(task, UsersAndRolesMocks.marvinBrieger, true)
@@ -69,17 +80,57 @@ class ProcessTest {
         assertEquals(100, process.getProgress())
     }
 
+    /**
+     * Process is closeable if all tasks are closed and not closeable on the way.
+     */
     @Test
-    fun testCloseableFalse() {
-        val process = ProcessesMocks.getProcess1()
+    fun testCloseable() {
+        val process = ProcessesMocks.getProcessExtorel()
 
         for ((id, task) in process.tasks) {
-            assertFalse { process.closeable() }
+            assertFalse { process.closeable() } // must not be closeable while there are open tasks
             val taskAssignment = TaskAssignment(task, UsersAndRolesMocks.eliasKeis, true)
             task.addTaskAssignment(taskAssignment)
         }
 
         assertTrue { process.closeable() }
+    }
+
+    /**
+     * Process is not closeable if it was aborted.
+     */
+    @Test
+    fun testCloseableAfterAbortion() {
+        val process = ProcessesMocks.getProcessExtorel()
+
+        val task = process.getTask(1)
+        val taskAssignment = TaskAssignment(task, UsersAndRolesMocks.marvinBrieger, true)
+        task.addTaskAssignment(taskAssignment)
+
+        process.abort()
+
+        assertFalse { process.closeable() }
+    }
+
+    /**
+     * Closed process should not be abortable or closeable.
+     */
+    @Test
+    fun testAbortionOrClosingAfterClosing() {
+        val process = ProcessesMocks.getProcessExtorel()
+
+        for ((id, task) in process.tasks) {
+            assertFalse { process.closeable() } // must not be closeable while there are open tasks
+            val taskAssignment = TaskAssignment(task, UsersAndRolesMocks.eliasKeis, true)
+            task.addTaskAssignment(taskAssignment)
+        }
+
+        assertFails { process.abort() }
+
+        process.close()
+
+        assertFails { process.abort() }
+        assertFails { process.close() }
     }
 
 }

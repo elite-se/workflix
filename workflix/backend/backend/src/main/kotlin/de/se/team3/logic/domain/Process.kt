@@ -223,7 +223,7 @@ class Process(
      * @throws IllegalStateException Is thrown if the status of the process is not running.
      */
     fun close() {
-        if (status != ProcessStatus.RUNNING)
+        if (status != ProcessStatus.RUNNING) // TODO shouldn't it closeable()
             throw IllegalStateException("only a running processes could be closed")
 
         status = ProcessStatus.CLOSED
@@ -234,10 +234,14 @@ class Process(
      * Aborts the process.
      *
      * @throws IllegalStateException Is thrown if the status of the process is not running.
+     * @throws IllegalStateException Is thrown if the process is closeable but the close()
+     * method was not called yet.
      */
     fun abort() {
         if (status != ProcessStatus.RUNNING)
             throw IllegalStateException("only a running processes could be aborted")
+        if (closeable())
+            throw IllegalStateException("a closeable process could not be aborted")
 
         status = ProcessStatus.ABORTED
         processTemplate.decreaseRunningProcesses()

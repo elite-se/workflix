@@ -18,7 +18,7 @@ class Task(
     val taskTemplateId: Int,
     @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant?,
-    private val comments: ArrayList<TaskComment>?,
+    private val comments: ArrayList<TaskComment>,
     private val assignments: ArrayList<TaskAssignment>,
     @JsonIgnore
     var process: Process?
@@ -35,13 +35,14 @@ class Task(
 
     init {
         assignments.forEach { it.setTask(this) }
+        comments.forEach { it.setTask(this) }
     }
 
     /**
      * Create-Constructor
      */
     constructor(taskTemplateId: Int, startedAt: Instant?) :
-            this(null, taskTemplateId, startedAt, null, ArrayList<TaskAssignment>(), null) {
+            this(null, taskTemplateId, startedAt, ArrayList<TaskComment>(), ArrayList<TaskAssignment>(), null) {
     }
 
     /**
@@ -184,10 +185,14 @@ class Task(
     /**
      * Add task comment.
      *
-     * @throws InvalidInputException Is thrown if the task id specified in the given task comment
-     * is not equal to the id of this task.
+     * @throws AlreadyClosedException Is thrown if the process the task belongs to is
+     * not running anymore.
+     * @throws InvalidInputException Is thrown if the task id specified in the given task
+     * comment is not equal to the id of this task.
      */
     fun addTaskComment(taskComment: TaskComment) {
+        if (!process!!.isRunning())
+            throw AlreadyClosedException("the process the task belongs to is not running")
         if (taskComment.taskId != id)
             throw InvalidInputException("task id specified in the given task comment must be equal to the id of this task")
 
@@ -207,9 +212,14 @@ class Task(
     /**
      * Deletes the specified task comment.
      *
+     * @throws AlreadyClosedException Is thrown if the process the task belongs to is
+     * not running anymore.
      * @throws NotFoundException Is thrown if the specified task comment does not exist.
      */
     fun deleteTaskComment(taskCommentId: Int) {
+        if (!process!!.isRunning())
+            throw AlreadyClosedException("the process the task belongs to is not running")
+
         val existed = comments!!.removeIf { it.id == taskCommentId }
         if (!existed)
             throw NotFoundException("task comment does not exist")
