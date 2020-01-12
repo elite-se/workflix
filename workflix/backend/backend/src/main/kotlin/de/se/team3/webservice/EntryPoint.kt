@@ -71,8 +71,8 @@ fun main(args: Array<String>) {
         if (ctx.method() == "OPTIONS") {
             CORSHandler.optionsRequest(ctx)
         } else if (ctx.path() != "/login" &&
-            !(ctx.path() == "/users" && ctx.method() == "POST") &&
-            !(ctx.path().matches(Regex("""/users/\w{8}""")) && ctx.method() == "POST")) {
+            !(ctx.path() == "/userCreationRequest" && ctx.method() == "POST") &&
+            !(ctx.path().matches(Regex("""/users/\w{8}""")) && ctx.method() == "PUT")) {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }
