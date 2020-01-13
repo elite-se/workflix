@@ -46,7 +46,7 @@ object ProcessesMocks {
         for ((key, task) in tasksWithoutIds)
             tasksWithIds.put(key, Task(key, key, task.startedAt, ArrayList<TaskComment>(), ArrayList<TaskAssignment>(), null))
 
-        return Process(2, starter, groupFugger, processTemplate, "Testprocess 2", "Description", ProcessStatus.RUNNING, null, Instant.now(), tasksWithIds)
+        return Process(2, starter, groupFugger, processTemplate, "Testprocess 2", "Description", ProcessStatus.RUNNING, Instant.now(), Instant.now(), tasksWithIds)
     }
 
     /**
@@ -66,7 +66,7 @@ object ProcessesMocks {
         for ((key, task) in tasksWithoutIds)
             tasksWithIds.put(key, Task(key, key, task.startedAt, ArrayList<TaskComment>(), ArrayList<TaskAssignment>(), null))
 
-        return Process(3, starter, groupFugger, processTemplate, "Testprocess 3", "Description", ProcessStatus.RUNNING, null, Instant.now(), tasksWithIds)
+        return Process(3, starter, groupFugger, processTemplate, "Testprocess 3", "Description", ProcessStatus.RUNNING, Instant.now(), Instant.now(), tasksWithIds)
     }
 
 }
