@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Button, H2 } from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import ProcessApi from '../../../modules/api/ProcessApi'
@@ -32,8 +32,7 @@ type PropsType = {
 
 const CustomLink = styled(Link)`
   flex: 1;
-  justify-content: flex-end;
-  display: flex;
+  align-self: flex-end;
 `
 
 class ProcessTemplates extends React.Component<PropsType> {
@@ -45,13 +44,9 @@ class ProcessTemplates extends React.Component<PropsType> {
       display: 'flex',
       flexDirection: 'column'
     }}>
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
-        <span style={{ flex: 1 }}/>
-        <H2 style={{ display: 'inline-block' }}>All Process Templates</H2>
-        <CustomLink to='/process-templates/create'>
-          <Button icon='plus' intent='success'>Create new template</Button>
-        </CustomLink>
-      </div>
+      <CustomLink to='/process-templates/create'>
+        <Button icon='plus' intent='success'>Create new template</Button>
+      </CustomLink>
       <TemplatesContainer>
         {templates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}
                                                         refresh={this.refresh} process processGroups={processGroups}/>)}
