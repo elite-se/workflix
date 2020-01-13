@@ -86,14 +86,10 @@ object ProcessContainer : ProcessContainerInterface {
     /**
      * Updates the given process.
      *
-     * @throws AlreadyClosedException Is thrown if the specified process is not running anymore.
      * @throws NotFoundException Is thrown if the given process does not exist.
      */
     override fun updateProcess(processId: Int, title: String, description: String, deadline: Instant) {
         val cachedProcess = getProcess(processId)
-
-        if (!cachedProcess.isRunning())
-            throw AlreadyClosedException("the process is not running anymore")
 
         // helper process to properly call the DAO
         val updatedProcess = Process(

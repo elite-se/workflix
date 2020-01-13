@@ -52,15 +52,9 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
 
     /**
      * Creates the given task comment.
-     *
-     * @throws AlreadyClosedException Is thrown if the process the comment is addressed to
-     * is not running anymore.
      */
     override fun createTaskComment(taskComment: TaskComment): Int {
         val task = TasksContainer.getTask(taskComment.taskId!!) // throws NotFoundException
-
-        if (!task.process!!.isRunning())
-            throw AlreadyClosedException("the process the comment is addressed to is not running")
 
         val newId = taskCommentsDAO.createTaskComment(taskComment)
         taskCommentsTaskIdCache.put(newId, taskComment.taskId!!)
@@ -74,15 +68,11 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
     /**
      * Updates the given task comment.
      *
-     * @throws AlreadyClosedException Is thrown if the process the comment is addressed to
-     * is not running anymore.
      * @throws NotFoundException Is thrown if the given task comment does not exist.
      */
     override fun updateTaskComment(taskComment: TaskComment) {
         val task = getTaskByTaskCommentId(taskComment.id!!)
 
-        if (!task.process!!.isRunning())
-            throw AlreadyClosedException("the process the comment is addressed to is not running")
         val exists = taskCommentsDAO.updateTaskComment(taskComment)
         if (!exists)
             throw NotFoundException("task comment not found")
@@ -94,15 +84,11 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
     /**
      * Deletes the specified task comment.
      *
-     * @throws AlreadyClosedException Is thrown if the process the comment is addressed to
-     * is not running anymore.
      * @throws NotFoundException Is thrown if the specified task comment does not exist.
      */
     override fun deleteTaskComment(taskCommentId: Int) {
         val task = getTaskByTaskCommentId(taskCommentId)
 
-        if (!task.process!!.isRunning())
-            throw AlreadyClosedException("the process the comment is addressed to is not running")
         val existed = taskCommentsDAO.deleteTaskComment(taskCommentId)
         if (!existed)
             throw NotFoundException("task comment not found")

@@ -305,27 +305,4 @@ class TaskTest {
         task2.addTaskComment(comment3)
     }
 
-    /**
-     * Adding a comment should fail if the process is already closed.
-     */
-    @Test
-    fun testCommentsOnClosedProcess() {
-        val process = ProcessesMocks.getSimpleProcess()
-
-        val task1 = process.getTask(1)
-        val task2 = process.getTask(2)
-
-        val comment = TaskComment(1, task1, UsersAndRolesMocks.erikPallas, "Commentary", Instant.now())
-        task1.addTaskComment(comment)
-
-        val taskAssignment1 = TaskAssignment(task1, UsersAndRolesMocks.marvinBrieger, true)
-        task1.addTaskAssignment(taskAssignment1)
-        val taskAssignment2 = TaskAssignment(task2, UsersAndRolesMocks.eliasKeis, true)
-        task2.addTaskAssignment(taskAssignment2)
-
-        process.close()
-
-        assertFails { task1.deleteTaskComment(comment.id!!) }
-        assertFails { task2.addTaskComment(comment) }
-    }
 }
