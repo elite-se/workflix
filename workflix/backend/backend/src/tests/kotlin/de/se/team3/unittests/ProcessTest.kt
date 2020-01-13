@@ -1,13 +1,13 @@
-package unittests
+package de.se.team3.unittests
 
+import de.se.team3.domainmocks.ProcessesMocks
+import de.se.team3.domainmocks.UsersAndRolesMocks
 import de.se.team3.logic.domain.TaskAssignment
-import domainmocks.ProcessesMocks
-import domainmocks.UsersAndRolesMocks
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class ProcessTest {
 
@@ -132,5 +132,4 @@ class ProcessTest {
         assertFails { process.abort() }
         assertFails { process.close() }
     }
-
 }

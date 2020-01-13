@@ -3,7 +3,6 @@ package de.se.team3.logic.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
@@ -113,12 +112,9 @@ class Process(
     /**
      * Sets the title.
      *
-     * @throws AlreadyClosedException Is thrown if the process is not running anymore.
      * @throws InvalidInputException Is thrown if the title is empty.
      */
     fun setTitle(title: String) {
-        if (!isRunning())
-            throw AlreadyClosedException("title of not running process could not be altered")
         if (title.isEmpty())
             throw InvalidInputException("title must not be empty")
 
@@ -127,25 +123,15 @@ class Process(
 
     /**
      * Sets the description.
-     *
-     * @throws AlreadyClosedException Is thrown if the process is not running anymore.
      */
     fun setDescription(description: String) {
-        if (!isRunning())
-            throw AlreadyClosedException("description of not running process could not be altered")
-
         this.description = description
     }
 
     /**
      * Sets the deadline.
-     *
-     * @throws AlreadyClosedException Is thrown if the process is not running anymore.
      */
     fun setDeadline(deadline: Instant) {
-        if (!isRunning())
-            throw AlreadyClosedException("deadline of not running process could not be altered")
-
         this.deadline = deadline
     }
 

@@ -1,11 +1,11 @@
-package unittests
+package de.se.team3.unittests
 
+import de.se.team3.domainmocks.ProcessTemplatesMocks
+import de.se.team3.domainmocks.UsersAndRolesMocks
 import de.se.team3.logic.domain.TaskTemplate
 import de.se.team3.logic.domain.processTemplateUtil.ProcessTemplateCycleDetection
-import domainmocks.ProcessTemplatesMocks
-import domainmocks.UsersAndRolesMocks
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class CycleDetectionTest {
 
@@ -72,5 +72,4 @@ class CycleDetectionTest {
 
         assertEquals(false, ProcessTemplateCycleDetection.isAcyclic(taskTemplates))
     }
-
 }

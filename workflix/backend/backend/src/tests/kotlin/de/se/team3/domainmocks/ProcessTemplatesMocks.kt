@@ -1,25 +1,12 @@
-package domainmocks
+package de.se.team3.domainmocks
 
-import de.se.team3.logic.domain.Process
-import de.se.team3.logic.domain.ProcessGroup
-import de.se.team3.logic.domain.ProcessStatus
+import de.se.team3.domainmocks.UsersAndRolesMocks.getAccountant
+import de.se.team3.domainmocks.UsersAndRolesMocks.getCustomerAdvisor
+import de.se.team3.domainmocks.UsersAndRolesMocks.getInvestmentManager
+import de.se.team3.domainmocks.UsersAndRolesMocks.karlCustomerAdvisor
+import de.se.team3.domainmocks.UsersAndRolesMocks.kunigundeCustomerAdvisor
 import de.se.team3.logic.domain.ProcessTemplate
-import de.se.team3.logic.domain.Task
-import de.se.team3.logic.domain.TaskAssignment
-import de.se.team3.logic.domain.TaskComment
 import de.se.team3.logic.domain.TaskTemplate
-import de.se.team3.logic.domain.User
-import de.se.team3.logic.domain.UserRole
-import domainmocks.ProcessGroupsMocks.getTestProcessGroupExtorel
-import domainmocks.UsersAndRolesMocks.eliasKeis
-import domainmocks.UsersAndRolesMocks.erikPallas
-import domainmocks.UsersAndRolesMocks.getAccountant
-import domainmocks.UsersAndRolesMocks.getCustomerAdvisor
-import domainmocks.UsersAndRolesMocks.getInvestmentManager
-import domainmocks.UsersAndRolesMocks.karlCustomerAdvisor
-import domainmocks.UsersAndRolesMocks.kunigundeCustomerAdvisor
-import domainmocks.UsersAndRolesMocks.marvinBrieger
-import domainmocks.UsersAndRolesMocks.michaelMarkl
 import java.time.Instant
 
 object ProcessTemplatesMocks {
@@ -138,5 +125,4 @@ object ProcessTemplatesMocks {
             getTaskTemplatesSet3()
         )
     }
-
 }
