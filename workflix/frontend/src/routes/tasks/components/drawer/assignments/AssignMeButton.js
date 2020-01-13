@@ -31,7 +31,10 @@ class AssignMeButton extends React.Component<PropsType, { loading: boolean }> {
           closed: false
         }])
       })
-      .catch(toastifyError)
+      .catch(err => {
+        this.setState({ loading: false })
+        toastifyError(err)
+      })
   }
 
   render () {
