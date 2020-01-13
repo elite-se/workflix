@@ -98,6 +98,11 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
 
         val currentProcessTemplate = getProcessTemplate(currentId)
 
+        /* If the process template was already used to create a process it must not be altered. Instead a copy is
+         * made the original hidden. The reason is that processes are stupid in that sense that they do not copy
+         * the information of their underlying process template. Rather they ask the template everytime they need
+         * information about it.
+         */
         if (!currentProcessTemplate.hasProcesses()) {
             val exists = processTemplatesDAO.updateProcessTemplate(processTemplate)
             if (!exists)
@@ -105,16 +110,9 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
 
             newId = currentId
         } else {
-            // constraint checking
-            ProcessTemplate(processTemplate.title,
-                processTemplate.description,
-                processTemplate.durationLimit,
-                processTemplate.owner,
-                processTemplate.taskTemplates
-            )
-            // copying necessary because of the creation timestamp
             newId = processTemplatesDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
             processTemplatesDAO.deleteProcessTemplate(currentId)
+            currentProcessTemplate.delete()
         }
 
         processTemplatesCache[newId] = processTemplatesDAO.getProcessTemplate(newId)!!
