@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { H2 } from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 import type { ProcessTemplateType } from '../../../modules/datatypes/Process'
 import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import ProcessApi from '../../../modules/api/ProcessApi'
@@ -12,6 +12,7 @@ import styled from 'styled-components'
 import FlipMove from 'react-flip-move'
 import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
+import { Link } from '@reach/router'
 
 const TemplatesContainer = styled<{}, {}, 'div'>(FlipMove)`
   margin: 10px 20px;
@@ -29,6 +30,11 @@ type PropsType = {
   processGroups: Map<number, ProcessGroupType>
 }
 
+const CustomLink = styled(Link)`
+  flex: 1;
+  align-self: flex-end;
+`
+
 class ProcessTemplates extends React.Component<PropsType> {
   refresh = () => this.props.refresh(true)
 
@@ -38,7 +44,9 @@ class ProcessTemplates extends React.Component<PropsType> {
       display: 'flex',
       flexDirection: 'column'
     }}>
-      <H2 style={{ textAlign: 'center' }}>All Process Templates</H2>
+      <CustomLink to='/process-templates/create'>
+        <Button icon='plus' intent='success'>Create new template</Button>
+      </CustomLink>
       <TemplatesContainer>
         {templates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}
                                                         refresh={this.refresh} process processGroups={processGroups}/>)}

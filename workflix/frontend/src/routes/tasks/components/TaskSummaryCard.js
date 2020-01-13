@@ -2,11 +2,12 @@
 
 import React from 'react'
 import type { TaskStatusType, TaskTemplateType, TaskType } from '../../../modules/datatypes/Task'
-import { Card, Colors, Icon } from '@blueprintjs/core'
+import { Card, Colors, Icon, Tooltip } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { Elevation as ELEVATION } from '@blueprintjs/core/lib/cjs/common/elevation'
 import type { UserType } from '../../../modules/datatypes/User'
 import { getCurrentUserId } from '../../../modules/common/tokenStorage'
+import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
 
 const SCROLL_DELAY_MS = 300
 
@@ -56,23 +57,33 @@ class TaskSummaryCard extends React.Component<PropsType> {
     if (!template) {
       return <div>Something went wrong.</div>
     }
-    return <div ref={this.ref}><FinishedTaskStyling status={task.status}>
-      <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
-            onClick={this.onClick}>
-        <span><b>{template.name}</b></span><br/>
-        <small>{task.assignments.length === 0 ? 'No assignees'
-          : <span>{
-            task.assignments.map(assignee => {
-              const user = users.get(assignee.assigneeId)
-              return user && <span key={assignee.assigneeId} className='comma'>
+    const shouldAssign = task.assignments.length < template.necessaryClosings && this.isSuggestedTask(template)
+    const intent = task.status === 'CLOSED' ? Intent.SUCCESS : task.status === 'RUNNING' ? Intent.WARNING : Intent.NONE
+    const tooltip = task.status === 'CLOSED' ? 'This task is already done.'
+      : task.status === 'BLOCKED' ? 'This task depends on preceding tasks that are not yet done.'
+        : task.status === 'RUNNING' ? `This task is waiting to be done.${shouldAssign ? ' Assign now!' : ''}`
+          : null
+    return <div ref={this.ref}>
+      <Tooltip intent={intent} content={tooltip} disabled={!tooltip} targetTagName='div'>
+        <FinishedTaskStyling status={task.status}>
+          <Card interactive elevation={this.props.selected ? ELEVATION.FOUR : undefined}
+                onClick={this.onClick}>
+            <span><b>{template.name}</b></span><br/>
+            <small>{task.assignments.length === 0 ? 'No assignees'
+              : <span>{
+                task.assignments.map(assignee => {
+                  const user = users.get(assignee.assigneeId)
+                  return user && <span key={assignee.assigneeId} className='comma'>
                 {user.name}{assignee.closed && <Icon icon='small-tick'/>}
               </span>
-            })
-          }</span>}<br/>
-          {task.assignments.length < template.necessaryClosings && this.isSuggestedTask(template) && <b>Assign now!</b>}
-        </small>
-      </Card>
-    </FinishedTaskStyling></div>
+                })
+              }</span>}<br/>
+              {shouldAssign && <b>Assign now!</b>}
+            </small>
+          </Card>
+        </FinishedTaskStyling>
+      </Tooltip>
+    </div>
   }
 
   componentDidUpdate (prevProps: *) {

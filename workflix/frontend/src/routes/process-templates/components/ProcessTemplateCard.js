@@ -43,6 +43,9 @@ const CustomButtonGroup = styled(ButtonGroup)`
   padding: 0;
   margin: 10px 0;
   border: 1px solid ${Colors.LIGHT_GRAY4};
+  .bp3-dark & {
+    border: 1px solid ${Colors.DARK_GRAY3};
+  }
 `
 
 const AllTheWay: StyledComponent<{}, {}, *> = styled('div')`
@@ -53,6 +56,9 @@ const AllTheWay: StyledComponent<{}, {}, *> = styled('div')`
   margin-top: 10px;
   padding: 10px;
   background-color: ${Colors.LIGHT_GRAY4};
+  .bp3-dark & {
+    background-color: ${Colors.DARK_GRAY3};
+  } 
 `
 
 const preventDefault = (event: SyntheticMouseEvent<HTMLElement>) => event.preventDefault()

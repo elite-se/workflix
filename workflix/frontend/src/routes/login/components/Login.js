@@ -1,101 +1,59 @@
 // @flow
 
 import React from 'react'
-import { Button, Card, FormGroup, H1, InputGroup, Tooltip } from '@blueprintjs/core'
-import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
-import handleStringChange from '../../../modules/common/handleStringChange'
-import LoginApi from '../../../modules/api/LoginApi'
-import { storeToken } from '../../../modules/common/tokenStorage'
+import { Callout, Card, H1 } from '@blueprintjs/core'
 import CenterScreen from '../../../modules/common/components/CenterScreen'
-import { toastifyError } from '../../../modules/common/toastifyError'
+import LoginContent from './LoginContent'
+import VerifyMailContent from './VerifyMailContent'
+import RegisterContent from './RegisterContent'
+import { Intent } from '@blueprintjs/core/lib/cjs/common/intent'
+
+type ModeType = 'login' | 'verifyMail' | 'register'
 
 type StateType = {
   email: string,
-  password: string,
-  loading: boolean,
-  showPassword: boolean
+  mode: ModeType,
+  showRegisteredMessage: boolean
 }
 
-class Login extends React.Component<{ onLoggedInChanged: (boolean) => void}, StateType> {
+class Login extends React.Component<{ onLoggedInChanged: (boolean) => void }, StateType> {
   state = {
     email: '',
-    password: '',
-    loading: false,
-    showPassword: false
+    mode: 'login',
+    showRegisteredMessage: false
   }
 
-  emailInputRef = React.createRef<HTMLInputElement>()
-
-  isButtonDisabled = () => !this.state.email || !this.state.password
-  onEmailChange = handleStringChange(email => this.setState({ email }))
-  onPasswordChange = handleStringChange(password => this.setState({ password }))
-
-  onFormSubmit = (e: Event) => {
-    this.login()
-    e.preventDefault()
-    return false
-  }
-
-  login () {
-    const { email, password } = this.state
-    this.setState({ loading: true })
-    new LoginApi().login(email, password)
-      .then(token => {
-        if (token) {
-          storeToken(token)
-          this.setState({ loading: false })
-          this.props.onLoggedInChanged(true)
-        }
-      })
-      .catch(err => {
-        this.setState({ loading: false })
-        toastifyError(err, {
-          icon: 'key'
-        })
-      })
-  }
-
-  toggleShowPassword = () => {
-    this.setState(oldState => ({ showPassword: !oldState.showPassword }))
-  }
+  onEmailChange = (email: string) => this.setState({ email })
+  onLoggedIn = () => this.props.onLoggedInChanged(true)
+  onGoToVerifyMail = () => this.setState({ mode: 'verifyMail', showRegisteredMessage: false })
+  onGoToRegister = () => this.setState({ mode: 'register', showRegisteredMessage: false })
+  onGoToLogin = (showRegisteredMessage?: boolean = false) => this.setState({ mode: 'login', showRegisteredMessage })
 
   render () {
-    const { email, password, showPassword } = this.state
     return <CenterScreen>
       <Card>
         <H1 style={{ marginBottom: '20px' }}>Welcome to Workflix!</H1>
-        <form
-          onSubmit={this.onFormSubmit}
-          style={{
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
-          <FormGroup label='Email' labelFor='email'>
-            <InputGroup id='email' placeholder='Email' required large leftIcon='person'
-                        onChange={this.onEmailChange} inputRef={this.emailInputRef} value={email}/>
-          </FormGroup>
-          <FormGroup label='Password' labelFor='password'>
-            <InputGroup id='password' placeholder='Password' required large
-                        type={showPassword ? 'text' : 'password'}
-                        onChange={this.onPasswordChange} value={password}
-                        leftIcon='key'
-                        rightElement={<Tooltip content={`${showPassword ? 'Hide' : 'Show'} password`}><Button
-                          minimal large
-                          icon={showPassword ? 'eye-open' : 'eye-off'}
-                          intent={Intent.WARNING}
-                          onClick={this.toggleShowPassword}
-                        /></Tooltip>}/>
-          </FormGroup>
-          <Button icon='unlock' intent={Intent.SUCCESS} text='Login' type='submit' large
-                      disabled={this.isButtonDisabled()} loading={this.state.loading}/>
-        </form>
+        {this.state.showRegisteredMessage &&
+        <Callout intent={Intent.SUCCESS} title='Your account was imported'
+                 style={{ maxWidth: '400px', wordWrap: 'break-word', marginBottom: '10px' }}>
+          You can now log in using the email and password you just specified.
+        </Callout>}
+        {this.renderContent()}
       </Card>
     </CenterScreen>
   }
 
-  componentDidMount () {
-    if (this.emailInputRef.current) {
-      this.emailInputRef.current.focus()
+  renderContent = () => {
+    const { email, mode } = this.state
+    switch (mode) {
+      case 'verifyMail':
+        return <VerifyMailContent email={email} onEmailChange={this.onEmailChange} onGoToLogin={this.onGoToLogin}
+        onGoToRegister={this.onGoToRegister}/>
+      case 'register': return <RegisterContent email={email} onGoToLogin={this.onGoToLogin}
+                                               onGoToVerifyMail={this.onGoToVerifyMail}/>
+      default:
+        return <LoginContent email={email} onEmailChange={this.onEmailChange} onLoggedIn={this.onLoggedIn}
+                             onGoToVerifyMail={this.onGoToVerifyMail}/>
     }
   }
 }

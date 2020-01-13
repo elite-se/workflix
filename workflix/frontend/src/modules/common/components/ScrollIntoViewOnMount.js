@@ -17,7 +17,7 @@ class ScrollIntoViewOnMount extends React.Component<{ children: React$Node }> {
   }
 
   render () {
-    return <div ref={this.ref} style={{ height: '100%', width: '100%' }}>{this.props.children}</div>
+    return <div ref={this.ref} style={{ width: '100%' }}>{this.props.children}</div>
   }
 }
 

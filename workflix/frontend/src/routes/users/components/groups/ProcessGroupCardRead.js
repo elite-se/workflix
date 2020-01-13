@@ -6,8 +6,9 @@ import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGrou
 import { sortBy } from 'lodash'
 import IconRow from '../IconRow'
 import listIfNeeded from '../../listIfNeeded'
-import TitledCard from '../TitledCard'
+import StyledCard from '../StyledCard'
 import stopPropagation from '../../../../modules/common/stopPropagation'
+import { H3 } from '@blueprintjs/core'
 
 type PropsType = {|
   processGroup: ProcessGroupType,
@@ -24,16 +25,16 @@ class ProcessGroupCardRead extends React.Component<PropsType> {
     const { processGroup, users } = this.props
     const groupUsers = sortBy(processGroup.membersIds.map(id => users.get(id)).filter(Boolean),
       user => user.name)
-    return <TitledCard key={processGroup.id} title={<IconRow icon='office'>{processGroup.title}</IconRow>}
-                       onClick={this.onClick}>
-      <IconRow icon='annotation' multiLine>
+    return <StyledCard key={processGroup.id} onClick={this.onClick} interactive>
+      <IconRow icon='office'><H3>{processGroup.title}</H3></IconRow>
+      {processGroup.description && <IconRow icon='annotation' multiLine>
         <span style={{ whiteSpace: 'pre-wrap' }}>{processGroup.description}</span>
-      </IconRow>
+      </IconRow>}
       <IconRow icon='person' multiLine>
         {listIfNeeded(groupUsers, user => user.id,
           user => <a onClick={this.onUserSelected(user)}>{user.name}</a>)}
       </IconRow>
-    </TitledCard>
+    </StyledCard>
   }
 }
 

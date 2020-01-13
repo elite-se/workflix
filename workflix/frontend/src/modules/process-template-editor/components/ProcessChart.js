@@ -91,8 +91,8 @@ class ProcessChart extends React.Component<PropsType, StateType> {
       </defs>
       {[
         !mini && tasks.map((node, index) => (index % 2 === 0 &&
-          <rect key={index} x={-HORIZONTAL_PADDING} y={index * itemHeight}
-                height={ITEM_HEIGHT * miniFactor} width={width} fill={Colors.LIGHT_GRAY4}/>
+          <rect key={index} x={-HORIZONTAL_PADDING} y={index * itemHeight} className='even-proc-chart-row'
+                height={ITEM_HEIGHT * miniFactor} width={width}/>
         )),
         ...tasks.flatMap((node, index) =>
           node.predecessors

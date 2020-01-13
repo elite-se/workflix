@@ -1,11 +1,11 @@
-package unittests
+package de.se.team3.unittests
 
-import domainmocks.ProcessTemplatesMocks
-import domainmocks.UsersAndRolesMocks
-import org.junit.Test
+import de.se.team3.domainmocks.ProcessTemplatesMocks
+import de.se.team3.domainmocks.UsersAndRolesMocks
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class ProcessTemplateTest {
 
@@ -51,5 +51,4 @@ class ProcessTemplateTest {
 
         assertFalse { processTemplate.isOneResponsible(responsibles3) }
     }
-
 }

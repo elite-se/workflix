@@ -1,29 +1,34 @@
 package de.se.team3.logic.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.exceptions.InvalidInputException
 import de.se.team3.webservice.util.InstantSerializer
-import java.lang.NullPointerException
+import java.lang.IllegalStateException
 import java.time.Instant
 
 /**
- * Represents a task comment.
+ * Represents a task comment.s
  */
 data class TaskComment(
     val id: Int?,
-    val taskId: Int?,
-    val creatorId: String?,
+    @JsonIgnore
+    private var task: Task?,
+    @JsonIgnore
+    val creator: User,
     private var content: String,
     @JsonSerialize(using = InstantSerializer::class)
     val createdAt: Instant
 ) {
 
+    @get:JsonIgnore
+    val taskId by lazy { task!!.id }
+
+    val creatorId = creator.id
+
     fun getContent() = content
 
     init {
-        if (id == null && (taskId == null || creatorId == null))
-            throw NullPointerException("either id or task id and creator id must not be null")
-
         if (content.isEmpty())
             throw InvalidInputException("content must not be empty")
     }
@@ -31,14 +36,24 @@ data class TaskComment(
     /**
      * Create-Constructor
      */
-    constructor(taskId: Int, creatorId: String, content: String) :
-            this(null, taskId, creatorId, content, Instant.now())
+    constructor(task: Task, creator: User, content: String) :
+            this(null, task, creator, content, Instant.now())
 
     /**
      * Update-Constructor
      */
-    constructor(id: Int, content: String) :
-            this(id, null, null, content, Instant.now())
+    constructor(id: Int, task: Task, creator: User, content: String) :
+            this(id, task, creator, content, Instant.now())
+
+    /**
+     * Sets the task.
+     */
+    fun setTask(task: Task) {
+        if (this.task != null)
+            throw IllegalStateException("task is already set")
+
+        this.task = task
+    }
 
     /**
      * Sets the given content.

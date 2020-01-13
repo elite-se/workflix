@@ -13,7 +13,7 @@ object LoginManager {
      * @param email The users email address. Note that these email addresses are considered unique.
      * @param password user's password
      *
-     * @return User's authentification token if successful, null otherwise.
+     * @return User's authentication token if successful, null otherwise.
      *
      * @throws InvalidInputException if there is no or more than one user with this email address, or the user
      * is already logged in.

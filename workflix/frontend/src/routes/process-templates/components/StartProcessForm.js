@@ -112,6 +112,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
   render () {
     const { title, description, deadline, startLoading, processGroup } = this.state
     const { processGroups, noPadding } = this.props
+    const activeProcessGroups = Array.from(processGroups.values()).filter(pg => !pg.deleted)
     const shortcuts = getShortcuts()
     return <div style={{
       padding: noPadding ? '0px' : '20px',
@@ -131,7 +132,7 @@ class StartProcessForm extends React.Component<PropsType, StateType> {
       </FormGroup>
       <FormGroup label='Process Group' labelInfo='(required)'>
         <ProcessGroupSelect activeItem={processGroup} onItemSelect={this.onProcessGroupChange}
-                            items={Array.from(processGroups.values())} intent={!processGroup ? 'danger' : 'none'}/>
+                            items={activeProcessGroups} intent={!processGroup ? 'danger' : 'none'}/>
       </FormGroup>
       <FormGroup label='Deadline' labelInfo='(required)'>
         <div style={{

@@ -19,7 +19,6 @@ import de.se.team3.webservice.handlers.UserHandler
 import de.se.team3.webservice.handlers.UserRolesHandler
 import de.se.team3.webservice.handlers.UserRolesMembersHandler
 import io.javalin.Javalin
-import java.lang.NumberFormatException
 import org.json.JSONException
 
 const val ENV_PORT = "PORT"
@@ -35,7 +34,7 @@ fun main(args: Array<String>) {
 
     ConnectionManager.connect()
 
-    // webservice exceptions, i.d. exceptions thrown if something is wrong if the input format
+    // webservice exceptions, i.e. exceptions thrown if something is wrong if the input format
     app.exception(NumberFormatException::class.java) { _, ctx ->
         ctx.status(400).result("invalid id format")
     }
@@ -62,16 +61,14 @@ fun main(args: Array<String>) {
     app.exception(NotAuthorizedException::class.java) { e, ctx ->
         ctx.status(401).result(e.message)
     }
-    app.exception(Exception::class.java) { e, ctx ->
-        ctx.status(500).result(e.message + "")
-        throw e
-    }
 
-    // authentication handling before every request (excluding login)
+    // authentication handling before every request (excluding login and creation of new users)
     app.before() { ctx ->
         if (ctx.method() == "OPTIONS") {
             CORSHandler.optionsRequest(ctx)
-        } else if (ctx.path() != "/login") {
+        } else if (ctx.path() != "/login" &&
+            !(ctx.path() == "/userCreationRequest" && ctx.method() == "POST") &&
+            !(ctx.path().matches(Regex("""/users/\w{8}""")) && ctx.method() == "PUT")) {
             AuthenticationHandler.authorizeRequest(ctx)
         }
     }
@@ -92,8 +89,13 @@ fun main(args: Array<String>) {
     app.get("users/:userId") { ctx ->
         UserHandler.getOne(ctx, ctx.pathParam("userId"))
     }
-    app.post("users") { ctx ->
-        UserHandler.createFrom***REMOVED***(ctx)
+    app.put("users/:key") { ctx ->
+        UserHandler.createFrom***REMOVED***(ctx, ctx.pathParam("key"))
+    }
+
+    // new user verification
+    app.post("userCreationRequest") { ctx ->
+        UserHandler.verifyCreateRequest(ctx)
     }
 
     // process templates
@@ -145,6 +147,9 @@ fun main(args: Array<String>) {
         ProcessesHandler.getOne(ctx, ctx.pathParam("processId").toInt())
     }
     app.post("processes") { ctx -> ProcessesHandler.create(ctx) }
+    app.patch("processes/:processId") { ctx ->
+        ProcessesHandler.update(ctx, ctx.pathParam("processId").toInt())
+    }
     app.delete("processes/:processId") { ctx ->
         ProcessesHandler.delete(ctx, ctx.pathParam("processId").toInt())
     }

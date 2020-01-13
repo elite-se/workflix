@@ -42,6 +42,12 @@ class ProcessList extends React.Component<PropsType, StateType> {
     selectedTaskId: null
   }
 
+  componentDidUpdate () {
+    if (this.state.selectedTaskId != null && !this.findSelectedTask()) {
+      this.onTaskSelected(null)
+    }
+  }
+
   onTaskSelected = (selectedTask: ?TaskType) => {
     this.setState({ selectedTaskId: selectedTask?.id })
     this.props.onTaskSelected(selectedTask)

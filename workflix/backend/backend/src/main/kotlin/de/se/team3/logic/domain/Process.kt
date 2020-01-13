@@ -18,11 +18,11 @@ class Process(
     val processGroup: ProcessGroup,
     @JsonIgnore
     val processTemplate: ProcessTemplate,
-    val title: String,
-    val description: String,
+    private var title: String,
+    private var description: String,
     private var status: ProcessStatus,
     @JsonSerialize(using = InstantSerializer::class)
-    val deadline: Instant?,
+    private var deadline: Instant,
     @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant,
     @JsonIgnore
@@ -32,7 +32,13 @@ class Process(
 
     fun getProcessGroupId() = processGroup.id!!
 
+    fun getTitle() = title
+
+    fun getDescription() = description
+
     fun getStatus() = status
+
+    fun getDeadline() = deadline
 
     init {
         tasks.forEach { (_, task) -> task.process = this }
@@ -51,7 +57,7 @@ class Process(
         processTemplate: ProcessTemplate,
         title: String,
         description: String,
-        deadline: Instant?
+        deadline: Instant
     ) : this (null,
         starter,
         processGroup,
@@ -63,9 +69,32 @@ class Process(
         Instant.now(), // started at
         createTasks(processTemplate)
     ) {
-
         checkProperties()
     }
+
+    /**
+     * Update-Constructor
+     */
+    constructor(
+        id: Int,
+        starter: User,
+        processGroup: ProcessGroup,
+        processTemplate: ProcessTemplate,
+        title: String,
+        description: String,
+        deadline: Instant
+    ) : this (
+        id,
+        starter,
+        processGroup,
+        processTemplate,
+        title,
+        description,
+        ProcessStatus.RUNNING,
+        deadline,
+        Instant.now(),
+        HashMap<Int, Task>()
+    )
 
     /**
      * Checks property constraints.
@@ -73,11 +102,37 @@ class Process(
      * @throws InvalidInputException Is thrown if the title is empty or if the underlying
      * process template is already deleted.
      */
-    private fun checkProperties() {
+    fun checkProperties() {
         if (title.isEmpty())
             throw InvalidInputException("title must not be empty")
         if (processTemplate.isDeleted())
             throw InvalidInputException("must not be based on a deleted process template")
+    }
+
+    /**
+     * Sets the title.
+     *
+     * @throws InvalidInputException Is thrown if the title is empty.
+     */
+    fun setTitle(title: String) {
+        if (title.isEmpty())
+            throw InvalidInputException("title must not be empty")
+
+        this.title = title
+    }
+
+    /**
+     * Sets the description.
+     */
+    fun setDescription(description: String) {
+        this.description = description
+    }
+
+    /**
+     * Sets the deadline.
+     */
+    fun setDeadline(deadline: Instant) {
+        this.deadline = deadline
     }
 
     /**
@@ -154,7 +209,7 @@ class Process(
      * @throws IllegalStateException Is thrown if the status of the process is not running.
      */
     fun close() {
-        if (status != ProcessStatus.RUNNING)
+        if (status != ProcessStatus.RUNNING) // TODO shouldn't it closeable()
             throw IllegalStateException("only a running processes could be closed")
 
         status = ProcessStatus.CLOSED
@@ -165,10 +220,14 @@ class Process(
      * Aborts the process.
      *
      * @throws IllegalStateException Is thrown if the status of the process is not running.
+     * @throws IllegalStateException Is thrown if the process is closeable but the close()
+     * method was not called yet.
      */
     fun abort() {
         if (status != ProcessStatus.RUNNING)
             throw IllegalStateException("only a running processes could be aborted")
+        if (closeable())
+            throw IllegalStateException("a closeable process could not be aborted")
 
         status = ProcessStatus.ABORTED
         processTemplate.decreaseRunningProcesses()

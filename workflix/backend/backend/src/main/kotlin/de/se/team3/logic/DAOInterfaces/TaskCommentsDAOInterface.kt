@@ -6,6 +6,8 @@ interface TaskCommentsDAOInterface {
 
     fun getTaskIdByTaskCommentId(taskCommentId: Int): Int?
 
+    fun getCreatorIdByTaskCommentId(taskCommentId: Int): String?
+
     fun createTaskComment(taskComment: TaskComment): Int
 
     fun updateTaskComment(taskComment: TaskComment): Boolean

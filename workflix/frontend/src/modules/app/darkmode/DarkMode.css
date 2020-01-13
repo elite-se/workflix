@@ -1,0 +1,11 @@
+body.bp3-dark {
+    background: #202B33 /* dark-gray2 */
+}
+
+.even-proc-chart-row {
+    fill: #EBF1F5 /* light-gray4 */
+}
+
+.bp3-dark .even-proc-chart-row {
+    fill: #30404D /* dark-gray4 */
+}

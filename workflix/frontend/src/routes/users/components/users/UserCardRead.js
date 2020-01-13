@@ -4,10 +4,11 @@ import React from 'react'
 import { sortBy } from 'lodash'
 import type { ProcessGroupType } from '../../../../modules/datatypes/ProcessGroup'
 import type { UserRoleType, UserType } from '../../../../modules/datatypes/User'
-import TitledCard from '../TitledCard'
+import StyledCard from '../StyledCard'
 import IconRow from '../IconRow'
 import listIfNeeded from '../../listIfNeeded'
 import stopPropagation from '../../../../modules/common/stopPropagation'
+import { H3 } from '@blueprintjs/core'
 
 type PropsType = {|
   user: UserType,
@@ -29,18 +30,19 @@ class UserCardRead extends React.Component<PropsType> {
       group => group.title)
     const usersRoles = sortBy(user.userRoleIds.map(id => roles.get(id)).filter(Boolean),
       role => role.name)
-    return <TitledCard key={user.id} title={user.name} onClick={this.onClick}>
-        <IconRow icon='person'>{user.displayname}</IconRow>
-        <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
-        <IconRow icon='office' multiLine>
-          {listIfNeeded(usersGroups, group => group.id,
-            group => <a onClick={this.onProcessGroupSelected(group)}>{group.title}</a>)}
-        </IconRow>
-        <IconRow icon='badge' multiLine>
-          {listIfNeeded(usersRoles, role => role.id,
-            role => <a onClick={this.onRoleSelected(role)}>{role.name}</a>)}
-        </IconRow>
-    </TitledCard>
+    return <StyledCard key={user.id} onClick={this.onClick} interactive>
+      <H3>{user.name}</H3>
+      <IconRow icon='person'>{user.displayname}</IconRow>
+      <IconRow icon='envelope'><a href={`mailto:${user.email}`}>{user.email}</a></IconRow>
+      <IconRow icon='office' multiLine>
+        {listIfNeeded(usersGroups, group => group.id,
+          group => <a onClick={this.onProcessGroupSelected(group)}>{group.title}</a>)}
+      </IconRow>
+      <IconRow icon='badge' multiLine>
+        {listIfNeeded(usersRoles, role => role.id,
+          role => <a onClick={this.onRoleSelected(role)}>{role.name}</a>)}
+      </IconRow>
+    </StyledCard>
   }
 }
 

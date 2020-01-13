@@ -3,6 +3,7 @@ package de.se.team3.persistence.daos
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.ProcessTemplatesContainer
+import de.se.team3.logic.container.TasksContainer
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
@@ -15,6 +16,7 @@ import de.se.team3.persistence.meta.TaskCommentsTable
 import de.se.team3.persistence.meta.TasksTable
 import de.se.team3.webservice.containerInterfaces.ProcessGroupsContainerInterface
 import de.se.team3.webservice.containerInterfaces.ProcessTemplateContainerInterface
+import de.se.team3.webservice.containerInterfaces.TasksContainerInterface
 import de.se.team3.webservice.containerInterfaces.UserContainerInterface
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.database.TransactionIsolation
@@ -37,6 +39,8 @@ object ProcessDAO : ProcessDAOInterface {
 
     private val processGroupsContainer: ProcessGroupsContainerInterface = ProcessGroupsContainer
 
+    private val tasksContainer: TasksContainerInterface = TasksContainer
+
     private val usersContainer: UserContainerInterface = UserContainer
 
     /**
@@ -55,7 +59,7 @@ object ProcessDAO : ProcessDAOInterface {
             row[ProcessesTable.title]!!,
             row[ProcessesTable.description]!!,
             ProcessStatus.valueOf(row[ProcessesTable.status]!!),
-            row[ProcessesTable.deadline],
+            row[ProcessesTable.deadline]!!,
             row[ProcessesTable.startedAt]!!,
             tasks
         )
@@ -72,15 +76,17 @@ object ProcessDAO : ProcessDAOInterface {
                         (TaskCommentsTable.deleted notEq true)
             }
 
-        for (row in commentsResult)
+        for (row in commentsResult) {
+            val creator = usersContainer.getUser(row[TaskCommentsTable.creatorId]!!)
             comments.add(
                 TaskComment(
                     row[TaskCommentsTable.id]!!,
-                    row[TaskCommentsTable.taskId]!!,
-                    row[TaskCommentsTable.creatorId]!!,
+                    null,
+                    creator,
                     row[TaskCommentsTable.content]!!,
                     row[TaskCommentsTable.createdAt]!!
                 ))
+        }
 
         return comments
     }
@@ -194,10 +200,10 @@ object ProcessDAO : ProcessDAOInterface {
                 row.processTemplateId to processTemplate.id
                 row.starterId to process.starter.id
                 row.groupId to process.getProcessGroupId()
-                row.title to process.title
-                row.description to process.description
+                row.title to process.getTitle()
+                row.description to process.getDescription()
                 row.status to process.getStatus().toString()
-                row.deadline to process.deadline
+                row.deadline to process.getDeadline()
                 row.startedAt to process.startedAt
             }
 
@@ -221,6 +227,25 @@ object ProcessDAO : ProcessDAOInterface {
         } finally {
             transaction.close()
         }
+    }
+
+    /**
+     * Updates the given process.
+     *
+     * @return True iff the given process exists.
+     */
+    override fun updateProcess(process: Process): Boolean {
+        val affectedRows = ProcessesTable.update { row ->
+            row.title to process.getTitle()
+            row.description to process.getDescription()
+            row.deadline to process.getDeadline()
+
+            where {
+                (row.id eq process.id!!) and
+                        (row.status eq ProcessStatus.RUNNING.toString())
+            }
+        }
+        return affectedRows != 0
     }
 
     /**

@@ -18,7 +18,7 @@ class Task(
     val taskTemplateId: Int,
     @JsonSerialize(using = InstantSerializer::class)
     val startedAt: Instant?,
-    private val comments: ArrayList<TaskComment>?,
+    private val comments: ArrayList<TaskComment>,
     private val assignments: ArrayList<TaskAssignment>,
     @JsonIgnore
     var process: Process?
@@ -35,13 +35,14 @@ class Task(
 
     init {
         assignments.forEach { it.setTask(this) }
+        comments.forEach { it.setTask(this) }
     }
 
     /**
      * Create-Constructor
      */
     constructor(taskTemplateId: Int, startedAt: Instant?) :
-            this(null, taskTemplateId, startedAt, null, ArrayList<TaskAssignment>(), null) {
+            this(null, taskTemplateId, startedAt, ArrayList<TaskComment>(), ArrayList<TaskAssignment>(), null) {
     }
 
     /**
@@ -184,8 +185,8 @@ class Task(
     /**
      * Add task comment.
      *
-     * @throws InvalidInputException Is thrown if the task id specified in the given task comment
-     * is not equal to the id of this task.
+     * @throws InvalidInputException Is thrown if the task id specified in the given task
+     * comment is not equal to the id of this task.
      */
     fun addTaskComment(taskComment: TaskComment) {
         if (taskComment.taskId != id)

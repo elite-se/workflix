@@ -15,6 +15,7 @@ import ProcessDetailsEditor from './ProcessDetailsEditor'
 import AppToaster from '../../../modules/app/AppToaster'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
+import UserRoleApi from '../../../modules/api/UserRoleApi'
 
 type PropsType = {|
   id: number,
@@ -129,7 +130,7 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
 
 const promiseCreator = ({ id }: { id: number }, update) => Promise.all([
   new UserApi().getUsers(),
-  new UserApi().getUserRoles(),
+  new UserRoleApi().getUserRoles(),
   new ProcessGroupsApi().getProcessGroups(),
   new ProcessApi().getProcess(id).then(process => Promise.all([
     Promise.resolve(process),

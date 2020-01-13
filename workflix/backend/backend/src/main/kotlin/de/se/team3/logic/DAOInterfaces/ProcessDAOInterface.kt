@@ -10,6 +10,8 @@ interface ProcessDAOInterface {
 
     fun createProcess(process: Process): Int
 
+    fun updateProcess(process: Process): Boolean
+
     fun closeProcess(processId: Int): Boolean
 
     fun abortProcess(processId: Int): Boolean

@@ -10,6 +10,7 @@ import withPromiseResolver from '../../../modules/app/hocs/withPromiseResolver'
 import UserApi from '../../../modules/api/UsersApi'
 import { navigate } from '@reach/router'
 import type { IncompleteProcessTemplateType } from '../../../modules/process-template-editor/ProcessTemplateEditorTypes'
+import UserRoleApi from '../../../modules/api/UserRoleApi'
 
 type PropsType = {
   users: Map<string, UserType>,
@@ -39,7 +40,7 @@ class CreateProcessTemplate extends React.Component<PropsType> {
 
 const promiseCreator = () => Promise.all([
   new UserApi().getUsers(),
-  new UserApi().getUserRoles()
+  new UserRoleApi().getUserRoles()
 ]).then(([users, userRoles]) => ({
   users,
   userRoles

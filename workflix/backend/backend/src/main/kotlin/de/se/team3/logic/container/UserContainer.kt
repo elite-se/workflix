@@ -31,7 +31,7 @@ object UserContainer : UserContainerInterface {
     /**
      * Hashes passwords using the BCrypt algorithm.
      */
-    private fun hash(password: String): String {
+    fun hash(password: String): String {
         return BCryptPasswordEncoder().encode(password)
     }
 

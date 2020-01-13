@@ -1,42 +1,31 @@
 // @flow
 
-import type { UserRoleType, UserType } from '../datatypes/User'
+import type { UserType } from '../datatypes/User'
 import { safeFetch } from './SafeFetch'
 import { BACKEND } from './common'
-import { parseDatesInUserRole } from './parseDates'
+
+const usersBackend = `${BACKEND}/users`
+const usersCreationRequestBackend = `${BACKEND}/userCreationRequest`
 
 class UsersApi {
   getUsers (): Promise<Map<string, UserType>> {
-    return safeFetch(`${BACKEND}/users`)
+    return safeFetch(usersBackend)
       .then(response => response.json())
       .then(result => result.users)
       .then((usersArray: UserType[]) => new Map<string, UserType>(usersArray.map(user => [user.id, user])))
   }
 
-  getUserRoles (): Promise<Map<number, UserRoleType>> {
-    return safeFetch(`${BACKEND}/userRoles`)
-      .then(response => response.json())
-      .then(result => result.roles)
-      .then(roles => roles.map(parseDatesInUserRole))
-      .then((roles: UserRoleType[]) => new Map<number, UserRoleType>(roles.map(role => [role.id, role])))
-  }
-
-  addRoleMembership (roleId: number, memberId: string): Promise<Response> {
-    return safeFetch(`${BACKEND}/userRoles/${roleId}/members/${memberId}`, {
-      method: 'PUT'
+  sendVerificationMail (email: string): Promise<Response> {
+    return safeFetch(usersCreationRequestBackend, {
+      method: 'POST',
+      body: JSON.stringify({ email })
     })
   }
 
-  removeRoleMembership (roleId: number, memberId: string): Promise<Response> {
-    return safeFetch(`${BACKEND}/userRoles/${roleId}/members/${memberId}`, {
-      method: 'DELETE'
-    })
-  }
-
-  patchRole (role: UserRoleType): Promise<Response> {
-    return safeFetch(`${BACKEND}/userRoles/${role.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(role)
+  createUser (email: string, password: string, verificationCode: string): Promise<Response> {
+    return safeFetch(`${usersBackend}/${verificationCode}`, {
+      method: 'PUT',
+      body: JSON.stringify({ email, password })
     })
   }
 }
