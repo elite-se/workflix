@@ -4,7 +4,6 @@ import de.se.team3.logic.DAOInterfaces.TaskCommentsDAOInterface
 import de.se.team3.logic.domain.Task
 import de.se.team3.logic.domain.TaskComment
 import de.se.team3.logic.domain.User
-import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.TaskCommentsDAO
 import de.se.team3.persistence.meta.TaskCommentsTable.taskId

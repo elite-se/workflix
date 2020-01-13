@@ -304,5 +304,4 @@ class TaskTest {
         task2.addTaskComment(comment2)
         task2.addTaskComment(comment3)
     }
-
 }

@@ -3,7 +3,6 @@ package de.se.team3.logic.container
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
-import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
