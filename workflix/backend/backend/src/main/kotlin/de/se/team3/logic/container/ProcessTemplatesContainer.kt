@@ -71,7 +71,7 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
         if (!filled)
             fillCache()
 
-        for ((key, processTemplate) in processTemplatesCache)
+        for ((_, processTemplate) in processTemplatesCache)
             if (!processTemplate.isDeleted() && processTemplate.usesUserRole(userRole))
                 return true
 
@@ -93,11 +93,16 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
      * @throws NotFoundException Is thrown if the given process template does not exist.
      */
     override fun updateProcessTemplate(processTemplate: ProcessTemplate): Int {
-        var newId: Int?
+        val newId: Int?
         val currentId = processTemplate.id!!
 
         val currentProcessTemplate = getProcessTemplate(currentId)
 
+        /* If the process template was already used to create a process it must not be altered. Instead a copy is
+         * made the original hidden. The reason is that processes are stupid in that sense that they do not copy
+         * the information of their underlying process template. Rather they ask the template everytime they need
+         * information about it.
+         */
         if (!currentProcessTemplate.hasProcesses()) {
             val exists = processTemplatesDAO.updateProcessTemplate(processTemplate)
             if (!exists)
@@ -105,15 +110,9 @@ object ProcessTemplatesContainer : ProcessTemplateContainerInterface {
 
             newId = currentId
         } else {
-            // copying necessary because of the creation timestamp
-            val newProcessTemplate = ProcessTemplate(
-                processTemplate.title,
-                processTemplate.description,
-                processTemplate.durationLimit,
-                processTemplate.owner,
-                processTemplate.taskTemplates
-            )
             newId = processTemplatesDAO.createProcessTemplate(processTemplate.copy(formerVersionId = currentId))
+            processTemplatesDAO.deleteProcessTemplate(currentId)
+            currentProcessTemplate.delete()
         }
 
         processTemplatesCache[newId] = processTemplatesDAO.getProcessTemplate(newId)!!
