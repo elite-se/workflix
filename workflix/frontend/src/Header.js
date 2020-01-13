@@ -6,15 +6,10 @@ import { Alignment } from '@blueprintjs/core/lib/cjs/common/alignment'
 import { Link, Match } from '@reach/router'
 import DarkModeSwitch from './modules/app/darkmode/DarkModeSwitch'
 
-const QUARTER_HOUR = 900000
 const THOUSAND = 1000
 
 class Header extends React.Component<{ route: string }, { title: React$Node }> {
   state = { title: 'Workflix' }
-
-  componentDidMount () {
-    setTimeout(this.wontfix, QUARTER_HOUR)
-  }
 
   wontfix = () => {
     this.setState(state => ({

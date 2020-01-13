@@ -85,8 +85,10 @@ class ProcessDetailsEditor extends React.Component<PropsType> {
               onChange={handleStringChange(onDescriptionChange)} value={description}
               placeholder={'Add description...\n\nWhat is this process about?'}/>
           </FormGroup>
-          <FormGroup label='Deadline' labelInfo='(required)'>
-            <DateInput {...jsDateFormatter} value={deadline} fill onChange={onDeadlineChange}/>
+          <FormGroup label='Deadline' labelInfo='(required)'>{/* eslint-disable no-magic-numbers */}
+            <DateInput {...jsDateFormatter} maxDate={new Date(new Date().setFullYear(2099))}
+                       minDate={new Date(new Date().setFullYear(2000))} value={deadline} fill
+                       onChange={onDeadlineChange}/>{/* eslint-enable no-magic-numbers */}
           </FormGroup>
         </Third>
         <Third>
