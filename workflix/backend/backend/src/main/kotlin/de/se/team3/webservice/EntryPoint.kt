@@ -61,10 +61,6 @@ fun main(args: Array<String>) {
     app.exception(NotAuthorizedException::class.java) { e, ctx ->
         ctx.status(401).result(e.message)
     }
-    app.exception(Exception::class.java) { e, ctx ->
-        ctx.status(500).result(e.message + "")
-        throw e
-    }
 
     // authentication handling before every request (excluding login and creation of new users)
     app.before() { ctx ->
