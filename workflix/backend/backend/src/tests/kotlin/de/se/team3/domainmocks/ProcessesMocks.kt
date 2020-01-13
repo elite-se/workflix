@@ -1,4 +1,4 @@
-package domainmocks
+package de.se.team3.domainmocks
 
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
@@ -68,5 +68,4 @@ object ProcessesMocks {
 
         return Process(3, starter, groupFugger, processTemplate, "Testprocess 3", "Description", ProcessStatus.RUNNING, Instant.now(), Instant.now(), tasksWithIds)
     }
-
 }
