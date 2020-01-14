@@ -209,8 +209,8 @@ class Process(
      * @throws IllegalStateException Is thrown if the status of the process is not running.
      */
     fun close() {
-        if (status != ProcessStatus.RUNNING) // TODO shouldn't it closeable()
-            throw IllegalStateException("only a running processes could be closed")
+        if (!closeable())
+            throw IllegalStateException("process is not closeable")
 
         status = ProcessStatus.CLOSED
         processTemplate.decreaseRunningProcesses()
