@@ -1,8 +1,7 @@
-package de.se.team3.unittests
+package de.se.team3.logic.domain
 
-import de.se.team3.domainmocks.ProcessTemplatesMocks
-import de.se.team3.domainmocks.UsersAndRolesMocks
-import de.se.team3.logic.domain.TaskTemplate
+import de.se.team3.logic.domain.mocks.ProcessTemplatesMocks
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks
 import de.se.team3.logic.domain.processTemplateUtil.ProcessTemplateCycleDetection
 import kotlin.test.assertEquals
 import org.junit.Test
