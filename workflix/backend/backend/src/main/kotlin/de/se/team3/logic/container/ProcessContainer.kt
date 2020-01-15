@@ -3,7 +3,6 @@ package de.se.team3.logic.container
 import de.se.team3.logic.DAOInterfaces.ProcessDAOInterface
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessQueryPredicate
-import de.se.team3.logic.exceptions.AlreadyClosedException
 import de.se.team3.logic.exceptions.NotFoundException
 import de.se.team3.persistence.daos.ProcessDAO
 import de.se.team3.webservice.containerInterfaces.ProcessContainerInterface
@@ -86,14 +85,10 @@ object ProcessContainer : ProcessContainerInterface {
     /**
      * Updates the given process.
      *
-     * @throws AlreadyClosedException Is thrown if the specified process is not running anymore.
      * @throws NotFoundException Is thrown if the given process does not exist.
      */
     override fun updateProcess(processId: Int, title: String, description: String, deadline: Instant) {
         val cachedProcess = getProcess(processId)
-
-        if (!cachedProcess.isRunning())
-            throw AlreadyClosedException("the process is not running anymore")
 
         // helper process to properly call the DAO
         val updatedProcess = Process(

@@ -42,8 +42,8 @@ object ProcessGroupsDAO : ProcessGroupDAOInterface {
      * Returns a list of all process groups.
      */
     override fun getAllProcessGroups(): List<ProcessGroup> {
-        val processGroupResult = ProcessGroupsTable.select()
-            .where { ProcessGroupsTable.deleted notEq true }
+        val processGroupResult = ProcessGroupsTable
+            .select()
 
         val processGroups = ArrayList<ProcessGroup>()
 

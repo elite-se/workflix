@@ -16,7 +16,8 @@ type PropsType = {
   taskTemplates: Map<number, TaskTemplateType>,
   tasks: TaskType[],
   setDrawerOpened: (drawerOpened: boolean) => void,
-  onTaskModified: () => void
+  onTaskModified: () => void,
+  isReadOnly: boolean
 }
 
 type StateType = {
@@ -54,7 +55,7 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { taskTemplates, tasks, users, onTaskModified, userRoles } = this.props
+    const { taskTemplates, tasks, users, onTaskModified, userRoles, isReadOnly } = this.props
     const { selectedTaskId } = this.state
     const processedNodes = calcTasksGraph(tasks, taskTemplates)
     const chartNodes = processedNodes.map(node => chartNodeFromProcessedNode(
@@ -77,7 +78,7 @@ class TaskListViewer extends React.Component<PropsType, StateType> {
       <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={template?.name || ''}
               onClose={this.unselectTask} style={{ overflow: 'auto' }} onOpening={onOpenRemoveOverlayClass}>
         {task && <TaskDrawerContent task={task} taskTemplates={taskTemplates} onTaskModified={onTaskModified}
-                                    users={users} userRoles={userRoles}/>}
+                                    users={users} userRoles={userRoles} isReadOnly={isReadOnly}/>}
       </Drawer>
     </FormGroup>
   }

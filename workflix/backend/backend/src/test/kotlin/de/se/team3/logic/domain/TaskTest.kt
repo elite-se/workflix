@@ -1,18 +1,14 @@
-package unittests
+package de.se.team3.logic.domain
 
-import de.se.team3.logic.domain.ProcessStatus
-import de.se.team3.logic.domain.Task
-import de.se.team3.logic.domain.TaskAssignment
-import de.se.team3.logic.domain.TaskComment
-import domainmocks.ProcessesMocks
-import domainmocks.UsersAndRolesMocks
-import org.junit.Test
-import org.junit.jupiter.api.assertDoesNotThrow
+import de.se.team3.logic.domain.mocks.ProcessesMocks
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 
 class TaskTest {
 
@@ -28,27 +24,27 @@ class TaskTest {
 
         // before assignment to task 1
         assertFalse { task1.isBlocked() }
-        for (k in 1 .. 5) assertFalse { process.getTask(k).isClosed() }
-        for (k in 2 .. 5) assertTrue { process.getTask(k).isBlocked() }
+        for (k in 1..5) assertFalse { process.getTask(k).isClosed() }
+        for (k in 2..5) assertTrue { process.getTask(k).isBlocked() }
 
         val taskAssignment1 = TaskAssignment(task1, assignee, true)
         task1.addTaskAssignment(taskAssignment1)
 
         // before assignment to task 2 and after assignment to task 1
         assertTrue { task1.isClosed() }
-        for (k in 2 .. 4) assertFalse { process.getTask(k).isClosed() }
-        for (k in 1 .. 3) assertFalse { process.getTask(k).isBlocked() }
-        for (k in 4 .. 5) assertTrue { process.getTask(k).isBlocked() }
+        for (k in 2..4) assertFalse { process.getTask(k).isClosed() }
+        for (k in 1..3) assertFalse { process.getTask(k).isBlocked() }
+        for (k in 4..5) assertTrue { process.getTask(k).isBlocked() }
 
         val task2 = process.getTask(2)
         val taskAssignment2 = TaskAssignment(task2, assignee, true)
         task2.addTaskAssignment(taskAssignment2)
 
         // before assignment to task 3 and after assignment to task 2
-        for (k in 1 .. 2) assertTrue { process.getTask(k).isClosed() }
-        for (k in 3 .. 5) assertFalse { process.getTask(k).isClosed() }
-        for (k in 1 .. 3) assertFalse { process.getTask(k).isBlocked() }
-        for (k in 4 .. 5) assertTrue { process.getTask(k).isBlocked() }
+        for (k in 1..2) assertTrue { process.getTask(k).isClosed() }
+        for (k in 3..5) assertFalse { process.getTask(k).isClosed() }
+        for (k in 1..3) assertFalse { process.getTask(k).isBlocked() }
+        for (k in 4..5) assertTrue { process.getTask(k).isBlocked() }
 
         val task3 = process.getTask(3)
         val taskAssignment3 = TaskAssignment(task3, assignee, true)
@@ -57,9 +53,9 @@ class TaskTest {
         val task5 = process.getTask(5)
 
         // before assignment to task 4 and after assignment to task 3
-        for (k in 1 .. 3) assertTrue { process.getTask(k).isClosed() }
-        for (k in 4 .. 5) assertFalse { process.getTask(k).isClosed() }
-        for (k in 1 .. 4) assertFalse { process.getTask(k).isBlocked() }
+        for (k in 1..3) assertTrue { process.getTask(k).isClosed() }
+        for (k in 4..5) assertFalse { process.getTask(k).isClosed() }
+        for (k in 1..4) assertFalse { process.getTask(k).isBlocked() }
         assertTrue { task5.isBlocked() }
 
         val task4 = process.getTask(4)
@@ -67,15 +63,15 @@ class TaskTest {
         task4.addTaskAssignment(taskAssignment4)
 
         // before assignment to task 5 and after assignment to task 4
-        for (k in 1 .. 4) assertTrue { process.getTask(k).isClosed() }
+        for (k in 1..4) assertTrue { process.getTask(k).isClosed() }
         assertFalse { task5.isClosed() }
-        for (k in 1 .. 5) assertFalse { process.getTask(k).isBlocked() }
+        for (k in 1..5) assertFalse { process.getTask(k).isBlocked() }
 
         val taskAssignment5 = TaskAssignment(task5, assignee, true)
         task5.addTaskAssignment(taskAssignment5)
 
         // after assignment to task 5
-        for (k in 1 .. 5) {
+        for (k in 1..5) {
             assertTrue { process.getTask(k).isClosed() }
             assertFalse { process.getTask(k).isBlocked() }
         }
@@ -109,7 +105,7 @@ class TaskTest {
         task1.addTaskAssignment(taskAssignment2)
 
         assertTrue { task1.isClosed() }
-        assertTrue {task3.isBlocked() }
+        assertTrue { task3.isBlocked() }
 
         val task2 = process.getTask(2)
         val taskAssignment3 = TaskAssignment(task2, UsersAndRolesMocks.marvinBrieger, true)
@@ -305,30 +301,4 @@ class TaskTest {
         task2.addTaskComment(comment2)
         task2.addTaskComment(comment3)
     }
-
-    /**
-     * Adding a comment should fail if the process is already closed.
-     */
-    @Test
-    fun testCommentsOnClosedProcess() {
-        val process = ProcessesMocks.getSimpleProcess()
-
-        val task1 = process.getTask(1)
-        val task2 = process.getTask(2)
-
-        val comment = TaskComment(1, task1, UsersAndRolesMocks.erikPallas, "Commentary", Instant.now())
-        task1.addTaskComment(comment)
-
-        val taskAssignment1 = TaskAssignment(task1, UsersAndRolesMocks.marvinBrieger, true)
-        task1.addTaskAssignment(taskAssignment1)
-        val taskAssignment2 = TaskAssignment(task2, UsersAndRolesMocks.eliasKeis, true)
-        task2.addTaskAssignment(taskAssignment2)
-
-        process.close()
-
-        assertFails { task1.deleteTaskComment(comment.id!!) }
-        assertFails { task2.addTaskComment(comment) }
-    }
-
-
 }

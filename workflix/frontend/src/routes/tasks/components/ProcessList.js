@@ -66,6 +66,12 @@ class ProcessList extends React.Component<PropsType, StateType> {
       .flatMap(process => process.tasks)
       .find(task => task.id === this.state.selectedTaskId)
 
+  findSelectedProcess = () =>
+    this.props.processes.find(process =>
+      process.tasks.find(task => task.id === this.state.selectedTaskId))
+
+  isProcessEditable = (proc: ?ProcessType) => proc?.status === 'RUNNING'
+
   render () {
     const { processes, users, userRoles, taskTemplates, processGroups } = this.props
     const selectedTask = this.findSelectedTask()
@@ -99,7 +105,8 @@ class ProcessList extends React.Component<PropsType, StateType> {
         onTaskModified={this.onTaskModified}
         users={users}
         userRoles={userRoles}
-        taskTemplates={taskTemplates}/>
+        taskTemplates={taskTemplates}
+        isReadOnly={!this.isProcessEditable(this.findSelectedProcess())}/>
     </div>
   }
 }

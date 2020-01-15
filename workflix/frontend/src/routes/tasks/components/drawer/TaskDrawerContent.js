@@ -28,12 +28,13 @@ type PropsType = {
   taskTemplates: Map<number, TaskTemplateType>,
   onTaskModified: (TaskType) => void,
   users: Map<string, UserType>,
-  userRoles: Map<number, UserRoleType>
+  userRoles: Map<number, UserRoleType>,
+  isReadOnly: boolean
 }
 
 class TaskDrawerContent extends React.Component<PropsType> {
   render () {
-    const { task, taskTemplates, userRoles, onTaskModified, users } = this.props
+    const { task, taskTemplates, userRoles, onTaskModified, users, isReadOnly } = this.props
     const taskTemplate = taskTemplates.get(task.taskTemplateId)
     if (!taskTemplate) {
       return <div>Something went wrong.</div>
@@ -52,7 +53,7 @@ class TaskDrawerContent extends React.Component<PropsType> {
         <Item><Icon icon='numerical'/>Necessary Users: {taskTemplate.necessaryClosings}</Item>
       </FormGroup>
       <FormGroup label='Assignees'>
-        <Assignments task={task} onTaskModified={onTaskModified} users={users}/>
+        <Assignments task={task} onTaskModified={onTaskModified} users={users} isReadOnly={isReadOnly}/>
       </FormGroup>
       <FormGroup label='Comments'>
         <TaskComments task={task} users={users} onTaskModified={onTaskModified}/>

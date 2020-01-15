@@ -123,7 +123,8 @@ class ProcessDetails extends React.Component<PropsType, StateType> {
                       taskTemplates={new Map(template.taskTemplates.map(template => [template.id, template]))}
                       userRoles={userRoles}
                       onTaskModified={this.onTaskModified}
-                      setDrawerOpened={this.setDrawerOpened}/>
+                      setDrawerOpened={this.setDrawerOpened}
+                      isReadOnly={process.status !== 'RUNNING'}/>
     </div>
   }
 }

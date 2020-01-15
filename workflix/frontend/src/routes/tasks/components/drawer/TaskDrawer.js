@@ -13,12 +13,13 @@ type PropsType = {|
   onTaskModified: (TaskType) => void,
   taskTemplates: Map<number, TaskTemplateType>,
   users: Map<string, UserType>,
-  userRoles: Map<number, UserRoleType>
+  userRoles: Map<number, UserRoleType>,
+  isReadOnly: boolean
 |}
 
 class TaskDrawer extends React.Component<PropsType> {
   render () {
-    const { selectedTask, taskTemplates, userRoles } = this.props
+    const { selectedTask, taskTemplates, userRoles, isReadOnly } = this.props
     const taskTemplate = selectedTask ? taskTemplates.get(selectedTask.taskTemplateId) : undefined
     return <Drawer
       size={Drawer.SIZE_SMALL}
@@ -33,7 +34,8 @@ class TaskDrawer extends React.Component<PropsType> {
           userRoles={userRoles}
           onTaskModified={this.props.onTaskModified}
           users={this.props.users}
-          taskTemplates={this.props.taskTemplates}/>}
+          taskTemplates={this.props.taskTemplates}
+          isReadOnly={isReadOnly}/>}
     </Drawer>
   }
 }

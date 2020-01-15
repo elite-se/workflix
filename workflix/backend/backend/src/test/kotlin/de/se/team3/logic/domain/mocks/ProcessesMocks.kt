@@ -1,4 +1,4 @@
-package domainmocks
+package de.se.team3.logic.domain.mocks
 
 import de.se.team3.logic.domain.Process
 import de.se.team3.logic.domain.ProcessStatus
@@ -15,9 +15,11 @@ object ProcessesMocks {
      * Each task template has 1 necessary closings.
      */
     fun getProcessExtorel(): Process {
-        val groupExtorel = ProcessGroupsMocks.getTestProcessGroupExtorel()
+        val groupExtorel =
+            ProcessGroupsMocks.getTestProcessGroupExtorel()
         val starter = UsersAndRolesMocks.karlCustomerAdvisor
-        val processTemplate = ProcessTemplatesMocks.getProcessTemplate1()
+        val processTemplate =
+            ProcessTemplatesMocks.getProcessTemplate1()
 
         // generate tasks without ids from task template like in constructor of process
         val tasksWithoutIds = Process.createTasks(processTemplate)
@@ -35,9 +37,11 @@ object ProcessesMocks {
      * Each task template has 2 necessary closings.
      */
     fun getProcessFugger(): Process {
-        val groupFugger = ProcessGroupsMocks.getTestProcessGroupFugger()
+        val groupFugger =
+            ProcessGroupsMocks.getTestProcessGroupFugger()
         val starter = UsersAndRolesMocks.kunigundeCustomerAdvisor
-        val processTemplate = ProcessTemplatesMocks.getProcessTemplate2()
+        val processTemplate =
+            ProcessTemplatesMocks.getProcessTemplate2()
 
         // generate tasks without ids from task template like in constructor of process
         val tasksWithoutIds = Process.createTasks(processTemplate)
@@ -46,7 +50,7 @@ object ProcessesMocks {
         for ((key, task) in tasksWithoutIds)
             tasksWithIds.put(key, Task(key, key, task.startedAt, ArrayList<TaskComment>(), ArrayList<TaskAssignment>(), null))
 
-        return Process(2, starter, groupFugger, processTemplate, "Testprocess 2", "Description", ProcessStatus.RUNNING, null, Instant.now(), tasksWithIds)
+        return Process(2, starter, groupFugger, processTemplate, "Testprocess 2", "Description", ProcessStatus.RUNNING, Instant.now(), Instant.now(), tasksWithIds)
     }
 
     /**
@@ -55,9 +59,11 @@ object ProcessesMocks {
      * Each task template has 1 necessary closings.
      */
     fun getSimpleProcess(): Process {
-        val groupFugger = ProcessGroupsMocks.getTestProcessGroupFugger()
+        val groupFugger =
+            ProcessGroupsMocks.getTestProcessGroupFugger()
         val starter = UsersAndRolesMocks.kunigundeCustomerAdvisor
-        val processTemplate = ProcessTemplatesMocks.getProcessTemplate3()
+        val processTemplate =
+            ProcessTemplatesMocks.getProcessTemplate3()
 
         // generate tasks without ids from task template like in constructor of process
         val tasksWithoutIds = Process.createTasks(processTemplate)
@@ -66,7 +72,6 @@ object ProcessesMocks {
         for ((key, task) in tasksWithoutIds)
             tasksWithIds.put(key, Task(key, key, task.startedAt, ArrayList<TaskComment>(), ArrayList<TaskAssignment>(), null))
 
-        return Process(3, starter, groupFugger, processTemplate, "Testprocess 3", "Description", ProcessStatus.RUNNING, null, Instant.now(), tasksWithIds)
+        return Process(3, starter, groupFugger, processTemplate, "Testprocess 3", "Description", ProcessStatus.RUNNING, Instant.now(), Instant.now(), tasksWithIds)
     }
-
 }

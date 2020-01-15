@@ -1,4 +1,4 @@
-package domainmocks
+package de.se.team3.logic.domain.mocks
 
 import de.se.team3.logic.domain.ProcessGroup
 import de.se.team3.logic.domain.User
@@ -27,5 +27,4 @@ object ProcessGroupsMocks {
         return ProcessGroup(2,
             UsersAndRolesMocks.kunigundeCustomerAdvisor, "Fugger", "Group Fugger", Instant.now(), false, members)
     }
-
 }

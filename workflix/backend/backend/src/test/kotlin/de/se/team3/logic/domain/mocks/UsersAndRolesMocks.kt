@@ -1,4 +1,4 @@
-package domainmocks
+package de.se.team3.logic.domain.mocks
 
 import de.se.team3.logic.domain.User
 import de.se.team3.logic.domain.UserRole
@@ -13,7 +13,6 @@ object UsersAndRolesMocks {
     val karlCustomerAdvisor = User("58c120552c94decf6cf3b704", "Karl Customer Advisor", "KA", "ka@mfo.de", "Passwort123", Instant.now())
     val kunigundeCustomerAdvisor = User("58c120552c94decf6cf3b705", "Kunigunde Customer Advisor", "KuA", "kua@mfo.de", "Passwort123", Instant.now())
     val unusedUser = User("58c120552c94decf6cf3b706", "Ursula Unused", "UU", "uu@notrelevant.com", "Passwort123", Instant.now())
-
 
     fun getSomeUsers(): List<User> {
         val users = ArrayList<User>()
@@ -59,5 +58,4 @@ object UsersAndRolesMocks {
         val unusedRole = UserRole(4, "Unused", "Unused Role", Instant.now(), false, usuedUsers)
         return unusedRole
     }
-
 }
