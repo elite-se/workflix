@@ -25,14 +25,14 @@ class UserCardEdit extends React.Component<PropsType> {
   onGroupAdded = (group: ProcessGroupType) => {
     const { user } = this.props
     new ProcessGroupsApi().addMembership(group.id, user.id)
-      .then(this.props.onGroupMembershipAdded(group, user))
+      .then(() => this.props.onGroupMembershipAdded(group, user))
       .catch(toastifyError)
   }
 
   onGroupRemoved = (group: ProcessGroupType) => {
     const { user } = this.props
     new ProcessGroupsApi().removeMembership(group.id, user.id)
-      .then(this.props.onGroupMembershipRemoved(group, user))
+      .then(() => this.props.onGroupMembershipRemoved(group, user))
       .catch(toastifyError)
   }
 
@@ -41,14 +41,14 @@ class UserCardEdit extends React.Component<PropsType> {
   onRoleAdded = (role: UserRoleType) => {
     const { user } = this.props
     new UserRoleApi().addRoleMembership(role.id, user.id)
-      .then(this.props.onRoleMembershipAdded(role, user))
+      .then(() => this.props.onRoleMembershipAdded(role, user))
       .catch(toastifyError)
   }
 
   onRoleRemoved = (role: UserRoleType) => {
     const { user } = this.props
     new UserRoleApi().removeRoleMembership(role.id, user.id)
-      .then(this.props.onRoleMembershipRemoved(role, user))
+      .then(() => this.props.onRoleMembershipRemoved(role, user))
       .catch(toastifyError)
   }
 
