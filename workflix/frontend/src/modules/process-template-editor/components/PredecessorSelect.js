@@ -84,6 +84,7 @@ class PredecessorSelect extends React.Component<PropsType> {
       selectedItems={task.predecessors.map(id => allTasks.find(_task => _task.id === id))}
       onItemSelect={this.handlePredTaskSelect}
       popoverProps={{ usePortal: false }}
+      resetOnSelect
     />
   }
 

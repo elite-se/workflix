@@ -84,6 +84,7 @@ class SuccessorSelect extends React.Component<PropsType> {
       selectedItems={succs}
       onItemSelect={this.handleSuccTaskSelect}
       popoverProps={{ usePortal: false }}
+      resetOnSelect
     />
   }
 
