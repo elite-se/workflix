@@ -56,7 +56,7 @@ class TaskDrawerContent extends React.Component<PropsType> {
         <Assignments task={task} onTaskModified={onTaskModified} users={users} isReadOnly={isReadOnly}/>
       </FormGroup>
       <FormGroup label='Comments'>
-        <TaskComments task={task} users={users} onTaskModified={onTaskModified} isReadOnly={isReadOnly}/>
+        <TaskComments task={task} users={users} onTaskModified={onTaskModified}/>
       </FormGroup>
     </StyledContainer>
   }

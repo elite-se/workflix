@@ -9,18 +9,17 @@ import WriteCommentBubble from './WriteCommentBubble'
 type PropsType = {
   task: TaskType,
   users: Map<string, UserType>,
-  onTaskModified: (task: TaskType) => void,
-  isReadOnly: boolean
+  onTaskModified: (task: TaskType) => void
 }
 
 class TaskComments extends React.Component<PropsType> {
   render () {
-    const { task, users, isReadOnly, onTaskModified } = this.props
+    const { task, users, onTaskModified } = this.props
     return <div>
       {task.comments.map(comment => {
         return <CommentBubble key={comment.id} comment={comment} users={users}/>
       })}
-      {!isReadOnly && <WriteCommentBubble task={task} onTaskModified={onTaskModified}/>}
+      <WriteCommentBubble task={task} onTaskModified={onTaskModified}/>
     </div>
   }
 }
