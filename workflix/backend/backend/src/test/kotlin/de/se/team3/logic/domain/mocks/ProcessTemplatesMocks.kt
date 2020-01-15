@@ -15,17 +15,17 @@ object ProcessTemplatesMocks {
         val taskTemplates = HashMap<Int, TaskTemplate>()
 
         val taskTemplate1 = TaskTemplate(1,
-            getCustomerAdvisor(), "TaskTemplate1", "Description", 1, 1)
+            getCustomerAdvisor(), "TaskTemplate1", "Description", 1.0, 1)
         taskTemplates.put(1, taskTemplate1)
         val taskTemplate2 = TaskTemplate(2,
-            getInvestmentManager(), "TaskTemplate2", "Description", 1, 1)
+            getInvestmentManager(), "TaskTemplate2", "Description", 1.0, 1)
         taskTemplates.put(2, taskTemplate2)
-        val taskTemplate3 = TaskTemplate(3, getAccountant(), "TaskTemplate3", "Description", 2, 1)
+        val taskTemplate3 = TaskTemplate(3, getAccountant(), "TaskTemplate3", "Description", 2.0, 1)
         taskTemplates.put(3, taskTemplate3)
-        val taskTemplate4 = TaskTemplate(4, getAccountant(), "TaskTemplate4", "Description", 3, 1)
+        val taskTemplate4 = TaskTemplate(4, getAccountant(), "TaskTemplate4", "Description", 3.0, 1)
         taskTemplates.put(4, taskTemplate4)
         val taskTemplate5 = TaskTemplate(5,
-            getCustomerAdvisor(), "TaskTemplate5", "Description", 3, 1)
+            getCustomerAdvisor(), "TaskTemplate5", "Description", 3.0, 1)
         taskTemplates.put(5, taskTemplate5)
 
         taskTemplate2.addPredecessor(taskTemplate1)
@@ -41,18 +41,18 @@ object ProcessTemplatesMocks {
         val taskTemplates = HashMap<Int, TaskTemplate>()
 
         val taskTemplate1 = TaskTemplate(1,
-            getCustomerAdvisor(), "TaskTemplate1", "Description", 3, 2)
+            getCustomerAdvisor(), "TaskTemplate1", "Description", 3.0, 2)
         taskTemplates.put(1, taskTemplate1)
         val taskTemplate2 = TaskTemplate(2,
-            getInvestmentManager(), "TaskTemplate2", "Description", 4, 2)
+            getInvestmentManager(), "TaskTemplate2", "Description", 4.0, 2)
         taskTemplates.put(2, taskTemplate2)
         val taskTemplate3 = TaskTemplate(3,
-            getInvestmentManager(), "TaskTemplate3", "Description", 2, 2)
+            getInvestmentManager(), "TaskTemplate3", "Description", 2.0, 2)
         taskTemplates.put(3, taskTemplate3)
-        val taskTemplate4 = TaskTemplate(4, getAccountant(), "TaskTemplate4", "Description", 6, 2)
+        val taskTemplate4 = TaskTemplate(4, getAccountant(), "TaskTemplate4", "Description", 6.0, 2)
         taskTemplates.put(4, taskTemplate4)
         val taskTemplate5 = TaskTemplate(5,
-            getCustomerAdvisor(), "TaskTemplate5", "Description", 5, 2)
+            getCustomerAdvisor(), "TaskTemplate5", "Description", 5.0, 2)
         taskTemplates.put(5, taskTemplate5)
 
         taskTemplate3.addPredecessor(taskTemplate1)
@@ -67,10 +67,10 @@ object ProcessTemplatesMocks {
         val taskTemplates = HashMap<Int, TaskTemplate>()
 
         val taskTemplate1 = TaskTemplate(1,
-            getCustomerAdvisor(), "TaskTemplate1", "Description", 3, 1)
+            getCustomerAdvisor(), "TaskTemplate1", "Description", 3.0, 1)
         taskTemplates.put(1, taskTemplate1)
         val taskTemplate2 = TaskTemplate(2,
-            getInvestmentManager(), "TaskTemplate2", "Description", 4, 1)
+            getInvestmentManager(), "TaskTemplate2", "Description", 4.0, 1)
         taskTemplates.put(2, taskTemplate2)
 
         taskTemplate2.addPredecessor(taskTemplate1)
@@ -83,7 +83,7 @@ object ProcessTemplatesMocks {
             1,
             "Testprocess 1",
             "Description",
-            100,
+            100.0,
             karlCustomerAdvisor,
             Instant.now(),
             null,
@@ -99,7 +99,7 @@ object ProcessTemplatesMocks {
             2,
             "Testprocess 2",
             "Description",
-            100,
+            100.0,
             kunigundeCustomerAdvisor,
             Instant.now(),
             null,
@@ -115,7 +115,7 @@ object ProcessTemplatesMocks {
             3,
             "Testprocess 3",
             "Description",
-            100,
+            100.0,
             kunigundeCustomerAdvisor,
             Instant.now(),
             null,

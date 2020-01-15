@@ -2,20 +2,20 @@ package de.se.team3.logic.domain
 
 import de.se.team3.logic.domain.mocks.ProcessTemplatesMocks
 import de.se.team3.logic.domain.mocks.UsersAndRolesMocks
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import org.junit.Test
 
 class ProcessTemplateTest {
 
     @Test
     fun testEstimatedDurationSum() {
         val processTemplate1 = ProcessTemplatesMocks.getProcessTemplate1()
-        assertEquals(10, processTemplate1.getEstimatedDurationSum())
+        assertEquals(10.0, processTemplate1.getEstimatedDurationSum())
 
         val processTemplate2 = ProcessTemplatesMocks.getProcessTemplate2()
-        assertEquals(20, processTemplate2.getEstimatedDurationSum())
+        assertEquals(20.0, processTemplate2.getEstimatedDurationSum())
     }
 
     @Test
