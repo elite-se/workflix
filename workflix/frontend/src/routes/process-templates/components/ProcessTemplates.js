@@ -31,7 +31,6 @@ type PropsType = {
 }
 
 const CustomLink = styled(Link)`
-  flex: 1;
   align-self: flex-end;
 `
 

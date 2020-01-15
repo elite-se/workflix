@@ -1,6 +1,6 @@
 // @flow
 
-import { times } from 'lodash'
+import { sortBy, times } from 'lodash'
 
 export type GraphDataType<N: number | ?number> = { id: number, predecessors: number[], estimatedDuration: N }
 
@@ -46,5 +46,5 @@ export function calcGraph<N: number | ?number, T: GraphDataType<N>> (
   const lastEndDate = Math.max(...nodes.map(node => node.endDate))
   nodes.filter(node => node.endDate === lastEndDate).forEach(setCriticalPath)
 
-  return nodes.sort((node1, node2) => node1.startDate - node2.startDate)
+  return sortBy(nodes, node => node.startDate, node => node.endDate)
 }
