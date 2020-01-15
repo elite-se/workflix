@@ -241,8 +241,7 @@ object ProcessDAO : ProcessDAOInterface {
             row.deadline to process.getDeadline()
 
             where {
-                (row.id eq process.id!!) and
-                        (row.status eq ProcessStatus.RUNNING.toString())
+                (row.id eq process.id!!)
             }
         }
         return affectedRows != 0
