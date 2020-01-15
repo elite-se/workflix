@@ -66,7 +66,7 @@ class ProcessTemplateDetailsEditor extends React.Component<PropsType> {
         </Third>
         <Third>
           <FormGroup label='Duration Limit' labelInfo='(required, positive)'>
-            <NumericInput onValueChange={onDurationLimitChange} min={0.1} stepSize={0.1}
+            <NumericInput onValueChange={onDurationLimitChange}
                           intent={highlightValidation && (!durationLimit || durationLimit <= 0) ? 'danger' : 'none'}
                           value={durationLimit !== null ? durationLimit : ''} fill/>
           </FormGroup>
