@@ -106,7 +106,7 @@ class TaskTemplateEditor extends React.Component<PropsType> {
       <FormGroup label='Duration' labelInfo='(required, positive)'>
         <NumericInput placeholder='Duration...' value={task.estimatedDuration || ''}
                       intent={highlightValidation && (!task.estimatedDuration || task.estimatedDuration <= 0) ? 'danger' : 'none'}
-                      fill onValueChange={this.onDurationChange} min={0.1} stepSize={0.1}/>
+                      fill onValueChange={this.onDurationChange}/>
       </FormGroup>
       <FormGroup label='Necessary users' labelInfo='(required, positive)'>
         <NumericInput placeholder='Necessary users...' value={task.necessaryClosings}
