@@ -39,7 +39,7 @@ class ProcessGroupFilter extends React.Component<PropsType> {
 
   render () {
     return <SimpleMultiSelect
-      items={Array.from(this.props.processGroups.values())}
+      items={Array.from(this.props.processGroups.values()).filter(pg => !pg.deleted)}
       selection={this.props.filters.processGroups || []}
       render={this.getGroupTitle}
       toID={this.getGroupId}

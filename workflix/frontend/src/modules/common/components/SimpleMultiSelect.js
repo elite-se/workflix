@@ -54,10 +54,10 @@ class SimpleMultiSelect<T, IdType: number | string> extends React.Component<Prop
   }
 
   render () {
-    const BlueprintProcessGroupMultiSelect = MultiSelect.ofType<T>()
+    const MultiSelectInstance = MultiSelect.ofType<T>()
     const clearButton = !isEmpty(this.props.selection) &&
       <Button icon='cross' minimal onClick={this.props.onItemsCleared}/>
-    return <BlueprintProcessGroupMultiSelect
+    return <MultiSelectInstance
       {...this.props.multiSelectProps}
       itemListPredicate={this.itemListPredicate}
       itemRenderer={this.renderItem}
@@ -66,7 +66,8 @@ class SimpleMultiSelect<T, IdType: number | string> extends React.Component<Prop
       onItemSelect={this.onItemSelect}
       tagRenderer={this.props.render}
       tagInputProps={{ onRemove: this.onTagRemove, rightElement: clearButton }}
-      selectedItems={this.props.selection}/>
+      selectedItems={this.props.selection}
+      resetOnSelect/>
   }
 }
 
