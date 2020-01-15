@@ -1,10 +1,7 @@
-package de.se.team3.unittests
+package de.se.team3.logic.domain
 
-import de.se.team3.domainmocks.ProcessesMocks
-import de.se.team3.domainmocks.UsersAndRolesMocks
-import de.se.team3.logic.domain.ProcessStatus
-import de.se.team3.logic.domain.TaskAssignment
-import de.se.team3.logic.domain.TaskComment
+import de.se.team3.logic.domain.mocks.ProcessesMocks
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks
 import java.time.Instant
 import kotlin.test.assertEquals
 import kotlin.test.assertFails

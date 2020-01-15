@@ -1,12 +1,12 @@
-package de.se.team3.domainmocks
+package de.se.team3.logic.domain.mocks
 
-import de.se.team3.domainmocks.UsersAndRolesMocks.getAccountant
-import de.se.team3.domainmocks.UsersAndRolesMocks.getCustomerAdvisor
-import de.se.team3.domainmocks.UsersAndRolesMocks.getInvestmentManager
-import de.se.team3.domainmocks.UsersAndRolesMocks.karlCustomerAdvisor
-import de.se.team3.domainmocks.UsersAndRolesMocks.kunigundeCustomerAdvisor
 import de.se.team3.logic.domain.ProcessTemplate
 import de.se.team3.logic.domain.TaskTemplate
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks.getAccountant
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks.getCustomerAdvisor
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks.getInvestmentManager
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks.karlCustomerAdvisor
+import de.se.team3.logic.domain.mocks.UsersAndRolesMocks.kunigundeCustomerAdvisor
 import java.time.Instant
 
 object ProcessTemplatesMocks {
