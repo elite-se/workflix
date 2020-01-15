@@ -20,8 +20,14 @@ type PropsType = {|
   onRoleDeleted: (UserRoleType) => void
 |}
 
-class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }> {
-  state = { deleting: false }
+type StateType = {|
+  deleting: boolean,
+  name: string,
+  description: string
+|}
+
+class UserRoleCardEdit extends React.Component<PropsType, StateType> {
+  state = { deleting: false, name: this.props.userRole.name, description: this.props.userRole.description }
 
   onUserAdded = (user: UserType) => {
     const { userRole } = this.props
@@ -45,21 +51,41 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
     new UserRoleApi().patchUserRole(updatedRole)
       .then(() => this.props.onRoleChanged(updatedRole))
       .catch(toastifyError)
+      .finally(this.resetToProps)
   }
 
-  onNameChanged = (name: string) => {
+  componentDidUpdate (prevProps: PropsType) {
+    if (
+      prevProps.userRole.name !== this.props.userRole.name ||
+      prevProps.userRole.description !== this.props.userRole.description
+    ) {
+      this.resetToProps()
+    }
+  }
+
+  resetToProps = () => {
+    this.setState({
+      name: this.props.userRole.name,
+      description: this.props.userRole.description
+    })
+  }
+
+  onNameConfirm = (name: string) => {
     this.patchAndPropagate({
       ...this.props.userRole,
       name
     })
   }
 
-  onDescriptionChanged = (description: string) => {
+  onDescriptionConfirm = (description: string) => {
     this.patchAndPropagate({
       ...this.props.userRole,
       description
     })
   }
+
+  onNameChange = (name: string) => this.setState({ name })
+  onDescriptionChange = (description: string) => this.setState({ description })
 
   onDelete = stopPropagation(() => {
     this.setState({ deleting: true })
@@ -78,13 +104,14 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
 
   render () {
     const { userRole, users } = this.props
+    const { name, description } = this.state
     return <StyledCard key={userRole.id} elevation={Elevation.FOUR} interactive>
       <IconRow icon='people'><H3>
-        <EditableText onConfirm={this.onNameChanged} defaultValue={userRole.name} placeholder='Name'
+        <EditableText onConfirm={this.onNameConfirm} onChange={this.onNameChange} value={name} placeholder='Name'
                       alwaysRenderInput/>
       </H3></IconRow>
       <IconRow icon='annotation' multiLine>
-        <EditableText onConfirm={this.onDescriptionChanged} defaultValue={userRole.description}
+        <EditableText onConfirm={this.onDescriptionConfirm} onChange={this.onDescriptionChange} value={description}
                       placeholder='Description' multiline/>
       </IconRow>
       <IconRow icon='person' multiLine>

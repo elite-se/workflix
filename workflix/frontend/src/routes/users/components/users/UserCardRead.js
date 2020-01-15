@@ -27,9 +27,9 @@ class UserCardRead extends React.Component<PropsType> {
   render () {
     const { user, processGroups, roles } = this.props
     const usersGroups = sortBy(user.processGroupIds.map(id => processGroups.get(id)).filter(Boolean),
-      group => group.title)
+      group => group.title.toLocaleLowerCase())
     const usersRoles = sortBy(user.userRoleIds.map(id => roles.get(id)).filter(Boolean),
-      role => role.name)
+      role => role.name.toLocaleLowerCase())
     return <StyledCard key={user.id} onClick={this.onClick} interactive>
       <H3>{user.name}</H3>
       <IconRow icon='person'>{user.displayname}</IconRow>

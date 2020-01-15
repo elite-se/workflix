@@ -88,24 +88,30 @@ class ProcessList extends React.Component<PropsType, StateType> {
               </tr>
               </thead>
               <tbody>
-              {orderBy(processes.map(process => ({
-                id: process.id,
-                title: process.title,
-                startedAt: process.startedAt,
-                deadline: process.deadline, // eslint-disable-next-line no-magic-numbers
-                progress: ProgressTranslation[process.status] + process.progress.toString().padStart(3, '0'),
-                processGroup: processGroups.get(process.processGroupId)?.title || '',
-                starter: users.get(process.starterId)?.name || '',
-                process: process
-              })), [orderName], [orderDir]).map(item => (
-                <tr key={item.id} onClick={this.navigateToProcess(item.process)}>
-                  <td>{item.id}</td>
-                  <td>{item.title}</td>
-                  <td>{item.startedAt.toLocaleString()}</td>
-                  <td>{item.deadline.toLocaleDateString()}</td>
+              {orderBy(processes.map(process => {
+                const processGroup = processGroups.get(process.processGroupId)
+                const starter = users.get(process.starterId)
+                return ({
+                  id: process.id,
+                  title: process.title.toLocaleLowerCase(),
+                  startedAt: process.startedAt,
+                  deadline: process.deadline, // eslint-disable-next-line no-magic-numbers
+                  progress: ProgressTranslation[process.status] + process.progress.toString().padStart(3, '0'),
+                  processGroup: processGroup ? processGroup.title.toLocaleLowerCase() : '',
+                  processGroupDisplay: processGroup?.title,
+                  starter: starter ? starter.name.toLocaleLowerCase() : '',
+                  starterDisplay: starter?.name,
+                  process: process
+                })
+              }), [orderName], [orderDir]).map(item => (
+                <tr key={item.process.id} onClick={this.navigateToProcess(item.process)}>
+                  <td>{item.process.id}</td>
+                  <td>{item.process.title}</td>
+                  <td>{item.process.startedAt.toLocaleString()}</td>
+                  <td>{item.process.deadline.toLocaleDateString()}</td>
                   <td><ProcessProgress process={item.process}/></td>
-                  <td>{item.processGroup}</td>
-                  <td>{item.starter}</td>
+                  <td>{item.processGroupDisplay}</td>
+                  <td>{item.starterDisplay}</td>
                 </tr>
               ))}
               </tbody>

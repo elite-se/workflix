@@ -13,6 +13,7 @@ import FlipMove from 'react-flip-move'
 import ProcessGroupsApi from '../../../modules/api/ProcessGroupsApi'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import { Link } from '@reach/router'
+import { sortBy } from 'lodash'
 
 const TemplatesContainer = styled<{}, {}, 'div'>(FlipMove)`
   margin: 10px 20px;
@@ -39,6 +40,7 @@ class ProcessTemplates extends React.Component<PropsType> {
 
   render () {
     const { users, templates, processGroups } = this.props
+    const sortedTemplates = sortBy(templates, template => template.title.toLocaleLowerCase())
     return <div style={{
       display: 'flex',
       flexDirection: 'column'
@@ -47,7 +49,7 @@ class ProcessTemplates extends React.Component<PropsType> {
         <Button icon='plus' intent='success'>Create new template</Button>
       </CustomLink>
       <TemplatesContainer>
-        {templates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}
+        {sortedTemplates.map(template => <ProcessTemplateCard key={template.id} template={template} users={users}
                                                         refresh={this.refresh} process processGroups={processGroups}/>)}
       </TemplatesContainer>
     </div>

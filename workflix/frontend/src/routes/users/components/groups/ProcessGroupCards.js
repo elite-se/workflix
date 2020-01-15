@@ -52,7 +52,7 @@ export default class ProcessGroupCards extends React.Component<PropsType> {
   }
 
   getSortedGroups (): ProcessGroupType[] {
-    return sortBy(Array.from(this.props.processGroups.values()), group => group.title)
+    return sortBy(Array.from(this.props.processGroups.values()), group => group.title.toLocaleLowerCase())
   }
 
   getCardForGroup = (group: ProcessGroupType) => {

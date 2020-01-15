@@ -21,8 +21,18 @@ type PropsType = {|
   onProcessGroupDeleted: (ProcessGroupType) => void
 |}
 
-class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolean }> {
-  state = { deleting: false }
+type StateType = {|
+  deleting: boolean,
+  title: string,
+  description: string
+|}
+
+class ProcessGroupCardEdit extends React.Component<PropsType, StateType> {
+  state = {
+    deleting: false,
+    title: this.props.processGroup.title,
+    description: this.props.processGroup.description
+  }
 
   onUserAdded = (user: UserType) => {
     const { processGroup } = this.props
@@ -36,6 +46,23 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
     new ProcessGroupsApi().removeMembership(processGroup.id, user.id)
       .then(() => this.props.onGroupMembershipRemoved(processGroup, user))
       .catch(toastifyError)
+      .finally(this.resetToProps)
+  }
+
+  componentDidUpdate (prevProps: PropsType) {
+    if (
+      prevProps.processGroup.title !== this.props.processGroup.title ||
+      prevProps.processGroup.description !== this.props.processGroup.description
+    ) {
+      this.resetToProps()
+    }
+  }
+
+  resetToProps = () => {
+    this.setState({
+      title: this.props.processGroup.title,
+      description: this.props.processGroup.description
+    })
   }
 
   onUsersCleared = () => {
@@ -46,21 +73,25 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
     new ProcessGroupsApi().patchProcessGroup(updatedGroup)
       .then(() => this.props.onProcessGroupChanged(updatedGroup))
       .catch(toastifyError)
+      .finally(this.resetToProps)
   }
 
-  onTitleChanged = (title: string) => {
+  onTitleConfirm = (title: string) => {
     this.patchAndPropagate({
       ...this.props.processGroup,
       title
     })
   }
 
-  onDescriptionChanged = (description: string) => {
+  onDescriptionConfirm = (description: string) => {
     this.patchAndPropagate({
       ...this.props.processGroup,
       description
     })
   }
+
+  onTitleChange = (title: string) => this.setState({ title })
+  onDescriptionChange = (description: string) => this.setState({ description })
 
   onDelete = stopPropagation(() => {
     this.setState({ deleting: true })
@@ -79,14 +110,15 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
 
   render () {
     const { processGroup, users } = this.props
+    const { title, description } = this.state
     return <TitledCard key={processGroup.id} elevation={Elevation.FOUR} interactive>
       <IconRow icon='office'><H3>
-        <EditableText onConfirm={this.onTitleChanged} defaultValue={processGroup.title} placeholder='Title'
-                      alwaysRenderInput/>
+        <EditableText onConfirm={this.onTitleConfirm} value={title} placeholder='Title'
+                      alwaysRenderInput onChange={this.onTitleChange}/>
       </H3></IconRow>
       <IconRow icon='annotation' multiLine>
-        <EditableText onConfirm={this.onDescriptionChanged} defaultValue={processGroup.description}
-                      placeholder='Description' multiline/>
+        <EditableText onConfirm={this.onDescriptionConfirm} value={description}
+                      placeholder='Description' onChange={this.onDescriptionChange} multiline/>
       </IconRow>
       <IconRow icon='person' multiLine>
         <SimpleMultiSelect items={Array.from(users.values())} selection={this.getSelectedUsers()}

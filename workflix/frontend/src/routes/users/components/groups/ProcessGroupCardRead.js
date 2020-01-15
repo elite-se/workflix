@@ -24,7 +24,7 @@ class ProcessGroupCardRead extends React.Component<PropsType> {
   render () {
     const { processGroup, users } = this.props
     const groupUsers = sortBy(processGroup.membersIds.map(id => users.get(id)).filter(Boolean),
-      user => user.name)
+      user => user.name.toLocaleLowerCase())
     return <StyledCard key={processGroup.id} onClick={this.onClick} interactive>
       <IconRow icon='office'><H3>{processGroup.title}</H3></IconRow>
       {processGroup.description && <IconRow icon='annotation' multiLine>

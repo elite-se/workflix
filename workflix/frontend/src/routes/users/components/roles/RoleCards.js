@@ -21,7 +21,7 @@ type PropsType = {|
   onRoleDeleted: (UserRoleType) => void
 |}
 
-export default class UserCards extends React.Component<PropsType> {
+export default class RoleCards extends React.Component<PropsType> {
   onCreate = () => {
     this.props.onRoleSelected(null)
     const newRoleSkeleton = {
@@ -49,7 +49,7 @@ export default class UserCards extends React.Component<PropsType> {
   }
 
   getSortedRoles (): UserRoleType[] {
-    return sortBy(Array.from(this.props.roles.values()), role => role.name)
+    return sortBy(Array.from(this.props.roles.values()), role => role.name.toLocaleLowerCase())
   }
 
   getCardForRole = (role: UserRoleType) => {
