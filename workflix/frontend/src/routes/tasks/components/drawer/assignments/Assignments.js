@@ -11,7 +11,8 @@ import SetDoneButton from './SetDoneButton'
 type PropsType = {
   task: TaskType,
   onTaskModified: (TaskType) => void,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  isReadOnly: boolean
 }
 
 class Assignments extends React.Component<PropsType> {
@@ -23,24 +24,25 @@ class Assignments extends React.Component<PropsType> {
   }
 
   canAssign = (user: UserType) => {
-    const task = this.props.task
-    return task.status !== 'CLOSED' &&
+    const { task, isReadOnly } = this.props
+    return !isReadOnly && task.status !== 'CLOSED' &&
       !task.assignments.find(ass => ass.assigneeId === user.id)
   }
 
   canSetDone = (user: UserType) => {
-    const task = this.props.task
+    const { task, isReadOnly } = this.props
     const assignment = task.assignments.find(ass => ass.assigneeId === user.id)
-    return assignment &&
+    return !isReadOnly && assignment &&
       task.status === 'RUNNING' &&
       !assignment.closed
   }
 
   render () {
-    const { task, users } = this.props
+    const { task, users, isReadOnly } = this.props
     const curUser = users.get(getCurrentUserId())
     return <>
-      <TaskAssignmentSelect task={task} onAssignmentsChanged={this.onAssignmentsChanged} users={users}/>
+      <TaskAssignmentSelect task={task} onAssignmentsChanged={this.onAssignmentsChanged} users={users}
+                            isReadOnly={isReadOnly}/>
       {curUser && this.canAssign(curUser) &&
         <AssignMeButton task={task} onAssignmentsChanged={this.onAssignmentsChanged} user={curUser}/>}
       {curUser && this.canSetDone(curUser) &&

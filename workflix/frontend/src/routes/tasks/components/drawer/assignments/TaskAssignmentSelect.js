@@ -16,7 +16,8 @@ const UserSelect = MultiSelect.ofType<UserType>()
 type PropsType = {
   task: TaskType,
   onAssignmentsChanged: (TaskAssignmentType[]) => void,
-  users: Map<string, UserType>
+  users: Map<string, UserType>,
+  isReadOnly: boolean
 }
 
 class TaskAssignmentSelect extends React.Component<PropsType> {
@@ -114,10 +115,11 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
   }
 
   render () {
-    const task = this.props.task
+    const { task, isReadOnly } = this.props
     const assignees = this.usersArray
       .filter(user => task.assignments.find(ass => ass.assigneeId === user.id))
-    const clearButton = task.assignments.length > 0 && <Button icon='cross' minimal onClick={this.onClear}/>
+    const clearButton = task.assignments.length > 0 && !isReadOnly &&
+      <Button icon='cross' minimal onClick={this.onClear}/>
     return <UserSelect
       items={this.usersArray}
       itemRenderer={this.renderUser}
@@ -129,7 +131,8 @@ class TaskAssignmentSelect extends React.Component<PropsType> {
       tagInputProps={{
         onRemove: this.onTagRemoved,
         rightElement: clearButton,
-        tagProps: this.tagProps
+        tagProps: this.tagProps,
+        disabled: isReadOnly
       }}
       itemPredicate={this.itemPredicate}
       itemListPredicate={this.itemListPredicate}

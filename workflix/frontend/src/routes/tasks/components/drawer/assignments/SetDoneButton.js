@@ -29,7 +29,10 @@ class SetDoneButton extends React.Component<PropsType, { loading: boolean }> {
           doneAt: new Date()
         } : ass))
       })
-      .catch(toastifyError)
+      .catch(err => {
+        this.setState({ loading: false })
+        toastifyError(err)
+      })
   }
 
   render () {

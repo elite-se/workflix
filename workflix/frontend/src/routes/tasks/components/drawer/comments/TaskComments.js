@@ -14,12 +14,12 @@ type PropsType = {
 
 class TaskComments extends React.Component<PropsType> {
   render () {
-    const task = this.props.task
+    const { task, users, onTaskModified } = this.props
     return <div>
       {task.comments.map(comment => {
-        return <CommentBubble key={comment.id} comment={comment} users={this.props.users}/>
+        return <CommentBubble key={comment.id} comment={comment} users={users}/>
       })}
-      <WriteCommentBubble task={this.props.task} onTaskModified={this.props.onTaskModified}/>
+      <WriteCommentBubble task={task} onTaskModified={onTaskModified}/>
     </div>
   }
 }
