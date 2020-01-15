@@ -4,6 +4,7 @@ import type { Node } from 'react'
 import React from 'react'
 import { Colors } from '@blueprintjs/core'
 import type { ProcessedNodeType } from '../graph-utils'
+import { renderFloat } from '../../common/constants'
 
 export type ChartNodeType = {
   id: number,
@@ -97,7 +98,7 @@ class ProcessChart extends React.Component<PropsType, StateType> {
                 height={ITEM_HEIGHT * miniFactor} width={width}/>
         )),
         !mini && <text x={drawWidth} y={(tasks.length + 1 / 2) * itemHeight + LEGEND_TEXT_OFFSET}
-                textAnchor='end'>Critical Length: {lastEndDate}</text>,
+                textAnchor='end'>Critical Length: {renderFloat(lastEndDate)}</text>,
         ...tasks.flatMap((node, index) =>
           node.predecessors
             .map(id => tasks.findIndex(x => x.id === id))

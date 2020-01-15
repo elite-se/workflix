@@ -16,6 +16,7 @@ import StartProcessForm from './StartProcessForm'
 import type { ProcessGroupType } from '../../../modules/datatypes/ProcessGroup'
 import ScrollIntoViewOnMount from '../../../modules/common/components/ScrollIntoViewOnMount'
 import { toastifyError } from '../../../modules/common/toastifyError'
+import { renderFloat } from '../../../modules/common/constants'
 
 const CustomLink: StyledComponent<{}, {}, *> = styled(Link)`
   margin: 5px;
@@ -120,8 +121,12 @@ class ProcessTemplateCard extends React.Component<PropsType, StateType> {
         margin: '10px'
       }} interactive>
         <H3>{template.title}</H3>
-        <Item><Icon icon='stopwatch'/><span>Duration Limit of {template.durationLimit}</span></Item>
-        <Item><Icon icon='stopwatch'/><span>Critical Path of length {criticalLength}</span></Item>
+        <Item>
+          <Icon icon='stopwatch'/><span>Duration Limit of {renderFloat(template.durationLimit)}</span>
+        </Item>
+        <Item>
+          <Icon icon='stopwatch'/><span>Critical Path of length {renderFloat(criticalLength)}</span>
+        </Item>
         <Item><Icon
           icon='refresh'/><span>{template.runningProcesses} of {template.processCount} processes running</span></Item>
         <Item><Icon icon='time'/><span>Created at {template.createdAt.toLocaleString()}</span></Item>
