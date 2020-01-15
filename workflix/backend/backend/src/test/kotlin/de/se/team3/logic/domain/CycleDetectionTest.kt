@@ -3,8 +3,8 @@ package de.se.team3.logic.domain
 import de.se.team3.logic.domain.mocks.ProcessTemplatesMocks
 import de.se.team3.logic.domain.mocks.UsersAndRolesMocks
 import de.se.team3.logic.domain.processTemplateUtil.ProcessTemplateCycleDetection
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class CycleDetectionTest {
 

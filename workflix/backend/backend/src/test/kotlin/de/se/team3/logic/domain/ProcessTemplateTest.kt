@@ -2,10 +2,10 @@ package de.se.team3.logic.domain
 
 import de.se.team3.logic.domain.mocks.ProcessTemplatesMocks
 import de.se.team3.logic.domain.mocks.UsersAndRolesMocks
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class ProcessTemplateTest {
 
