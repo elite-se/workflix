@@ -12,10 +12,10 @@ class ProcessTemplateTest {
     @Test
     fun testEstimatedDurationSum() {
         val processTemplate1 = ProcessTemplatesMocks.getProcessTemplate1()
-        assertEquals(10, processTemplate1.getEstimatedDurationSum())
+        assertEquals(10.0, processTemplate1.getEstimatedDurationSum())
 
         val processTemplate2 = ProcessTemplatesMocks.getProcessTemplate2()
-        assertEquals(20, processTemplate2.getEstimatedDurationSum())
+        assertEquals(20.0, processTemplate2.getEstimatedDurationSum())
     }
 
     @Test

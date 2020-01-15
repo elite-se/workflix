@@ -79,7 +79,7 @@ object ProcessTemplatesHandler {
             val responsibleUserRoleId = taskTemplateJsonObject.getInt("responsibleUserRoleId")
             val name = taskTemplateJsonObject.getString("name")
             val description = taskTemplateJsonObject.getString("description")
-            val estimatedDuration = taskTemplateJsonObject.getInt("estimatedDuration")
+            val estimatedDuration = taskTemplateJsonObject.getDouble("estimatedDuration")
             val necessaryClosings = taskTemplateJsonObject.getInt("necessaryClosings")
 
             val responsibleUserRole = UserRoleContainer.getUserRole(responsibleUserRoleId)
@@ -114,7 +114,7 @@ object ProcessTemplatesHandler {
 
         val title = processTemplateJsonObject.getString("title")
         val description = processTemplateJsonObject.getString("description")
-        val durationLimit = processTemplateJsonObject.getInt("durationLimit")
+        val durationLimit = processTemplateJsonObject.getDouble("durationLimit")
         val ownerId = processTemplateJsonObject.getString("ownerId")
 
         val owner = UserContainer.getUser(ownerId)
