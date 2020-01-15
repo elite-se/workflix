@@ -97,8 +97,9 @@ class ProcessChart extends React.Component<PropsType, StateType> {
           <rect key={index} x={-HORIZONTAL_PADDING} y={index * itemHeight} className='even-proc-chart-row'
                 height={ITEM_HEIGHT * miniFactor} width={width}/>
         )),
-        !mini && <text x={drawWidth} y={(tasks.length + 1 / 2) * itemHeight + LEGEND_TEXT_OFFSET}
-                textAnchor='end'>Critical Length: {renderFloat(lastEndDate)}</text>,
+        !mini && <text className='chart-legend' x={drawWidth}
+                       y={(tasks.length + 1 / 2) * itemHeight + LEGEND_TEXT_OFFSET}
+                       textAnchor='end'>Critical Length: {renderFloat(lastEndDate)}</text>,
         ...tasks.flatMap((node, index) =>
           node.predecessors
             .map(id => tasks.findIndex(x => x.id === id))

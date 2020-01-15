@@ -5,7 +5,9 @@ body.bp3-dark {
 .even-proc-chart-row {
     fill: #EBF1F5 /* light-gray4 */
 }
-
+.bp3-dark .chart-legend {
+    fill: #FFFFFF;
+}
 .bp3-dark .even-proc-chart-row {
     fill: #30404D /* dark-gray4 */
 }
