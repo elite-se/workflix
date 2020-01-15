@@ -111,7 +111,7 @@ class ProcessCard extends React.Component<PropsType, StateType> {
       <CustomCard interactive elevation={isSelected ? Elevation.FOUR : undefined}>
         <H4>{`#${process.id}: ${process.title}`}</H4>
         <Item><Icon icon='office'/>Process group: {processGroup?.title}</Item>
-        <Item><Icon icon='stopwatch'/>Deadline: {process.deadline.toLocaleString()}</Item>
+        <Item><Icon icon='stopwatch'/>Deadline: {process.deadline.toLocaleDateString()}</Item>
         <TaskList>
           {
             collapseClosed.length > 0 && <>
