@@ -29,7 +29,7 @@ export default class UserCards extends React.Component<PropsType> {
   }
 
   getSortedUsers (): UserType[] {
-    return sortBy(Array.from(this.props.users.values()), user => user.name)
+    return sortBy(Array.from(this.props.users.values()), user => user.name.toLocaleLowerCase())
   }
 
   getCardForUser = (user: UserType) => {

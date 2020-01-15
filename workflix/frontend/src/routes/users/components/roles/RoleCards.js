@@ -49,7 +49,7 @@ export default class RoleCards extends React.Component<PropsType> {
   }
 
   getSortedRoles (): UserRoleType[] {
-    return sortBy(Array.from(this.props.roles.values()), role => role.name)
+    return sortBy(Array.from(this.props.roles.values()), role => role.name.toLocaleLowerCase())
   }
 
   getCardForRole = (role: UserRoleType) => {
