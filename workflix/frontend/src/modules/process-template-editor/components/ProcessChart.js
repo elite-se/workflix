@@ -40,6 +40,7 @@ const NODE_HEIGHT = 15
 const EDGE_STROKE_WIDTH = 2
 const STROKE_RADIUS = 20
 const HORIZONTAL_PADDING = 10
+const LEGEND_TEXT_OFFSET = 10
 
 class ProcessChart extends React.Component<PropsType, StateType> {
   resizeObserver: ResizeObserver = new ResizeObserver(entries => this.updateWidth(entries[0]?.contentRect.width))
@@ -75,8 +76,8 @@ class ProcessChart extends React.Component<PropsType, StateType> {
     const itemHeight = ITEM_HEIGHT * miniFactor
     const strokeRadius = STROKE_RADIUS * miniFactor
 
-    return <svg width={width} height={tasks.length * itemHeight} style={{ position: 'absolute' }}
-                viewBox={`-${HORIZONTAL_PADDING} 0 ${width} ${tasks.length * itemHeight}`}>
+    return <svg width={width} height={(tasks.length + (mini ? 0 : 1)) * itemHeight} style={{ position: 'absolute' }}
+                viewBox={`-${HORIZONTAL_PADDING} 0 ${width} ${(tasks.length + (mini ? 0 : 1)) * itemHeight}`}>
       <defs>
         <marker id='TriangleGray' viewBox='0 0 10 10' refX='10' refY='5'
                 markerUnits='strokeWidth' markerWidth='5' markerHeight='5'
@@ -90,10 +91,13 @@ class ProcessChart extends React.Component<PropsType, StateType> {
         </marker>
       </defs>
       {[
+
         !mini && tasks.map((node, index) => (index % 2 === 0 &&
           <rect key={index} x={-HORIZONTAL_PADDING} y={index * itemHeight} className='even-proc-chart-row'
                 height={ITEM_HEIGHT * miniFactor} width={width}/>
         )),
+        !mini && <text x={drawWidth} y={(tasks.length + 1 / 2) * itemHeight + LEGEND_TEXT_OFFSET}
+                textAnchor='end'>Critical Length: {lastEndDate}</text>,
         ...tasks.flatMap((node, index) =>
           node.predecessors
             .map(id => tasks.findIndex(x => x.id === id))
@@ -134,10 +138,12 @@ class ProcessChart extends React.Component<PropsType, StateType> {
   }
 
   render () {
+    const { tasks, mini } = this.props
+    const itemHeight = ITEM_HEIGHT * (mini ? 1 / 2 : 1)
     return <div ref={this.setDivRef} style={{
       flex: 1,
       position: 'relative',
-      height: this.props.tasks.length * ITEM_HEIGHT * (this.props.mini ? 1 / 2 : 1)
+      height: (tasks.length + (mini ? 0 : 1)) * itemHeight
     }}>
       {this.renderSvg()}
     </div>
