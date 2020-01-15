@@ -2,6 +2,7 @@ package de.se.team3.persistence.meta
 
 import me.liuwj.ktorm.schema.Table
 import me.liuwj.ktorm.schema.boolean
+import me.liuwj.ktorm.schema.double
 import me.liuwj.ktorm.schema.int
 import me.liuwj.ktorm.schema.text
 import me.liuwj.ktorm.schema.timestamp
@@ -36,7 +37,7 @@ object ProcessTemplatesTable : Table<Nothing>("process_templates") {
     val ownerId by varchar("owner_id")
     val title by varchar("title")
     val description by text("description")
-    val durationLimit by int("duration_limit")
+    val durationLimit by double("duration_limit")
     val createdAt by timestamp("created_at")
     val formerVersion by int("former_version")
     val deleted by boolean("deleted")
@@ -47,7 +48,7 @@ object ProcessTemplatesView : Table<Nothing>("process_templates_plus") {
     val ownerId by varchar("owner_id")
     val title by varchar("title")
     val description by text("description")
-    val durationLimit by int("duration_limit")
+    val durationLimit by double("duration_limit")
     val createdAt by timestamp("created_at")
     val formerVersion by int("former_version")
     val processCount by int("process_count")
@@ -61,7 +62,7 @@ object TaskTemplatesTable : Table<Nothing>("task_templates") {
     val responsibleUserRoleId by int("responsible_user_role_id")
     val name by varchar("name")
     val description by text("description")
-    val estimatedDuration by int("estimated_duration")
+    val estimatedDuration by double("estimated_duration")
     val necessaryClosings by int("necessary_closings")
 }
 

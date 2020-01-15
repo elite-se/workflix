@@ -15,7 +15,7 @@ class TaskTemplate(
     val responsibleUserRole: UserRole,
     val name: String,
     val description: String,
-    val estimatedDuration: Int,
+    val estimatedDuration: Double,
     val necessaryClosings: Int
 ) {
 

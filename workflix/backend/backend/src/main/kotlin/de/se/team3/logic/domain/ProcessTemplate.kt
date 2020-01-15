@@ -14,7 +14,7 @@ data class ProcessTemplate(
     val id: Int?,
     val title: String,
     val description: String,
-    val durationLimit: Int,
+    val durationLimit: Double,
     @JsonIgnore
     val owner: User,
     @JsonSerialize(using = InstantSerializer::class)
@@ -44,7 +44,7 @@ data class ProcessTemplate(
     constructor(
         title: String,
         description: String,
-        durationLimit: Int,
+        durationLimit: Double,
         owner: User,
         taskTemplates: Map<Int, TaskTemplate>
     ) : this(
@@ -70,7 +70,7 @@ data class ProcessTemplate(
         id: Int,
         title: String,
         description: String,
-        durationLimit: Int,
+        durationLimit: Double,
         owner: User,
         taskTemplates: Map<Int, TaskTemplate>
     ) : this(
@@ -124,10 +124,10 @@ data class ProcessTemplate(
      * belongs to this process template.
      */
     @JsonIgnore
-    fun getEstimatedDurationSum(): Int {
-        var sum = 0
+    fun getEstimatedDurationSum(): Double {
+        var sum = 0.0
         taskTemplates.forEach { (_, taskTemplate) ->
-            sum += taskTemplate.estimatedDuration ?: 1
+            sum += taskTemplate.estimatedDuration
         }
         return sum
     }
