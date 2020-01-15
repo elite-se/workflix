@@ -1,6 +1,6 @@
 // @flow
 
-import { Colors, Drawer, FormGroup } from '@blueprintjs/core'
+import { Callout, Colors, Drawer, FormGroup } from '@blueprintjs/core'
 import TaskList from './TaskList'
 import ProcessChart, { chartNodeFromProcessedNode } from './ProcessChart'
 import React from 'react'
@@ -16,7 +16,8 @@ type PropsType = {
   tasks: IncompleteTaskTemplateType[],
   highlightValidation: boolean,
   onTasksChange: (tasks: IncompleteTaskTemplateType[]) => void,
-  setDrawerOpened: (drawerOpened: boolean) => void
+  setDrawerOpened: (drawerOpened: boolean) => void,
+  durationLimit: ?number
 }
 
 type StateType = {
@@ -99,7 +100,7 @@ class TaskTemplateListEditor extends React.Component<PropsType, StateType> {
   )
 
   render () {
-    const { highlightValidation, tasks, userRoles } = this.props
+    const { highlightValidation, tasks, userRoles, durationLimit } = this.props
     const { selectedTaskId, highlightTaskValidation } = this.state
 
     const task = tasks.find(task => task.id === selectedTaskId)
@@ -107,17 +108,22 @@ class TaskTemplateListEditor extends React.Component<PropsType, StateType> {
     const chartNodes = processedNodes.map(
       node => chartNodeFromProcessedNode(node, node.id === selectedTaskId ? Colors.BLUE4 : Colors.BLUE1)
     )
+    const showCritical = durationLimit && durationLimit < Math.max(...chartNodes.map(node => node.endDate))
     return <FormGroup label='Task Templates' labelInfo='(at least one required)'>
       <div style={{
         display: 'flex',
         borderRadius: '3px',
         padding: '10px',
+        flexDirection: 'column',
         border: `1px solid ${highlightValidation && tasks.length === 0 ? Colors.RED2 : Colors.LIGHT_GRAY1}`
       }}>
-        <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes.map(node => node.data)}
-                  createTask={this.createTask} selectTaskId={this.selectTaskId}
-                  highlightAdd={highlightValidation && tasks.length === 0}/>
-        <ProcessChart tasks={chartNodes} selectedId={selectedTaskId} selectTaskId={this.selectTaskId}/>
+        {showCritical && <Callout title='Critical path is longer than the duration limit.' intent='danger'/>}
+        <div style={{ display: 'flex' }}>
+          <TaskList selectedId={selectedTaskId} taskTemplates={processedNodes.map(node => node.data)}
+                    createTask={this.createTask} selectTaskId={this.selectTaskId}
+                    highlightAdd={highlightValidation && tasks.length === 0}/>
+          <ProcessChart tasks={chartNodes} selectedId={selectedTaskId} selectTaskId={this.selectTaskId}/>
+        </div>
       </div>
       <Drawer size={Drawer.SIZE_SMALL} hasBackdrop={false} isOpen={task != null} title={task?.name || ''}
               onClose={this.unselectTask} style={{ overflow: 'auto' }} onOpening={onOpenRemoveOverlayClass}>

@@ -129,8 +129,9 @@ class ProcessTemplateEditor extends React.Component<PropsType, StateType> {
                                     onDescriptionChange={this.onDescriptionChange} description={description}
                                     onTitleChange={this.onTitleChange} title={title} onOwnerChange={this.onOwnerChange}
                                     highlightValidation={highlightValidation} users={users} owner={owner}/>
-      <TaskTemplateListEditor tasks={tasks} userRoles={userRoles} onTasksChange={this.onTasksChange}
-                              highlightValidation={highlightValidation} setDrawerOpened={this.setDrawerOpened}/>
+      <TaskTemplateListEditor tasks={tasks} durationLimit={durationLimit} userRoles={userRoles}
+                              onTasksChange={this.onTasksChange} highlightValidation={highlightValidation}
+                              setDrawerOpened={this.setDrawerOpened}/>
     </div>
   }
 }
