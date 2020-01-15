@@ -26,14 +26,14 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
   onUserAdded = (user: UserType) => {
     const { userRole } = this.props
     new UserRoleApi().addRoleMembership(userRole.id, user.id)
-      .then(this.props.onRoleMembershipAdded(userRole, user))
+      .then(() => this.props.onRoleMembershipAdded(userRole, user))
       .catch(toastifyError)
   }
 
   onUserRemoved = (user: UserType) => {
     const { userRole } = this.props
     new UserRoleApi().removeRoleMembership(userRole.id, user.id)
-      .then(this.props.onRoleMembershipRemoved(userRole, user))
+      .then(() => this.props.onRoleMembershipRemoved(userRole, user))
       .catch(toastifyError)
   }
 
@@ -43,7 +43,7 @@ class UserRoleCardEdit extends React.Component<PropsType, { deleting: boolean }>
 
   patchAndPropagate = (updatedRole: UserRoleType) => {
     new UserRoleApi().patchUserRole(updatedRole)
-      .then(this.props.onRoleChanged(updatedRole))
+      .then(() => this.props.onRoleChanged(updatedRole))
       .catch(toastifyError)
   }
 

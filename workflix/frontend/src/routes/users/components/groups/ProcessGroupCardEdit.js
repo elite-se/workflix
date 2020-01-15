@@ -27,14 +27,14 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
   onUserAdded = (user: UserType) => {
     const { processGroup } = this.props
     new ProcessGroupsApi().addMembership(processGroup.id, user.id)
-      .then(this.props.onGroupMembershipAdded(processGroup, user))
+      .then(() => this.props.onGroupMembershipAdded(processGroup, user))
       .catch(toastifyError)
   }
 
   onUserRemoved = (user: UserType) => {
     const { processGroup } = this.props
     new ProcessGroupsApi().removeMembership(processGroup.id, user.id)
-      .then(this.props.onGroupMembershipRemoved(processGroup, user))
+      .then(() => this.props.onGroupMembershipRemoved(processGroup, user))
       .catch(toastifyError)
   }
 
@@ -44,7 +44,7 @@ class ProcessGroupCardEdit extends React.Component<PropsType, { deleting: boolea
 
   patchAndPropagate = (updatedGroup: ProcessGroupType) => {
     new ProcessGroupsApi().patchProcessGroup(updatedGroup)
-      .then(this.props.onProcessGroupChanged(updatedGroup))
+      .then(() => this.props.onProcessGroupChanged(updatedGroup))
       .catch(toastifyError)
   }
 
