@@ -21,7 +21,7 @@ type PropsType = {|
   onRoleDeleted: (UserRoleType) => void
 |}
 
-export default class UserCards extends React.Component<PropsType> {
+export default class RoleCards extends React.Component<PropsType> {
   onCreate = () => {
     this.props.onRoleSelected(null)
     const newRoleSkeleton = {
