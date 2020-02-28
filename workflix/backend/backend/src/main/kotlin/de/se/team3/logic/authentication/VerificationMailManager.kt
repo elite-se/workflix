@@ -8,7 +8,6 @@ import com.sendgrid.helpers.mail.objects.Content
 import com.sendgrid.helpers.mail.objects.Email
 import de.se.team3.logic.container.UserContainer
 import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.webservice.managerInterfaces.VerificationMailManagerInterface
 
 object VerificationMailManager : VerificationMailManagerInterface {
