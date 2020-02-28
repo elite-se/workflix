@@ -27,8 +27,6 @@ object VerificationMailManager : VerificationMailManagerInterface {
      * @param mail email address of the user trying to sign up
      */
     override fun initVerification(mail: String) {
-        if (UserQuerying.searchFor***REMOVED***User(mail) == null)
-            throw InvalidInputException("There is no user with this email address.")
         if (UserContainer.getAllUsers().map { it.email }.contains(mail))
             throw InvalidInputException("This user already exists.")
         val charPool: List<Char> = ('A'..'Z') + ('0'..'9')
