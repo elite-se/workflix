@@ -207,10 +207,10 @@ object ProcessDAO : ProcessDAOInterface {
                 row.startedAt to process.startedAt
             }
 
-            // adds the taks to db
-            val tasks = process.tasks?.map { it.value }!!
+            // adds the tasks to db
+            process.tasks.map { it.value }
             TasksTable.batchInsert {
-                process?.tasks.forEach { id, task ->
+                process.tasks.forEach { (id, task) ->
                     item { row ->
                         row.processId to generatedProcessId
                         row.taskTemplateId to id

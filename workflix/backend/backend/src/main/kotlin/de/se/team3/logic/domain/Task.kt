@@ -65,7 +65,7 @@ class Task(
      */
     private fun closedAssignmentsCount(): Int {
         var closings = 0
-        assignments!!.forEach { taskAssignment ->
+        assignments.forEach { taskAssignment ->
             if (taskAssignment.isClosed())
                 closings++
         }
@@ -113,7 +113,7 @@ class Task(
      * @return True if there is a assignment to the specified assignee.
      */
     fun hasAssignment(taskAssignment: TaskAssignment): Boolean {
-        return assignments!!.find { it.assigneeId == taskAssignment.assigneeId } != null
+        return assignments.find { it.assigneeId == taskAssignment.assigneeId } != null
     }
 
     /**
@@ -146,7 +146,7 @@ class Task(
      * @throws NotFoundException Is thrown if the specified task assignment does not exist.
      */
     fun getTaskAssignment(assigneeId: String): TaskAssignment {
-        for (i in 0 until assignments!!.size) {
+        for (i in 0 until assignments.size) {
             val assignment = assignments.get(i)
             if (assignment.assigneeId == assigneeId)
                 return assignment
@@ -169,7 +169,7 @@ class Task(
         if (isClosed())
             throw AlreadyClosedException("task is already closed")
 
-        for (i in 0 until assignments!!.size) {
+        for (i in 0 until assignments.size) {
             val assignment = assignments.get(i)
             if (assignment.assigneeId == assigneeId) {
                 if (assignment.isClosed())
@@ -192,7 +192,7 @@ class Task(
         if (taskComment.taskId != id)
             throw InvalidInputException("task id specified in the given task comment must be equal to the id of this task")
 
-        comments!!.add(taskComment)
+        comments.add(taskComment)
     }
 
     /**
@@ -201,7 +201,7 @@ class Task(
      * @throws NotFoundException Is thrown if the specified task comment does not exist.
      */
     fun getTaskComment(taskCommentId: Int): TaskComment {
-        return comments!!.find { it.id == taskCommentId }
+        return comments.find { it.id == taskCommentId }
             ?: throw NotFoundException("task comment does not exist")
     }
 
@@ -211,7 +211,7 @@ class Task(
      * @throws NotFoundException Is thrown if the specified task comment does not exist.
      */
     fun deleteTaskComment(taskCommentId: Int) {
-        val existed = comments!!.removeIf { it.id == taskCommentId }
+        val existed = comments.removeIf { it.id == taskCommentId }
         if (!existed)
             throw NotFoundException("task comment does not exist")
     }

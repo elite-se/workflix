@@ -45,12 +45,12 @@ object UserHandler {
         val contentJSON = JSONObject(content)
 
         val name = contentJSON.getString("name") //TODO add to API
-        val name = contentJSON.getString("displayname") //TODO add to API
+        val displayname = contentJSON.getString("displayname") //TODO add to API
         val email = contentJSON.getString("email")
         val password = contentJSON.getString("password")
 
         if (VerificationMailManager.verifyAndInvalidateVerificationKey(email, key)) {
-            val user = usersContainer.createUser(email, password)
+            val user = usersContainer.createUser(name, displayname, email, password)
             val resultJSON = JSONObject().put("newId", user.id)
 
             ctx.result(resultJSON.toString())

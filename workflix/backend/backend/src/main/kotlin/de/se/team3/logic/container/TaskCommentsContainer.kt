@@ -76,7 +76,7 @@ object TaskCommentsContainer : TaskCommentsContainerInterface {
         if (!exists)
             throw NotFoundException("task comment not found")
 
-        val currentTaskComment = task.getTaskComment(taskComment.id!!)
+        val currentTaskComment = task.getTaskComment(taskComment.id)
         currentTaskComment.setContent(taskComment.getContent())
     }
 

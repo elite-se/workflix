@@ -71,7 +71,7 @@ class ProcessTest {
     fun testGetProgress100() {
         val process = ProcessesMocks.getProcessExtorel()
 
-        for ((id, task) in process.tasks) {
+        for ((_, task) in process.tasks) {
             val taskAssignment = TaskAssignment(task, UsersAndRolesMocks.marvinBrieger, true)
             task.addTaskAssignment(taskAssignment)
         }
@@ -86,7 +86,7 @@ class ProcessTest {
     fun testCloseable() {
         val process = ProcessesMocks.getProcessExtorel()
 
-        for ((id, task) in process.tasks) {
+        for ((_, task) in process.tasks) {
             assertFalse { process.closeable() } // must not be closeable while there are open tasks
             val taskAssignment = TaskAssignment(task, UsersAndRolesMocks.eliasKeis, true)
             task.addTaskAssignment(taskAssignment)
@@ -118,7 +118,7 @@ class ProcessTest {
     fun testAbortionOrClosingAfterClosing() {
         val process = ProcessesMocks.getProcessExtorel()
 
-        for ((id, task) in process.tasks) {
+        for ((_, task) in process.tasks) {
             assertFalse { process.closeable() } // must not be closeable while there are open tasks
             val taskAssignment = TaskAssignment(task, UsersAndRolesMocks.eliasKeis, true)
             task.addTaskAssignment(taskAssignment)

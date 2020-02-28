@@ -48,7 +48,7 @@ object ProcessTemplatesHandler {
         processTemplateJsonObjectWithoutTasks.put("taskTemplates", taskTemplatesJsonArray)
 
         // Builds the json representation for each task template
-        for ((id, taskTemplate) in processTemplate.taskTemplates!!) {
+        for ((_, taskTemplate) in processTemplate.taskTemplates) {
             val taskTemplateObjectWithoutNeighbors = JsonHelper.toJsonObject(taskTemplate)
             taskTemplatesJsonArray.put(taskTemplateObjectWithoutNeighbors)
 
