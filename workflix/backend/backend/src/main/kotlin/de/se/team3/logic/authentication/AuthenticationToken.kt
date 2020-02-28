@@ -19,7 +19,7 @@ class AuthenticationToken(
             this(generateToken(user.id), user)
 
     companion object {
-        private const val key = "***REMOVED***"
+        private val key = System.getenv("workflix.api.key")
 
         /**
          * Generates a JSONWebToken from a given UserID

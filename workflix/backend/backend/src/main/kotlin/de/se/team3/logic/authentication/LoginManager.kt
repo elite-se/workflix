@@ -21,7 +21,7 @@ object LoginManager {
     fun login(email: String, password: String): AuthenticationToken {
         val userList = UserContainer.getAllUsers().filter { it.email == email }
         // if there are more than two users with the same email address, something went terribly wrong during user creation
-        if (userList.size < 1)
+        if (userList.isEmpty())
             throw InvalidInputException("There is no user with this email address.")
         if (userList.size > 1)
             throw InvalidInputException("There is more than one user with the same email address.")
