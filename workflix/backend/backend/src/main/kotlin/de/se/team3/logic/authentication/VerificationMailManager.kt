@@ -19,8 +19,7 @@ object VerificationMailManager : VerificationMailManagerInterface {
     private val keyMap = HashMap<String, String>()
 
     // API KEY necessary for mailing via SendGrid
-    // TODO store somewhere safe
-    private const val sendGridApiKey = "***REMOVED***"
+    private val sendGridApiKey = System.getenv("workflix.sendgrid.key")
 
     /**
      * Generates a verification key and sends it to the respective user.
