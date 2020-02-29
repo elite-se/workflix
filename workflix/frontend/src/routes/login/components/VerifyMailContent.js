@@ -49,8 +49,8 @@ class VerifyMailContent extends React.Component<PropsType, StateType> {
     return <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={this.onFormSubmit}>
       <Callout intent={Intent.PRIMARY} title='Import your QPlix account'
                style={{ maxWidth: '400px', wordWrap: 'break-word' }}>
-        Enter the email address you are registered with in the ***REMOVED*** system.
-        We will send you a verification email with a code that allows you to import your account and set a password to
+        Enter your email address.
+        We will send you a verification email with a code that allows you to activate your account and set a password to
         log in to Workflix with.
       </Callout>
       <FormGroup label='Email' labelFor='email' style={{ marginTop: '10px' }}>
