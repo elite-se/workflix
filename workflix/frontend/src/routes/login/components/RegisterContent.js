@@ -101,7 +101,7 @@ class RegisterContent extends React.Component<PropsType, StateType> {
         <PasswordInput id='password2' placeholder='Repeat password' password={password2}
                        onPasswordChange={this.onPassword2Change} intent={passwordsMatch ? undefined : Intent.DANGER}/>
       </FormGroup>
-      <Button icon='new-person' intent={Intent.SUCCESS} text='Import account' type='submit' large
+      <Button icon='new-person' intent={Intent.SUCCESS} text='Create account' type='submit' large
               disabled={this.isSubmitDisabled()} loading={loading}/>
       <Button icon='fast-backward' text='Change email address' minimal style={{ marginTop: '5px' }}
               onClick={onGoToVerifyMail} disabled={loading}/>
