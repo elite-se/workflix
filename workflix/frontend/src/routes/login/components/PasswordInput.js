@@ -32,6 +32,7 @@ class PasswordInput extends React.Component<PropsType & IInputGroupProps, StateT
                        leftIcon='key'
                        rightElement={<Tooltip content={`${showPassword ? 'Hide' : 'Show'} password`}>
                          <Button
+                           tabIndex='-1'
                            minimal large
                            icon={showPassword ? 'eye-open' : 'eye-off'}
                            intent={Intent.WARNING}
