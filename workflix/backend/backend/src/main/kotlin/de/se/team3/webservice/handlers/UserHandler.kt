@@ -44,8 +44,8 @@ object UserHandler {
         val content = ctx.body()
         val contentJSON = JSONObject(content)
 
-        val name = contentJSON.getString("name") //TODO add to API
-        val displayname = contentJSON.getString("displayname") //TODO add to API
+        val name = contentJSON.getString("name")
+        val displayname = contentJSON.getString("displayname")
         val email = contentJSON.getString("email")
         val password = contentJSON.getString("password")
 
