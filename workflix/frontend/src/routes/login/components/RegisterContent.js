@@ -65,7 +65,7 @@ class RegisterContent extends React.Component<PropsType, StateType> {
     const { onGoToLogin, onGoToVerifyMail, email } = this.props
     const passwordsMatch = password === password2
     return <form onSubmit={this.onFormSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-      <Callout intent={Intent.PRIMARY} title='Import your QPlix account'
+      <Callout intent={Intent.PRIMARY} title='Create your account account'
                style={{ maxWidth: '400px', wordWrap: 'break-word' }}>
         We sent a verification mail to <i>{email}</i> that contains a verification code. Enter this code below and
         choose a password to use with Workflix. You can then import your account.<br/>

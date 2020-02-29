@@ -47,7 +47,7 @@ class VerifyMailContent extends React.Component<PropsType, StateType> {
     const { email, onGoToLogin } = this.props
     const { loading } = this.state
     return <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={this.onFormSubmit}>
-      <Callout intent={Intent.PRIMARY} title='Import your QPlix account'
+      <Callout intent={Intent.PRIMARY} title='Create your account'
                style={{ maxWidth: '400px', wordWrap: 'break-word' }}>
         Enter your email address.
         We will send you a verification email with a code that allows you to activate your account and set a password to
