@@ -22,13 +22,13 @@ object ProcessTemplateCycleDetection {
     fun isAcyclic(taskTemplates: Map<Int, TaskTemplate>): Boolean {
         // setup: at the beginning each node is NotVisited
         val statusMap = HashMap<Int, ProcessingStatus>()
-        for ((id, taskTemplate) in taskTemplates)
+        for ((id, _) in taskTemplates)
             statusMap.put(id,
-                ProcessTemplateCycleDetection.ProcessingStatus.NotVisited
+                ProcessingStatus.NotVisited
             )
         // As long as there are nodes that are not visited by visitNode() a new recursive visitation is started.
         for ((id, taskTemplate) in taskTemplates)
-            if (statusMap.get(id) == ProcessTemplateCycleDetection.ProcessingStatus.NotVisited) {
+            if (statusMap.get(id) == ProcessingStatus.NotVisited) {
                 val cycleDetected =
                     visitNode(
                         taskTemplate,
@@ -52,7 +52,7 @@ object ProcessTemplateCycleDetection {
             ProcessTemplateCycleDetection.ProcessingStatus.InVisitation
         )
         for (successor in taskTemplate.getSuccessors()) {
-            if (statusMap.get(successor.id) == ProcessTemplateCycleDetection.ProcessingStatus.NotVisited) {
+            if (statusMap.get(successor.id) == ProcessingStatus.NotVisited) {
                 val cycleDetected =
                     visitNode(
                         successor,

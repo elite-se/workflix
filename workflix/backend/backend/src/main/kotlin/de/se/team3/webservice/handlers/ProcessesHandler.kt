@@ -85,7 +85,7 @@ object ProcessesHandler {
 
         // Building json
         val processJsonObject = JsonHelper.toJsonObject(process)
-        val tasksJsonArray = JsonHelper.toJsonArray(process.tasks?.map { it.value }!!)
+        val tasksJsonArray = JsonHelper.toJsonArray(process.tasks.map { it.value })
         processJsonObject.put("tasks", tasksJsonArray)
 
         ctx.result(processJsonObject.toString())

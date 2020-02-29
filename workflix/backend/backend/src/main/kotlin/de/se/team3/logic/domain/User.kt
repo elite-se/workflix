@@ -3,8 +3,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import de.se.team3.logic.container.ProcessGroupsContainer
 import de.se.team3.logic.container.UserRoleContainer
-import de.se.team3.logic.exceptions.InvalidInputException
-import de.se.team3.logic.***REMOVED***connector.UserQuerying
 import de.se.team3.persistence.daos.UserDAO
 import de.se.team3.webservice.util.InstantSerializer
 import java.time.Instant
@@ -57,43 +55,26 @@ class User(
 
     companion object {
         /**
-         * Queries the ***REMOVED*** API for ***REMOVED*** Users registered under the given e-mail address.
-         * @return User object corresponding to the ***REMOVED*** user using the given password.
-         * @throws InvalidInputException Either the given e-mail address is not of a valid format, no ***REMOVED*** User
-         * with this address can be found or the user does already exist.
-         */
-        fun query***REMOVED***andCreateUser(email: String, password: String): User {
-            val user = UserQuerying.searchFor***REMOVED***User(email)
-                ?: throw InvalidInputException("No user with this e-mail address exists.")
-            // checks whether the user already exists
-            if (UserDAO.getAllUsers().contains(user))
-                throw InvalidInputException("This user already exists!")
-            user.password = password
-            return user
-        }
-
-        /**
-         * Creates a user not existing in ***REMOVED*** System by generating a new 24-char-ID.
-         * Note: It is theoretically possible that creating a non-***REMOVED*** user while some ***REMOVED*** users are not already added
-         * to the system may result in conflicting IDs. The likelihood of this, however, is fairly small.
+         * Creates a user by generating a new 24-char-ID.
+         * TODO change database to Integer IDs and remove afterwards
          */
         fun createNewUser(name: String, displayname: String, email: String, password: String): User {
             var generatedID: String
             do {
                 val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-                generatedID = (1..20)
+                generatedID = (1..24)
                     .map { kotlin.random.Random.nextInt(0, charPool.size) }
                     .map(charPool::get)
                     .joinToString("")
             } while (!userIdAlreadyUsed(generatedID))
-            return User("$generatedID-gen", name, displayname, email, password, Instant.now())
+            return User(generatedID, name, displayname, email, password, Instant.now())
         }
 
         /**
          * checks whether a String is already in use as an user id
          * TODO(improvement) apply a faster searching algorithm; this may however require sorting the data first
          */
-        fun userIdAlreadyUsed(id: String): Boolean {
+        private fun userIdAlreadyUsed(id: String): Boolean {
             val userList = UserDAO.getAllUsers()
             for (user in userList)
                 if (user.id == id) return true

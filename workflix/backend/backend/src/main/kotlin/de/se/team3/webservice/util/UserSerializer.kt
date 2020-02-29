@@ -8,6 +8,6 @@ import de.se.team3.logic.domain.User
 class UserSerializer : JsonSerializer<User>() {
 
     override fun serialize(user: User, generator: JsonGenerator, serializers: SerializerProvider) {
-        generator?.writeObject(user?.id)
+        generator.writeObject(user.id)
     }
 }

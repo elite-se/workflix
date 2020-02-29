@@ -90,7 +90,7 @@ fun main(args: Array<String>) {
         UserHandler.getOne(ctx, ctx.pathParam("userId"))
     }
     app.put("users/:key") { ctx ->
-        UserHandler.createFrom***REMOVED***(ctx, ctx.pathParam("key"))
+        UserHandler.createUser(ctx, ctx.pathParam("key"))
     }
 
     // new user verification

@@ -157,8 +157,8 @@ class Process(
      * @return True iff the specified user is assigned to at least on task of this process.
      */
     private fun hasAssignee(userId: String): Boolean {
-        for ((key, task) in tasks)
-            for (assignment in task.getAssignments()!!)
+        for ((_, task) in tasks)
+            for (assignment in task.getAssignments())
                 if (assignment.assigneeId == userId)
                     return true
 
