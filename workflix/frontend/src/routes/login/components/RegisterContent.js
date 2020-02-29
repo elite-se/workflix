@@ -19,6 +19,8 @@ type StateType = {|
   code: string,
   password: string,
   password2: string,
+  name: string,
+  displayName: string,
   loading: boolean
 |}
 
@@ -27,6 +29,8 @@ class RegisterContent extends React.Component<PropsType, StateType> {
     code: '',
     password: '',
     password2: '',
+    name: '',
+    displayName: '',
     loading: false
   }
 
@@ -39,10 +43,10 @@ class RegisterContent extends React.Component<PropsType, StateType> {
   }
 
   importAccount () {
-    const { password, code } = this.state
+    const { password, code, name, displayName } = this.state
     const { email, onGoToLogin } = this.props
     this.setState({ loading: true })
-    new UsersApi().createUser(email, password, code)
+    new UsersApi().createUser(email, password, code, name, displayName)
       .then(() => {
         this.setState({ loading: false })
         onGoToLogin(true)
@@ -54,20 +58,28 @@ class RegisterContent extends React.Component<PropsType, StateType> {
   }
 
   isSubmitDisabled = () => !this.state.password || !this.state.password2 || !this.state.code ||
-    this.state.password !== this.state.password2
+    this.state.password !== this.state.password2 || !this.state.name || !this.state.displayName
 
   onPasswordChange = (password: string) => this.setState({ password })
   onPassword2Change = (password2: string) => this.setState({ password2 })
+  onNameChange = handleStringChange((name: string) => {
+    // update displayName with first letters of each word of name
+    console.debug(name)
+    const displayName = name.split(' ').map(word => word.substring(0, 1)).join('')
+    this.setState({ name, displayName })
+  })
+
+  onDisplayNameChange = handleStringChange((displayName: string) => this.setState({ displayName }))
   onCodeChange = handleStringChange((code: string) => this.setState({ code }))
 
   render () {
-    const { password, password2, code, loading } = this.state
+    const { password, password2, code, name, displayName, loading } = this.state
     const { onGoToLogin, onGoToVerifyMail, email } = this.props
     const passwordsMatch = password === password2
     return <form onSubmit={this.onFormSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-      <Callout intent={Intent.PRIMARY} title='Import your QPlix account'
+      <Callout intent={Intent.PRIMARY} title='Create your account account'
                style={{ maxWidth: '400px', wordWrap: 'break-word' }}>
-        We sent a verification mail to <i>{email}</i> that contains a verification code. Enter this code below and
+        We sent a verification mail to <i>{email}</i> that contains a verification code. Enter this code and your name below and
         choose a password to use with Workflix. You can then import your account.<br/>
         If you did not receive an email, check your spam folder or try the previous step again.
       </Callout>
@@ -75,15 +87,21 @@ class RegisterContent extends React.Component<PropsType, StateType> {
         <InputGroup id='code' placeholder='Verification code' required large leftIcon='id-number'
                     onChange={this.onCodeChange} inputRef={this.codeInputRef} value={code}/>
       </FormGroup>
+      <FormGroup label='Name' labelFor='name'>
+        <InputGroup id='name' placeholder='Your name' required large leftIcon='person' onChange={this.onNameChange} value={name}/>
+      </FormGroup>
+      <FormGroup label='Initials' labelFor='displayName'>
+        <InputGroup id='displayName' placeholder='Your initials' required large leftIcon='tag' onChange={this.onDisplayNameChange} value={displayName}/>
+      </FormGroup>
       <FormGroup label='Password' labelFor='password'>
-        <PasswordInput password={password} onPasswordChange={this.onPasswordChange}/>
+        <PasswordInput id='password' password={password} onPasswordChange={this.onPasswordChange}/>
       </FormGroup>
       <FormGroup label='Repeat password' labelFor='password2'
                  helperText={passwordsMatch ? undefined : 'Passwords must not differ'}>
         <PasswordInput id='password2' placeholder='Repeat password' password={password2}
                        onPasswordChange={this.onPassword2Change} intent={passwordsMatch ? undefined : Intent.DANGER}/>
       </FormGroup>
-      <Button icon='new-person' intent={Intent.SUCCESS} text='Import account' type='submit' large
+      <Button icon='new-person' intent={Intent.SUCCESS} text='Create account' type='submit' large
               disabled={this.isSubmitDisabled()} loading={loading}/>
       <Button icon='fast-backward' text='Change email address' minimal style={{ marginTop: '5px' }}
               onClick={onGoToVerifyMail} disabled={loading}/>

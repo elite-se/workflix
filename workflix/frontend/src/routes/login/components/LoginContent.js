@@ -77,7 +77,7 @@ class LoginContent extends React.Component<PropsType, StateType> {
       </FormGroup>
       <Button icon='unlock' intent={Intent.SUCCESS} text='Login' type='submit' large
               disabled={this.isButtonDisabled()} loading={loading}/>
-      <Button icon='new-person' text='Import my ***REMOVED*** account' minimal style={{ marginTop: '5px' }}
+      <Button icon='new-person' text='Create a new account' minimal style={{ marginTop: '5px' }}
               onClick={this.props.onGoToVerifyMail} disabled={loading}/>
     </form>
   }
