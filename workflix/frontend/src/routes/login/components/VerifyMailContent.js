@@ -44,7 +44,7 @@ class VerifyMailContent extends React.Component<PropsType, StateType> {
   }
 
   render () {
-    const { email, onGoToLogin } = this.props
+    const { email, onGoToLogin, onGoToRegister } = this.props
     const { loading } = this.state
     return <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={this.onFormSubmit}>
       <Callout intent={Intent.PRIMARY} title='Create your account'
@@ -60,6 +60,8 @@ class VerifyMailContent extends React.Component<PropsType, StateType> {
       </FormGroup>
       <Button icon='envelope' intent={Intent.PRIMARY} text='Verify email address' type='submit' large
               disabled={!email} loading={loading}/>
+      <Button icon='fast-forward' text='I already have a verification token' minimal style={{ marginTop: '5px' }}
+              onClick={discardEvent(onGoToRegister)} disabled={loading || !email}/>
       <Button icon='unlock' text='I already have an account' minimal style={{ marginTop: '5px' }}
               onClick={discardEvent(onGoToLogin)} disabled={loading}/>
     </form>
