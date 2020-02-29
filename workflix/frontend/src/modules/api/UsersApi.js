@@ -25,7 +25,7 @@ class UsersApi {
   createUser (email: string, password: string, verificationCode: string, name: string, displayName: string): Promise<Response> {
     return safeFetch(`${usersBackend}/${verificationCode}`, {
       method: 'PUT',
-      body: JSON.stringify({ email, password, name, displayName })
+      body: JSON.stringify({ email, password, name, displayname: displayName })
     })
   }
 }
