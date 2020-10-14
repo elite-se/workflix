@@ -19,7 +19,7 @@
         <ktlint.disabled>--disabled_rules=filename</ktlint.disabled>
         <ktorm.version>2.6</ktorm.version>
         <junit.jupiter.version>5.5.2</junit.jupiter.version>
-        <spring-security.version>5.0.13.RELEASE</spring-security.version>
+        <spring-security.version>5.0.17.RELEASE</spring-security.version>
         <spring.version>5.0.6.RELEASE</spring.version>
     </properties>
 
